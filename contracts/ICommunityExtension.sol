@@ -1,0 +1,86 @@
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.8.0;
+
+/// @title ICommunityExtension
+/// @notice The interface for the extension of each DAO that integrates AutID
+interface ICommunityExtension {
+    event UrlAdded(string _url);
+
+    struct CommunityData {
+        uint256 contractType;
+        address daoAddress;
+        string metadata;
+        uint256 commitment;
+        uint256 market;
+        string discordServer;
+    }
+
+    /// @notice The DAO can connect a discord server to their community extension contract
+    /// @dev Can be called only by the core team members
+    /// @param discordServer the URL of the discord server
+    function setDiscordServer(string calldata discordServer) external;
+
+    /// @notice The listed URLs are the only ones that can be used for the DAuth
+    /// @dev adds a URL in the listed ones
+    /// @param _url the URL that's going to be added
+    function addURL(string memory _url) external;
+
+    /// @notice The listed URLs are the only ones that can be used for the DAuth
+    /// @dev removes URL from the listed ones
+    /// @param _url the URL that's going to be removed
+    function removeURL(string memory _url) external;
+
+    /// @notice The listed URLs are the only ones that can be used for the DAuth
+    /// @dev returns an array with all the listed urls
+    /// @return returns all the urls listed for the community
+    function getURLs() external view returns (string[] memory);
+
+    /// @notice The listed URLs are the only ones that can be used for the DAuth
+    /// @dev a checker if a url has been listed for this community
+    /// @param _url the url that will be listed
+    /// @return true if listed, false otherwise
+    function isURLListed(string memory _url) external view returns (bool);
+
+    /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
+    /// @dev checks if the member is a part of a DAO
+    /// @param member the address of the member that's checked
+    /// @return true if they're a member, false otherwise
+    function isMemberOfExtendedDAO(address member) external view returns (bool);
+
+    /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
+    /// @dev checks if the member is a part of a DAO
+    /// @param member the address of the member that's checked
+    /// @return true if they're a member, false otherwise
+    function isMemberOfOriginalDAO(address member) external view returns (bool);
+
+    /// @notice Checks if the passed member is a core team member within the SW extension of the membership
+    /// @param member the address of the member that's checked
+    /// @return true if they're a core team member, false otherwise
+    function isCoreTeam(address member) external view returns (bool);
+
+    /// @notice Checks if a specific contract address is listed as Activity
+    /// @dev Activity contracts can increase the interaction index of the SW holders
+    /// @param activity the address of the activity that's checked
+    /// @return true if the address is listed, false otherwise
+    function isActivityWhitelisted(address activity)
+        external
+        view
+        returns (bool);
+
+    function join(address newMember) external;
+
+    function hasPassedOnboarding(address member) external view returns (bool);
+    function getAllMembers() external view returns (address[] memory);
+
+    function getInteractionsAddr() external view returns(address);
+
+    function getInteractionsPerUser(address member) external view returns(uint);
+
+    function getComData() external view returns(CommunityData memory data);
+
+    function autIDAddr() external view returns (address);
+
+    function getActivitiesWhitelist() external view returns(address[] calldata);
+    
+    function addActivitiesAddress(address activityAddr) external;
+}
