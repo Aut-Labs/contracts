@@ -298,6 +298,7 @@ contract CommunityExtension is ICommunityExtension {
         onlyCoreTeam
     {
         activitiesWhitelist.push(Activity(activityAddr, actType));
+        isActivityWhitelisted[activityAddr] = true;
         emit ActivitiesAddressAdded();
     }
 

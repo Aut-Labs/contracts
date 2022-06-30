@@ -68,7 +68,7 @@ describe("Tasks", (accounts) => {
     tasks = await Tasks.deploy(communityExtension.address);
     await tasks.deployed();
 
-    await communityExtension.addActivitiesAddress(tasks.address);
+    await communityExtension.addActivitiesAddress(tasks.address, '3');
   });
   describe("Tasks", async () => {
     it("Should create some tasks", async () => {

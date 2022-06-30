@@ -1,6 +1,6 @@
-require('dotenv').config()
+require("dotenv").config();
 
-require("@nomiclabs/hardhat-ethers")
+require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-contract-sizer");
 // const defaultNetwork = "mumbai";
@@ -25,20 +25,15 @@ module.exports = {
   solidity: "0.8.4",
   defaultNetwork: "localhost",
   networks: {
-    hardhat: {
-    },
+    hardhat: {},
     mumbai: {
       url: "https://matic-mumbai.chainstacklabs.com/",
-      accounts: [process.env.MNEMONIC]
+      accounts: [process.env.MNEMONIC],
     },
-    localhost: {
-      url: "http://127.0.0.1:8545/",
-      accounts: ['0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80']
-    }
   },
 
   // defaultNetwork,
-  // networks: {    
+  // networks: {
   //   localhost: {
   //     url: "http://localhost:7545",
   //     /*
