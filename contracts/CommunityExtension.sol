@@ -308,4 +308,11 @@ contract CommunityExtension is ICommunityExtension {
         comData.metadata = metadata;
         emit MetadataUriUpdated();
     }
+
+    function addToCoreTeam(address member) public onlyCoreTeam override {
+        require(isMemberOfTheCom[member], "Not a member");
+        isCoreTeam[member] = true;
+        coreTeam.push(member);
+        emit CoreTeamMemberAdded(member);
+    }
 }

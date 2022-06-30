@@ -10,10 +10,11 @@ interface ICommunityExtension {
     event ActivitiesAddressAdded();
     event DiscordServerSet();
     event MemberAdded();
+    event CoreTeamMemberAdded(address member);
 
     struct Activity {
         address actAddr;
-        uint actType;
+        uint256 actType;
     }
 
     struct CommunityData {
@@ -24,8 +25,6 @@ interface ICommunityExtension {
         uint256 market;
         string discordServer;
     }
-
-
 
     /// @notice The DAO can connect a discord server to their community extension contract
     /// @dev Can be called only by the core team members
@@ -70,6 +69,8 @@ interface ICommunityExtension {
     /// @return true if they're a core team member, false otherwise
     function isCoreTeam(address member) external view returns (bool);
 
+    function addToCoreTeam(address member) external;
+
     /// @notice Checks if a specific contract address is listed as Activity
     /// @dev Activity contracts can increase the interaction index of the SW holders
     /// @param activity the address of the activity that's checked
@@ -82,19 +83,27 @@ interface ICommunityExtension {
     function join(address newMember) external;
 
     function hasPassedOnboarding(address member) external view returns (bool);
+
     function getAllMembers() external view returns (address[] memory);
 
-    function getInteractionsAddr() external view returns(address);
+    function getInteractionsAddr() external view returns (address);
 
-    function getInteractionsPerUser(address member) external view returns(uint);
+    function getInteractionsPerUser(address member)
+        external
+        view
+        returns (uint256);
 
-    function getComData() external view returns(CommunityData memory data);
+    function getComData() external view returns (CommunityData memory data);
 
     function autIDAddr() external view returns (address);
 
-    function getActivitiesWhitelist() external view returns(Activity[] calldata);
-    
-    function addActivitiesAddress(address activityAddr, uint activityType) external;
-    
+    function getActivitiesWhitelist()
+        external
+        view
+        returns (Activity[] calldata);
+
+    function addActivitiesAddress(address activityAddr, uint256 activityType)
+        external;
+
     function setMetadataUri(string calldata metadata) external;
 }
