@@ -4,7 +4,17 @@ pragma solidity ^0.8.0;
 /// @title ICommunityExtension
 /// @notice The interface for the extension of each DAO that integrates AutID
 interface ICommunityExtension {
-    event UrlAdded(string _url);
+    event UrlAdded(string url);
+    event UrlRemoved(string url);
+    event MetadataUriUpdated();
+    event ActivitiesAddressAdded();
+    event DiscordServerSet();
+    event MemberAdded();
+
+    struct Activity {
+        address actAddr;
+        uint actType;
+    }
 
     struct CommunityData {
         uint256 contractType;
@@ -14,6 +24,8 @@ interface ICommunityExtension {
         uint256 market;
         string discordServer;
     }
+
+
 
     /// @notice The DAO can connect a discord server to their community extension contract
     /// @dev Can be called only by the core team members
@@ -80,7 +92,9 @@ interface ICommunityExtension {
 
     function autIDAddr() external view returns (address);
 
-    function getActivitiesWhitelist() external view returns(address[] calldata);
+    function getActivitiesWhitelist() external view returns(Activity[] calldata);
     
-    function addActivitiesAddress(address activityAddr) external;
+    function addActivitiesAddress(address activityAddr, uint activityType) external;
+    
+    function setMetadataUri(string calldata metadata) external;
 }

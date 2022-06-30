@@ -34,7 +34,7 @@ contract CommunityExtension is ICommunityExtension {
     mapping(address => bool) public override isCoreTeam;
 
     /// @notice Activities Whitelist
-    address[] activitiesWhitelist;
+    Activity[] activitiesWhitelist;
     /// @notice Activities Whitelist
     mapping(address => bool) public override isActivityWhitelisted;
 
@@ -52,7 +52,7 @@ contract CommunityExtension is ICommunityExtension {
 
     /// @dev Modifier for check of access of the core team member functions
     modifier onlyAutID() {
-        require(msg.sender == autIDAddr, "Only SW Contract can call this!");
+        require(msg.sender == autIDAddr, "Only AutID Contract can call this!");
         _;
     }
 
@@ -135,6 +135,7 @@ contract CommunityExtension is ICommunityExtension {
         );
         isMemberOfTheCom[newMember] = true;
         members.push(newMember);
+        emit MemberAdded();
     }
 
     /// @notice The DAO can connect a discord server to their community extension contract
@@ -144,6 +145,7 @@ contract CommunityExtension is ICommunityExtension {
         require(bytes(discordServer).length > 0, "DiscordServer Link Empty!");
         require(isCoreTeam[msg.sender], "Only owner can edit discord server");
         comData.discordServer = discordServer;
+        emit DiscordServerSet();
     }
 
     /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
@@ -228,6 +230,7 @@ contract CommunityExtension is ICommunityExtension {
 
         urls.pop();
         delete urlIds[urlHash];
+        emit UrlRemoved(_url);
     }
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
@@ -284,16 +287,24 @@ contract CommunityExtension is ICommunityExtension {
         public
         view
         override
-        returns (address[] memory)
+        returns (Activity[] memory)
     {
         return activitiesWhitelist;
     }
 
-    function addActivitiesAddress(address activityAddr)
+    function addActivitiesAddress(address activityAddr, uint actType)
         public
         override
         onlyCoreTeam
     {
-        activitiesWhitelist.push(activityAddr);
+        activitiesWhitelist.push(Activity(activityAddr, actType));
+        emit ActivitiesAddressAdded();
+    }
+
+    function setMetadataUri(string calldata metadata) public override onlyCoreTeam {
+        require(bytes(metadata).length > 0, "metadata uri missing");
+
+        comData.metadata = metadata;
+        emit MetadataUriUpdated();
     }
 }

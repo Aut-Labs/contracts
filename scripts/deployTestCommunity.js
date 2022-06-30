@@ -13,13 +13,21 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  const SWLegacyCommunity = await hre.ethers.getContractFactory(
-    "SWLegacyCommunity"
-  );
-  const swLegacyCommunity = await SWLegacyCommunity.deploy();
-  await swLegacyCommunity.deployed();
+  // const SWLegacyCommunity = await hre.ethers.getContractFactory(
+  //   "SWLegacyCommunity"
+  // );
+  // const swLegacyCommunity = await SWLegacyCommunity.deploy();
+  // await swLegacyCommunity.deployed();
 
-  console.log('SWLegacyCommunity', swLegacyCommunity.address);
+  // console.log('SWLegacyCommunity', swLegacyCommunity.address);
+
+  const TestCom = await hre.ethers.getContractFactory('TestingDAO');
+
+
+  const testCom = await TestCom.deploy();
+  await testCom.deployed();
+  console.log('TestCom', testCom.address);
+
   
 }
 

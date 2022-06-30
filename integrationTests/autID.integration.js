@@ -46,6 +46,7 @@ const communityRegistryContract = new ethers.Contract(
 
 async function mint(communityExtension) {
   const a = await autIDContract.mint(
+    'migrenaa',
     "bafkreigigsavco2dtgcg6ehmunu5cjzr7xiarsrxm6bfw5m5wpor5rfpoi",
     1,
     7,
@@ -139,7 +140,7 @@ async function getAutIDAddrForComExt(communityExtension) {
   console.log('[getAutIDAddrForComExt]: addr', addr);
 }
 async function test() {
-  const communityExtension = "0xFc53e464D257F0614132D20293154eaE5CE25734";
+  const communityExtension = "0x7623c3237f045388D97a8EC6420157cb164f91c8";
   const daoAddr = '0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14'
   const user = "0x33400efca704d14635cb85a381c1e28dc504ef65";
   const pollsAddress = '0x270e27E4E6422C311449E9aA258B3181235837ce'
@@ -150,10 +151,10 @@ async function test() {
   // await addMember('0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14', signer.address);
   // await addMember(daoAddr, '0x720Db641247BAacf528c696518C28153eB0E1100');
   // await getAutIDAddrForComExt(communityExtension);
-  // await createCommunity(1, '0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14')
+  // await createCommunity(1, '0x73297cb191a7f510C440a1Ce64Cb2E1b18753409')
   // await passOnboarding(communityExtension, '0x7660aa261d27A2A32d4e7e605C1bc2BA515E5f81');
   // await getCommunities();
-  await getComData(communityExtension);
+  // await getComData(communityExtension);
   // const community = '0x96dCCC06b1729CD8ccFe849CE9cA7e020e19515c';
   // await getCommunityData(user, community);
   // await getComData(communityExtension)
@@ -161,6 +162,7 @@ async function test() {
   // await createCommunity(1, "0x7DeF7A0C6553B9f7993a131b5e30AB59386837E0");
   // await getCommunities();
   // await mint(communityExtension);
+  await getCommunities();
 }
 
 test();

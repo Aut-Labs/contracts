@@ -4,9 +4,6 @@ pragma solidity ^0.8.0;
 import "../Interaction.sol";
 import "../ICommunityExtension.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract Tasks {
     using Counters for Counters.Counter;

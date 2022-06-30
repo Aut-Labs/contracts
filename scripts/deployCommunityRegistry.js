@@ -28,15 +28,15 @@ async function main() {
 
   console.log('CommunityRegistry', communityRegistry.address);
   
-  await (
-    await communityRegistry.createCommunity(
-      1,
-      daoAddr,
-      1,
-      "bafkreidjy6xlyf2he4iopzijy7bws3yl34xhwh726ca2xd7temqoqkz6xy",
-      8
-    )
-  ).wait();
+  // await (
+  //   await communityRegistry.createCommunity(
+  //     1,
+  //     daoAddr,
+  //     1,
+  //     "bafkreidjy6xlyf2he4iopzijy7bws3yl34xhwh726ca2xd7temqoqkz6xy",
+  //     8
+  //   )
+  // ).wait();
 
   // We get the contract to deploy
 

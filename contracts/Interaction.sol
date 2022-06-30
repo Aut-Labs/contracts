@@ -17,16 +17,9 @@ contract Interaction {
     }
 
     modifier onlyActivitiesWhitelisted() {
-        address[] memory whitelist = ICommunityExtension(communityExtension)
-            .getActivitiesWhitelist();
-        bool foundInWhitelist = false;
-        uint index = 0;
-        
-        while (!foundInWhitelist && index < whitelist.length) {
-            foundInWhitelist = whitelist[index] == msg.sender;
-            index++;
-        }
-        require(foundInWhitelist, 'Not whitelisted address');
+        bool whitelisted = ICommunityExtension(communityExtension)
+            .isActivityWhitelisted(msg.sender);
+        require(whitelisted, 'Not whitelisted address');
         _;
     }
 
