@@ -1,5 +1,5 @@
 const autIDAddress = "0xCeb3300b7de5061c633555Ac593C84774D160309";
-const communityRegistryAddress = "0x55984d1b251C2FFb3D0215117285Fc916bAA9371";
+const communityRegistryAddress = "0x4b1e5a1490039811eFb256f7cef3dca994D68af9";
 
 const comMetadata =
   "bafkreidjy6xlyf2he4iopzijy7bws3yl34xhwh726ca2xd7temqoqkz6xy";

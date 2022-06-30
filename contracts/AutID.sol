@@ -36,10 +36,7 @@ contract AutID is ERC721URIStorage, IAutID {
     /// @notice SW holders can link their DiscordID to their SW ID
     /// @dev links the discord ID to the SW token ID passed.
     /// @param discordID the discord ID of the sw holder
-    function addDiscordIDToAutID(string calldata discordID)
-        external
-        override
-    {
+    function addDiscordIDToAutID(string calldata discordID) external override {
         uint256 autID = _autIDByOwner[msg.sender];
 
         autIDToDiscordID[autID] = discordID;
@@ -75,7 +72,7 @@ contract AutID is ERC721URIStorage, IAutID {
             "AutID: There is AutID already registered for this address."
         );
         require(
-            autIDUsername[username] == address(0), 
+            autIDUsername[username] == address(0),
             "AutID: Username already taken!"
         );
 
@@ -190,6 +187,15 @@ contract AutID is ERC721URIStorage, IAutID {
         emit CommitmentUpdated(communityExtension, msg.sender, newCommitment);
     }
 
+    function setMetadataUri(string calldata metadataUri) public override {
+        require(balanceOf(msg.sender) == 1, "AutID: Doesn't have a SW.");
+        uint tokenId = _autIDByOwner[msg.sender];
+        _setTokenURI(tokenId, metadataUri);
+
+        emit MetadataUriSet(tokenId, metadataUri);
+
+    }
+
     /// @notice gets all communities the SW holder is a member of
     /// @param autIDHolder the address of the SW holder
     /// @return communities struct with community data for all communities that the user is a part of
@@ -199,17 +205,16 @@ contract AutID is ERC721URIStorage, IAutID {
         override
         returns (address[] memory communities)
     {
-        require(
-            balanceOf(autIDHolder) == 1,
-            "AutID: Doesn't have a SW."
-        );
+        require(balanceOf(autIDHolder) == 1, "AutID: Doesn't have a SW.");
         return _communities[autIDHolder];
     }
 
-    function getCommunityData(
-        address autIDHolder,
-        address communityExtension
-    ) external view override returns (CommunityMember memory) {
+    function getCommunityData(address autIDHolder, address communityExtension)
+        external
+        view
+        override
+        returns (CommunityMember memory)
+    {
         return _communityData[autIDHolder][communityExtension];
     }
 
@@ -239,12 +244,9 @@ contract AutID is ERC721URIStorage, IAutID {
         address to,
         uint256 tokenId
     ) internal override {
-        require(
-            false,
-            "AutID: AutID transfer disabled"
-        );
-    }    
-    
+        require(false, "AutID: AutID transfer disabled");
+    }
+
     /// @notice ERC721 _safeTransfer() Disabled
     /// @dev _safeTransfer() has been n
     /// @dev reverts on transferFrom() and safeTransferFrom()
@@ -254,10 +256,6 @@ contract AutID is ERC721URIStorage, IAutID {
         uint256 tokenId,
         bytes memory data
     ) internal override {
-        require(
-            false,
-            "AutID: AutID transfer disabled"
-        );
+        require(false, "AutID: AutID transfer disabled");
     }
-
 }

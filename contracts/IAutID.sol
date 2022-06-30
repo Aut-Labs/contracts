@@ -13,6 +13,7 @@ interface IAutID is IERC721 {
     event CommunityWithdrown(address communityAddress, address member);
     event CommitmentUpdated(address communityAddress, address member, uint newCommitment);
     event DiscordIDConnectedToAutID();
+    event MetadataUriSet(uint tokenId, string metadataUri);
 
     struct CommunityMember {
         address communityExtension;
@@ -89,4 +90,7 @@ interface IAutID is IERC721 {
     function discordIDToAddress(
         string calldata discordID
     ) external view returns(address);
+
+    function setMetadataUri(string calldata metadataUri) external;
+
 }
