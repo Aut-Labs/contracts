@@ -42,6 +42,7 @@ contract CommunityExtension is ICommunityExtension {
     address private membershipTypes;
 
     address public override autIDAddr;
+    
     address private interactionAddr;
 
     /// @dev Modifier for check of access of the core team member functions
@@ -88,7 +89,7 @@ contract CommunityExtension is ICommunityExtension {
             ) != address(0),
             "Invalid membership type"
         );
-         require(
+        require(
             IMembershipChecker(
                 MembershipTypes(memTypes).getMembershipExtensionAddress(
                     contractType
@@ -292,7 +293,7 @@ contract CommunityExtension is ICommunityExtension {
         return activitiesWhitelist;
     }
 
-    function addActivitiesAddress(address activityAddr, uint actType)
+    function addActivitiesAddress(address activityAddr, uint256 actType)
         public
         override
         onlyCoreTeam
@@ -302,17 +303,49 @@ contract CommunityExtension is ICommunityExtension {
         emit ActivitiesAddressAdded();
     }
 
-    function setMetadataUri(string calldata metadata) public override onlyCoreTeam {
+    function removeActivitiesAddress(address activityAddr)
+        public
+        override
+        onlyCoreTeam
+    {
+        for (uint256 i = 0; i < activitiesWhitelist.length; i++) {
+            if (activitiesWhitelist[i].actAddr == activityAddr) {
+                activitiesWhitelist[i] = Activity(address(0), 0);
+            }
+        }
+        isActivityWhitelisted[activityAddr] = false;
+        emit ActivitiesAddressRemoved();
+    }
+
+    function setMetadataUri(string calldata metadata)
+        public
+        override
+        onlyCoreTeam
+    {
         require(bytes(metadata).length > 0, "metadata uri missing");
 
         comData.metadata = metadata;
         emit MetadataUriUpdated();
     }
 
-    function addToCoreTeam(address member) public onlyCoreTeam override {
+    function addToCoreTeam(address member) public override onlyCoreTeam {
         require(isMemberOfTheCom[member], "Not a member");
         isCoreTeam[member] = true;
         coreTeam.push(member);
         emit CoreTeamMemberAdded(member);
+    }
+
+    function removeFromCoreTeam(address member) public override onlyCoreTeam {
+        for (uint256 i = 0; i < coreTeam.length; i++) {
+            if (coreTeam[i] == member) {
+                coreTeam[i] = address(0);
+            }
+        }
+        isCoreTeam[member] = false;
+        emit CoreTeamMemberRemoved(member);
+    }
+
+    function getCoreTeamWhitelist() public view override returns (address [] memory ) {
+        return coreTeam;
     }
 }

@@ -8,9 +8,11 @@ interface ICommunityExtension {
     event UrlRemoved(string url);
     event MetadataUriUpdated();
     event ActivitiesAddressAdded();
+    event ActivitiesAddressRemoved();
     event DiscordServerSet();
     event MemberAdded();
     event CoreTeamMemberAdded(address member);
+    event CoreTeamMemberRemoved(address member);
 
     struct Activity {
         address actAddr;
@@ -71,6 +73,8 @@ interface ICommunityExtension {
 
     function addToCoreTeam(address member) external;
 
+    function removeFromCoreTeam(address member) external;
+
     /// @notice Checks if a specific contract address is listed as Activity
     /// @dev Activity contracts can increase the interaction index of the SW holders
     /// @param activity the address of the activity that's checked
@@ -105,5 +109,9 @@ interface ICommunityExtension {
     function addActivitiesAddress(address activityAddr, uint256 activityType)
         external;
 
+    function removeActivitiesAddress(address activityAddr) external;
+
     function setMetadataUri(string calldata metadata) external;
+
+    function getCoreTeamWhitelist() external view returns (address[] memory);
 }

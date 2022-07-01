@@ -13,7 +13,7 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  const autIDAddr = "0xCeb3300b7de5061c633555Ac593C84774D160309";
+  const autIDAddr = "0xfC54AdC82142d3B52895840702fe968DcAE53Fee";
   const membershipTypesAddr = "0x00fbB8e663614f16e85df9634fd116aecF4872F9";
   const daoAddr = '0x7DeF7A0C6553B9f7993a131b5e30AB59386837E0'
 

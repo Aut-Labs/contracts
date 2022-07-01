@@ -95,4 +95,8 @@ contract Polls {
     function getById(uint id) public view returns(Poll memory poll) {
         return polls[id];
     }
+
+    function getIDCounter() public view returns(uint) {
+        return idCounter.current() - 1;
+    }
 }

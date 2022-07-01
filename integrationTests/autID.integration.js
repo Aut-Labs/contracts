@@ -32,6 +32,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 // );
 const senderWalletMnemonic = new ethers.Wallet(process.env.MNEMONIC);
 let signer = senderWalletMnemonic.connect(provider);
+console.log(signer.address)
 // const wallet = ethers.Wallet.createRandom();
 // console.log(signer.address);
 // console.log(wallet.mnemonic);
@@ -90,6 +91,30 @@ async function getCommunities() {
   const getCommunities = await communityRegistryContract.getCommunities();
   console.log("[getCommunities]:", getCommunities);
 }
+
+async function isCoreTeam(comExtension, user) {
+  const communityExtensionContract = new ethers.Contract(
+    comExtension,
+    communityExtensionAbi,
+    signer
+  );
+
+  const data = await communityExtensionContract.isCoreTeam(user);
+  console.log(data);
+}
+
+
+async function getCoreTeam(comExtension, user) {
+  const communityExtensionContract = new ethers.Contract(
+    comExtension,
+    communityExtensionAbi,
+    signer
+  );
+
+  const data = await communityExtensionContract.isCoreTeam(user);
+  console.log(data);
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -140,9 +165,9 @@ async function getAutIDAddrForComExt(communityExtension) {
   console.log('[getAutIDAddrForComExt]: addr', addr);
 }
 async function test() {
-  const communityExtension = "0x7623c3237f045388D97a8EC6420157cb164f91c8";
+  const communityExtension = "0x4a04719247d57486E0A780Cec2786D48236A78dA";
   const daoAddr = '0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14'
-  const user = "0x33400efca704d14635cb85a381c1e28dc504ef65";
+  const user = "0x1d6571bcCEa66F624d1232c63195D7E9708A0BB4";
   const pollsAddress = '0x270e27E4E6422C311449E9aA258B3181235837ce'
   const blockNumber = await provider.getBlockNumber()
   const timestamp = (await provider.getBlock(blockNumber)).timestamp;
@@ -156,13 +181,14 @@ async function test() {
   // await getCommunities();
   // await getComData(communityExtension);
   // const community = '0x96dCCC06b1729CD8ccFe849CE9cA7e020e19515c';
-  // await getCommunityData(user, community);
+  // await getCommunityData(user, communityExtension);
   // await getComData(communityExtension)
   // await getSWMetadata(0);
   // await createCommunity(1, "0x7DeF7A0C6553B9f7993a131b5e30AB59386837E0");
   // await getCommunities();
   // await mint(communityExtension);
-  await getCommunities();
+  // await getCommunities();
+  await isCoreTeam(communityExtension, user);
 }
 
 test();

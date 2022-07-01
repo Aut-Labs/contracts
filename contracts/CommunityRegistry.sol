@@ -6,9 +6,9 @@ import "./CommunityExtension.sol";
 contract CommunityRegistry {
     event CommunityCreated(address newCommunityAddress);
 
+    mapping(address => address[]) communityDeployers;
+     
     address[] public communities;
-    uint256 public numOfCommunities;
-
     address public autIDAddr;
     address public membershipTypes;
 
@@ -61,8 +61,7 @@ contract CommunityRegistry {
         );
         address newCommunityAddress = address(newCommunity);
         communities.push(newCommunityAddress);
-
-        numOfCommunities = numOfCommunities + 1;
+        communityDeployers[msg.sender].push(newCommunityAddress);
 
         emit CommunityCreated(newCommunityAddress);
 
@@ -71,5 +70,9 @@ contract CommunityRegistry {
 
     function getCommunities() public view returns (address[] memory) {
         return communities;
+    }
+
+    function getCommunitiesByDeployer(address deployer) public view returns(address[] memory) {
+        return communityDeployers[deployer];
     }
 }
