@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 /// @title ICommunityExtension
 /// @notice The interface for the extension of each DAO that integrates AutID
-interface ICommunityExtension {
+interface IDAOExpander {
     event UrlAdded(string url);
     event UrlRemoved(string url);
     event MetadataUriUpdated();
@@ -19,7 +19,7 @@ interface ICommunityExtension {
         uint256 actType;
     }
 
-    struct CommunityData {
+    struct DAOData {
         uint256 contractType;
         address daoAddress;
         string metadata;
@@ -97,7 +97,7 @@ interface ICommunityExtension {
         view
         returns (uint256);
 
-    function getComData() external view returns (CommunityData memory data);
+    function getDAOData() external view returns (DAOData memory data);
 
     function autIDAddr() external view returns (address);
 

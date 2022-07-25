@@ -5,8 +5,8 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-import "./CommunityExtension.sol";
 import "./IAutID.sol";
+import "./IDAOExpander.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
 
 /// @title AutID
@@ -17,10 +17,9 @@ contract AutID is ERC721URIStorage, IAutID {
     /// @notice
     Counters.Counter private _tokenIds;
 
-    // Mapping from token ID to active community that the SW is part of
-    mapping(address => mapping(address => CommunityMember))
-        private _communityData;
-    mapping(address => address[]) _communities;
+    // Mapping from token ID to active community that the AutID holder is part of
+    mapping(address => mapping(address => DAOMember)) private holderToDAOMembershipData;
+    mapping(address => address[]) holderToDAOs;
 
     // Mapping from autIDOwner to token ID
     mapping(address => uint256) private _autIDByOwner;
@@ -50,13 +49,13 @@ contract AutID is ERC721URIStorage, IAutID {
     /// @param url the NFT metadata that holds username, avatar
     /// @param role the role that the user has selected within the specified community
     /// @param commitment the commitment value that the user has selected for this community
-    /// @param communityExtension the address of the communityExtension contract
+    /// @param daoExpander the address of the communityExtension contract
     function mint(
         string memory username,
         string memory url,
         uint256 role,
         uint256 commitment,
-        address communityExtension
+        address daoExpander
     ) external override {
         require(role > 0 && role < 4, "Role must be between 1 and 3");
         require(
@@ -64,8 +63,8 @@ contract AutID is ERC721URIStorage, IAutID {
             "AutID: Commitment should be between 1 and 10"
         );
         require(
-            communityExtension != address(0),
-            "AutID: Missing community extension"
+            daoExpander != address(0),
+            "AutID: Missing DAO Expander"
         );
         require(
             balanceOf(msg.sender) == 0,
@@ -77,10 +76,10 @@ contract AutID is ERC721URIStorage, IAutID {
         );
 
         require(
-            CommunityExtension(communityExtension).isMemberOfOriginalDAO(
+            IDAOExpander(daoExpander).isMemberOfOriginalDAO(
                 msg.sender
             ) ||
-                CommunityExtension(communityExtension).hasPassedOnboarding(
+                IDAOExpander(daoExpander).hasPassedOnboarding(
                     msg.sender
                 ),
             "AutID: Not a member of this DAO!"
@@ -91,33 +90,33 @@ contract AutID is ERC721URIStorage, IAutID {
         _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, url);
 
-        _communityData[msg.sender][communityExtension] = CommunityMember(
-            communityExtension,
+        holderToDAOMembershipData[msg.sender][daoExpander] = DAOMember(
+            daoExpander,
             role,
             commitment,
             true
         );
-        _communities[msg.sender].push(communityExtension);
+        holderToDAOs[msg.sender].push(daoExpander);
 
         _autIDByOwner[msg.sender] = tokenId;
         autIDUsername[username] = msg.sender;
         _tokenIds.increment();
 
-        CommunityExtension(communityExtension).join(msg.sender);
+        IDAOExpander(daoExpander).join(msg.sender);
 
         emit AutIDCreated(msg.sender, tokenId);
-        emit CommunityJoined(communityExtension, msg.sender);
+        emit DAOJoined(daoExpander, msg.sender);
     }
 
-    /// @notice associates a SW to a new Community
+    /// @notice associates an AutID to a new DAO
     /// @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other communities
     /// @param role the role that the user has selected within the specified community
     /// @param commitment the commitment value that the user has selected for this community
-    /// @param communityExtension the address of the communityExtension contract
-    function joinCommunity(
+    /// @param daoExpander the address of the daoExpander contract
+    function joinDAO(
         uint256 role,
         uint256 commitment,
-        address communityExtension
+        address daoExpander
     ) external override {
         require(role > 0 && role < 4, "Role must be between 1 and 3");
         require(
@@ -125,66 +124,66 @@ contract AutID is ERC721URIStorage, IAutID {
             "AutID: Commitment should be between 1 and 10"
         );
         require(
-            communityExtension != address(0),
-            "AutID: Missing community extension"
+            daoExpander != address(0),
+            "AutID: Missing DAO Expander"
         );
         require(
             balanceOf(msg.sender) == 1,
             "AutID: There is no AutID registered for this address."
         );
         require(
-            CommunityExtension(communityExtension).isMemberOfOriginalDAO(
+            IDAOExpander(daoExpander).isMemberOfOriginalDAO(
                 msg.sender
             ) ||
-                CommunityExtension(communityExtension).hasPassedOnboarding(
+                IDAOExpander(daoExpander).hasPassedOnboarding(
                     msg.sender
                 ),
             "AutID: Not a member of this DAO!"
         );
-        address[] memory currentComs = _communities[msg.sender];
+        address[] memory currentComs = holderToDAOs[msg.sender];
         for (uint256 index = 0; index < currentComs.length; index++) {
             require(
-                currentComs[index] != communityExtension,
+                currentComs[index] != daoExpander,
                 "AutID: Already a member"
             );
         }
 
-        _communityData[msg.sender][communityExtension] = CommunityMember(
-            communityExtension,
+        holderToDAOMembershipData[msg.sender][daoExpander] = DAOMember(
+            daoExpander,
             role,
             commitment,
             true
         );
-        _communities[msg.sender].push(communityExtension);
+        holderToDAOs[msg.sender].push(daoExpander);
 
-        CommunityExtension(communityExtension).join(msg.sender);
+        IDAOExpander(daoExpander).join(msg.sender);
 
-        emit CommunityJoined(communityExtension, msg.sender);
+        emit DAOJoined(daoExpander, msg.sender);
     }
 
-    function withdraw(address communityExtension) external override {
+    function withdraw(address daoExpander) external override {
         require(
-            _communityData[msg.sender][communityExtension].isActive,
+            holderToDAOMembershipData[msg.sender][daoExpander].isActive,
             "AutID: Not a member"
         );
-        _communityData[msg.sender][communityExtension].isActive = false;
-        _communityData[msg.sender][communityExtension].commitment = 0;
+        holderToDAOMembershipData[msg.sender][daoExpander].isActive = false;
+        holderToDAOMembershipData[msg.sender][daoExpander].commitment = 0;
 
-        emit CommunityWithdrown(communityExtension, msg.sender);
+        emit DAOWithdrown(daoExpander, msg.sender);
     }
 
-    function editCommitment(address communityExtension, uint256 newCommitment)
+    function editCommitment(address daoExpander, uint256 newCommitment)
         external
         override
     {
         require(
-            _communityData[msg.sender][communityExtension].isActive,
+            holderToDAOMembershipData[msg.sender][daoExpander].isActive,
             "AutID: Not a member"
         );
-        _communityData[msg.sender][communityExtension]
+        holderToDAOMembershipData[msg.sender][daoExpander]
             .commitment = newCommitment;
 
-        emit CommitmentUpdated(communityExtension, msg.sender, newCommitment);
+        emit CommitmentUpdated(daoExpander, msg.sender, newCommitment);
     }
 
     function setMetadataUri(string calldata metadataUri) public override {
@@ -196,26 +195,26 @@ contract AutID is ERC721URIStorage, IAutID {
 
     }
 
-    /// @notice gets all communities the SW holder is a member of
-    /// @param autIDHolder the address of the SW holder
-    /// @return communities struct with community data for all communities that the user is a part of
-    function getCommunities(address autIDHolder)
+    /// @notice gets all communities the AutID holder is a member of
+    /// @param autIDHolder the address of the AutID holder
+    /// @return daos dao expander addresses that the aut holder is a part of
+    function getHolderDAOs(address autIDHolder)
         external
         view
         override
-        returns (address[] memory communities)
+        returns (address[] memory daos)
     {
         require(balanceOf(autIDHolder) == 1, "AutID: Doesn't have a SW.");
-        return _communities[autIDHolder];
+        return holderToDAOs[autIDHolder];
     }
 
-    function getCommunityData(address autIDHolder, address communityExtension)
+    function getMembershipData(address autIDHolder, address daoExpander)
         external
         view
         override
-        returns (CommunityMember memory)
+        returns (DAOMember memory)
     {
-        return _communityData[autIDHolder][communityExtension];
+        return holderToDAOMembershipData[autIDHolder][daoExpander];
     }
 
     /// @notice returns NFT ID of the holder

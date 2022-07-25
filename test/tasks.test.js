@@ -1,17 +1,14 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-let community;
+let dao;
 let member1;
 let member2;
-let interactions;
 let tasks;
 
 const URI =
   "https://hub.textile.io/ipfs/bafkreiaks3kjggtxqaj3ixk6ce2difaxj5r6lbemx5kcqdkdtub5vwv5mi";
 const URI_FIN =
-  "https://hub.textile.io/thread/bafkwfcy3l745x57c7vy3z2ss6ndokatjllz5iftciq4kpr4ez2pqg3i/buckets/bafzbeiaorr5jomvdpeqnqwfbmn72kdu7vgigxvseenjgwshoij22vopice";
-const metadataUrl =
   "https://hub.textile.io/thread/bafkwfcy3l745x57c7vy3z2ss6ndokatjllz5iftciq4kpr4ez2pqg3i/buckets/bafzbeiaorr5jomvdpeqnqwfbmn72kdu7vgigxvseenjgwshoij22vopice";
 
 describe("Tasks", (accounts) => {
@@ -21,13 +18,13 @@ describe("Tasks", (accounts) => {
     member1 = mem1;
     member2 = mem2;
     const Community = await ethers.getContractFactory("SWLegacyCommunity");
-    community = await Community.deploy();
-    await community.deployed();
-    await community.addMember(deployer.address);
+    dao = await Community.deploy();
+    await dao.deployed();
+    await dao.addMember(deployer.address);
 
-    const MembershipTypes = await ethers.getContractFactory("MembershipTypes");
-    membershipTypes = await MembershipTypes.deploy();
-    await membershipTypes.deployed();
+    const DAOTypes = await ethers.getContractFactory("DAOTypes");
+    daoTypes = await DAOTypes.deploy();
+    await daoTypes.deployed();
 
     const SWLegacyMembershipChecker = await ethers.getContractFactory(
       "SWLegacyMembershipChecker"
@@ -36,7 +33,7 @@ describe("Tasks", (accounts) => {
     sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
     await sWLegacyMembershipChecker.deployed();
 
-    await membershipTypes.addNewMembershipExtension(
+    await daoTypes.addNewMembershipChecker(
       sWLegacyMembershipChecker.address
     );
 
@@ -44,31 +41,31 @@ describe("Tasks", (accounts) => {
     autID = await AutID.deploy();
     await autID.deployed();
 
-    const CommunityExtension = await ethers.getContractFactory(
-      "CommunityExtension"
+    const DAOExpander = await ethers.getContractFactory(
+      "DAOExpander"
     );
 
-    communityExtension = await CommunityExtension.deploy(
+    daoExpander = await DAOExpander.deploy(
       deployer.address,
       autID.address,
-      membershipTypes.address,
+      daoTypes.address,
       1,
-      community.address,
+      dao.address,
       1,
       URI,
       10
     );
-    await communityExtension.deployed();
+    await daoExpander.deployed();
 
-    await community.addMember(member1.address);
-    await community.addMember(member2.address);
+    await dao.addMember(member1.address);
+    await dao.addMember(member2.address);
 
     const Tasks = await ethers.getContractFactory("Tasks");
 
-    tasks = await Tasks.deploy(communityExtension.address);
+    tasks = await Tasks.deploy(daoExpander.address);
     await tasks.deployed();
 
-    await communityExtension.addActivitiesAddress(tasks.address, '3');
+    await daoExpander.addActivitiesAddress(tasks.address, '3');
   });
   describe("Tasks", async () => {
     it("Should create some tasks", async () => {
@@ -128,7 +125,7 @@ describe("Tasks", (accounts) => {
 
       expect(await tasks.isFinalized(0)).to.equal(true);
 
-      const interactionIndex = await communityExtension.getInteractionsPerUser(
+      const interactionIndex = await daoExpander.getInteractionsPerUser(
         task1.taker
       );
       expect(interactionIndex.toString()).to.equal("1");

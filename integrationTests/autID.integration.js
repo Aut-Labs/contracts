@@ -1,5 +1,5 @@
-const autIDAddress = "0xCeb3300b7de5061c633555Ac593C84774D160309";
-const communityRegistryAddress = "0x4b1e5a1490039811eFb256f7cef3dca994D68af9";
+const autIDAddress = "0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B";
+const communityRegistryAddress = "0xeBDf871b95E2C62B2d297591d52FeC29a187f87c";
 
 const comMetadata =
   "bafkreidjy6xlyf2he4iopzijy7bws3yl34xhwh726ca2xd7temqoqkz6xy";
@@ -159,18 +159,25 @@ async function getPoll(pollsAddress, pollID) {
   console.log('[poll]: ', poll);
 }
 
+
+
 async function getAutIDAddrForComExt(communityExtension) {
   const communityExtensionContract = new ethers.Contract(communityExtension, communityRegistryAbi, signer);
   const addr = await communityExtensionContract.autIDAddr();
   console.log('[getAutIDAddrForComExt]: addr', addr);
 }
+
+async function getAutIDUsername(username) {
+  const addr = await autIDContract.autIDUsername(username);
+  console.log('[autIDUsername]: addr', addr);
+}
 async function test() {
-  const communityExtension = "0x4a04719247d57486E0A780Cec2786D48236A78dA";
+  const communityExtension = "0xEf300E25897343e8d2d4b55F7b606fc90958beB0";
   const daoAddr = '0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14'
   const user = "0x1d6571bcCEa66F624d1232c63195D7E9708A0BB4";
   const pollsAddress = '0x270e27E4E6422C311449E9aA258B3181235837ce'
-  const blockNumber = await provider.getBlockNumber()
-  const timestamp = (await provider.getBlock(blockNumber)).timestamp;
+  await getAutIDUsername('Taualnt');
+  await getSWMetadata(4);
   // await getPoll(pollsAddress, 0);
   // await createPoll(pollsAddress, 0, timestamp, 'bafkreibcuujzwl7hzd6uwi5t5zajur2tkdu2nhyouqvccd4oak3hyhijgy')
   // await addMember('0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14', signer.address);
@@ -188,7 +195,7 @@ async function test() {
   // await getCommunities();
   // await mint(communityExtension);
   // await getCommunities();
-  await isCoreTeam(communityExtension, user);
+  // await isCoreTeam(communityExtension, user);
 }
 
 test();

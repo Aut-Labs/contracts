@@ -2,7 +2,6 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 let swLegacy;
-let membershipTypes;
 let swLegacyMemChecker;
 
 let deployer;

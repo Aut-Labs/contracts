@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "../Interaction.sol";
-import "../ICommunityExtension.sol";
+import "../IDAOExpander.sol";
 import "../IAutID.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -16,7 +16,7 @@ contract CommunityCalls {
     Counters.Counter private idCounter;
 
     CommunityCall[] private comCalls;
-    address communityExtension;
+    address daoExpander;
 
     struct CommunityCall {
         uint256 timestamp;
@@ -34,15 +34,15 @@ contract CommunityCalls {
         _;
     }
 
-    constructor(address _communityExtension, address _discordBot) {
-        require(_communityExtension != address(0), "no community address");
+    constructor(address _daoExpander, address _discordBot) {
+        require(_daoExpander != address(0), "no community address");
 
-        communityExtension = _communityExtension;
+        daoExpander = _daoExpander;
         discordBot = _discordBot;
     }
 
     function setDiscordAddress(address _discordBot) public { 
-        require(ICommunityExtension(communityExtension).isCoreTeam(msg.sender), "Only Core team!");
+        require(IDAOExpander(daoExpander).isCoreTeam(msg.sender), "Only Core team!");
         discordBot = _discordBot;
     }
 
@@ -77,18 +77,18 @@ contract CommunityCalls {
 
         for (uint256 i = 0; i < participants.length; i++) {
             if (
-                ICommunityExtension(communityExtension).isMemberOfExtendedDAO(
+                IDAOExpander(daoExpander).isMemberOfExtendedDAO(
                     participants[i]
                 ) &&
                 uint256(
                     IAutID(
-                        ICommunityExtension(communityExtension).autIDAddr()
-                    ).getCommunityData(participants[i], communityExtension).role
+                        IDAOExpander(daoExpander).autIDAddr()
+                    ).getMembershipData(participants[i], daoExpander).role
                 ) ==
                 comCalls[comCallID].role
             )
                 Interaction(
-                    ICommunityExtension(communityExtension)
+                    IDAOExpander(daoExpander)
                         .getInteractionsAddr()
                 ).addInteraction(comCallID, participants[i]);
         }

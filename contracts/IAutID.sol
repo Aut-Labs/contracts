@@ -9,14 +9,14 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 /// @dev The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a community
 interface IAutID is IERC721 {
     event AutIDCreated(address owner, uint256 tokenID);
-    event CommunityJoined(address communityAddress, address member);
-    event CommunityWithdrown(address communityAddress, address member);
-    event CommitmentUpdated(address communityAddress, address member, uint newCommitment);
+    event DAOJoined(address daoExpanderAddress, address member);
+    event DAOWithdrown(address daoExpanderAddress, address member);
+    event CommitmentUpdated(address daoExpanderAddress, address member, uint newCommitment);
     event DiscordIDConnectedToAutID();
     event MetadataUriSet(uint tokenId, string metadataUri);
 
-    struct CommunityMember {
-        address communityExtension;
+    struct DAOMember {
+        address daoExpanderAddress;
         uint256 role;
         uint256 commitment;
         bool isActive;
@@ -26,33 +26,33 @@ interface IAutID is IERC721 {
     /// @param url the NFT metadata that holds username, avatar
     /// @param role the role that the user has selected within the specified community
     /// @param commitment the commitment value that the user has selected for this community
-    /// @param communityExtension the address of the communityExtension contract
+    /// @param daoExpander the address of the daoExpander contract
     function mint(
         string memory username,
         string memory url,
         uint256 role,
         uint256 commitment,
-        address communityExtension
+        address daoExpander
     ) external;
 
     /// @notice associates a AutID to a new Community
     /// @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other communities
     /// @param role the role that the user has selected within the specified community
     /// @param commitment the commitment value that the user has selected for this community
-    /// @param communityExtension the address of the communityExtension contract
-    function joinCommunity(
+    /// @param daoExpander the address of the daoExpander contract
+    function joinDAO(
         uint256 role,
         uint256 commitment,
-        address communityExtension
+        address daoExpander
     ) external;
 
-    /// @notice gets all communities the AutID holder is a member of 
-    /// @param autIDHolder the address of the AutID holder
-    /// @return communities struct with community data for all communities that the user is a part of 
-    function getCommunities(address autIDHolder)
+    /// @notice gets all communities the SW holder is a member of
+    /// @param autIDHolder the address of the SW holder
+    /// @return daos dao expander addresses that the aut holder is a part of
+    function getHolderDAOs(address autIDHolder)
         external
         view
-        returns (address[] memory communities);
+        returns (address[] memory daos);
 
     /// @notice returns NFT ID of the holder 
     /// @param autIDOwner the user address 
@@ -76,14 +76,14 @@ interface IAutID is IERC721 {
     /// @param discordID the discord ID of the AutID holder
     function addDiscordIDToAutID(string calldata discordID) external;
 
-    function getCommunityData(address autIDHolder, address communityExtension) external view returns(CommunityMember memory);
+    function getMembershipData(address autIDHolder, address daoExpander) external view returns(DAOMember memory);
 
     function withdraw(
-        address communityExtension
+        address daoExpander
     ) external;
 
     function editCommitment(
-        address communityExtension,
+        address daoExpander,
         uint commitment
     ) external;
 

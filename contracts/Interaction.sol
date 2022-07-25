@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./ICommunityExtension.sol";
+import "./IDAOExpander.sol";
 
 contract Interaction {
     event InteractionIndexIncreased(address member, uint256 total);
@@ -17,7 +17,7 @@ contract Interaction {
     }
 
     modifier onlyActivitiesWhitelisted() {
-        bool whitelisted = ICommunityExtension(communityExtension)
+        bool whitelisted = IDAOExpander(daoExpander)
             .isActivityWhitelisted(msg.sender);
         require(whitelisted, 'Not whitelisted address');
         _;
@@ -26,11 +26,11 @@ contract Interaction {
     mapping(uint256 => InteractionModel) interactions;
     mapping(address => uint256) interactionsIndex;
 
-    address public communityExtension;
+    address public daoExpander;
     address public discordBotAddress;
 
     constructor() {
-        communityExtension = msg.sender;
+        daoExpander = msg.sender;
     }
 
     function addInteraction(uint256 activityID, address member) public onlyActivitiesWhitelisted {
