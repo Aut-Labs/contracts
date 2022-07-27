@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "../Interaction.sol";
-import "../ICommunityExtension.sol";
+import "../IDAOExpander.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract Tasks {
@@ -32,15 +32,15 @@ contract Tasks {
 
     Counters.Counter private idCounter;
 
-    address public communityExtension;
+    address public daoExpander;
 
     Task[] public tasks;
     mapping(uint256 => bool) public isFinalized;
 
-    constructor(address _communityExtension) {
-        require(_communityExtension != address(0), "no community address");
+    constructor(address _daoExpander) {
+        require(_daoExpander != address(0), "no dao expander address");
 
-        communityExtension = _communityExtension;
+        daoExpander = _daoExpander;
     }
 
     //core team member task functions
@@ -105,7 +105,7 @@ contract Tasks {
         isFinalized[taskId] = true;
 
         Interaction(
-            ICommunityExtension(communityExtension).getInteractionsAddr()
+            IDAOExpander(daoExpander).getInteractionsAddr()
         ).addInteraction(taskId, tasks[taskId].taker);
 
         emit TaskFinalized(taskId, tasks[taskId].taker);

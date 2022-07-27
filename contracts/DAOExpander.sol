@@ -1,20 +1,19 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
-import "./ICommunityExtension.sol";
+import "./IDAOExpander.sol";
 import "./Interaction.sol";
-import "./membershipCheckers/MembershipTypes.sol";
+import "./membershipCheckers/IDAOTypes.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
 
-/// @title CommunityExtension
+/// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-contract CommunityExtension is ICommunityExtension {
+contract DAOExpander is IDAOExpander {
     event OnboardingPassed(address member);
 
-    /// @notice the basic community data
-    CommunityData comData;
+    /// @notice the basic DAO data
+    DAOData daoData;
 
     /// @notice all urls listed for the DAuth
     string[] private urls;
@@ -24,7 +23,7 @@ contract CommunityExtension is ICommunityExtension {
 
     address[] private members;
 
-    mapping(address => bool) public isMemberOfTheCom;
+    mapping(address => bool) public isMemberOfTheDAO;
 
     mapping(address => bool) private passedOnboarding;
 
@@ -33,17 +32,16 @@ contract CommunityExtension is ICommunityExtension {
     /// @notice mapping with the core team members
     mapping(address => bool) public override isCoreTeam;
 
+    /// @notice the address of the DAOTypes.sol contract
+    address private daoTypes;
     /// @notice Activities Whitelist
     Activity[] activitiesWhitelist;
     /// @notice Activities Whitelist
     mapping(address => bool) public override isActivityWhitelisted;
 
-    /// @notice the address of the MembershipTypes.sol contract
-    address private membershipTypes;
-
     address public override autIDAddr;
     
-    address private interactionAddr;
+    address public interactionAddr;
 
     /// @dev Modifier for check of access of the core team member functions
     modifier onlyCoreTeam() {
@@ -59,56 +57,58 @@ contract CommunityExtension is ICommunityExtension {
 
     /// @notice Sets the initial details of the DAO
     /// @dev all parameters are required.
-    /// @param memTypes the address of the MembershipTypes.sol contract
-    /// @param contractType the type of the membership. It should exist in MembershipTypes.sol
-    /// @param daoAddr the address of the original DAO contract
-    /// @param market one of the 3 markets
-    /// @param metadata url with metadata of the community - name, description, logo
-    /// @param commitment minimum commitment that the community requires
+    /// @param _deployer the address of the DAOTypes.sol contract
+    /// @param _autAddr the address of the DAOTypes.sol contract
+    /// @param _daoTypes the address of the DAOTypes.sol contract
+    /// @param _daoType the type of the membership. It should exist in DAOTypes.sol
+    /// @param _daoAddr the address of the original DAO contract
+    /// @param _market one of the 3 markets
+    /// @param _metadata url with metadata of the DAO - name, description, logo
+    /// @param _commitment minimum commitment that the DAO requires
     constructor(
-        address deployer,
-        address autAddr,
-        address memTypes,
-        uint256 contractType,
-        address daoAddr,
-        uint256 market,
-        string memory metadata,
-        uint256 commitment
+        address _deployer,
+        address _autAddr,
+        address _daoTypes,
+        uint256 _daoType,
+        address _daoAddr,
+        uint256 _market,
+        string memory _metadata,
+        uint256 _commitment
     ) {
-        require(daoAddr != address(0), "Missing DAO Address");
-        require(memTypes != address(0), "Missing memTypes address");
-        require(market > 0 && market < 4, "Invalid market");
-        require(bytes(metadata).length > 0, "Missing Metadata URL");
+        require(_daoAddr != address(0), "Missing DAO Address");
+        require(_daoTypes != address(0), "Missing DAO Types address");
+        require(_market > 0 && _market < 4, "Invalid market");
+        require(bytes(_metadata).length > 0, "Missing Metadata URL");
         require(
-            commitment > 0 && commitment < 11,
+            _commitment > 0 && _commitment < 11,
             "Commitment should be between 1 and 10"
         );
         require(
-            MembershipTypes(memTypes).getMembershipExtensionAddress(
-                contractType
+            IDAOTypes(_daoTypes).getMembershipCheckerAddress(
+                _daoType
             ) != address(0),
             "Invalid membership type"
         );
         require(
             IMembershipChecker(
-                MembershipTypes(memTypes).getMembershipExtensionAddress(
-                    contractType
+                IDAOTypes(_daoTypes).getMembershipCheckerAddress(
+                    _daoType
                 )
-            ).isMember(daoAddr, deployer),
+            ).isMember(_daoAddr, _deployer),
             "AutID: Not a member of this DAO!"
         );
-        comData = CommunityData(
-            contractType,
-            daoAddr,
-            metadata,
-            commitment,
-            market,
+        daoData = DAOData(
+            _daoType,
+            _daoAddr,
+            _metadata,
+            _commitment,
+            _market,
             ""
         );
-        isCoreTeam[deployer] = true;
-        coreTeam.push(deployer);
-        membershipTypes = memTypes;
-        autIDAddr = autAddr;
+        isCoreTeam[_deployer] = true;
+        coreTeam.push(_deployer);
+        daoTypes = _daoTypes;
+        autIDAddr = _autAddr;
         interactionAddr = address(new Interaction());
     }
 
@@ -129,23 +129,23 @@ contract CommunityExtension is ICommunityExtension {
     }
 
     function join(address newMember) public override onlyAutID {
-        require(!isMemberOfTheCom[newMember], "Already a member");
+        require(!isMemberOfTheDAO[newMember], "Already a member");
         require(
             isMemberOfOriginalDAO(newMember) || hasPassedOnboarding(newMember),
             "Has not passed onboarding yet."
         );
-        isMemberOfTheCom[newMember] = true;
+        isMemberOfTheDAO[newMember] = true;
         members.push(newMember);
         emit MemberAdded();
     }
 
-    /// @notice The DAO can connect a discord server to their community extension contract
+    /// @notice The DAO can connect a discord server to their DAOExpander contract
     /// @dev Can be called only by the core team members
     /// @param discordServer the URL of the discord server
     function setDiscordServer(string calldata discordServer) public override {
         require(bytes(discordServer).length > 0, "DiscordServer Link Empty!");
         require(isCoreTeam[msg.sender], "Only owner can edit discord server");
-        comData.discordServer = discordServer;
+        daoData.discordServer = discordServer;
         emit DiscordServerSet();
     }
 
@@ -168,10 +168,10 @@ contract CommunityExtension is ICommunityExtension {
     {
         return
             IMembershipChecker(
-                MembershipTypes(membershipTypes).getMembershipExtensionAddress(
-                    comData.contractType
+                IDAOTypes(daoTypes).getMembershipCheckerAddress(
+                    daoData.contractType
                 )
-            ).isMember(comData.daoAddress, member);
+            ).isMember(daoData.daoAddress, member);
     }
 
     /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
@@ -186,10 +186,10 @@ contract CommunityExtension is ICommunityExtension {
     {
         return
             IMembershipChecker(
-                MembershipTypes(membershipTypes).getMembershipExtensionAddress(
-                    comData.contractType
+                IDAOTypes(daoTypes).getMembershipCheckerAddress(
+                    daoData.contractType
                 )
-            ).isMember(comData.daoAddress, member) || isMemberOfTheCom[member];
+            ).isMember(daoData.daoAddress, member) || isMemberOfTheDAO[member];
     }
 
     // URLs
@@ -236,13 +236,13 @@ contract CommunityExtension is ICommunityExtension {
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev returns an array with all the listed urls
-    /// @return returns all the urls listed for the community
+    /// @return returns all the urls listed for the DAO
     function getURLs() public view override returns (string[] memory) {
         return urls;
     }
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
-    /// @dev a checker if a url has been listed for this community
+    /// @dev a checker if a url has been listed for this DAO
     /// @param _url the url that will be listed
     /// @return true if listed, false otherwise
     function isURLListed(string memory _url)
@@ -261,7 +261,7 @@ contract CommunityExtension is ICommunityExtension {
         return false;
     }
 
-    function getInteractionsAddr() public view override returns (address) {
+   function getInteractionsAddr() public view override returns (address) {
         return interactionAddr;
     }
 
@@ -275,13 +275,13 @@ contract CommunityExtension is ICommunityExtension {
             Interaction(interactionAddr).getInteractionsIndexPerAddress(member);
     }
 
-    function getComData()
+    function getDAOData()
         public
         view
         override
-        returns (CommunityData memory data)
+        returns (DAOData memory data)
     {
-        return comData;
+        return daoData;
     }
 
     function getActivitiesWhitelist()
@@ -324,12 +324,12 @@ contract CommunityExtension is ICommunityExtension {
     {
         require(bytes(metadata).length > 0, "metadata uri missing");
 
-        comData.metadata = metadata;
+        daoData.metadata = metadata;
         emit MetadataUriUpdated();
     }
 
     function addToCoreTeam(address member) public override onlyCoreTeam {
-        require(isMemberOfTheCom[member], "Not a member");
+        require(isMemberOfTheDAO[member], "Not a member");
         isCoreTeam[member] = true;
         coreTeam.push(member);
         emit CoreTeamMemberAdded(member);

@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-/// @title ICommunityExtension
+/// @title IDAOExpander
 /// @notice The interface for the extension of each DAO that integrates AutID
-interface ICommunityExtension {
+interface IDAOExpander {
     event UrlAdded(string url);
     event UrlRemoved(string url);
     event MetadataUriUpdated();
@@ -19,7 +19,7 @@ interface ICommunityExtension {
         uint256 actType;
     }
 
-    struct CommunityData {
+    struct DAOData {
         uint256 contractType;
         address daoAddress;
         string metadata;
@@ -28,7 +28,7 @@ interface ICommunityExtension {
         string discordServer;
     }
 
-    /// @notice The DAO can connect a discord server to their community extension contract
+    /// @notice The DAO can connect a discord server to their DAO extension contract
     /// @dev Can be called only by the core team members
     /// @param discordServer the URL of the discord server
     function setDiscordServer(string calldata discordServer) external;
@@ -45,11 +45,11 @@ interface ICommunityExtension {
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev returns an array with all the listed urls
-    /// @return returns all the urls listed for the community
+    /// @return returns all the urls listed for the DAO
     function getURLs() external view returns (string[] memory);
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
-    /// @dev a checker if a url has been listed for this community
+    /// @dev a checker if a url has been listed for this DAO
     /// @param _url the url that will be listed
     /// @return true if listed, false otherwise
     function isURLListed(string memory _url) external view returns (bool);
@@ -97,7 +97,7 @@ interface ICommunityExtension {
         view
         returns (uint256);
 
-    function getComData() external view returns (CommunityData memory data);
+    function getDAOData() external view returns (DAOData memory data);
 
     function autIDAddr() external view returns (address);
 

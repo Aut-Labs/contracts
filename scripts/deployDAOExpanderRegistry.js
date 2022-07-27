@@ -13,18 +13,23 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  const Polls = await hre.ethers.getContractFactory(
-    "Polls"
+  const autIDAddr = "0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B";
+  const daoTypesAddr = "0x00fbB8e663614f16e85df9634fd116aecF4872F9";
+
+  const DAOExpanderRegistry = await hre.ethers.getContractFactory(
+    "DAOExpanderRegistry"
   );
+  const daoExpanderRegistry = await DAOExpanderRegistry.deploy(
+    autIDAddr,
+    daoTypesAddr
+  );
+  await daoExpanderRegistry.deployed();
 
-  const communityExtension = '0xdD0Ef39D42Bb5B679a2734aa5a53380B9764c928';
-  const discordBotAddresss = '0x8195cF28994814206096a4878892f3993955deb1';
-
-  const polls = await Polls.deploy(communityExtension, discordBotAddresss);
-  await polls.deployed();
-
-  console.log('Polls', polls.address);
+  console.log('DAOExpanderRegistry', daoExpanderRegistry.address);
   
+  const a = await daoExpanderRegistry.getDAOExpanders();
+  console.log('daoExpanders', a);
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere

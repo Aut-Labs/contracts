@@ -3,12 +3,12 @@ pragma solidity ^0.8.0;
 
 import "../communities/IMoloch.sol";
 
-/// @title Community
-/// @notice Mock community for testing
+/// @title Molock
+/// @notice Mock Moloch DAO for testing
 contract Moloch is IMoloch {
     mapping(address => Member) private mems;
 
-    /// @notice Adds member to the community
+    /// @notice Adds member to the DAO
     /// @param member the address of the member
     function addMember(address member) public {
         mems[member] = Member(address(0), 5, 5, true, 1, 1);

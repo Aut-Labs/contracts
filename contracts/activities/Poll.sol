@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "../Interaction.sol";
-import "../ICommunityExtension.sol";
+import "../IDAOExpander.sol";
 import "../IAutID.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -16,7 +16,7 @@ contract Polls {
     Counters.Counter private idCounter;
 
     Poll[] private polls;
-    address public communityExtension;
+    address public daoExpander;
 
     struct Poll {
         uint256 timestamp;
@@ -32,11 +32,11 @@ contract Polls {
         _;
     }
 
-    constructor(address _communityExtension, address _discordBot) {
-        require(_communityExtension != address(0), "no community address");
-        require(ICommunityExtension(_communityExtension).isCoreTeam(msg.sender), "Only core team!");
+    constructor(address _daoExpander, address _discordBot) {
+        require(_daoExpander != address(0), "no community address");
+        require(IDAOExpander(_daoExpander).isCoreTeam(msg.sender), "Only core team!");
 
-        communityExtension = _communityExtension;
+        daoExpander = _daoExpander;
         discordBot = _discordBot;
     }
 
@@ -70,18 +70,18 @@ contract Polls {
 
         for (uint256 i = 0; i < participants.length; i++) {
             if (
-                ICommunityExtension(communityExtension).isMemberOfExtendedDAO(
+                IDAOExpander(daoExpander).isMemberOfExtendedDAO(
                     participants[i]
                 ) &&
                 uint256(
                     IAutID(
-                        ICommunityExtension(communityExtension).autIDAddr()
-                    ).getCommunityData(participants[i], communityExtension).role
+                        IDAOExpander(daoExpander).autIDAddr()
+                    ).getMembershipData(participants[i], daoExpander).role
                 ) ==
                 polls[pollID].role
             )
                 Interaction(
-                    ICommunityExtension(communityExtension)
+                    IDAOExpander(daoExpander)
                         .getInteractionsAddr()
                 ).addInteraction(pollID, participants[i]);
         }

@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-let community;
+let dao;
 let member1;
 let member2;
 let polls;
@@ -24,14 +24,14 @@ describe("Polls", (accounts) => {
 
     member1 = mem1;
     member2 = mem2;
-    const Community = await ethers.getContractFactory("SWLegacyCommunity");
-    community = await Community.deploy();
-    await community.deployed();
-    await community.addMember(deployer.address);
+    const DAO = await ethers.getContractFactory("SWLegacyCommunity");
+    dao = await DAO.deploy();
+    await dao.deployed();
+    await dao.addMember(deployer.address);
 
-    const MembershipTypes = await ethers.getContractFactory("MembershipTypes");
-    membershipTypes = await MembershipTypes.deploy();
-    await membershipTypes.deployed();
+    const DAOTypes = await ethers.getContractFactory("DAOTypes");
+    daoTypes = await DAOTypes.deploy();
+    await daoTypes.deployed();
 
     const SWLegacyMembershipChecker = await ethers.getContractFactory(
       "SWLegacyMembershipChecker"
@@ -40,7 +40,7 @@ describe("Polls", (accounts) => {
     sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
     await sWLegacyMembershipChecker.deployed();
 
-    await membershipTypes.addNewMembershipExtension(
+    await daoTypes.addNewMembershipChecker(
       sWLegacyMembershipChecker.address
     );
 
@@ -48,29 +48,29 @@ describe("Polls", (accounts) => {
     autID = await AutID.deploy();
     await autID.deployed();
 
-    const CommunityExtension = await ethers.getContractFactory(
-      "CommunityExtension"
+    const DAOExpander = await ethers.getContractFactory(
+      "DAOExpander"
     );
 
-    communityExtension = await CommunityExtension.deploy(
+    daoExpander = await DAOExpander.deploy(
       deployer.address,
       autID.address,
-      membershipTypes.address,
+      daoTypes.address,
       1,
-      community.address,
+      dao.address,
       1,
       URI,
       10
     );
-    await communityExtension.deployed();
+    await daoExpander.deployed();
 
-    await community.addMember(member1.address);
-    await community.addMember(member2.address);
+    await dao.addMember(member1.address);
+    await dao.addMember(member2.address);
 
     const Polls = await ethers.getContractFactory("Polls");
 
     discordBot = disBot;
-    polls = await Polls.deploy(communityExtension.address, discordBot.address);
+    polls = await Polls.deploy(daoExpander.address, discordBot.address);
     await polls.deployed();
   });
   describe("Polls", async () => {

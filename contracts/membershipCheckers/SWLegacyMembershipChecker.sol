@@ -4,12 +4,12 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 
 import "./IMembershipChecker.sol";
-import "../communities/ISWLegacyCommunity.sol";
+import "../communities/ISWLegacyDAO.sol";
 
 /// @title SWLegacyMembershipChecker
-/// @notice Implementation of IMembershipChecker for SW Legacy community type
+/// @notice Implementation of IMembershipChecker for SW Legacy DAO type
 contract SWLegacyMembershipChecker is IMembershipChecker {
-    /// @notice Implements a check if an address is a member of a SW Legacy community
+    /// @notice Implements a check if an address is a member of a SW Legacy DAO
     /// @param daoAddress the address of the SW Legacy Contract
     /// @param member the address of the member for which the check is made
     /// @return true if the user address is a member, false otherwise
@@ -22,6 +22,6 @@ contract SWLegacyMembershipChecker is IMembershipChecker {
         require(daoAddress != address(0), "AutID: daoAddress empty");
         require(member != address(0), "AutID: member empty");
 
-        return ISWLegacyCommunity(daoAddress).isMember(member);
+        return ISWLegacyDAO(daoAddress).isMember(member);
     }
 }
