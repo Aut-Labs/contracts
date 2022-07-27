@@ -1,19 +1,18 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "./IDAOExpander.sol";
 import "./Interaction.sol";
-import "./membershipCheckers/DAOTypes.sol";
+import "./membershipCheckers/IDAOTypes.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
 
-/// @title CommunityExtension
+/// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 contract DAOExpander is IDAOExpander {
     event OnboardingPassed(address member);
 
-    /// @notice the basic community data
+    /// @notice the basic DAO data
     DAOData daoData;
 
     /// @notice all urls listed for the DAuth
@@ -24,7 +23,7 @@ contract DAOExpander is IDAOExpander {
 
     address[] private members;
 
-    mapping(address => bool) public isMemberOfTheCom;
+    mapping(address => bool) public isMemberOfTheDAO;
 
     mapping(address => bool) private passedOnboarding;
 
@@ -42,7 +41,7 @@ contract DAOExpander is IDAOExpander {
 
     address public override autIDAddr;
     
-    address private interactionAddr;
+    address public interactionAddr;
 
     /// @dev Modifier for check of access of the core team member functions
     modifier onlyCoreTeam() {
@@ -64,8 +63,8 @@ contract DAOExpander is IDAOExpander {
     /// @param _daoType the type of the membership. It should exist in DAOTypes.sol
     /// @param _daoAddr the address of the original DAO contract
     /// @param _market one of the 3 markets
-    /// @param _metadata url with metadata of the community - name, description, logo
-    /// @param _commitment minimum commitment that the community requires
+    /// @param _metadata url with metadata of the DAO - name, description, logo
+    /// @param _commitment minimum commitment that the DAO requires
     constructor(
         address _deployer,
         address _autAddr,
@@ -85,14 +84,14 @@ contract DAOExpander is IDAOExpander {
             "Commitment should be between 1 and 10"
         );
         require(
-            DAOTypes(_daoTypes).getMembershipCheckerAddress(
+            IDAOTypes(_daoTypes).getMembershipCheckerAddress(
                 _daoType
             ) != address(0),
             "Invalid membership type"
         );
         require(
             IMembershipChecker(
-                DAOTypes(_daoTypes).getMembershipCheckerAddress(
+                IDAOTypes(_daoTypes).getMembershipCheckerAddress(
                     _daoType
                 )
             ).isMember(_daoAddr, _deployer),
@@ -130,17 +129,17 @@ contract DAOExpander is IDAOExpander {
     }
 
     function join(address newMember) public override onlyAutID {
-        require(!isMemberOfTheCom[newMember], "Already a member");
+        require(!isMemberOfTheDAO[newMember], "Already a member");
         require(
             isMemberOfOriginalDAO(newMember) || hasPassedOnboarding(newMember),
             "Has not passed onboarding yet."
         );
-        isMemberOfTheCom[newMember] = true;
+        isMemberOfTheDAO[newMember] = true;
         members.push(newMember);
         emit MemberAdded();
     }
 
-    /// @notice The DAO can connect a discord server to their community extension contract
+    /// @notice The DAO can connect a discord server to their DAOExpander contract
     /// @dev Can be called only by the core team members
     /// @param discordServer the URL of the discord server
     function setDiscordServer(string calldata discordServer) public override {
@@ -169,7 +168,7 @@ contract DAOExpander is IDAOExpander {
     {
         return
             IMembershipChecker(
-                DAOTypes(daoTypes).getMembershipCheckerAddress(
+                IDAOTypes(daoTypes).getMembershipCheckerAddress(
                     daoData.contractType
                 )
             ).isMember(daoData.daoAddress, member);
@@ -187,10 +186,10 @@ contract DAOExpander is IDAOExpander {
     {
         return
             IMembershipChecker(
-                DAOTypes(daoTypes).getMembershipCheckerAddress(
+                IDAOTypes(daoTypes).getMembershipCheckerAddress(
                     daoData.contractType
                 )
-            ).isMember(daoData.daoAddress, member) || isMemberOfTheCom[member];
+            ).isMember(daoData.daoAddress, member) || isMemberOfTheDAO[member];
     }
 
     // URLs
@@ -237,13 +236,13 @@ contract DAOExpander is IDAOExpander {
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev returns an array with all the listed urls
-    /// @return returns all the urls listed for the community
+    /// @return returns all the urls listed for the DAO
     function getURLs() public view override returns (string[] memory) {
         return urls;
     }
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
-    /// @dev a checker if a url has been listed for this community
+    /// @dev a checker if a url has been listed for this DAO
     /// @param _url the url that will be listed
     /// @return true if listed, false otherwise
     function isURLListed(string memory _url)
@@ -330,7 +329,7 @@ contract DAOExpander is IDAOExpander {
     }
 
     function addToCoreTeam(address member) public override onlyCoreTeam {
-        require(isMemberOfTheCom[member], "Not a member");
+        require(isMemberOfTheDAO[member], "Not a member");
         isCoreTeam[member] = true;
         coreTeam.push(member);
         emit CoreTeamMemberAdded(member);

@@ -21,8 +21,8 @@ contract DAOExpanderRegistry {
     }
 
     /**
-     * @dev Deploys a community extension
-     * @return _communityAddress the newly created Community address
+     * @dev Deploys a DAO Expander
+     * @return _daoExpanderAddress the newly created DAO Expander address
      **/
     function deployDAOExpander(
         uint256 daoType,
@@ -30,9 +30,9 @@ contract DAOExpanderRegistry {
         uint256 market,
         string calldata metadata,
         uint256 commitment
-    ) public returns (address _communityAddress) {
+    ) public returns (address _daoExpanderAddress) {
         require(
-            DAOTypes(daoTypes).getMembershipCheckerAddress(
+            IDAOTypes(daoTypes).getMembershipCheckerAddress(
                 daoType
             ) != address(0),
             "DAO Type incorrect"
@@ -43,7 +43,7 @@ contract DAOExpanderRegistry {
         require(commitment > 0 && commitment < 11, "Invalid commitment");
         require(
             IMembershipChecker(
-                DAOTypes(daoTypes).getMembershipCheckerAddress(
+                IDAOTypes(daoTypes).getMembershipCheckerAddress(
                     daoType
                 )
             ).isMember(daoAddr, msg.sender),

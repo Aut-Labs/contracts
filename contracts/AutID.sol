@@ -17,7 +17,7 @@ contract AutID is ERC721URIStorage, IAutID {
     /// @notice
     Counters.Counter private _tokenIds;
 
-    // Mapping from token ID to active community that the AutID holder is part of
+    // Mapping from token ID to an active DAO that the AutID holder is a part of
     mapping(address => mapping(address => DAOMember)) private holderToDAOMembershipData;
     mapping(address => address[]) holderToDAOs;
 
@@ -45,11 +45,11 @@ contract AutID is ERC721URIStorage, IAutID {
     }
 
     /// @notice mints a new SW NFT ID
-    /// @dev each SW holder can have only one SW. It reverts if the SW already exists. The user must be a part of the community passed.
+    /// @dev each SW holder can have only one SW. It reverts if the SW already exists. The user must be a part of the DAO passed.
     /// @param url the NFT metadata that holds username, avatar
-    /// @param role the role that the user has selected within the specified community
-    /// @param commitment the commitment value that the user has selected for this community
-    /// @param daoExpander the address of the communityExtension contract
+    /// @param role the role that the user has selected within the specified DAO
+    /// @param commitment the commitment value that the user has selected for this DAO
+    /// @param daoExpander the address of the DAOExpender contract
     function mint(
         string memory username,
         string memory url,
@@ -110,8 +110,8 @@ contract AutID is ERC721URIStorage, IAutID {
 
     /// @notice associates an AutID to a new DAO
     /// @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other communities
-    /// @param role the role that the user has selected within the specified community
-    /// @param commitment the commitment value that the user has selected for this community
+    /// @param role the role that the user has selected within the specified DAO
+    /// @param commitment the commitment value that the user has selected for this DAO
     /// @param daoExpander the address of the daoExpander contract
     function joinDAO(
         uint256 role,

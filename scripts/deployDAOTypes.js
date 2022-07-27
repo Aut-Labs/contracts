@@ -18,21 +18,29 @@ async function main() {
   // We get the contract to deploy
   const SWLegacyMembershipChecker = await hre.ethers.getContractFactory("SWLegacyMembershipChecker");
   const swLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
-
   await swLegacyMembershipChecker.deployed();
-
   console.log("swLegacyMembershipChecker deployed to:", swLegacyMembershipChecker.address);
 
+  const MolochV1MembershipChecker = await hre.ethers.getContractFactory("MolochV1MembershipChecker");
+  const molochV1MembershipChecker = await MolochV1MembershipChecker.deploy();
+  await molochV1MembershipChecker.deployed();
+  console.log("molochV1MembershipChecker deployed to:", molochV1MembershipChecker.address);
+
+  const MolochV2MembershipChecker = await hre.ethers.getContractFactory("MolochV2MembershipChecker");
+  const molochV2MembershipChecker = await MolochV2MembershipChecker.deploy();
+  await molochV2MembershipChecker.deployed();
+  console.log("molochV2MembershipChecker deployed to:", molochV2MembershipChecker.address);
+
   // We get the contract to deploy
-  const MembershipTypes = await hre.ethers.getContractFactory("MembershipTypes");
-  const membershipTypes = await MembershipTypes.deploy();
+  const DAOTypes = await hre.ethers.getContractFactory("DAOTypes");
+  const daoTypes = await DAOTypes.deploy();
+  await daoTypes.deployed();
 
-  await membershipTypes.deployed();
+  await (await daoTypes.addNewMembershipChecker(swLegacyMembershipChecker.address)).wait();
+  await (await daoTypes.addNewMembershipChecker(molochV1MembershipChecker.address)).wait();
+  await (await daoTypes.addNewMembershipChecker(molochV2MembershipChecker.address)).wait();
 
-  const a = await (await membershipTypes.addNewMembershipExtension(swLegacyMembershipChecker.address)).wait();
-  console.log(a);
-
-  console.log("MembershipTypes deployed to:", membershipTypes.address);
+  console.log("DAOTypes deployed to:", daoTypes.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 /// @title IAutID
 /// @notice The interface of the IAutID contract
-/// @dev The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a community
+/// @dev The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a DAO
 interface IAutID is IERC721 {
     event AutIDCreated(address owner, uint256 tokenID);
     event DAOJoined(address daoExpanderAddress, address member);
@@ -22,10 +22,10 @@ interface IAutID is IERC721 {
         bool isActive;
     }
     /// @notice mints a new AutID NFT ID
-    /// @dev each SW holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the community passed.
+    /// @dev each SW holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the DAO passed.
     /// @param url the NFT metadata that holds username, avatar
-    /// @param role the role that the user has selected within the specified community
-    /// @param commitment the commitment value that the user has selected for this community
+    /// @param role the role that the user has selected within the specified DAO
+    /// @param commitment the commitment value that the user has selected for this DAO
     /// @param daoExpander the address of the daoExpander contract
     function mint(
         string memory username,
@@ -35,10 +35,10 @@ interface IAutID is IERC721 {
         address daoExpander
     ) external;
 
-    /// @notice associates a AutID to a new Community
-    /// @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other communities
-    /// @param role the role that the user has selected within the specified community
-    /// @param commitment the commitment value that the user has selected for this community
+    /// @notice associates a AutID to a new DAO
+    /// @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other DAOs
+    /// @param role the role that the user has selected within the specified DAO
+    /// @param commitment the commitment value that the user has selected for this DAO
     /// @param daoExpander the address of the daoExpander contract
     function joinDAO(
         uint256 role,

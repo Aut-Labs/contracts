@@ -3,16 +3,14 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-
+import "./IDAOTypes.sol";
 /// @title DAOTypes
 /// @notice DAOTypes has a mapping between type and MembershipChecker deployed for all DAO standards that are supported by SW
 /// @dev The contract is Ownable to ensure that only the SW team can add new types.
-contract DAOTypes is Ownable {
+contract DAOTypes is Ownable, IDAOTypes {
     using Counters for Counters.Counter;
     /// @notice
     Counters.Counter private _types;
-
-    event DAOTypeAdded(uint256 daoType, address membershipCheckerAddress);
 
     /// @notice
     mapping(uint256 => address) public typeToMembershipChecker;
@@ -24,6 +22,7 @@ contract DAOTypes is Ownable {
     function getMembershipCheckerAddress(uint256 membershipType)
         public
         view
+        override
         returns (address)
     {
         return typeToMembershipChecker[membershipType];
@@ -34,6 +33,7 @@ contract DAOTypes is Ownable {
     /// @param membershipChecker the new contract address that is supported now
     function addNewMembershipChecker(address membershipChecker)
         public
+        override
         onlyOwner
     {
         require(
@@ -50,7 +50,7 @@ contract DAOTypes is Ownable {
         emit DAOTypeAdded(_types.current(), membershipChecker);
     }
 
-    function typesCount() public view returns (uint256) {
+    function typesCount() public override view returns (uint256) {
         return _types.current();
     }
 }

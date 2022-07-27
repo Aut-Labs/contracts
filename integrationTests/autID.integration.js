@@ -1,5 +1,5 @@
 const autIDAddress = "0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B";
-const communityRegistryAddress = "0xeBDf871b95E2C62B2d297591d52FeC29a187f87c";
+const daoExpanderRegistryAddress = "0xeBDf871b95E2C62B2d297591d52FeC29a187f87c";
 
 const comMetadata =
   "bafkreidjy6xlyf2he4iopzijy7bws3yl34xhwh726ca2xd7temqoqkz6xy";
@@ -10,14 +10,14 @@ require("dotenv").config();
 
 var autIDAbi = require("../artifacts/contracts/AutID.sol/AutID.json").abi;
 
-var communityRegistryAbi =
-  require("../artifacts/contracts/CommunityRegistry.sol/CommunityRegistry.json").abi;
+var daoExpanderRegistryAbi =
+  require("../artifacts/contracts/DAOExpanderRegistry.sol/DAOExpanderRegistry.json").abi;
 
-var communityExtensionAbi =
-  require("../artifacts/contracts/CommunityExtension.sol/CommunityExtension.json").abi;
+var daoExpanderAbi =
+  require("../artifacts/contracts/DAOExpander.sol/DAOExpander.json").abi;
 
-var swLegacyCommunityAbi =
-  require("../artifacts/contracts/mocks/SWLegacyCommunity.sol/SWLegacyCommunity.json").abi;
+var swLegacyDAOAbi =
+  require("../artifacts/contracts/mocks/SWLegacyDAO.sol/SWLegacyDAO.json").abi;
 var pollsAbi =
   require("../artifacts/contracts/activities/Poll.sol/Polls.json").abi;
 
@@ -39,19 +39,19 @@ console.log(signer.address)
 // console.log(wallet.privateKey);
 
 const autIDContract = new ethers.Contract(autIDAddress, autIDAbi, signer);
-const communityRegistryContract = new ethers.Contract(
-  communityRegistryAddress,
-  communityRegistryAbi,
+const daoExpanderRegistryContract = new ethers.Contract(
+  daoExpanderRegistryAddress,
+  daoExpanderRegistryAbi,
   signer
 );
 
-async function mint(communityExtension) {
+async function mint(daoExpander) {
   const a = await autIDContract.mint(
     'migrenaa',
     "bafkreigigsavco2dtgcg6ehmunu5cjzr7xiarsrxm6bfw5m5wpor5rfpoi",
     1,
     7,
-    communityExtension,
+    daoExpander,
     {
       gasLimit: 1000000,
     }
@@ -61,110 +61,71 @@ async function mint(communityExtension) {
   console.log(b);
 }
 
-async function getCommunities(user) {
-  const communities = await autIDContract.getCommunities(user);
-  console.log("communities:", communities);
+async function getHolderDAOs(user) {
+  const daos = await autIDContract.getHolderDAOs(user);
+  console.log("daos:", daos);
 }
 
-async function getSWMetadata(tokenId) {
+async function getAutIDMetadata(tokenId) {
   const metadata = await autIDContract.tokenURI(tokenId);
   console.log("metadata:", metadata);
 }
 
-async function getComData(comExtension) {
-  const communityExtensionContract = new ethers.Contract(
-    comExtension,
-    communityExtensionAbi,
+async function getDAOData(daoExpander) {
+  const daoExpanderContract = new ethers.Contract(
+    daoExpander,
+    daoExpanderAbi,
     signer
   );
 
-  const data = await communityExtensionContract.getComData();
+  const data = await daoExpanderContract.getDAOData();
   console.log("data:", data);
 }
 
-async function getCommunityData(user, community) {
-  const data = await autIDContract.getCommunityData(user, community);
+async function getMembershipData(user, daoExpander) {
+  const data = await autIDContract.getMembershipData(user, daoExpander);
   console.log("data:", data);
 }
 
-async function getCommunities() {
-  const getCommunities = await communityRegistryContract.getCommunities();
-  console.log("[getCommunities]:", getCommunities);
+async function getDAOExpanders() {
+  const getDAOExpanders = await daoExpanderRegistryContract.getDAOExpanders();
+  console.log("[getDAOExpanders]:", getDAOExpanders);
 }
 
-async function isCoreTeam(comExtension, user) {
-  const communityExtensionContract = new ethers.Contract(
-    comExtension,
-    communityExtensionAbi,
+async function isCoreTeam(daoExpander, user) {
+  const daoExpanderContract = new ethers.Contract(
+    daoExpander,
+    daoExpanderAbi,
     signer
   );
 
-  const data = await communityExtensionContract.isCoreTeam(user);
-  console.log(data);
-}
-
-
-async function getCoreTeam(comExtension, user) {
-  const communityExtensionContract = new ethers.Contract(
-    comExtension,
-    communityExtensionAbi,
-    signer
-  );
-
-  const data = await communityExtensionContract.isCoreTeam(user);
-  console.log(data);
+  const isCoreTeam = await daoExpanderContract.isCoreTeam(user);
+  console.log('isCoreTeam', isCoreTeam);
 }
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function passOnboarding(communityExtension, member) {
-  const communityExtensionContract = new ethers.Contract(
-    communityExtension,
-    communityExtensionAbi,
+async function passOnboarding(daoExpander, member) {
+  const daoExpanderContract = new ethers.Contract(
+    daoExpander,
+    daoExpanderAbi,
     signer
   );
-  await communityExtensionContract.passOnboarding([member]);
-  // console.log("[active community]", com);
+  await daoExpanderContract.passOnboarding([member]);
 }
 
-async function addMember(communityAddress, member) {
-  const c = new ethers.Contract(communityAddress, swLegacyCommunityAbi, signer);
-
+async function addMember(swLegacyDAO, member) {
+  const c = new ethers.Contract(swLegacyDAO, swLegacyCommunityAbi, signer);
   const a = await c.addMember(member);
   console.log(a);
 }
 
-async function createCommunity(contractType, daoAddr) {
-  const a = await communityRegistryContract.createCommunity(
-    contractType,
-    daoAddr,
-    1,
-    comMetadata,
-    8
-  );
-  console.log(a);
-}
-
-async function createPoll(pollsAddress, role, dueDate, uri) {
-  const pollsContract = new ethers.Contract(pollsAddress, pollsAbi, signer);
-  const a = await pollsContract.create(role, dueDate, uri);
-  console.log(a);
-}
-
-async function getPoll(pollsAddress, pollID) {
-  const pollsContract = new ethers.Contract(pollsAddress, pollsAbi, signer);
-  const poll = await pollsContract.communityExtension();
-  console.log('[poll]: ', poll);
-}
-
-
-
-async function getAutIDAddrForComExt(communityExtension) {
-  const communityExtensionContract = new ethers.Contract(communityExtension, communityRegistryAbi, signer);
-  const addr = await communityExtensionContract.autIDAddr();
-  console.log('[getAutIDAddrForComExt]: addr', addr);
+async function getAutIDAddrFrinDAOExpander(daoExpander) {
+  const daoExpanderContract = new ethers.Contract(daoExpander, daoExpanderRegistryAbi, signer);
+  const addr = await daoExpanderContract.autIDAddr();
+  console.log('[getAutIDAddrFrinDAOExpander]: addr', addr);
 }
 
 async function getAutIDUsername(username) {
@@ -172,30 +133,29 @@ async function getAutIDUsername(username) {
   console.log('[autIDUsername]: addr', addr);
 }
 async function test() {
-  const communityExtension = "0xEf300E25897343e8d2d4b55F7b606fc90958beB0";
+  const daoExpander = "0xEf300E25897343e8d2d4b55F7b606fc90958beB0";
   const daoAddr = '0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14'
   const user = "0x1d6571bcCEa66F624d1232c63195D7E9708A0BB4";
-  const pollsAddress = '0x270e27E4E6422C311449E9aA258B3181235837ce'
   await getAutIDUsername('Taualnt');
-  await getSWMetadata(4);
+  await getAutIDMetadata(4);
   // await getPoll(pollsAddress, 0);
   // await createPoll(pollsAddress, 0, timestamp, 'bafkreibcuujzwl7hzd6uwi5t5zajur2tkdu2nhyouqvccd4oak3hyhijgy')
   // await addMember('0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14', signer.address);
   // await addMember(daoAddr, '0x720Db641247BAacf528c696518C28153eB0E1100');
-  // await getAutIDAddrForComExt(communityExtension);
+  // await getAutIDAddrForComExt(daoExpander);
   // await createCommunity(1, '0x73297cb191a7f510C440a1Ce64Cb2E1b18753409')
-  // await passOnboarding(communityExtension, '0x7660aa261d27A2A32d4e7e605C1bc2BA515E5f81');
+  // await passOnboarding(daoExpander, '0x7660aa261d27A2A32d4e7e605C1bc2BA515E5f81');
   // await getCommunities();
-  // await getComData(communityExtension);
+  // await getComData(daoExpander);
   // const community = '0x96dCCC06b1729CD8ccFe849CE9cA7e020e19515c';
-  // await getCommunityData(user, communityExtension);
-  // await getComData(communityExtension)
+  // await getCommunityData(user, daoExpander);
+  // await getComData(daoExpander)
   // await getSWMetadata(0);
   // await createCommunity(1, "0x7DeF7A0C6553B9f7993a131b5e30AB59386837E0");
   // await getCommunities();
-  // await mint(communityExtension);
+  // await mint(daoExpander);
   // await getCommunities();
-  // await isCoreTeam(communityExtension, user);
+  // await isCoreTeam(daoExpander, user);
 }
 
 test();

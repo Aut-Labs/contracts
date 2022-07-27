@@ -5,9 +5,9 @@ import "./IMembershipChecker.sol";
 import "../communities/IMoloch.sol";
 
 /// @title MolochV2MembershipChecker
-/// @notice Implementation of IMembershipChecker for Moloch community type
+/// @notice Implementation of IMembershipChecker for Moloch DAO type
 contract MolochV2MembershipChecker is IMembershipChecker {
-    /// @notice Implements a check if an address is a member of a Moloch community
+    /// @notice Implements a check if an address is a member of a Moloch DAO
     /// @param daoAddress the address of the Moloch contract
     /// @param member the address of the member for which the check is made
     /// @return true if the user address is a member, false otherwise
