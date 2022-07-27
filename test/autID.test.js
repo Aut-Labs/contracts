@@ -19,7 +19,7 @@ describe("AutID", function () {
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
       
-      const DAO = await ethers.getContractFactory("SWLegacyCommunity");
+      const DAO = await ethers.getContractFactory("SWLegacyDAO");
       dao = await DAO.deploy();
       await dao.deployed();
       await dao.addMember(deployer.address);
@@ -193,7 +193,7 @@ describe("AutID", function () {
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
 
-      const DAO = await ethers.getContractFactory("SWLegacyCommunity");
+      const DAO = await ethers.getContractFactory("SWLegacyDAO");
       dao = await DAO.deploy();
       await dao.deployed();
       await dao.addMember(deployer.address);
@@ -410,7 +410,7 @@ describe("AutID", function () {
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
       
-      const DAO = await ethers.getContractFactory("SWLegacyCommunity");
+      const DAO = await ethers.getContractFactory("SWLegacyDAO");
       dao = await DAO.deploy();
       await dao.deployed();
       await dao.addMember(deployer.address);

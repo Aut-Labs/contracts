@@ -24,7 +24,7 @@ describe("Polls", (accounts) => {
 
     member1 = mem1;
     member2 = mem2;
-    const DAO = await ethers.getContractFactory("SWLegacyCommunity");
+    const DAO = await ethers.getContractFactory("SWLegacyDAO");
     dao = await DAO.deploy();
     await dao.deployed();
     await dao.addMember(deployer.address);

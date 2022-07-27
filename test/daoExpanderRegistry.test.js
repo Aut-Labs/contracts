@@ -6,6 +6,7 @@ let daoTypes;
 let sWLegacyMembershipChecker;
 let autID;
 let daoExpanderRegistry;
+let daoExpanderFactory;
 let deployer;
 let notAMember;
 
@@ -23,7 +24,7 @@ describe("DAOExpanderRegistry", function () {
       autID = await AutID.deploy();
       await autID.deployed();
 
-      const DAO = await ethers.getContractFactory("SWLegacyCommunity");
+      const DAO = await ethers.getContractFactory("SWLegacyDAO");
       dao = await DAO.deploy();
       await dao.deployed();
       await dao.addMember(deployer.address);
@@ -47,13 +48,20 @@ describe("DAOExpanderRegistry", function () {
         sWLegacyMembershipChecker.address
       );
 
+      const DAOExpanderFactory =  await ethers.getContractFactory(
+        "DAOExpanderFactory"
+      );
+      daoExpanderFactory = await DAOExpanderFactory.deploy();
+      await daoExpanderFactory.deployed();
+
       const DAOExpanderRegistry = await ethers.getContractFactory(
         "DAOExpanderRegistry"
       );
 
       daoExpanderRegistry = await DAOExpanderRegistry.deploy(
         autID.address,
-        daoTypes.address
+        daoTypes.address,
+        daoExpanderFactory.address
       );
       await daoExpanderRegistry.deployed();
     });

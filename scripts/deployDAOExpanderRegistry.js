@@ -13,15 +13,17 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  const autIDAddr = "0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B";
-  const daoTypesAddr = "0x00fbB8e663614f16e85df9634fd116aecF4872F9";
+  const autIDAddr = "0x00fbB8e663614f16e85df9634fd116aecF4872F9";
+  const daoTypesAddr = "0x2a7A1f0Da4FA3FFd93dE76e131bfB07Cf9a9Ec81";
+  const daoExpanderFactoryAddr = "0x75878b9701308470296cD69b734fa8b2f4303f5e";
 
   const DAOExpanderRegistry = await hre.ethers.getContractFactory(
     "DAOExpanderRegistry"
   );
   const daoExpanderRegistry = await DAOExpanderRegistry.deploy(
     autIDAddr,
-    daoTypesAddr
+    daoTypesAddr,
+    daoExpanderFactoryAddr
   );
   await daoExpanderRegistry.deployed();
 

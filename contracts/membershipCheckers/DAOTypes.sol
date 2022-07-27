@@ -17,15 +17,15 @@ contract DAOTypes is Ownable, IDAOTypes {
     mapping(address => bool) public isMembershipChecker;
 
     /// @notice Returns the address of the MembershipChecker implementation for a given type
-    /// @param membershipType the type of the Membership Checker DAO
+    /// @param daoType the type of the Membership Checker DAO
     /// @return the address of the contract that implements IMembershipChecker
-    function getMembershipCheckerAddress(uint256 membershipType)
+    function getMembershipCheckerAddress(uint256 daoType)
         public
         view
         override
         returns (address)
     {
-        return typeToMembershipChecker[membershipType];
+        return typeToMembershipChecker[daoType];
     }
 
     /// @notice Adds a new type and contract address in the types

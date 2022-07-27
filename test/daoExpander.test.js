@@ -18,7 +18,7 @@ describe("DAOExpander", function () {
       autID = await AutID.deploy();
       await autID.deployed();
 
-      const DAO = await ethers.getContractFactory("SWLegacyCommunity");
+      const DAO = await ethers.getContractFactory("SWLegacyDAO");
       dao = await DAO.deploy();
       await dao.deployed();
       await dao.addMember(deployer.address);
@@ -153,7 +153,7 @@ describe("DAOExpander", function () {
   });
   describe("Manage URLs", async () => {
     before(async function () {
-      const Community = await ethers.getContractFactory("SWLegacyCommunity");
+      const Community = await ethers.getContractFactory("SWLegacyDAO");
       community = await Community.deploy();
       await community.deployed();
       await community.addMember(deployer.address);

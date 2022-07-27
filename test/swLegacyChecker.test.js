@@ -16,9 +16,9 @@ describe("SWLegacyMembershipChecker", function () {
       deployer = deployer;
       notDeployer = notDep;
 
-      const SWLegacyCommunity = await ethers.getContractFactory("SWLegacyCommunity");
+      const SWLegacyDAO = await ethers.getContractFactory("SWLegacyDAO");
 
-      swLegacy = await SWLegacyCommunity.deploy();
+      swLegacy = await SWLegacyDAO.deploy();
       await swLegacy.deployed();
 
       await swLegacy.addMember(member1.address);

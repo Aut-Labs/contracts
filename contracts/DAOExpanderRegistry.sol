@@ -1,7 +1,9 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "./DAOExpander.sol";
+import "./IDAOExpanderFactory.sol";
+import "./membershipCheckers/IDAOTypes.sol";
+import "./membershipCheckers/IMembershipChecker.sol";
 
 contract DAOExpanderRegistry {
     event DAOExpanderDeployed(address newDAOExpander);
@@ -11,13 +13,16 @@ contract DAOExpanderRegistry {
     address[] public daoExpanders;
     address public autIDAddr;
     address public daoTypes;
+    address private daoExpanderFactory;
 
-    constructor(address _autIDAddr, address _daoTypes) {
+    constructor(address _autIDAddr, address _daoTypes, address _daoExpanderFactory) {
         require(_autIDAddr != address(0), "AutID Address not passed");
         require(_daoTypes != address(0), "DAOTypes Address not passed");
+        require(_daoExpanderFactory != address(0), "DAOExpanderFactory address not passed");
 
         autIDAddr = _autIDAddr;
         daoTypes = _daoTypes;
+        daoExpanderFactory = _daoExpanderFactory;
     }
 
     /**
@@ -49,7 +54,7 @@ contract DAOExpanderRegistry {
             ).isMember(daoAddr, msg.sender),
             "AutID: Not a member of this DAO!"
         );
-        DAOExpander newDAOExpander = new DAOExpander(
+        address newDAOExpanderAddress = IDAOExpanderFactory(daoExpanderFactory).deployDAOExpander(
             msg.sender,
             autIDAddr,
             daoTypes,
@@ -59,7 +64,6 @@ contract DAOExpanderRegistry {
             metadata,
             commitment
         );
-        address newDAOExpanderAddress = address(newDAOExpander);
         daoExpanders.push(newDAOExpanderAddress);
         daoExpanderDeployers[msg.sender].push(newDAOExpanderAddress);
 
