@@ -16,11 +16,6 @@ var daoExpanderRegistryAbi =
 var daoExpanderAbi =
   require("../artifacts/contracts/DAOExpander.sol/DAOExpander.json").abi;
 
-var swLegacyDAOAbi =
-  require("../artifacts/contracts/mocks/SWLegacyDAO.sol/SWLegacyDAO.json").abi;
-var pollsAbi =
-  require("../artifacts/contracts/activities/Poll.sol/Polls.json").abi;
-
 const provider = new ethers.providers.JsonRpcProvider(
   "https://matic-mumbai.chainstacklabs.com/"
 );
@@ -117,7 +112,7 @@ async function passOnboarding(daoExpander, member) {
 }
 
 async function addMember(swLegacyDAO, member) {
-  const c = new ethers.Contract(swLegacyDAO, swLegacyCommunityAbi, signer);
+  const c = new ethers.Contract(swLegacyDAO, SWLegacyDAOAbi, signer);
   const a = await c.addMember(member);
   console.log(a);
 }

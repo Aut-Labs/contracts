@@ -17,7 +17,7 @@ describe("Tasks", (accounts) => {
 
     member1 = mem1;
     member2 = mem2;
-    const Community = await ethers.getContractFactory("SWLegacyCommunity");
+    const Community = await ethers.getContractFactory("SWLegacyDAO");
     dao = await Community.deploy();
     await dao.deployed();
     await dao.addMember(deployer.address);

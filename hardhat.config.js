@@ -23,39 +23,18 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 module.exports = {
   solidity: "0.8.4",
-  defaultNetwork: "hardhat",
+  defaultNetwork: "goerli",
   networks: {
     hardhat: {},
     mumbai: {
       url: "https://matic-mumbai.chainstacklabs.com/",
       accounts: [process.env.MNEMONIC],
     },
+    goerli: {
+      url:"https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      accounts: [process.env.MNEMONIC]
+    }
   },
-
-  // defaultNetwork,
-  // networks: {
-  //   localhost: {
-  //     url: "http://localhost:7545",
-  //     /*
-  //       notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
-  //       (you can put in a mnemonic here to set the deployer locally)
-  //     */
-  //   },
-  //   matic: {
-  //     url: "https://polygon-rpc.com/",
-  //     accounts: [process.env.MNEMONIC],
-  //   },
-  //   kovan: {
-  //     url: "https://kovan.infura.io/v3/779285194bd146b48538d269d1332f20",
-  //     gasPrice: 1000000000,
-  //     accounts: [process.env.MNEMONIC],
-  //   },
-  //   mumbai: {
-  //     url: "https://matic-mumbai.chainstacklabs.com/",
-  //     gasPrice: 10000000000,
-  //     accounts: [process.env.MNEMONIC],
-  //   },
-  // },
   contractSizer: {
     alphaSort: true,
     runOnCompile: true,
