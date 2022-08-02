@@ -1,5 +1,5 @@
 const autIDAddress = "0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B";
-const daoExpanderRegistryAddress = "0xeBDf871b95E2C62B2d297591d52FeC29a187f87c";
+const daoExpanderRegistryAddress = "0xB126D97141E5f379b14988985e18Af93a5C1B938";
 
 const comMetadata =
   "bafkreidjy6xlyf2he4iopzijy7bws3yl34xhwh726ca2xd7temqoqkz6xy";
@@ -28,10 +28,10 @@ const provider = new ethers.providers.JsonRpcProvider(
 const senderWalletMnemonic = new ethers.Wallet(process.env.MNEMONIC);
 let signer = senderWalletMnemonic.connect(provider);
 console.log(signer.address)
-// const wallet = ethers.Wallet.createRandom();
-// console.log(signer.address);
-// console.log(wallet.mnemonic);
-// console.log(wallet.privateKey);
+const wallet = ethers.Wallet.createRandom();
+console.log(signer.address);
+console.log(wallet.mnemonic);
+console.log(wallet.privateKey);
 
 const autIDContract = new ethers.Contract(autIDAddress, autIDAbi, signer);
 const daoExpanderRegistryContract = new ethers.Contract(
@@ -87,6 +87,22 @@ async function getDAOExpanders() {
   console.log("[getDAOExpanders]:", getDAOExpanders);
 }
 
+async function deployDAOExpander() {
+  const a = await daoExpanderRegistryContract.deployDAOExpander(
+    1,
+    '0x73297cb191a7f510C440a1Ce64Cb2E1b18753409',
+    1,
+    'bafkreidjy6xlyf2he4iopzijy7bws3yl34xhwh726ca2xd7temqoqkz6xy',
+    8);
+    console.log(a);
+    console.log(await a.wait());
+};
+
+
+async function getDAOExpanders() {
+  const a = await daoExpanderRegistryContract.getDAOExpanders();
+    console.log(a);
+};
 async function isCoreTeam(daoExpander, user) {
   const daoExpanderContract = new ethers.Contract(
     daoExpander,
@@ -128,17 +144,19 @@ async function getAutIDUsername(username) {
   console.log('[autIDUsername]: addr', addr);
 }
 async function test() {
+  // await addMember('0x6706a83EF8E2228D639fBA5f6cc5308d6A6114Bd', signer.address);
+
+  // await deployDAOExpander();
   const daoExpander = "0xEf300E25897343e8d2d4b55F7b606fc90958beB0";
   const daoAddr = '0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14'
   const user = "0x1d6571bcCEa66F624d1232c63195D7E9708A0BB4";
-  await getAutIDUsername('Taualnt');
-  await getAutIDMetadata(4);
+  // await getAutIDUsername('Taualnt');
+  // await getAutIDMetadata(2);
   // await getPoll(pollsAddress, 0);
   // await createPoll(pollsAddress, 0, timestamp, 'bafkreibcuujzwl7hzd6uwi5t5zajur2tkdu2nhyouqvccd4oak3hyhijgy')
-  // await addMember('0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14', signer.address);
   // await addMember(daoAddr, '0x720Db641247BAacf528c696518C28153eB0E1100');
   // await getAutIDAddrForComExt(daoExpander);
-  // await createCommunity(1, '0x73297cb191a7f510C440a1Ce64Cb2E1b18753409')
+  // await depl(1, '0x73297cb191a7f510C440a1Ce64Cb2E1b18753409')
   // await passOnboarding(daoExpander, '0x7660aa261d27A2A32d4e7e605C1bc2BA515E5f81');
   // await getCommunities();
   // await getComData(daoExpander);
@@ -151,6 +169,7 @@ async function test() {
   // await mint(daoExpander);
   // await getCommunities();
   // await isCoreTeam(daoExpander, user);
+  // await getDAOExpanders();
 }
 
 test();

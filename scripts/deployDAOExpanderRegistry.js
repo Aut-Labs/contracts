@@ -13,9 +13,9 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  const autIDAddr = "0x00fbB8e663614f16e85df9634fd116aecF4872F9";
-  const daoTypesAddr = "0x2a7A1f0Da4FA3FFd93dE76e131bfB07Cf9a9Ec81";
-  const daoExpanderFactoryAddr = "0x75878b9701308470296cD69b734fa8b2f4303f5e";
+  const autIDAddr = "0xC866514E817893188CFe58030d57F50f62ADE319";
+  const daoTypesAddr = "0xAf8FD8F18a32c73D58C426C6AA36ebf8c97C5395";
+  const daoExpanderFactoryAddr = "0x4Eb17de78186e8B929D5a4D3b82a68D5f470Fbb9";
 
   const DAOExpanderRegistry = await hre.ethers.getContractFactory(
     "DAOExpanderRegistry"
