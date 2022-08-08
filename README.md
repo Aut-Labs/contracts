@@ -1,6 +1,10 @@
-# AutID Smart Contracts
+# Āut Protocol - Smart Contracts
+Āut is an expandable protocol for Role-based Membership in Web3 Communities & DAOs.
 
-yada yada yada 
+DAOs can be much more than _Smart Treasuries_, Āut introduces native Roles & Interactions directly at contract level, to power the 2nd generation of DAOs. The DAO 2.0s, or a Coordination Renaissance.
+
+To read more about Āut, visit our [Docs](https://docs.aut.id).
+Below, you'll find a simple walkthrough to get started using Āut's Smart Contracts.
 
 # Setup 
 
@@ -45,7 +49,7 @@ Now all the queries and scripts you call are going to be to your Ganache network
     4.2. Run `npm run deployCommunityRegistry`
     
 
-Happy hacking on AutID contracts 🤓 🤓 🤓 !! 
+Happy hacking on Aut contracts 🤓 🤓 🤓 !! 
  
 ## Useful commands
 ```shell
