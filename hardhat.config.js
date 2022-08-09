@@ -28,11 +28,11 @@ module.exports = {
     hardhat: {},
     mumbai: {
       url: "https://matic-mumbai.chainstacklabs.com/",
-      accounts: [process.env.MNEMONIC],
+      accounts: [process.env.PRIVATE_KEY],
     },
     goerli: {
       url:"https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-      accounts: [process.env.MNEMONIC]
+      accounts: [process.env.PRIVATE_KEY]
     }
   },
   contractSizer: {

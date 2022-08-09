@@ -8,9 +8,9 @@ Below, you'll find a simple walkthrough to get started using Āut's Smart Contra
 
 # Setup 
 
-1. Create .env file and put your testing mnemonic there
+1. Create .env file and put your testing private key there
     ```
-    MNEMONIC='some mnemonic'
+    PRIVATE_KEY='your_private_key'
     ```
 
 1. Install dependencies
@@ -24,32 +24,33 @@ Below, you'll find a simple walkthrough to get started using Āut's Smart Contra
 
 You're ready to go! 🚀🚀🚀
 
-# Ganache local setup 🍫🍫🍫
+> **_Recommendation:_** If you're building on top of the Aut Protocol Contracts, we strongly recommend running them locally and testing on Hardhat Network/Ganache Network before moving forward with a testnet deployment.
+----
+> > **_Resources:_** 🍫 🍫 🍫 Ganachere sources: https://trufflesuite.com/docs/ganache/
+🎩 🎩 🎩 Hardhat sources: https://hardhat.org/tutorial
 
-## Prerequisites: 
-1. Ganache installed :) 
+# Deployments (locally or not)
 
-## Setup: 
-
-1. Run Ganache
-2. Quickstart with Ethereum
-3. Copy the mnemonic and put it your .env file
-4. Put defaultNetwork in hardhat.config.js to be ganache
-5. That's it 🚀🚀🚀 
-
-Now all the queries and scripts you call are going to be to your Ganache network. 
-
-## Deploy the contracts locally
-
-1. Run `npm run deployMemTypes` and store the output address of MembershipTypes 
-2. Run `npm run deployMembershipCheckers` and store the output address of MembershipTypes
-3. Run `npm run deployAutID` and store the contract address from your console
-4. Deploy Community Registry:  
-    4.1. Replace membershipTypesAddr and autIDAddr in deployCommunityRegistry.sol 
-    4.2. Run `npm run deployCommunityRegistry`
+1. Select your desired network in hardhat.config.json under default network
+2. Run `npm run deployAutID` and store the output address of AutID 
+2. Run `npm run deployDAOExpanderFactory` and store the output address of DAOExpanderFactory
+3. Run `npm run deployDAOTypes` and store the addresses DAO Types of all the Checkers and Types
+4. Deploy DAOExpanerRegistry:  
+    4.1. Replace autIDAddr, daoTypesAddr and daoExpanderFactoryAddr in deployDAOExpanderRegistry.js 
+    4.2. Run `npm run deployDAOExpanderRegistry`
     
+> **_Tip:_** If you're expanding the DAO Types that the product supports, for testing purposes, you can add it to /scripts/deployDAOTypes.js
 
-Happy hacking on Aut contracts 🤓 🤓 🤓 !! 
+``` javascript
+  const YourMembershipChecker = await hre.ethers.getContractFactory("YourMembershipChecker");
+  const yourMembershipChecker = await YourMembershipChecker.deploy();
+  await yourMembershipChecker.deployed();
+  
+  await (await daoTypes.addNewMembershipChecker(yourMembershipChecker.address)).wait();
+```
+
+----
+Happy hacking on āut contracts 🤓 🤓 🤓 !! 
  
 ## Useful commands
 ```shell
