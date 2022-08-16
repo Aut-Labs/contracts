@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "../communities/ISWLegacyDAO.sol";
+import "../daoStandards/ISWLegacyDAO.sol";
 
 /// @title TestingDAO
 /// @notice Mock SW Legacy DAO for testing

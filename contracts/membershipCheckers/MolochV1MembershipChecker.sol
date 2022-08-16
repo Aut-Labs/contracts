@@ -1,10 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
-
 import "./IMembershipChecker.sol";
-import "../communities/IMoloch.sol";
+import "../daoStandards/IMoloch.sol";
 
 /// @title MolochV1MembershipChecker
 /// @notice Implementation of IMembershipChecker for Moloch DAO type

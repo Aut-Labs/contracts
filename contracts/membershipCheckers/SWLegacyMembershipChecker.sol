@@ -1,10 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
-
 import "./IMembershipChecker.sol";
-import "../communities/ISWLegacyDAO.sol";
+import "../daoStandards/ISWLegacyDAO.sol";
 
 /// @title SWLegacyMembershipChecker
 /// @notice Implementation of IMembershipChecker for SW Legacy DAO type
