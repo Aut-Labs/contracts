@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -32,9 +31,9 @@ contract AutID is ERC721URIStorage, IAutID {
 
     constructor() ERC721("AutID", "AUT") {}
 
-    /// @notice SW holders can link their DiscordID to their SW ID
-    /// @dev links the discord ID to the SW token ID passed.
-    /// @param discordID the discord ID of the sw holder
+    /// @notice AutID holders can link their DiscordID to their AutID ID
+    /// @dev links the discord ID to the AutID token ID passed.
+    /// @param discordID the discord ID of the AutID holder
     function addDiscordIDToAutID(string calldata discordID) external override {
         uint256 autID = _autIDByOwner[msg.sender];
 
@@ -44,8 +43,8 @@ contract AutID is ERC721URIStorage, IAutID {
         emit DiscordIDConnectedToAutID();
     }
 
-    /// @notice mints a new SW NFT ID
-    /// @dev each SW holder can have only one SW. It reverts if the SW already exists. The user must be a part of the DAO passed.
+    /// @notice mints a new AutID NFT ID
+    /// @dev each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the DAO passed.
     /// @param url the NFT metadata that holds username, avatar
     /// @param role the role that the user has selected within the specified DAO
     /// @param commitment the commitment value that the user has selected for this DAO
@@ -187,7 +186,7 @@ contract AutID is ERC721URIStorage, IAutID {
     }
 
     function setMetadataUri(string calldata metadataUri) public override {
-        require(balanceOf(msg.sender) == 1, "AutID: Doesn't have a SW.");
+        require(balanceOf(msg.sender) == 1, "AutID: Doesn't have an AutID.");
         uint tokenId = _autIDByOwner[msg.sender];
         _setTokenURI(tokenId, metadataUri);
 
@@ -204,7 +203,7 @@ contract AutID is ERC721URIStorage, IAutID {
         override
         returns (address[] memory daos)
     {
-        require(balanceOf(autIDHolder) == 1, "AutID: Doesn't have a SW.");
+        require(balanceOf(autIDHolder) == 1, "AutID: Doesn't have an AutID.");
         return holderToDAOs[autIDHolder];
     }
 

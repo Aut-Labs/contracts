@@ -22,7 +22,7 @@ interface IAutID is IERC721 {
         bool isActive;
     }
     /// @notice mints a new AutID NFT ID
-    /// @dev each SW holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the DAO passed.
+    /// @dev each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the DAO passed.
     /// @param url the NFT metadata that holds username, avatar
     /// @param role the role that the user has selected within the specified DAO
     /// @param commitment the commitment value that the user has selected for this DAO
@@ -46,8 +46,8 @@ interface IAutID is IERC721 {
         address daoExpander
     ) external;
 
-    /// @notice gets all communities the SW holder is a member of
-    /// @param autIDHolder the address of the SW holder
+    /// @notice gets all communities the AutID holder is a member of
+    /// @param autIDHolder the address of the AutID holder
     /// @return daos dao expander addresses that the aut holder is a part of
     function getHolderDAOs(address autIDHolder)
         external

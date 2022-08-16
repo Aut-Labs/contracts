@@ -125,7 +125,7 @@ describe("AutID", function () {
       expect(await daoExpander.isMemberOfOriginalDAO(daoMember.address)).to.eq(true);
       expect(await daoExpander.isMemberOfExtendedDAO(daoMember.address)).to.eq(true);
     });
-    it("Should not mint a SW NFTID twice", async function () {
+    it("Should not mint an AutID twice", async function () {
       await (
         await autID
           .connect(daoMember)
@@ -282,7 +282,7 @@ describe("AutID", function () {
         autID.joinDAO(3, 8, ethers.constants.AddressZero)
       ).to.revertedWith("Missing DAO Expander");
     });
-    it("Should fail if there's no SW NFT ID minted for the signer", async function () {
+    it("Should fail if there's no AutID minted for the signer", async function () {
       await expect(
         autID
           .connect(user2)
@@ -298,7 +298,7 @@ describe("AutID", function () {
           .joinDAO(3, 10, daoExpander2.address)
       ).to.be.revertedWith("Not a member of this DAO!");
     });
-    it("Should add the new Community to the SW NFT ID for original DAO member", async function () {
+    it("Should add the new Community to the AutID for original DAO member", async function () {
       await dao.addMember(daoMember2.address);
 
       await (
@@ -345,7 +345,7 @@ describe("AutID", function () {
       expect(await daoExpander2.isMemberOfOriginalDAO(daoMember2.address)).to.eq(true);
       expect(await daoExpander2.isMemberOfExtendedDAO(daoMember2.address)).to.eq(true);
     });
-    it("Should add the new Community to the SW NFT ID for onboarded member", async function () {
+    it("Should add the new Community to the AutID for onboarded member", async function () {
 
       await (
         await autID

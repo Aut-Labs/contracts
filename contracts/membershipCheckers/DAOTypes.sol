@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IDAOTypes.sol";
 /// @title DAOTypes
-/// @notice DAOTypes has a mapping between type and MembershipChecker deployed for all DAO standards that are supported by SW
-/// @dev The contract is Ownable to ensure that only the SW team can add new types.
+/// @notice DAOTypes has a mapping between type and MembershipChecker deployed for all DAO standards that are supported by AutID
+/// @dev The contract is Ownable to ensure that only the AutID team can add new types.
 contract DAOTypes is Ownable, IDAOTypes {
     using Counters for Counters.Counter;
     /// @notice

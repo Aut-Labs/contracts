@@ -2,8 +2,8 @@
 pragma solidity ^0.8.0;
 
 /// @title IDAOTypes
-/// @notice IDAOTypes has a mapping between type and MembershipChecker deployed for all DAO standards that are supported by SW
-/// @dev The contract is Ownable to ensure that only the SW team can add new types.
+/// @notice IDAOTypes has a mapping between type and MembershipChecker deployed for all DAO standards that are supported by AutID
+/// @dev The contract is Ownable to ensure that only the AutID team can add new types.
 interface IDAOTypes {
     event DAOTypeAdded(uint256 daoType, address membershipCheckerAddress);
 

@@ -66,7 +66,7 @@ interface IDAOExpander {
     /// @return true if they're a member, false otherwise
     function isMemberOfOriginalDAO(address member) external view returns (bool);
 
-    /// @notice Checks if the passed member is a core team member within the SW extension of the membership
+    /// @notice Checks if the passed member is a core team member within the AutID extension of the membership
     /// @param member the address of the member that's checked
     /// @return true if they're a core team member, false otherwise
     function isCoreTeam(address member) external view returns (bool);
@@ -76,7 +76,7 @@ interface IDAOExpander {
     function removeFromCoreTeam(address member) external;
 
     /// @notice Checks if a specific contract address is listed as Activity
-    /// @dev Activity contracts can increase the interaction index of the SW holders
+    /// @dev Activity contracts can increase the interaction index of the AutID holders
     /// @param activity the address of the activity that's checked
     /// @return true if the address is listed, false otherwise
     function isActivityWhitelisted(address activity)
