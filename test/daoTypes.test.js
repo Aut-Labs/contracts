@@ -34,6 +34,13 @@ describe("DAOTypes", function () {
       );
       molochMemChecker = await MolochV2MembershipChecker.deploy();
       await molochMemChecker.deployed();
+
+      // Tribute Community Checker
+      const TributeMembershipChecker = await ethers.getContractFactory(
+        "TributeMembershipChecker"
+      );
+      tributeMemChecker = await TributeMembershipChecker.deploy();
+      await tributeMemChecker.deployed();
     });
     it("Should fail if arguemnts are incorret", async function () {
         await expect(

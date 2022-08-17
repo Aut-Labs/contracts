@@ -19,7 +19,7 @@ describe("AutID", function () {
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
       
-      const DAO = await ethers.getContractFactory("SWLegacyDAO");
+      const DAO = await ethers.getContractFactory("Tribute");
       dao = await DAO.deploy();
       await dao.deployed();
       await dao.addMember(deployer.address);
@@ -31,7 +31,7 @@ describe("AutID", function () {
       await daoTypes.deployed();
 
       const SWLegacyMembershipChecker = await ethers.getContractFactory(
-        "SWLegacyMembershipChecker"
+        "TributeMembershipChecker"
       );
 
       sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
