@@ -8,7 +8,7 @@ let sWLegacyMembershipChecker;
 let autID;
 let deployer;
 
-describe.only("DAOExpander", function () {
+describe("DAOExpander", function () {
   describe("deployment", function () {
     before(async function () {
       [dep, notAMem, ...addrs] = await ethers.getSigners();
