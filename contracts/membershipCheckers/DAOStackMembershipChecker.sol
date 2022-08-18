@@ -5,7 +5,7 @@ import "./IMembershipChecker.sol";
 import "../daoStandards/IDAOStack.sol";
 
 /// @title DAOStackMembershipChecker
-/// @notice Implementation of IMembershipChecker for your new DAO standard
+/// @notice Implementation of DAOStackMembershipChecker for DAOStack DAO
 contract DAOStackMembershipChecker is IMembershipChecker {
 
     /// @notice Implements a check if an address is a member of a DAO
