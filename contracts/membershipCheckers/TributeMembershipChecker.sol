@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 import "./IMembershipChecker.sol";
 import "../daoStandards/ITribute.sol";
 
-/// @title NewMembershipChecker
-/// @notice Implementation of IMembershipChecker for your new DAO standard
+/// @title TributeMembershipChecker
+/// @notice Implementation of IMembershipChecker for Tribute DAO type
 contract TributeMembershipChecker is IMembershipChecker {
 
     /// @notice Implements a check if an address is a member of a DAO
