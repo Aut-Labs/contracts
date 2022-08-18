@@ -13,13 +13,16 @@ Below, you'll find a simple walkthrough to get started using Āut's Smart Contra
     PRIVATE_KEY='your_private_key'
     ```
 
-1. Install dependencies
+2. Install dependencies
 `npm install`
 
-2. Compile the smart contracts 
+3. Compile the smart contracts 
 `npm run compile`
 
-3. Run tests (optional)
+4. In a separate terminal (optional)
+`npx hardhat node`
+
+5. Run tests (optional)
 `npm run test`
 
 You're ready to go! 🚀🚀🚀
