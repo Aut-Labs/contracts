@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./IMembershipChecker.sol";
 import "../daoStandards/IDAOStack.sol";
 
-/// @title NewMembershipChecker
+/// @title DAOStackMembershipChecker
 /// @notice Implementation of IMembershipChecker for your new DAO standard
 contract DAOStackMembershipChecker is IMembershipChecker {
 
@@ -21,8 +21,6 @@ contract DAOStackMembershipChecker is IMembershipChecker {
         require(daoAddress != address(0), "AutID: daoAddress empty");
         require(member != address(0), "AutID: member empty");
 
-        // implement your membership checker logic here
-        // return reasonable result ;)
         return IDAOStack(daoAddress).nativeToken().balanceOf(member) > 0 || IDAOStack(daoAddress).nativeReputation().balanceOf(member) > 0;
     }
 }
