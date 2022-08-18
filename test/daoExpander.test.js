@@ -13,12 +13,12 @@ describe("DAOExpander", function () {
     before(async function () {
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
-      
+
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();
       await autID.deployed();
 
-      const DAO = await ethers.getContractFactory("Tribute");
+      const DAO = await ethers.getContractFactory("SWLegacyDAO");
       dao = await DAO.deploy();
       await dao.deployed();
       await dao.addMember(deployer.address);
@@ -29,15 +29,15 @@ describe("DAOExpander", function () {
       daoTypes = await DAOTypes.deploy();
       await daoTypes.deployed();
 
-      const TributeMembershipChecker = await ethers.getContractFactory(
-        "TributeMembershipChecker"
+      const SWLegacyMembershipChecker = await ethers.getContractFactory(
+        "SWLegacyMembershipChecker"
       );
 
-      tributeMembershipChecker = await TributeMembershipChecker.deploy();
-      await tributeMembershipChecker.deployed();
+      sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
+      await sWLegacyMembershipChecker.deployed();
 
       daoTypes.addNewMembershipChecker(
-        tributeMembershipChecker.address
+        sWLegacyMembershipChecker.address
       );
     });
     it("Should fail if arguemnts are incorret", async function () {
@@ -153,7 +153,7 @@ describe("DAOExpander", function () {
   });
   describe("Manage URLs", async () => {
     before(async function () {
-      const Community = await ethers.getContractFactory("Tribute");
+      const Community = await ethers.getContractFactory("SWLegacyDAO");
       community = await Community.deploy();
       await community.deployed();
       await community.addMember(deployer.address);
@@ -164,15 +164,15 @@ describe("DAOExpander", function () {
       daoTypes = await DAOTypes.deploy();
       await daoTypes.deployed();
 
-      const TributeMembershipChecker = await ethers.getContractFactory(
-        "TributeMembershipChecker"
+      const SWLegacyMembershipChecker = await ethers.getContractFactory(
+        "SWLegacyMembershipChecker"
       );
 
-      tributeMembershipChecker = await TributeMembershipChecker.deploy();
-      await tributeMembershipChecker.deployed();
+      sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
+      await sWLegacyMembershipChecker.deployed();
 
       daoTypes.addNewMembershipChecker(
-        tributeMembershipChecker.address
+        sWLegacyMembershipChecker.address
       );
 
       const DAOExpander = await ethers.getContractFactory(

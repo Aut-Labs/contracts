@@ -18,8 +18,8 @@ describe("AutID", function () {
     before(async function () {
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
-      
-      const DAO = await ethers.getContractFactory("Tribute");
+
+      const DAO = await ethers.getContractFactory("SWLegacyDAO");
       dao = await DAO.deploy();
       await dao.deployed();
       await dao.addMember(deployer.address);
@@ -31,7 +31,7 @@ describe("AutID", function () {
       await daoTypes.deployed();
 
       const SWLegacyMembershipChecker = await ethers.getContractFactory(
-        "TributeMembershipChecker"
+        "SWLegacyMembershipChecker"
       );
 
       sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
@@ -368,7 +368,7 @@ describe("AutID", function () {
         onboarded.address
       );
       expect(swComs).not.to.be.undefined;
-      
+
       const comData1 = await autID.getMembershipData(
         onboarded.address,
         daoExpander.address
@@ -378,7 +378,7 @@ describe("AutID", function () {
         onboarded.address,
         daoExpander2.address
       )
-      
+
       expect(swComs.length).to.eq(2);
       expect(comData1["daoExpanderAddress"]).to.eq(daoExpander.address);
       expect(comData1["role"].toString()).to.eq("3");
@@ -409,7 +409,7 @@ describe("AutID", function () {
     before(async function () {
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
-      
+
       const DAO = await ethers.getContractFactory("SWLegacyDAO");
       dao = await DAO.deploy();
       await dao.deployed();
