@@ -31,6 +31,11 @@ async function main() {
   await molochV2MembershipChecker.deployed();
   console.log("molochV2MembershipChecker deployed to:", molochV2MembershipChecker.address);
 
+  const TributeMembershipChecker = await hre.ethers.getContractFactory("TributeMembershipChecker");
+  const tributeMembershipChecker = await TributeMembershipChecker.deploy();
+  await tributeMembershipChecker.deployed();
+  console.log("tributeMembershipChecker deployed to:", tributeMembershipChecker.address);
+
   // We get the contract to deploy
   const DAOTypes = await hre.ethers.getContractFactory("DAOTypes");
   const daoTypes = await DAOTypes.deploy();
@@ -39,6 +44,7 @@ async function main() {
   await (await daoTypes.addNewMembershipChecker(swLegacyMembershipChecker.address)).wait();
   await (await daoTypes.addNewMembershipChecker(molochV1MembershipChecker.address)).wait();
   await (await daoTypes.addNewMembershipChecker(molochV2MembershipChecker.address)).wait();
+  await (await daoTypes.addNewMembershipChecker(tributeMembershipChecker.address)).wait();
 
   console.log("DAOTypes deployed to:", daoTypes.address);
 }
