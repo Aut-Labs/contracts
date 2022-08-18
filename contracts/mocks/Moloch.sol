@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "../daoStandards/IMoloch.sol";
 
-/// @title Molock
+/// @title Moloch
 /// @notice Mock Moloch DAO for testing
 contract Moloch is IMoloch {
     mapping(address => Member) private mems;

@@ -2,20 +2,13 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 let moloch;
-let membershipTypes;
 let molochMemChecker;
-
-let deployer;
-let notDeployer;
 
 describe("MolochV2MembershipChecker", function () {
   describe("isMember", function () {
     beforeEach(async function () {
       [dep, notDep, member1, member2, member3, notAMember, ...addrs] =
         await ethers.getSigners();
-
-      deployer = deployer;
-      notDeployer = notDep;
 
       const Moloch = await ethers.getContractFactory("Moloch");
 
