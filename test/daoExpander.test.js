@@ -13,7 +13,7 @@ describe("DAOExpander", function () {
     before(async function () {
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
-      
+
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();
       await autID.deployed();
