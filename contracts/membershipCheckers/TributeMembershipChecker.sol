@@ -21,9 +21,6 @@ contract TributeMembershipChecker is IMembershipChecker {
         require(daoAddress != address(0), "AutID: daoAddress empty");
         require(member != address(0), "AutID: member empty");
 
-        // implement your membership checker logic here
-        // return reasonable result ;)
-        // return false;
         return ITribute(daoAddress).members(member).flags > 0;
     }
 }
