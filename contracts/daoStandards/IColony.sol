@@ -21,7 +21,7 @@ interface IColonyNetwork {
     function getExtensionInstallation(bytes32 extensionId, address colony) external view returns (address installation);
 }
 
-/// @title IColonyNetwork
+/// @title IColonyWhitelist
 interface IColonyWhitelist {
     function isApproved(address _user) external view returns (bool);
 }
