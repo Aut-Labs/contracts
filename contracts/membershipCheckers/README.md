@@ -37,7 +37,7 @@ const tokens = await connectTokens(org.app('token-manager'))
 - Scan for an event with `appId = 6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f (hex)` (TokenManager) or `appId = 9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4 (hex)` (Voting App)
 - Copy the `address` event argument
   <div>
-  <img style='width: 100%' src='./docAssets/aragon-etherscan-arg-address.png' />
+  <img style='width: 100%' src='./docAssets/aragon-etherscan-event-arg-address.png' />
   </div>
   <div>
   <img style='width: 100%' src='./docAssets/aragon-etherscan-proxy-address.png' />
