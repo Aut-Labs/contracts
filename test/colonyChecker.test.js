@@ -1,13 +1,9 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const { soliditySha3 } = require("web3-utils");
 
 let colony;
-let colonyNetwork;
-let colonyWhitelist;
+let colonyToken;
 let colonyMemChecker;
-
-const WHITELIST = soliditySha3("Whitelist");
 
 describe("ColonyMembershipChecker", function () {
     describe("isMember", function () {
@@ -15,23 +11,18 @@ describe("ColonyMembershipChecker", function () {
             [dep, notDep, member1, member2, member3, notAMember, ...addrs] =
                 await ethers.getSigners();
 
-            const ColonyNetwork = await ethers.getContractFactory("ColonyNetwork");
             const Colony = await ethers.getContractFactory("Colony");
-            const ColonyWhitelist = await ethers.getContractFactory("ColonyWhitelist");
+            const ColonyToken = await ethers.getContractFactory("ColonyToken");
 
-            colonyNetwork = await ColonyNetwork.deploy();
+            colonyToken = await ColonyToken.deploy();
+            await colonyToken.deployed();
 
-            colony = await Colony.deploy(colonyNetwork.address);
+            colony = await Colony.deploy(colonyToken.address);
             await colony.deployed();
 
-            colonyWhitelist = await ColonyWhitelist.deploy();
-            await colonyWhitelist.deployed();
-
-            await colonyNetwork.setExtension(WHITELIST, colonyWhitelist.address, colony.address);
-
-            await colonyWhitelist.addMember(member1.address);
-            await colonyWhitelist.addMember(member2.address);
-            await colonyWhitelist.addMember(member3.address);
+            await colonyToken.increaseReputation(member1.address);
+            await colonyToken.increaseReputation(member2.address);
+            await colonyToken.increaseReputation(member3.address);
 
             const ColonyMembershipChecker = await ethers.getContractFactory(
                 "ColonyMembershipChecker"
@@ -39,8 +30,7 @@ describe("ColonyMembershipChecker", function () {
             colonyMemChecker = await ColonyMembershipChecker.deploy();
             await colonyMemChecker.deployed();
         });
-        it("Should return true if member", async function () { // noinspection DuplicatedCode
-            expect(await colonyMemChecker.isMember(colony.address, dep.address)).to.be.true;
+        it("Should return true if member", async function () {
             expect(await colonyMemChecker.isMember(colony.address, member1.address)).to.be.true;
             expect(await colonyMemChecker.isMember(colony.address, member2.address)).to.be.true;
             expect(await colonyMemChecker.isMember(colony.address, member3.address)).to.be.true;

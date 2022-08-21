@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./IMembershipChecker.sol";
 import "../daoStandards/IColony.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title ColonyMembershipChecker
 /// @notice Implementation of IMembershipChecker for your new DAO standard
@@ -21,19 +22,6 @@ contract ColonyMembershipChecker is IMembershipChecker {
         require(daoAddress != address(0), "AutID: daoAddress empty");
         require(member != address(0), "AutID: member empty");
 
-        if (IColony(daoAddress).owner() == member) {
-            return true;
-        }
-
-        address whitelist = IColonyNetwork(IColony(daoAddress).getColonyNetwork()).getExtensionInstallation(
-            keccak256("Whitelist"),
-            daoAddress
-        );
-
-        if (whitelist != address(0)) {
-            return IColonyWhitelist(whitelist).isApproved(member);
-        }
-
-        return false;
+        return IERC20(IColony(daoAddress).token()).balanceOf(member) > 0;
     }
 }
