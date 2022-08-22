@@ -38,22 +38,15 @@ describe("AutID", function () {
       daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
     });
     beforeEach(async function () {
-<<<<<<< HEAD
       [
         deployer,
         daoMember,
         daoMember2,
-        onboarded,
-        onboarded1,
         user1,
         user2,
         user3,
         ...addrs
       ] = await ethers.getSigners();
-=======
-      [deployer, daoMember, daoMember2, user1, user2, user3, ...addrs] =
-        await ethers.getSigners();
->>>>>>> master
 
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();
@@ -77,11 +70,6 @@ describe("AutID", function () {
 
       await dao.addMember(daoMember.address);
       await dao.addMember(daoMember2.address);
-<<<<<<< HEAD
-      await daoExpander.passOnboarding([onboarded.address]);
-=======
-
->>>>>>> master
     });
     it("Should fail if arguemnts are incorret", async function () {
       await expect(
@@ -165,45 +153,6 @@ describe("AutID", function () {
         "AutID: There is AutID already registered for this address."
       );
     });
-<<<<<<< HEAD
-    it("Should mint a AutID in relation to the extended community if onboarding has passed", async function () {
-      const events = await (
-        await autID
-          .connect(onboarded)
-          .mint(username, URL, 3, 2, daoExpander.address)
-      ).wait();
-
-      const swCreatedEvent = events.events.find(
-        (event) => event.event == "AutIDCreated"
-      );
-      const tokenId = swCreatedEvent.args["tokenID"].toString();
-
-      const sw = await autID.getAutIDByOwner(onboarded.address);
-      expect(tokenId).to.eq(sw.toString());
-
-      const swComs = await autID.getHolderDAOs(onboarded.address);
-      expect(swComs).not.to.be.undefined;
-      const comData = await autID.getMembershipData(
-        onboarded.address,
-        daoExpander.address
-      );
-
-      const url = await autID.tokenURI(tokenId);
-
-      expect(url).to.eq(URL);
-      expect(swComs.length).to.eq(1);
-      expect(comData["daoExpanderAddress"]).to.eq(daoExpander.address);
-      expect(comData["role"].toString()).to.eq("3");
-      expect(comData["commitment"].toString()).to.eq("2");
-      expect(await daoExpander.isMemberOfOriginalDAO(onboarded.address)).to.eq(
-        false
-      );
-      expect(await daoExpander.isMemberOfExtendedDAO(onboarded.address)).to.eq(
-        true
-      );
-    });
-=======
->>>>>>> master
   });
   describe("joinDAO", function () {
     before(async function () {
@@ -233,22 +182,15 @@ describe("AutID", function () {
       daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
     });
     beforeEach(async function () {
-<<<<<<< HEAD
       [
         deployer,
         daoMember,
         daoMember2,
-        onboarded,
-        onboarded2,
         user1,
         user2,
         user3,
         ...addrs
       ] = await ethers.getSigners();
-=======
-      [deployer, daoMember, daoMember2, user1, user2, user3, ...addrs] =
-        await ethers.getSigners();
->>>>>>> master
 
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();
@@ -283,12 +225,6 @@ describe("AutID", function () {
       await dao.addMember(daoMember2.address);
       await dao2.addMember(daoMember2.address);
 
-<<<<<<< HEAD
-      await daoExpander.passOnboarding([onboarded.address]);
-      await daoExpander2.passOnboarding([onboarded.address]);
-
-=======
->>>>>>> master
       await (
         await autID
           .connect(daoMember)
@@ -366,61 +302,11 @@ describe("AutID", function () {
         await daoExpander2.isMemberOfExtendedDAO(daoMember2.address)
       ).to.eq(true);
     });
-<<<<<<< HEAD
-    it("Should add the new Community to the AutID for onboarded member", async function () {
-      await (
-        await autID
-          .connect(onboarded)
-          .mint(username1, URL, 3, 2, daoExpander.address)
-      ).wait();
-
-      const events = await (
-        await autID.connect(onboarded).joinDAO(2, 7, daoExpander2.address)
-      ).wait();
-
-      const communityJoinedEvent = events.events.find(
-        (event) => event.event == "DAOJoined"
-      );
-      expect(communityJoinedEvent).not.to.be.undefined;
-
-      const swComs = await autID.getHolderDAOs(onboarded.address);
-      expect(swComs).not.to.be.undefined;
-
-      const comData1 = await autID.getMembershipData(
-        onboarded.address,
-        daoExpander.address
-      );
-
-      const comData2 = await autID.getMembershipData(
-        onboarded.address,
-        daoExpander2.address
-      );
-
-      expect(swComs.length).to.eq(2);
-      expect(comData1["daoExpanderAddress"]).to.eq(daoExpander.address);
-      expect(comData1["role"].toString()).to.eq("3");
-      expect(comData1["commitment"].toString()).to.eq("2");
-      expect(comData2["daoExpanderAddress"]).to.eq(daoExpander2.address);
-      expect(comData2["role"].toString()).to.eq("2");
-      expect(comData2["commitment"].toString()).to.eq("7");
-      expect(await daoExpander2.isMemberOfOriginalDAO(onboarded.address)).to.eq(
-        false
-      );
-      expect(await daoExpander2.isMemberOfExtendedDAO(onboarded.address)).to.eq(
-        true
-      );
-    });
-=======
->>>>>>> master
     it("Should not join one community twice", async function () {
       await expect(
-<<<<<<< HEAD
-        autID.connect(onboarded).joinDAO(3, 10, daoExpander.address)
-=======
         autID
           .connect(daoMember)
           .joinDAO(3, 10, daoExpander.address)
->>>>>>> master
       ).to.be.revertedWith("Already a member");
     });
   });
