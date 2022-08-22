@@ -77,10 +77,7 @@ contract AutID is ERC721URIStorage, IAutID {
         require(
             IDAOExpander(daoExpander).isMemberOfOriginalDAO(
                 msg.sender
-            ) ||
-                IDAOExpander(daoExpander).hasPassedOnboarding(
-                    msg.sender
-                ),
+            ),
             "AutID: Not a member of this DAO!"
         );
 
@@ -133,10 +130,7 @@ contract AutID is ERC721URIStorage, IAutID {
         require(
             IDAOExpander(daoExpander).isMemberOfOriginalDAO(
                 msg.sender
-            ) ||
-                IDAOExpander(daoExpander).hasPassedOnboarding(
-                    msg.sender
-                ),
+            ),
             "AutID: Not a member of this DAO!"
         );
         address[] memory currentComs = holderToDAOs[msg.sender];
