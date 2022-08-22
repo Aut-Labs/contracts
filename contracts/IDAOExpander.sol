@@ -86,8 +86,6 @@ interface IDAOExpander {
 
     function join(address newMember) external;
 
-    function hasPassedOnboarding(address member) external view returns (bool);
-
     function getAllMembers() external view returns (address[] memory);
 
     function getInteractionsAddr() external view returns (address);

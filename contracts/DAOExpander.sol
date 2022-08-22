@@ -112,27 +112,11 @@ contract DAOExpander is IDAOExpander {
         interactionAddr = address(new Interaction());
     }
 
-    function hasPassedOnboarding(address member)
-        public
-        view
-        override
-        returns (bool)
-    {
-        return passedOnboarding[member];
-    }
-
-    function passOnboarding(address[] calldata members) public onlyCoreTeam {
-        for (uint256 index = 0; index < members.length; index++) {
-            passedOnboarding[members[index]] = true;
-            emit OnboardingPassed(members[index]);
-        }
-    }
-
     function join(address newMember) public override onlyAutID {
         require(!isMemberOfTheDAO[newMember], "Already a member");
         require(
-            isMemberOfOriginalDAO(newMember) || hasPassedOnboarding(newMember),
-            "Has not passed onboarding yet."
+            isMemberOfOriginalDAO(newMember),
+            "Not a member of the DAO."
         );
         isMemberOfTheDAO[newMember] = true;
         members.push(newMember);
