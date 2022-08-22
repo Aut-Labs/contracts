@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 
 /// @title IAutID
 /// @notice The interface of the IAutID contract
 /// @dev The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a DAO
-interface IAutID is IERC721 {
+interface IAutID is IERC721Upgradeable {
     event AutIDCreated(address owner, uint256 tokenID);
     event DAOJoined(address daoExpanderAddress, address member);
     event DAOWithdrown(address daoExpanderAddress, address member);
