@@ -10,7 +10,6 @@ import "./membershipCheckers/IMembershipChecker.sol";
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 contract DAOExpander is IDAOExpander {
-    event OnboardingPassed(address member);
 
     /// @notice the basic DAO data
     DAOData daoData;
@@ -24,8 +23,6 @@ contract DAOExpander is IDAOExpander {
     address[] private members;
 
     mapping(address => bool) public isMemberOfTheDAO;
-
-    mapping(address => bool) private passedOnboarding;
 
     /// @notice all the core team members
     address[] private coreTeam;
