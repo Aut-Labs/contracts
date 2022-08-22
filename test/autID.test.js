@@ -38,6 +38,7 @@ describe("AutID", function () {
       daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
     });
     beforeEach(async function () {
+<<<<<<< HEAD
       [
         deployer,
         daoMember,
@@ -49,6 +50,10 @@ describe("AutID", function () {
         user3,
         ...addrs
       ] = await ethers.getSigners();
+=======
+      [deployer, daoMember, daoMember2, user1, user2, user3, ...addrs] =
+        await ethers.getSigners();
+>>>>>>> master
 
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();
@@ -72,7 +77,11 @@ describe("AutID", function () {
 
       await dao.addMember(daoMember.address);
       await dao.addMember(daoMember2.address);
+<<<<<<< HEAD
       await daoExpander.passOnboarding([onboarded.address]);
+=======
+
+>>>>>>> master
     });
     it("Should fail if arguemnts are incorret", async function () {
       await expect(
@@ -156,6 +165,7 @@ describe("AutID", function () {
         "AutID: There is AutID already registered for this address."
       );
     });
+<<<<<<< HEAD
     it("Should mint a AutID in relation to the extended community if onboarding has passed", async function () {
       const events = await (
         await autID
@@ -192,6 +202,8 @@ describe("AutID", function () {
         true
       );
     });
+=======
+>>>>>>> master
   });
   describe("joinDAO", function () {
     before(async function () {
@@ -221,6 +233,7 @@ describe("AutID", function () {
       daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
     });
     beforeEach(async function () {
+<<<<<<< HEAD
       [
         deployer,
         daoMember,
@@ -232,6 +245,10 @@ describe("AutID", function () {
         user3,
         ...addrs
       ] = await ethers.getSigners();
+=======
+      [deployer, daoMember, daoMember2, user1, user2, user3, ...addrs] =
+        await ethers.getSigners();
+>>>>>>> master
 
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();
@@ -266,9 +283,12 @@ describe("AutID", function () {
       await dao.addMember(daoMember2.address);
       await dao2.addMember(daoMember2.address);
 
+<<<<<<< HEAD
       await daoExpander.passOnboarding([onboarded.address]);
       await daoExpander2.passOnboarding([onboarded.address]);
 
+=======
+>>>>>>> master
       await (
         await autID
           .connect(daoMember)
@@ -346,6 +366,7 @@ describe("AutID", function () {
         await daoExpander2.isMemberOfExtendedDAO(daoMember2.address)
       ).to.eq(true);
     });
+<<<<<<< HEAD
     it("Should add the new Community to the AutID for onboarded member", async function () {
       await (
         await autID
@@ -389,14 +410,17 @@ describe("AutID", function () {
         true
       );
     });
+=======
+>>>>>>> master
     it("Should not join one community twice", async function () {
-      await (
-        await autID
-          .connect(onboarded)
-          .mint(username1, URL, 3, 2, daoExpander.address)
-      ).wait();
       await expect(
+<<<<<<< HEAD
         autID.connect(onboarded).joinDAO(3, 10, daoExpander.address)
+=======
+        autID
+          .connect(daoMember)
+          .joinDAO(3, 10, daoExpander.address)
+>>>>>>> master
       ).to.be.revertedWith("Already a member");
     });
   });

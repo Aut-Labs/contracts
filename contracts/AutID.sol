@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
@@ -83,10 +83,7 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         require(
             IDAOExpander(daoExpander).isMemberOfOriginalDAO(
                 msg.sender
-            ) ||
-                IDAOExpander(daoExpander).hasPassedOnboarding(
-                    msg.sender
-                ),
+            ),
             "AutID: Not a member of this DAO!"
         );
 
@@ -139,10 +136,7 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         require(
             IDAOExpander(daoExpander).isMemberOfOriginalDAO(
                 msg.sender
-            ) ||
-                IDAOExpander(daoExpander).hasPassedOnboarding(
-                    msg.sender
-                ),
+            ),
             "AutID: Not a member of this DAO!"
         );
         address[] memory currentComs = holderToDAOs[msg.sender];

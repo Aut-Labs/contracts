@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 /// @title IDAOExpander
@@ -85,8 +85,6 @@ interface IDAOExpander {
         returns (bool);
 
     function join(address newMember) external;
-
-    function hasPassedOnboarding(address member) external view returns (bool);
 
     function getAllMembers() external view returns (address[] memory);
 

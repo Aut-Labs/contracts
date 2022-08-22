@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./IDAOExpander.sol";
@@ -10,7 +10,6 @@ import "./membershipCheckers/IMembershipChecker.sol";
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 contract DAOExpander is IDAOExpander {
-    event OnboardingPassed(address member);
 
     /// @notice the basic DAO data
     DAOData daoData;
@@ -24,8 +23,6 @@ contract DAOExpander is IDAOExpander {
     address[] private members;
 
     mapping(address => bool) public isMemberOfTheDAO;
-
-    mapping(address => bool) private passedOnboarding;
 
     /// @notice all the core team members
     address[] private coreTeam;
@@ -112,27 +109,11 @@ contract DAOExpander is IDAOExpander {
         interactionAddr = address(new Interaction());
     }
 
-    function hasPassedOnboarding(address member)
-        public
-        view
-        override
-        returns (bool)
-    {
-        return passedOnboarding[member];
-    }
-
-    function passOnboarding(address[] calldata members) public onlyCoreTeam {
-        for (uint256 index = 0; index < members.length; index++) {
-            passedOnboarding[members[index]] = true;
-            emit OnboardingPassed(members[index]);
-        }
-    }
-
     function join(address newMember) public override onlyAutID {
         require(!isMemberOfTheDAO[newMember], "Already a member");
         require(
-            isMemberOfOriginalDAO(newMember) || hasPassedOnboarding(newMember),
-            "Has not passed onboarding yet."
+            isMemberOfOriginalDAO(newMember),
+            "Not a member of the DAO."
         );
         isMemberOfTheDAO[newMember] = true;
         members.push(newMember);
