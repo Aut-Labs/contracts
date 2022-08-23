@@ -1,7 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "./IAutID.sol";
@@ -11,7 +12,7 @@ import "./membershipCheckers/IMembershipChecker.sol";
 /// @title AutID
 /// @notice
 /// @dev
-contract AutID is ERC721URIStorage, IAutID {
+contract AutID is ERC721URIStorageUpgradeable, IAutID {
     using Counters for Counters.Counter;
     /// @notice
     Counters.Counter private _tokenIds;
@@ -29,7 +30,12 @@ contract AutID is ERC721URIStorage, IAutID {
     mapping(uint256 => string) public override autIDToDiscordID;
     mapping(string => address) public override discordIDToAddress;
 
-    constructor() ERC721("AutID", "AUT") {}
+     function initialize()
+        public
+        initializer
+    {
+        __ERC721_init("AutID", "AUT");
+    }
 
     /// @notice AutID holders can link their DiscordID to their AutID ID
     /// @dev links the discord ID to the AutID token ID passed.

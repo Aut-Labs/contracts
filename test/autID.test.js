@@ -1,8 +1,8 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const { ethers, upgrades } = require("hardhat");
 const URL = "https://someurl.com";
-const username = 'username';
-const username1 = 'username1';
+const username = "username";
+const username1 = "username1";
 
 let daoExpander;
 let daoExpander2;
@@ -24,9 +24,7 @@ describe("AutID", function () {
       await dao.deployed();
       await dao.addMember(deployer.address);
 
-      const DAOTypes = await ethers.getContractFactory(
-        "DAOTypes"
-      );
+      const DAOTypes = await ethers.getContractFactory("DAOTypes");
       daoTypes = await DAOTypes.deploy();
       await daoTypes.deployed();
 
@@ -37,21 +35,26 @@ describe("AutID", function () {
       sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
       await sWLegacyMembershipChecker.deployed();
 
-      daoTypes.addNewMembershipChecker(
-        sWLegacyMembershipChecker.address,
-      );
+      daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
     });
     beforeEach(async function () {
-      [deployer, daoMember, daoMember2, user1, user2, user3, ...addrs] =
-        await ethers.getSigners();
+      [
+        deployer,
+        daoMember,
+        daoMember2,
+        user1,
+        user2,
+        user3,
+        ...addrs
+      ] = await ethers.getSigners();
 
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();
+
+      autID = await upgrades.deployProxy(AutID, [], { from: deployer });
       await autID.deployed();
 
-      const DAOExpander = await ethers.getContractFactory(
-        "DAOExpander"
-      );
+      const DAOExpander = await ethers.getContractFactory("DAOExpander");
 
       daoExpander = await DAOExpander.deploy(
         deployer.address,
@@ -67,7 +70,6 @@ describe("AutID", function () {
 
       await dao.addMember(daoMember.address);
       await dao.addMember(daoMember2.address);
-
     });
     it("Should fail if arguemnts are incorret", async function () {
       await expect(
@@ -100,17 +102,16 @@ describe("AutID", function () {
       );
       const tokenId = swCreatedEvent.args["tokenID"].toString();
 
-      const sw = await autID.getAutIDByOwner(
-        daoMember.address
-      );
+      const sw = await autID.getAutIDByOwner(daoMember.address);
       expect(tokenId).to.eq(sw.toString());
 
-      const swComs = await autID.getHolderDAOs(
-        daoMember.address
-      );
+      const swComs = await autID.getHolderDAOs(daoMember.address);
       expect(swComs).not.to.be.undefined;
 
-      const comData = await autID.getMembershipData(daoMember.address, daoExpander.address);
+      const comData = await autID.getMembershipData(
+        daoMember.address,
+        daoExpander.address
+      );
 
       const url = await autID.tokenURI(tokenId);
       const swUsername = await autID.autIDUsername(username);
@@ -121,8 +122,12 @@ describe("AutID", function () {
       expect(comData["daoExpanderAddress"]).to.eq(daoExpander.address);
       expect(comData["role"].toString()).to.eq("3");
       expect(comData["commitment"].toString()).to.eq("10");
-      expect(await daoExpander.isMemberOfOriginalDAO(daoMember.address)).to.eq(true);
-      expect(await daoExpander.isMemberOfExtendedDAO(daoMember.address)).to.eq(true);
+      expect(await daoExpander.isMemberOfOriginalDAO(daoMember.address)).to.eq(
+        true
+      );
+      expect(await daoExpander.isMemberOfExtendedDAO(daoMember.address)).to.eq(
+        true
+      );
     });
     it("Should not mint an AutID twice", async function () {
       await (
@@ -131,9 +136,7 @@ describe("AutID", function () {
           .mint(username, URL, 3, 10, daoExpander.address)
       ).wait();
       await expect(
-        autID
-          .connect(daoMember)
-          .mint(username, URL, 3, 10, daoExpander.address)
+        autID.connect(daoMember).mint(username, URL, 3, 10, daoExpander.address)
       ).to.be.revertedWith(
         "AutID: There is AutID already registered for this address."
       );
@@ -145,9 +148,7 @@ describe("AutID", function () {
           .mint(username, URL, 3, 10, daoExpander.address)
       ).wait();
       await expect(
-        autID
-          .connect(daoMember)
-          .mint(username, URL, 3, 10, daoExpander.address)
+        autID.connect(daoMember).mint(username, URL, 3, 10, daoExpander.address)
       ).to.be.revertedWith(
         "AutID: There is AutID already registered for this address."
       );
@@ -167,9 +168,7 @@ describe("AutID", function () {
       await dao2.deployed();
       await dao2.addMember(deployer.address);
 
-      const DAOTypes = await ethers.getContractFactory(
-        "DAOTypes"
-      );
+      const DAOTypes = await ethers.getContractFactory("DAOTypes");
       daoTypes = await DAOTypes.deploy();
       await daoTypes.deployed();
 
@@ -180,21 +179,24 @@ describe("AutID", function () {
       sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
       await sWLegacyMembershipChecker.deployed();
 
-      daoTypes.addNewMembershipChecker(
-        sWLegacyMembershipChecker.address
-      );
+      daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
     });
     beforeEach(async function () {
-      [deployer, daoMember, daoMember2, user1, user2, user3, ...addrs] =
-        await ethers.getSigners();
+      [
+        deployer,
+        daoMember,
+        daoMember2,
+        user1,
+        user2,
+        user3,
+        ...addrs
+      ] = await ethers.getSigners();
 
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();
       await autID.deployed();
 
-      const DAOExpander = await ethers.getContractFactory(
-        "DAOExpander"
-      );
+      const DAOExpander = await ethers.getContractFactory("DAOExpander");
 
       daoExpander = await DAOExpander.deploy(
         deployer.address,
@@ -230,33 +232,29 @@ describe("AutID", function () {
       ).wait();
     });
     it("Should fail if arguemnts are incorret", async function () {
-      await expect(
-        autID.joinDAO(4, 8, daoExpander.address)
-      ).to.revertedWith("Role must be between 1 and 3");
-      await expect(
-        autID.joinDAO(3, 0, daoExpander.address)
-      ).to.revertedWith("Commitment should be between 1 and 10");
-      await expect(
-        autID.joinDAO(3, 11, daoExpander.address)
-      ).to.revertedWith("Commitment should be between 1 and 10");
+      await expect(autID.joinDAO(4, 8, daoExpander.address)).to.revertedWith(
+        "Role must be between 1 and 3"
+      );
+      await expect(autID.joinDAO(3, 0, daoExpander.address)).to.revertedWith(
+        "Commitment should be between 1 and 10"
+      );
+      await expect(autID.joinDAO(3, 11, daoExpander.address)).to.revertedWith(
+        "Commitment should be between 1 and 10"
+      );
       await expect(
         autID.joinDAO(3, 8, ethers.constants.AddressZero)
       ).to.revertedWith("Missing DAO Expander");
     });
     it("Should fail if there's no AutID minted for the signer", async function () {
       await expect(
-        autID
-          .connect(user2)
-          .joinDAO(3, 10, daoExpander2.address)
+        autID.connect(user2).joinDAO(3, 10, daoExpander2.address)
       ).to.be.revertedWith(
         "AutID: There is no AutID registered for this address."
       );
     });
     it("Should fail if the signer is not a member of the DAO", async function () {
       await expect(
-        autID
-          .connect(daoMember)
-          .joinDAO(3, 10, daoExpander2.address)
+        autID.connect(daoMember).joinDAO(3, 10, daoExpander2.address)
       ).to.be.revertedWith("Not a member of this DAO!");
     });
     it("Should add the new Community to the AutID for original DAO member", async function () {
@@ -269,9 +267,7 @@ describe("AutID", function () {
       ).wait();
 
       const events = await (
-        await autID
-          .connect(daoMember2)
-          .joinDAO(2, 7, daoExpander2.address)
+        await autID.connect(daoMember2).joinDAO(2, 7, daoExpander2.address)
       ).wait();
 
       const communityJoinedEvent = events.events.find(
@@ -279,9 +275,7 @@ describe("AutID", function () {
       );
       expect(communityJoinedEvent).not.to.be.undefined;
 
-      const swComs = await autID.getHolderDAOs(
-        daoMember2.address
-      );
+      const swComs = await autID.getHolderDAOs(daoMember2.address);
       expect(swComs).not.to.be.undefined;
 
       const comData1 = await autID.getMembershipData(
@@ -292,19 +286,21 @@ describe("AutID", function () {
       const comData2 = await autID.getMembershipData(
         daoMember2.address,
         daoExpander2.address
-      )
+      );
       expect(swComs.length).to.eq(2);
       expect(comData1["daoExpanderAddress"]).to.eq(daoExpander.address);
       expect(comData1["role"].toString()).to.eq("3");
       expect(comData1["commitment"].toString()).to.eq("2");
-      expect(comData2["daoExpanderAddress"]).to.eq(
-        daoExpander2.address
-      );
+      expect(comData2["daoExpanderAddress"]).to.eq(daoExpander2.address);
       expect(comData2["role"].toString()).to.eq("2");
       expect(comData2["commitment"].toString()).to.eq("7");
 
-      expect(await daoExpander2.isMemberOfOriginalDAO(daoMember2.address)).to.eq(true);
-      expect(await daoExpander2.isMemberOfExtendedDAO(daoMember2.address)).to.eq(true);
+      expect(
+        await daoExpander2.isMemberOfOriginalDAO(daoMember2.address)
+      ).to.eq(true);
+      expect(
+        await daoExpander2.isMemberOfExtendedDAO(daoMember2.address)
+      ).to.eq(true);
     });
     it("Should not join one community twice", async function () {
       await expect(
@@ -313,7 +309,6 @@ describe("AutID", function () {
           .joinDAO(3, 10, daoExpander.address)
       ).to.be.revertedWith("Already a member");
     });
-
   });
   describe("transfer", function () {
     before(async function () {
@@ -325,9 +320,7 @@ describe("AutID", function () {
       await dao.deployed();
       await dao.addMember(deployer.address);
 
-      const DAOTypes = await ethers.getContractFactory(
-        "DAOTypes"
-      );
+      const DAOTypes = await ethers.getContractFactory("DAOTypes");
       daoTypes = await DAOTypes.deploy();
       await daoTypes.deployed();
 
@@ -338,9 +331,7 @@ describe("AutID", function () {
       sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
       await sWLegacyMembershipChecker.deployed();
 
-      daoTypes.addNewMembershipChecker(
-        sWLegacyMembershipChecker.address
-      );
+      daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
     });
     beforeEach(async function () {
       [deployer, autIDHolder1, autIDHolder2, ...addrs] =
@@ -350,9 +341,7 @@ describe("AutID", function () {
       autID = await AutID.deploy();
       await autID.deployed();
 
-      const DAOExpander = await ethers.getContractFactory(
-        "DAOExpander"
-      );
+      const DAOExpander = await ethers.getContractFactory("DAOExpander");
 
       daoExpander = await DAOExpander.deploy(
         deployer.address,
@@ -375,7 +364,9 @@ describe("AutID", function () {
     });
     it("Should fail when transferring", async function () {
       await expect(
-        autID.connect(autIDHolder1).transferFrom(autIDHolder1.address, autIDHolder2.address, 0)
+        autID
+          .connect(autIDHolder1)
+          .transferFrom(autIDHolder1.address, autIDHolder2.address, 0)
       ).to.revertedWith("AutID: AutID transfer disabled");
     });
   });
