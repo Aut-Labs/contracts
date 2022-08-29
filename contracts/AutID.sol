@@ -98,10 +98,10 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         autIDUsername[username] = msg.sender;
         _tokenIds.increment();
 
-        IDAOExpander(daoExpander).join(_msgSender());
+        IDAOExpander(daoExpander).join(msg.sender);
 
-        emit AutIDCreated(_msgSender(), tokenId);
-        emit DAOJoined(daoExpander, _msgSender());
+        emit AutIDCreated(msg.sender, tokenId);
+        emit DAOJoined(daoExpander, msg.sender);
     }
 
     /// @notice associates an AutID to a new DAO
