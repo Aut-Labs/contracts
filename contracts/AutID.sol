@@ -1,4 +1,5 @@
 //SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
@@ -18,7 +19,8 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
     Counters.Counter private _tokenIds;
 
     // Mapping from token ID to an active DAO that the AutID holder is a part of
-    mapping(address => mapping(address => DAOMember)) private holderToDAOMembershipData;
+    mapping(address => mapping(address => DAOMember))
+        private holderToDAOMembershipData;
     mapping(address => address[]) holderToDAOs;
 
     // Mapping from autIDOwner to token ID
@@ -30,10 +32,7 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
     mapping(uint256 => string) public override autIDToDiscordID;
     mapping(string => address) public override discordIDToAddress;
 
-     function initialize()
-        public
-        initializer
-    {
+    function initialize() public initializer {
         __ERC721_init("AutID", "AUT");
     }
 
@@ -67,10 +66,7 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
             commitment > 0 && commitment < 11,
             "AutID: Commitment should be between 1 and 10"
         );
-        require(
-            daoExpander != address(0),
-            "AutID: Missing DAO Expander"
-        );
+        require(daoExpander != address(0), "AutID: Missing DAO Expander");
         require(
             balanceOf(msg.sender) == 0,
             "AutID: There is AutID already registered for this address."
@@ -81,9 +77,7 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         );
 
         require(
-            IDAOExpander(daoExpander).isMemberOfOriginalDAO(
-                msg.sender
-            ),
+            IDAOExpander(daoExpander).isMemberOfOriginalDAO(msg.sender),
             "AutID: Not a member of this DAO!"
         );
 
@@ -104,10 +98,10 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         autIDUsername[username] = msg.sender;
         _tokenIds.increment();
 
-        IDAOExpander(daoExpander).join(msg.sender);
+        IDAOExpander(daoExpander).join(_msgSender());
 
-        emit AutIDCreated(msg.sender, tokenId);
-        emit DAOJoined(daoExpander, msg.sender);
+        emit AutIDCreated(_msgSender(), tokenId);
+        emit DAOJoined(daoExpander, _msgSender());
     }
 
     /// @notice associates an AutID to a new DAO
@@ -125,20 +119,12 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
             commitment > 0 && commitment < 11,
             "AutID: Commitment should be between 1 and 10"
         );
-        require(
-            daoExpander != address(0),
-            "AutID: Missing DAO Expander"
-        );
+        require(daoExpander != address(0), "AutID: Missing DAO Expander");
         require(
             balanceOf(msg.sender) == 1,
             "AutID: There is no AutID registered for this address."
         );
-        require(
-            IDAOExpander(daoExpander).isMemberOfOriginalDAO(
-                msg.sender
-            ),
-            "AutID: Not a member of this DAO!"
-        );
+
         address[] memory currentComs = holderToDAOs[msg.sender];
         for (uint256 index = 0; index < currentComs.length; index++) {
             require(
@@ -146,6 +132,28 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
                 "AutID: Already a member"
             );
         }
+
+        require(
+            commitment >= IDAOExpander(daoExpander).getDAOData().commitment,
+            "Commitment lower than the DAOs min commitment"
+        );
+
+        address[] memory userDAOs = holderToDAOs[msg.sender];
+        uint256 totalCommitment = 0;
+        for (uint256 index = 0; index < userDAOs.length; index++) {
+            totalCommitment += holderToDAOMembershipData[msg.sender][
+                userDAOs[index]
+            ].commitment;
+        }
+        require(
+            totalCommitment + commitment < 11,
+            "Maximum commitment reached"
+        );
+
+        require(
+            IDAOExpander(daoExpander).isMemberOfOriginalDAO(msg.sender),
+            "AutID: Not a member of this DAO!"
+        );
 
         holderToDAOMembershipData[msg.sender][daoExpander] = DAOMember(
             daoExpander,
@@ -187,11 +195,10 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
 
     function setMetadataUri(string calldata metadataUri) public override {
         require(balanceOf(msg.sender) == 1, "AutID: Doesn't have an AutID.");
-        uint tokenId = _autIDByOwner[msg.sender];
+        uint256 tokenId = _autIDByOwner[msg.sender];
         _setTokenURI(tokenId, metadataUri);
 
         emit MetadataUriSet(tokenId, metadataUri);
-
     }
 
     /// @notice gets all communities the AutID holder is a member of
