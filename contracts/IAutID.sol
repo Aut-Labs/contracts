@@ -10,9 +10,13 @@ interface IAutID is IERC721Upgradeable {
     event AutIDCreated(address owner, uint256 tokenID);
     event DAOJoined(address daoExpanderAddress, address member);
     event DAOWithdrown(address daoExpanderAddress, address member);
-    event CommitmentUpdated(address daoExpanderAddress, address member, uint newCommitment);
+    event CommitmentUpdated(
+        address daoExpanderAddress,
+        address member,
+        uint256 newCommitment
+    );
     event DiscordIDConnectedToAutID();
-    event MetadataUriSet(uint tokenId, string metadataUri);
+    event MetadataUriSet(uint256 tokenId, string metadataUri);
 
     struct DAOMember {
         address daoExpanderAddress;
@@ -20,6 +24,7 @@ interface IAutID is IERC721Upgradeable {
         uint256 commitment;
         bool isActive;
     }
+
     /// @notice mints a new AutID NFT ID
     /// @dev each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the DAO passed.
     /// @param url the NFT metadata that holds username, avatar
@@ -53,8 +58,8 @@ interface IAutID is IERC721Upgradeable {
         view
         returns (address[] memory daos);
 
-    /// @notice returns NFT ID of the holder 
-    /// @param autIDOwner the user address 
+    /// @notice returns NFT ID of the holder
+    /// @param autIDOwner the user address
     /// @return the token ID of their NFT ID
     function getAutIDByOwner(address autIDOwner)
         external
@@ -75,21 +80,24 @@ interface IAutID is IERC721Upgradeable {
     /// @param discordID the discord ID of the AutID holder
     function addDiscordIDToAutID(string calldata discordID) external;
 
-    function getMembershipData(address autIDHolder, address daoExpander) external view returns(DAOMember memory);
+    function getMembershipData(address autIDHolder, address daoExpander)
+        external
+        view
+        returns (DAOMember memory);
 
-    function withdraw(
-        address daoExpander
-    ) external;
+    function getTotalCommitment(address autIDHolder)
+        external
+        view
+        returns (uint256);
 
-    function editCommitment(
-        address daoExpander,
-        uint commitment
-    ) external;
+    function withdraw(address daoExpander) external;
 
-    function discordIDToAddress(
-        string calldata discordID
-    ) external view returns(address);
+    function editCommitment(address daoExpander, uint256 commitment) external;
+
+    function discordIDToAddress(string calldata discordID)
+        external
+        view
+        returns (address);
 
     function setMetadataUri(string calldata metadataUri) external;
-
 }

@@ -187,6 +187,31 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
             holderToDAOMembershipData[msg.sender][daoExpander].isActive,
             "AutID: Not a member"
         );
+
+        require(
+            newCommitment > 0 && newCommitment < 11,
+            "AutID: Commitment should be between 1 and 10"
+        );
+
+        require(
+            newCommitment >= IDAOExpander(daoExpander).getDAOData().commitment,
+            "Commitment lower than the DAOs min commitment"
+        );
+
+        address[] memory userDAOs = holderToDAOs[msg.sender];
+        uint256 totalCommitment = 0;
+        for (uint256 index = 0; index < userDAOs.length; index++) {
+            totalCommitment += holderToDAOMembershipData[msg.sender][
+                userDAOs[index]
+            ].commitment;
+        }
+        require(
+            totalCommitment +
+                newCommitment -
+                holderToDAOMembershipData[msg.sender][daoExpander].commitment <
+                11,
+            "Maximum commitment reached"
+        );
         holderToDAOMembershipData[msg.sender][daoExpander]
             .commitment = newCommitment;
 
@@ -237,6 +262,27 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
             "AutID: The AutID owner is invalid."
         );
         return _autIDByOwner[autIDOwner];
+    }
+
+    function getTotalCommitment(address autIDHolder)
+        public
+        view
+        override
+        returns (uint256)
+    {
+        require(
+            balanceOf(autIDHolder) == 1,
+            "AutID: The AutID owner is invalid."
+        );
+        address[] memory userDAOs = holderToDAOs[autIDHolder];
+
+        uint256 totalCommitment = 0;
+        for (uint256 index = 0; index < userDAOs.length; index++) {
+            totalCommitment += holderToDAOMembershipData[autIDHolder][
+                userDAOs[index]
+            ].commitment;
+        }
+        return totalCommitment;
     }
 
     /// ERC 721 s
