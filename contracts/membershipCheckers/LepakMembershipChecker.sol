@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./IMembershipChecker.sol";
-import "../daoStandards/ILepakDao.sol";
+import "../daoStandards/ILepakDAO.sol";
 
 /// @title LepakMembershipChecker
 /// @notice Implementation of IMembershipChecker for LepakDAO
