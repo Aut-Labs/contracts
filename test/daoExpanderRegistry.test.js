@@ -59,6 +59,8 @@ describe("DAOExpanderRegistry", function () {
       );
 
       daoExpanderRegistry = await DAOExpanderRegistry.deploy(
+        // TODO: change
+        autID.address,
         autID.address,
         daoTypes.address,
         daoExpanderFactory.address
