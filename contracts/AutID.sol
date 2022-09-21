@@ -81,6 +81,7 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
             "AutID: Not a member of this DAO!"
         );
 
+        string memory lowerCase = _toLower(username);
         uint256 tokenId = _tokenIds.current();
 
         _safeMint(msg.sender, tokenId);
@@ -95,7 +96,7 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         holderToDAOs[msg.sender].push(daoExpander);
 
         _autIDByOwner[msg.sender] = tokenId;
-        autIDUsername[username] = msg.sender;
+        autIDUsername[lowerCase] = msg.sender;
         _tokenIds.increment();
 
         IDAOExpander(daoExpander).join(msg.sender);
@@ -285,6 +286,15 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         return totalCommitment;
     }
 
+    function getAutIDHolderByUsername(string memory username)
+        public
+        view
+        override
+        returns (address)
+    {
+        return autIDUsername[_toLower(username)];
+    }
+
     /// ERC 721 s
 
     /// @notice ERC721 _transfer() Disabled
@@ -308,5 +318,29 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         bytes memory data
     ) internal override {
         require(false, "AutID: AutID transfer disabled");
+    }
+
+    // Function used to lowercase a string
+    function _toLower(string memory _base)
+        internal
+        pure
+        returns (string memory) {
+        bytes memory _baseBytes = bytes(_base);
+        for (uint i = 0; i < _baseBytes.length; i++) {
+            _baseBytes[i] = _lower(_baseBytes[i]);
+        }
+        return string(_baseBytes);
+    }
+
+    function _lower(bytes1 _b1)
+        private
+        pure
+        returns (bytes1) {
+
+        if (_b1 >= 0x41 && _b1 <= 0x5A) {
+            return bytes1(uint8(_b1) + 32);
+        }
+
+        return _b1;
     }
 }

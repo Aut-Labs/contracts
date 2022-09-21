@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers, upgrades } = require("hardhat");
 const URL = "https://someurl.com";
-const username = "username";
+const username = "Username";
 const username1 = "username1";
 
 let daoExpander;
@@ -107,10 +107,12 @@ describe("AutID", function () {
       );
 
       const url = await autID.tokenURI(tokenId);
-      const swUsername = await autID.autIDUsername(username);
+      const swUsername = await autID.getAutIDHolderByUsername(username);
+      const swUsernameLowercase = await autID.getAutIDHolderByUsername(username.toLowerCase());
 
       expect(url).to.eq(URL);
       expect(swUsername).to.eq(daoMember.address);
+      expect(swUsernameLowercase).to.eq(daoMember.address);
       expect(swComs.length).to.eq(1);
       expect(comData["daoExpanderAddress"]).to.eq(daoExpander.address);
       expect(comData["role"].toString()).to.eq("3");
