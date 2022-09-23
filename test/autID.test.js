@@ -238,11 +238,6 @@ describe("AutID", function () {
         "AutID: There is no AutID registered for this address."
       );
     });
-    it("Should fail if the maximum commitment is reached", async function () {
-      await expect(
-        autID.connect(daoMember).joinDAO(3, 6, daoExpander2.address)
-      ).to.be.revertedWith("Maximum commitment reached");
-    });
     it("Should fail if the selected commitment is lower than DAO minimum", async function () {
       await expect(
         autID.connect(daoMember).joinDAO(3, 2, daoExpander2.address)
@@ -395,11 +390,6 @@ describe("AutID", function () {
       await expect(
         autID.connect(daoMember).editCommitment(daoExpander.address, 2)
       ).to.be.revertedWith("Commitment lower than the DAOs min commitment");
-    });
-    it("Should fail if the maximum commitment is reached", async function () {
-      await expect(
-        autID.connect(daoMember).editCommitment(daoExpander.address, 8)
-      ).to.be.revertedWith("Maximum commitment reached");
     });
     it("Should edit the commitment successfully", async function () {
       const totalComBefore = await autID.getTotalCommitment(
