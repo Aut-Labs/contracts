@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers, upgrades } = require("hardhat");
 const URL = "https://someurl.com";
-const username = "username";
+const username = "Username";
 const username1 = "username1";
 
 let daoExpander;
@@ -106,10 +106,12 @@ describe("AutID", function () {
       );
 
       const url = await autID.tokenURI(tokenId);
-      const swUsername = await autID.autIDUsername(username);
+      const swUsername = await autID.getAutIDHolderByUsername(username);
+      const swUsernameLowercase = await autID.getAutIDHolderByUsername(username.toLowerCase());
 
       expect(url).to.eq(URL);
       expect(swUsername).to.eq(daoMember.address);
+      expect(swUsernameLowercase).to.eq(daoMember.address);
       expect(swComs.length).to.eq(1);
       expect(comData["daoExpanderAddress"]).to.eq(daoExpander.address);
       expect(comData["role"].toString()).to.eq("3");
@@ -236,11 +238,6 @@ describe("AutID", function () {
       ).to.be.revertedWith(
         "AutID: There is no AutID registered for this address."
       );
-    });
-    it("Should fail if the maximum commitment is reached", async function () {
-      await expect(
-        autID.connect(daoMember).joinDAO(3, 6, daoExpander2.address)
-      ).to.be.revertedWith("Maximum commitment reached");
     });
     it("Should fail if the selected commitment is lower than DAO minimum", async function () {
       await expect(
@@ -394,11 +391,6 @@ describe("AutID", function () {
       await expect(
         autID.connect(daoMember).editCommitment(daoExpander.address, 2)
       ).to.be.revertedWith("Commitment lower than the DAOs min commitment");
-    });
-    it("Should fail if the maximum commitment is reached", async function () {
-      await expect(
-        autID.connect(daoMember).editCommitment(daoExpander.address, 8)
-      ).to.be.revertedWith("Maximum commitment reached");
     });
     it("Should edit the commitment successfully", async function () {
       const totalComBefore = await autID.getTotalCommitment(

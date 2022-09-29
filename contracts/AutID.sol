@@ -83,6 +83,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
             "AutID: Not a member of this DAO!"
         );
 
+        string memory lowerCase = _toLower(username);
         uint256 tokenId = _tokenIds.current();
 
         _safeMint(_msgSender(), tokenId);
@@ -97,7 +98,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         holderToDAOs[_msgSender()].push(daoExpander);
 
         _autIDByOwner[_msgSender()] = tokenId;
-        autIDUsername[username] = _msgSender();
+        autIDUsername[lowerCase] = _msgSender();
         _tokenIds.increment();
 
         IDAOExpander(daoExpander).join(_msgSender());
@@ -138,18 +139,6 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         require(
             commitment >= IDAOExpander(daoExpander).getDAOData().commitment,
             "Commitment lower than the DAOs min commitment"
-        );
-
-        address[] memory userDAOs = holderToDAOs[_msgSender()];
-        uint256 totalCommitment = 0;
-        for (uint256 index = 0; index < userDAOs.length; index++) {
-            totalCommitment += holderToDAOMembershipData[_msgSender()][
-                userDAOs[index]
-            ].commitment;
-        }
-        require(
-            totalCommitment + commitment < 11,
-            "Maximum commitment reached"
         );
 
         require(
@@ -200,21 +189,6 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
             "Commitment lower than the DAOs min commitment"
         );
 
-        address[] memory userDAOs = holderToDAOs[_msgSender()];
-        uint256 totalCommitment = 0;
-        for (uint256 index = 0; index < userDAOs.length; index++) {
-            totalCommitment += holderToDAOMembershipData[_msgSender()][
-                userDAOs[index]
-            ].commitment;
-        }
-        require(
-            totalCommitment +
-                newCommitment -
-                holderToDAOMembershipData[_msgSender()][daoExpander]
-                    .commitment <
-                11,
-            "Maximum commitment reached"
-        );
         holderToDAOMembershipData[_msgSender()][daoExpander]
             .commitment = newCommitment;
 
@@ -288,6 +262,19 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         return totalCommitment;
     }
 
+    function getAutIDHolderByUsername(string memory username)
+        public
+        view
+        override
+        returns (address)
+    {
+        return autIDUsername[_toLower(username)];
+    }
+
+    function getNextTokenID() public view override returns (uint256) {
+        return _tokenIds.current();
+    }
+
     /// ERC 721 s
 
     /// @notice ERC721 _transfer() Disabled
@@ -329,5 +316,24 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         returns (bytes memory)
     {
         return ERC2771Recipient._msgData();
+    // Function used to lowercase a string
+    function _toLower(string memory _base)
+        internal
+        pure
+        returns (string memory)
+    {
+        bytes memory _baseBytes = bytes(_base);
+        for (uint256 i = 0; i < _baseBytes.length; i++) {
+            _baseBytes[i] = _lower(_baseBytes[i]);
+        }
+        return string(_baseBytes);
+    }
+
+    function _lower(bytes1 _b1) private pure returns (bytes1) {
+        if (_b1 >= 0x41 && _b1 <= 0x5A) {
+            return bytes1(uint8(_b1) + 32);
+        }
+
+        return _b1;
     }
 }
