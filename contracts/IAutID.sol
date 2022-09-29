@@ -102,4 +102,5 @@ interface IAutID is IERC721Upgradeable {
     function setMetadataUri(string calldata metadataUri) external;
 
     function getAutIDHolderByUsername(string memory username) external view returns (address);
+    function getNextTokenID() external view returns(uint);
 }
