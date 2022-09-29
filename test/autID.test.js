@@ -42,9 +42,8 @@ describe("AutID", function () {
         await ethers.getSigners();
 
       const AutID = await ethers.getContractFactory("AutID");
-      autID = await AutID.deploy();
-
-      autID = await upgrades.deployProxy(AutID, [], { from: deployer });
+      // TODO: change with trusted forwarde
+      autID = await upgrades.deployProxy(AutID, [deployer.address], { from: deployer });
       await autID.deployed();
 
       const DAOExpander = await ethers.getContractFactory("DAOExpander");

@@ -4,8 +4,9 @@ pragma solidity ^0.8.0;
 import "./IDAOExpanderFactory.sol";
 import "./membershipCheckers/IDAOTypes.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
+import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
-contract DAOExpanderRegistry {
+contract DAOExpanderRegistry is ERC2771Recipient {
     event DAOExpanderDeployed(address newDAOExpander);
 
     mapping(address => address[]) daoExpanderDeployers;
@@ -15,7 +16,7 @@ contract DAOExpanderRegistry {
     address public daoTypes;
     address private daoExpanderFactory;
 
-    constructor(address _autIDAddr, address _daoTypes, address _daoExpanderFactory) {
+    constructor(address trustedForwarder, address _autIDAddr, address _daoTypes, address _daoExpanderFactory) {
         require(_autIDAddr != address(0), "AutID Address not passed");
         require(_daoTypes != address(0), "DAOTypes Address not passed");
         require(_daoExpanderFactory != address(0), "DAOExpanderFactory address not passed");
@@ -23,6 +24,7 @@ contract DAOExpanderRegistry {
         autIDAddr = _autIDAddr;
         daoTypes = _daoTypes;
         daoExpanderFactory = _daoExpanderFactory;
+        _setTrustedForwarder(trustedForwarder);
     }
 
     /**
@@ -51,11 +53,11 @@ contract DAOExpanderRegistry {
                 IDAOTypes(daoTypes).getMembershipCheckerAddress(
                     daoType
                 )
-            ).isMember(daoAddr, msg.sender),
+            ).isMember(daoAddr, _msgSender()),
             "AutID: Not a member of this DAO!"
         );
         address newDAOExpanderAddress = IDAOExpanderFactory(daoExpanderFactory).deployDAOExpander(
-            msg.sender,
+            _msgSender(),
             autIDAddr,
             daoTypes,
             daoType,
@@ -65,7 +67,7 @@ contract DAOExpanderRegistry {
             commitment
         );
         daoExpanders.push(newDAOExpanderAddress);
-        daoExpanderDeployers[msg.sender].push(newDAOExpanderAddress);
+        daoExpanderDeployers[_msgSender()].push(newDAOExpanderAddress);
 
         emit DAOExpanderDeployed(newDAOExpanderAddress);
 
