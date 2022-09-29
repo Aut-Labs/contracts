@@ -316,6 +316,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         returns (bytes memory)
     {
         return ERC2771Recipient._msgData();
+    }
     // Function used to lowercase a string
     function _toLower(string memory _base)
         internal
