@@ -269,6 +269,10 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         return autIDUsername[_toLower(username)];
     }
 
+    function getNextTokenID() public view override returns (uint256) {
+        return _tokenIds.current();
+    }
+
     /// ERC 721 s
 
     /// @notice ERC721 _transfer() Disabled
@@ -298,19 +302,16 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
     function _toLower(string memory _base)
         internal
         pure
-        returns (string memory) {
+        returns (string memory)
+    {
         bytes memory _baseBytes = bytes(_base);
-        for (uint i = 0; i < _baseBytes.length; i++) {
+        for (uint256 i = 0; i < _baseBytes.length; i++) {
             _baseBytes[i] = _lower(_baseBytes[i]);
         }
         return string(_baseBytes);
     }
 
-    function _lower(bytes1 _b1)
-        private
-        pure
-        returns (bytes1) {
-
+    function _lower(bytes1 _b1) private pure returns (bytes1) {
         if (_b1 >= 0x41 && _b1 <= 0x5A) {
             return bytes1(uint8(_b1) + 32);
         }
