@@ -285,6 +285,10 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
         return totalCommitment;
     }
 
+    function getNextTokenID() public view override returns(uint) {
+        return _tokenIds.current();
+    }
+
     /// ERC 721 s
 
     /// @notice ERC721 _transfer() Disabled
