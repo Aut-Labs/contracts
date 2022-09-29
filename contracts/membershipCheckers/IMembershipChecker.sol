@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./IMembershipChecker.sol";
  
 /// @title IMembershipChecker
-/// @notice Each DAO standard supported by SW should have an implementation of this interface for their DAO contract
+/// @notice Each DAO standard supported by Aut should have an implementation of this interface for their DAO contract
 /// @dev Implement using the logic of the specific DAO contract 
 interface IMembershipChecker {
     /// @notice Implements a check if an address is a member of a specific DAO standard

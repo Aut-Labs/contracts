@@ -6,9 +6,12 @@ import "./IDAOExpander.sol";
 
 contract Interaction {
     event InteractionIndexIncreased(address member, uint256 total);
+    event AllowedAddress(address addr);
     using Counters for Counters.Counter;
 
     Counters.Counter private idCounter;
+
+    mapping(address => bool) isAllowed;
 
     struct InteractionModel {
         address member;
@@ -16,24 +19,29 @@ contract Interaction {
         address contractAddress;
     }
 
-    modifier onlyActivitiesWhitelisted() {
-        bool whitelisted = IDAOExpander(daoExpander)
-            .isActivityWhitelisted(msg.sender);
-        require(whitelisted, 'Not whitelisted address');
+    modifier onlyAllowed() {
+        require(isAllowed[msg.sender], 'Not allowed to transfer interactions');
         _;
     }
 
     mapping(uint256 => InteractionModel) interactions;
     mapping(address => uint256) interactionsIndex;
 
-    address public daoExpander;
+    IDAOExpander public daoExpander;
     address public discordBotAddress;
 
     constructor() {
-        daoExpander = msg.sender;
+        daoExpander = IDAOExpander(msg.sender);
     }
 
-    function addInteraction(uint256 activityID, address member) public onlyActivitiesWhitelisted {
+    function allowAccess(address addr) public {
+        require(daoExpander.isAdmin(msg.sender), 'Not an admin');
+        isAllowed[addr] = true;
+
+        emit AllowedAddress(addr);
+    }
+
+    function addInteraction(uint256 activityID, address member) public onlyAllowed {
         InteractionModel memory model = InteractionModel(member, activityID, msg.sender);
 
         idCounter.increment();

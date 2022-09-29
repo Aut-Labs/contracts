@@ -7,6 +7,8 @@ let daoTypes;
 let sWLegacyMembershipChecker;
 let autID;
 let deployer;
+let admin1;
+let admin2;
 
 describe("DAOExpander", function () {
   describe("deployment", function () {
@@ -23,9 +25,7 @@ describe("DAOExpander", function () {
       await dao.deployed();
       await dao.addMember(deployer.address);
 
-      const DAOTypes = await ethers.getContractFactory(
-        "DAOTypes"
-      );
+      const DAOTypes = await ethers.getContractFactory("DAOTypes");
       daoTypes = await DAOTypes.deploy();
       await daoTypes.deployed();
 
@@ -36,14 +36,10 @@ describe("DAOExpander", function () {
       sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
       await sWLegacyMembershipChecker.deployed();
 
-      daoTypes.addNewMembershipChecker(
-        sWLegacyMembershipChecker.address
-      );
+      daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
     });
     it("Should fail if arguemnts are incorret", async function () {
-      const DAOExpander = await ethers.getContractFactory(
-        "DAOExpander"
-      );
+      const DAOExpander = await ethers.getContractFactory("DAOExpander");
       await expect(
         DAOExpander.deploy(
           deployer.address,
@@ -132,9 +128,7 @@ describe("DAOExpander", function () {
       ).to.be.revertedWith("Commitment should be between 1 and 10");
     });
     it("Should deploy a DAOExpander", async function () {
-      const DAOExpander = await ethers.getContractFactory(
-        "DAOExpander"
-      );
+      const DAOExpander = await ethers.getContractFactory("DAOExpander");
       daoExpander = await DAOExpander.deploy(
         deployer.address,
         autID.address,
@@ -158,9 +152,7 @@ describe("DAOExpander", function () {
       await community.deployed();
       await community.addMember(deployer.address);
 
-      const DAOTypes = await ethers.getContractFactory(
-        "DAOTypes"
-      );
+      const DAOTypes = await ethers.getContractFactory("DAOTypes");
       daoTypes = await DAOTypes.deploy();
       await daoTypes.deployed();
 
@@ -171,13 +163,9 @@ describe("DAOExpander", function () {
       sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
       await sWLegacyMembershipChecker.deployed();
 
-      daoTypes.addNewMembershipChecker(
-        sWLegacyMembershipChecker.address
-      );
+      daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
 
-      const DAOExpander = await ethers.getContractFactory(
-        "DAOExpander"
-      );
+      const DAOExpander = await ethers.getContractFactory("DAOExpander");
       daoExpander = await DAOExpander.deploy(
         deployer.address,
         autID.address,
@@ -197,9 +185,9 @@ describe("DAOExpander", function () {
       await daoExpander.addURL("https://test1.test");
       const urls = await daoExpander.getURLs();
 
-      expect(
-        await daoExpander.isURLListed("https://test1.test")
-      ).to.equal(true);
+      expect(await daoExpander.isURLListed("https://test1.test")).to.equal(
+        true
+      );
       expect(urls.length).to.equal(1);
       expect(urls[0]).to.equal("https://test1.test");
     });
@@ -207,9 +195,9 @@ describe("DAOExpander", function () {
       await daoExpander.removeURL("https://test1.test");
       const urls = await daoExpander.getURLs();
 
-      expect(
-        await daoExpander.isURLListed("https://test1.test")
-      ).to.equal(false);
+      expect(await daoExpander.isURLListed("https://test1.test")).to.equal(
+        false
+      );
       expect(urls.length).to.equal(0);
     });
     it("Should add 3 more URLs to the list", async () => {
@@ -218,29 +206,29 @@ describe("DAOExpander", function () {
       await daoExpander.addURL("https://test3.test");
       const urls = await daoExpander.getURLs();
 
-      expect(
-        await daoExpander.isURLListed("https://test1.test")
-      ).to.equal(true);
-      expect(
-        await daoExpander.isURLListed("https://test2.test")
-      ).to.equal(true);
-      expect(
-        await daoExpander.isURLListed("https://test3.test")
-      ).to.equal(true);
+      expect(await daoExpander.isURLListed("https://test1.test")).to.equal(
+        true
+      );
+      expect(await daoExpander.isURLListed("https://test2.test")).to.equal(
+        true
+      );
+      expect(await daoExpander.isURLListed("https://test3.test")).to.equal(
+        true
+      );
       expect(urls.length).to.equal(3);
       expect(urls[0]).to.equal("https://test1.test");
       expect(urls[1]).to.equal("https://test2.test");
       expect(urls[2]).to.equal("https://test3.test");
     });
     it("Should not allow adding already existing URL to the list", async () => {
-      await expect(
-        daoExpander.addURL("https://test2.test")
-      ).to.be.revertedWith("url already exists");
+      await expect(daoExpander.addURL("https://test2.test")).to.be.revertedWith(
+        "url already exists"
+      );
     });
     it("Should return false when URL is not listed", async () => {
-      expect(
-        await daoExpander.isURLListed("https://test4.test")
-      ).to.equal(false);
+      expect(await daoExpander.isURLListed("https://test4.test")).to.equal(
+        false
+      );
       expect(await daoExpander.isURLListed("")).to.equal(false);
     });
     it("Should not allow removing of non existing URL", async () => {
@@ -255,15 +243,15 @@ describe("DAOExpander", function () {
       await daoExpander.removeURL("https://test2.test");
       const urls = await daoExpander.getURLs();
 
-      expect(
-        await daoExpander.isURLListed("https://test1.test")
-      ).to.equal(true);
-      expect(
-        await daoExpander.isURLListed("https://test2.test")
-      ).to.equal(false);
-      expect(
-        await daoExpander.isURLListed("https://test3.test")
-      ).to.equal(true);
+      expect(await daoExpander.isURLListed("https://test1.test")).to.equal(
+        true
+      );
+      expect(await daoExpander.isURLListed("https://test2.test")).to.equal(
+        false
+      );
+      expect(await daoExpander.isURLListed("https://test3.test")).to.equal(
+        true
+      );
       expect(urls.length).to.equal(2);
       expect(urls[0]).to.equal("https://test1.test");
       expect(urls[1]).to.equal("https://test3.test");
@@ -272,15 +260,15 @@ describe("DAOExpander", function () {
       await daoExpander.removeURL("https://test3.test");
       const urls = await daoExpander.getURLs();
 
-      expect(
-        await daoExpander.isURLListed("https://test1.test")
-      ).to.equal(true);
-      expect(
-        await daoExpander.isURLListed("https://test2.test")
-      ).to.equal(false);
-      expect(
-        await daoExpander.isURLListed("https://test3.test")
-      ).to.equal(false);
+      expect(await daoExpander.isURLListed("https://test1.test")).to.equal(
+        true
+      );
+      expect(await daoExpander.isURLListed("https://test2.test")).to.equal(
+        false
+      );
+      expect(await daoExpander.isURLListed("https://test3.test")).to.equal(
+        false
+      );
       expect(urls.length).to.equal(1);
       expect(urls[0]).to.equal("https://test1.test");
     });
@@ -288,18 +276,115 @@ describe("DAOExpander", function () {
       await daoExpander.addURL("https://test2.test");
       const urls = await daoExpander.getURLs();
 
-      expect(
-        await daoExpander.isURLListed("https://test1.test")
-      ).to.equal(true);
-      expect(
-        await daoExpander.isURLListed("https://test2.test")
-      ).to.equal(true);
-      expect(
-        await daoExpander.isURLListed("https://test3.test")
-      ).to.equal(false);
+      expect(await daoExpander.isURLListed("https://test1.test")).to.equal(
+        true
+      );
+      expect(await daoExpander.isURLListed("https://test2.test")).to.equal(
+        true
+      );
+      expect(await daoExpander.isURLListed("https://test3.test")).to.equal(
+        false
+      );
       expect(urls.length).to.equal(2);
       expect(urls[0]).to.equal("https://test1.test");
       expect(urls[1]).to.equal("https://test2.test");
+    });
+  });
+  describe.only("Admins", async () => {
+    before(async function () {
+      [dep, notAMem, ad1, ad2, ...addrs] = await ethers.getSigners();
+      deployer = dep;
+      admin1 = ad1;
+      admin2 = ad2;
+
+      const AutID = await ethers.getContractFactory("AutID");
+      autID = await AutID.deploy();
+      await autID.deployed();
+
+      const DAO = await ethers.getContractFactory("SWLegacyDAO");
+      dao = await DAO.deploy();
+      await dao.deployed();
+      await dao.addMember(deployer.address);
+
+      const DAOTypes = await ethers.getContractFactory("DAOTypes");
+      daoTypes = await DAOTypes.deploy();
+      await daoTypes.deployed();
+
+      const SWLegacyMembershipChecker = await ethers.getContractFactory(
+        "SWLegacyMembershipChecker"
+      );
+
+      sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
+      await sWLegacyMembershipChecker.deployed();
+
+      daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
+
+      const DAOExpander = await ethers.getContractFactory("DAOExpander");
+      daoExpander = await DAOExpander.deploy(
+        deployer.address,
+        autID.address,
+        daoTypes.address,
+        1,
+        dao.address,
+        1,
+        URL,
+        10
+      );
+
+      await daoExpander.deployed();
+
+      expect(daoExpander.address).to.not.be.null;
+    });
+    it("Should fail if the owner tries to add someone to the admin list if not a member", async () => {
+      expect(daoExpander.addAdmin(admin1.address)).to.be.revertedWith(
+        "Not a member"
+      );
+    });
+    it("Should succeed when the owner adds new admin", async () => {
+      await (await dao.addMember(admin1.address)).wait();
+      await (await autID
+        .connect(admin1)
+        .mint("username", "URL", 3, 10, daoExpander.address)).wait();
+
+      await daoExpander.addAdmin(admin1.address);
+      const admins = await daoExpander.getAdmins();
+      expect(admins.length).to.eq(2);
+      expect(admins[0]).to.eq(deployer.address);
+      expect(admins[1]).to.eq(admin1.address);
+    });
+    it("Should succeed when an admin adds new admins to the whitelist", async () => {
+      await (await dao.addMember(admin2.address)).wait();
+      await (await autID
+        .connect(admin2)
+        .mint("username1", "URL", 3, 10, daoExpander.address)).wait();
+
+      await daoExpander.connect(admin1).addAdmin(admin2.address);
+      const admins = await daoExpander.getAdmins();
+      expect(admins.length).to.eq(3);
+      expect(admins[0]).to.eq(deployer.address);
+      expect(admins[1]).to.eq(admin1.address);
+      expect(admins[2]).to.eq(admin2.address);
+    });
+    it("Should remove an admin correctly", async () => {
+      const a =await (await daoExpander.connect(admin2).removeAdmin(admin1.address)).wait();
+      const admins = await daoExpander.getAdmins();
+      expect(admins[0]).to.eq(deployer.address);
+      expect(admins[1]).to.eq(ethers.constants.AddressZero);
+      expect(admins[2]).to.eq(admin2.address);
+      expect(await daoExpander.isAdmin(admin2.address)).to.be.true;
+      expect(await daoExpander.isAdmin(admin1.address)).to.be.false;
+    });
+    it("Should fail if unlisted core team member attepts to add other core team members", async () => {
+      await daoExpander.connect(admin2).removeAdmin(admin1.address);
+      expect(
+        daoExpander.connect(admin1).addAdmin(admin2.address)
+      ).to.be.revertedWith("Only admin!");
+    });
+    it("Should fail if an admin tries to add someone that's not a member to the admins", async () => {
+      await daoExpander.connect(admin2).removeAdmin(admin1.address);
+      expect(
+        daoExpander.connect(admin1).addAdmin(admin2.address)
+      ).to.be.revertedWith("Only admin!");
     });
   });
 });

@@ -13,8 +13,8 @@ contract DAOExpanderRegistry is ERC2771Recipient {
      
     address[] public daoExpanders;
     address public autIDAddr;
-    address public daoTypes;
-    address private daoExpanderFactory;
+    IDAOTypes public daoTypes;
+    IDAOExpanderFactory private daoExpanderFactory;
 
     constructor(address trustedForwarder, address _autIDAddr, address _daoTypes, address _daoExpanderFactory) {
         require(_autIDAddr != address(0), "AutID Address not passed");
@@ -22,8 +22,8 @@ contract DAOExpanderRegistry is ERC2771Recipient {
         require(_daoExpanderFactory != address(0), "DAOExpanderFactory address not passed");
 
         autIDAddr = _autIDAddr;
-        daoTypes = _daoTypes;
-        daoExpanderFactory = _daoExpanderFactory;
+        daoTypes = IDAOTypes(_daoTypes);
+        daoExpanderFactory = IDAOExpanderFactory(_daoExpanderFactory);
         _setTrustedForwarder(trustedForwarder);
     }
 
@@ -56,10 +56,10 @@ contract DAOExpanderRegistry is ERC2771Recipient {
             ).isMember(daoAddr, _msgSender()),
             "AutID: Not a member of this DAO!"
         );
-        address newDAOExpanderAddress = IDAOExpanderFactory(daoExpanderFactory).deployDAOExpander(
+        address newDAOExpanderAddress = daoExpanderFactory.deployDAOExpander(
             _msgSender(),
             autIDAddr,
-            daoTypes,
+            address(daoTypes),
             daoType,
             daoAddr,
             market,

@@ -43,7 +43,6 @@ contract Tasks {
         daoExpander = _daoExpander;
     }
 
-    //core team member task functions
     function create(uint256 _role, string memory _uri)
         public
         returns (uint256)

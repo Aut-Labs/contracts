@@ -16,7 +16,7 @@ contract Polls {
     Counters.Counter private idCounter;
 
     Poll[] private polls;
-    address public daoExpander;
+    IDAOExpander private daoExpander;
 
     struct Poll {
         uint256 timestamp;
@@ -32,9 +32,12 @@ contract Polls {
         _;
     }
 
-    constructor(address _daoExpander, address _discordBot) {
-        require(_daoExpander != address(0), "no community address");
-        require(IDAOExpander(_daoExpander).isCoreTeam(msg.sender), "Only core team!");
+    constructor(IDAOExpander _daoExpander, address _discordBot) {
+        require(address(_daoExpander) != address(0), "no community address");
+        require(
+            _daoExpander.isAdmin(msg.sender),
+            "Only admin!"
+        );
 
         daoExpander = _daoExpander;
         discordBot = _discordBot;
@@ -70,20 +73,19 @@ contract Polls {
 
         for (uint256 i = 0; i < participants.length; i++) {
             if (
-                IDAOExpander(daoExpander).isMemberOfExtendedDAO(
-                    participants[i]
-                ) &&
+                daoExpander.isMember(participants[i]) &&
                 uint256(
-                    IAutID(
-                        IDAOExpander(daoExpander).autIDAddr()
-                    ).getMembershipData(participants[i], daoExpander).role
+                    IAutID(IDAOExpander(daoExpander).autIDAddr())
+                        .getMembershipData(
+                            participants[i],
+                            address(daoExpander)
+                        )
+                        .role
                 ) ==
                 polls[pollID].role
             )
-                Interaction(
-                    IDAOExpander(daoExpander)
-                        .getInteractionsAddr()
-                ).addInteraction(pollID, participants[i]);
+                Interaction(IDAOExpander(daoExpander).getInteractionsAddr())
+                    .addInteraction(pollID, participants[i]);
         }
 
         polls[pollID].isFinalized = true;
@@ -92,11 +94,15 @@ contract Polls {
         emit PollClosed(pollID, results);
     }
 
-    function getById(uint id) public view returns(Poll memory poll) {
+    function getById(uint256 id) public view returns (Poll memory poll) {
         return polls[id];
     }
 
-    function getIDCounter() public view returns(uint) {
+    function getIDCounter() public view returns (uint256) {
         return idCounter.current() - 1;
+    }
+
+    function getDAOExpander() public view returns (address) {
+        return address(daoExpander);
     }
 }

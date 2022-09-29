@@ -61,11 +61,13 @@ describe("Tasks", (accounts) => {
     await dao.addMember(member2.address);
 
     const Tasks = await ethers.getContractFactory("Tasks");
+    const Interactions = await ethers.getContractFactory("Interaction");
 
     tasks = await Tasks.deploy(daoExpander.address);
     await tasks.deployed();
 
-    await daoExpander.addActivitiesAddress(tasks.address, '3');
+    interactions = await Interactions.attach(await daoExpander.getInteractionsAddr());
+    await interactions.allowAccess(tasks.address);
   });
   describe("Tasks", async () => {
     it("Should create some tasks", async () => {

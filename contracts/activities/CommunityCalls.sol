@@ -16,7 +16,7 @@ contract CommunityCalls {
     Counters.Counter private idCounter;
 
     CommunityCall[] private comCalls;
-    address daoExpander;
+    IDAOExpander daoExpander;
 
     struct CommunityCall {
         uint256 timestamp;
@@ -28,21 +28,24 @@ contract CommunityCalls {
         uint256 endTime;
     }
 
-    /// @dev Modifier for check of access of the core team member functions
     modifier onlyDiscordBot() {
         require(discordBot == msg.sender, "Only discord bot!");
         _;
     }
 
-    constructor(address _daoExpander, address _discordBot) {
-        require(_daoExpander != address(0), "no community address");
+    constructor(IDAOExpander _daoExpander, address _discordBot) {
+        require(address(_daoExpander) != address(0), "no community address");
+        require(_discordBot != address(0), "no discord bot address");
 
         daoExpander = _daoExpander;
         discordBot = _discordBot;
     }
 
-    function setDiscordAddress(address _discordBot) public { 
-        require(IDAOExpander(daoExpander).isCoreTeam(msg.sender), "Only Core team!");
+    function setDiscordAddress(address _discordBot) public {
+        require(
+            IDAOExpander(daoExpander).isAdmin(msg.sender),
+            "Only admin!"
+        );
         discordBot = _discordBot;
     }
 
@@ -56,7 +59,17 @@ contract CommunityCalls {
 
         uint256 comCallID = idCounter.current();
 
-        comCalls.push(CommunityCall(block.timestamp, _uri, "", false, _role, _startTime, _endTime));
+        comCalls.push(
+            CommunityCall(
+                block.timestamp,
+                _uri,
+                "",
+                false,
+                _role,
+                _startTime,
+                _endTime
+            )
+        );
 
         idCounter.increment();
         emit CommunityCallCreated(comCallID, _uri);
@@ -69,7 +82,8 @@ contract CommunityCalls {
         address[] calldata participants
     ) public onlyDiscordBot {
         require(
-            comCalls[comCallID].startTime > block.timestamp && comCalls[comCallID].endTime > block.timestamp,
+            comCalls[comCallID].startTime > block.timestamp &&
+                comCalls[comCallID].endTime > block.timestamp,
             "Due date not reached yet."
         );
         require(!comCalls[comCallID].isFinalized, "already finalized");
@@ -77,20 +91,21 @@ contract CommunityCalls {
 
         for (uint256 i = 0; i < participants.length; i++) {
             if (
-                IDAOExpander(daoExpander).isMemberOfExtendedDAO(
-                    participants[i]
-                ) &&
+                daoExpander.isMember(participants[i]) &&
                 uint256(
-                    IAutID(
-                        IDAOExpander(daoExpander).autIDAddr()
-                    ).getMembershipData(participants[i], daoExpander).role
+                    IAutID(daoExpander.autIDAddr())
+                        .getMembershipData(
+                            participants[i],
+                            address(daoExpander)
+                        )
+                        .role
                 ) ==
                 comCalls[comCallID].role
             )
-                Interaction(
-                    IDAOExpander(daoExpander)
-                        .getInteractionsAddr()
-                ).addInteraction(comCallID, participants[i]);
+                Interaction(daoExpander.getInteractionsAddr()).addInteraction(
+                    comCallID,
+                    participants[i]
+                );
         }
 
         emit CommunityCallClosed(comCallID, results);
