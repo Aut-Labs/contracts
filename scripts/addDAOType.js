@@ -13,25 +13,29 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  const autIDAddr = "0xb6868B3920712729A24689Cb5c770639d0C56aDd";
-  const daoTypesAddr = "0x814B36802359E0233f38B8A29A96EA9e4c261E37";
-  const daoExpanderFactoryAddr = "0xCfEcE12832bDAB04AD11B77ABa091b12fB6C7474";
+  // We get the contract to deploy
 
-  const DAOExpanderRegistry = await hre.ethers.getContractFactory(
-    "DAOExpanderRegistry"
+  const TributeMembershipChecker = await hre.ethers.getContractFactory(
+    "TributeMembershipChecker"
   );
-  const daoExpanderRegistry = await DAOExpanderRegistry.deploy(
-    autIDAddr,
-    daoTypesAddr,
-    daoExpanderFactoryAddr
+  const tributeMembershipChecker = await TributeMembershipChecker.deploy();
+  await tributeMembershipChecker.deployed();
+  console.log(
+    "tributeMembershipChecker deployed to:",
+    tributeMembershipChecker.address
   );
-  await daoExpanderRegistry.deployed();
 
-  console.log('DAOExpanderRegistry', daoExpanderRegistry.address);
-  
-  const a = await daoExpanderRegistry.getDAOExpanders();
-  console.log('daoExpanders', a);
+  // We get the contract to deploy
+  const daoTypeAddress = "0xD6D405673fF4D1563B9E2dDD3ff7C4B20Af755fc"; // goerli
+  const DAOTypes = await hre.ethers.getContractFactory("DAOTypes");
+  const daoTypes = await DAOTypes.attach(daoTypeAddress);
 
+  await (
+    await daoTypes.addNewMembershipChecker(
+      tributeMembershipChecker.address
+    )
+  ).wait();
+  console.log("tributeMembershipChecker", tributeMembershipChecker.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
