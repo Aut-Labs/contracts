@@ -22,31 +22,27 @@ contract DAOExpander is IDAOExpander {
 
     address[] private members;
 
-    mapping(address => bool) public isMemberOfTheDAO;
+    mapping(address => bool) public override isMember;
 
-    /// @notice all the core team members
-    address[] private coreTeam;
-    /// @notice mapping with the core team members
-    mapping(address => bool) public override isCoreTeam;
+    /// @notice all the admin members
+    address[] private admins;
+    /// @notice mapping with the admin members
+    mapping(address => bool) public override isAdmin;
 
     /// @notice the address of the DAOTypes.sol contract
-    address private daoTypes;
-    /// @notice Activities Whitelist
-    Activity[] activitiesWhitelist;
-    /// @notice Activities Whitelist
-    mapping(address => bool) public override isActivityWhitelisted;
+    IDAOTypes private daoTypes;
 
     address public override autIDAddr;
     
-    address public interactionAddr;
+    Interaction public interactions;
 
-    /// @dev Modifier for check of access of the core team member functions
-    modifier onlyCoreTeam() {
-        require(isCoreTeam[msg.sender], "Not a core team member!");
+    /// @dev Modifier for check of access of the admin member functions
+    modifier onlyAdmin() {
+        require(isAdmin[msg.sender], "Not an admin!");
         _;
     }
 
-    /// @dev Modifier for check of access of the core team member functions
+    /// @dev Modifier for check of access of the admin member functions
     modifier onlyAutID() {
         require(msg.sender == autIDAddr, "Only AutID Contract can call this!");
         _;
@@ -73,7 +69,7 @@ contract DAOExpander is IDAOExpander {
         uint256 _commitment
     ) {
         require(_daoAddr != address(0), "Missing DAO Address");
-        require(_daoTypes != address(0), "Missing DAO Types address");
+        require(address(_daoTypes) != address(0), "Missing DAO Types address");
         require(_market > 0 && _market < 4, "Invalid market");
         require(bytes(_metadata).length > 0, "Missing Metadata URL");
         require(
@@ -102,30 +98,29 @@ contract DAOExpander is IDAOExpander {
             _market,
             ""
         );
-        isCoreTeam[_deployer] = true;
-        coreTeam.push(_deployer);
-        daoTypes = _daoTypes;
+        isAdmin[_deployer] = true;
+        admins.push(_deployer);
+        daoTypes = IDAOTypes(_daoTypes);
         autIDAddr = _autAddr;
-        interactionAddr = address(new Interaction());
+        interactions = new Interaction();
     }
 
     function join(address newMember) public override onlyAutID {
-        require(!isMemberOfTheDAO[newMember], "Already a member");
+        require(!isMember[newMember], "Already a member");
         require(
             isMemberOfOriginalDAO(newMember),
             "Not a member of the DAO."
         );
-        isMemberOfTheDAO[newMember] = true;
+        isMember[newMember] = true;
         members.push(newMember);
         emit MemberAdded();
     }
 
     /// @notice The DAO can connect a discord server to their DAOExpander contract
-    /// @dev Can be called only by the core team members
+    /// @dev Can be called only by the admin members
     /// @param discordServer the URL of the discord server
-    function setDiscordServer(string calldata discordServer) public override {
+    function setDiscordServer(string calldata discordServer) public onlyAdmin override {
         require(bytes(discordServer).length > 0, "DiscordServer Link Empty!");
-        require(isCoreTeam[msg.sender], "Only owner can edit discord server");
         daoData.discordServer = discordServer;
         emit DiscordServerSet();
     }
@@ -155,29 +150,11 @@ contract DAOExpander is IDAOExpander {
             ).isMember(daoData.daoAddress, member);
     }
 
-    /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
-    /// @dev checks if the member is a part of a DAO
-    /// @param member the address of the member that's checked
-    /// @return true if they're a member, false otherwise
-    function isMemberOfExtendedDAO(address member)
-        public
-        view
-        override
-        returns (bool)
-    {
-        return
-            IMembershipChecker(
-                IDAOTypes(daoTypes).getMembershipCheckerAddress(
-                    daoData.contractType
-                )
-            ).isMember(daoData.daoAddress, member) || isMemberOfTheDAO[member];
-    }
-
     // URLs
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev adds a URL in the listed ones
     /// @param _url the URL that's going to be added
-    function addURL(string memory _url) public override onlyCoreTeam {
+    function addURL(string memory _url) public override onlyAdmin {
         bytes32 urlHash = keccak256(bytes(_url));
         bool exists = false;
         if (urls.length != 0) {
@@ -196,7 +173,7 @@ contract DAOExpander is IDAOExpander {
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev removes URL from the listed ones
     /// @param _url the URL that's going to be removed
-    function removeURL(string memory _url) public override onlyCoreTeam {
+    function removeURL(string memory _url) public override onlyAdmin {
         require(isURLListed(_url), "url doesnt exist");
 
         bytes32 urlHash = keccak256(bytes(_url));
@@ -243,7 +220,7 @@ contract DAOExpander is IDAOExpander {
     }
 
    function getInteractionsAddr() public view override returns (address) {
-        return interactionAddr;
+        return address(interactions);
     }
 
     function getInteractionsPerUser(address member)
@@ -253,7 +230,7 @@ contract DAOExpander is IDAOExpander {
         returns (uint256)
     {
         return
-            Interaction(interactionAddr).getInteractionsIndexPerAddress(member);
+            interactions.getInteractionsIndexPerAddress(member);
     }
 
     function getDAOData()
@@ -264,44 +241,10 @@ contract DAOExpander is IDAOExpander {
     {
         return daoData;
     }
-
-    function getActivitiesWhitelist()
-        public
-        view
-        override
-        returns (Activity[] memory)
-    {
-        return activitiesWhitelist;
-    }
-
-    function addActivitiesAddress(address activityAddr, uint256 actType)
-        public
-        override
-        onlyCoreTeam
-    {
-        activitiesWhitelist.push(Activity(activityAddr, actType));
-        isActivityWhitelisted[activityAddr] = true;
-        emit ActivitiesAddressAdded();
-    }
-
-    function removeActivitiesAddress(address activityAddr)
-        public
-        override
-        onlyCoreTeam
-    {
-        for (uint256 i = 0; i < activitiesWhitelist.length; i++) {
-            if (activitiesWhitelist[i].actAddr == activityAddr) {
-                activitiesWhitelist[i] = Activity(address(0), 0);
-            }
-        }
-        isActivityWhitelisted[activityAddr] = false;
-        emit ActivitiesAddressRemoved();
-    }
-
     function setMetadataUri(string calldata metadata)
         public
         override
-        onlyCoreTeam
+        onlyAdmin
     {
         require(bytes(metadata).length > 0, "metadata uri missing");
 
@@ -309,24 +252,24 @@ contract DAOExpander is IDAOExpander {
         emit MetadataUriUpdated();
     }
 
-    function addToCoreTeam(address member) public override onlyCoreTeam {
-        require(isMemberOfTheDAO[member], "Not a member");
-        isCoreTeam[member] = true;
-        coreTeam.push(member);
-        emit CoreTeamMemberAdded(member);
+    function addAdmin(address member) public override onlyAdmin {
+        require(isMember[member], "Not a member");
+        isAdmin[member] = true;
+        admins.push(member);
+        emit AdminMemberAdded(member);
     }
 
-    function removeFromCoreTeam(address member) public override onlyCoreTeam {
-        for (uint256 i = 0; i < coreTeam.length; i++) {
-            if (coreTeam[i] == member) {
-                coreTeam[i] = address(0);
+    function removeAdmin(address member) public override onlyAdmin {
+        for (uint256 i = 0; i < admins.length; i++) {
+            if (admins[i] == member) {
+                admins[i] = address(0);
             }
         }
-        isCoreTeam[member] = false;
-        emit CoreTeamMemberRemoved(member);
+        isAdmin[member] = false;
+        emit AdminMemberRemoved(member);
     }
 
-    function getCoreTeamWhitelist() public view override returns (address [] memory ) {
-        return coreTeam;
+    function getAdmins() public view override returns (address [] memory ) {
+        return admins;
     }
 }

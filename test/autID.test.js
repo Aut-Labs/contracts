@@ -119,7 +119,7 @@ describe("AutID", function () {
       expect(await daoExpander.isMemberOfOriginalDAO(daoMember.address)).to.eq(
         true
       );
-      expect(await daoExpander.isMemberOfExtendedDAO(daoMember.address)).to.eq(
+      expect(await daoExpander.isMember(daoMember.address)).to.eq(
         true
       );
     });
@@ -291,7 +291,7 @@ describe("AutID", function () {
         await daoExpander2.isMemberOfOriginalDAO(daoMember2.address)
       ).to.eq(true);
       expect(
-        await daoExpander2.isMemberOfExtendedDAO(daoMember2.address)
+        await daoExpander2.isMember(daoMember2.address)
       ).to.eq(true);
     });
     it("Should not join one community twice", async function () {

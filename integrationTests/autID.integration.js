@@ -103,15 +103,15 @@ async function getDAOExpanders() {
   const a = await daoExpanderRegistryContract.getDAOExpanders();
     console.log(a);
 };
-async function isCoreTeam(daoExpander, user) {
+async function isAdmin(daoExpander, user) {
   const daoExpanderContract = new ethers.Contract(
     daoExpander,
     daoExpanderAbi,
     signer
   );
 
-  const isCoreTeam = await daoExpanderContract.isCoreTeam(user);
-  console.log('isCoreTeam', isCoreTeam);
+  const isAdmin = await daoExpanderContract.isAdmin(user);
+  console.log('isAdmin', isAdmin);
 }
 
 function sleep(ms) {
@@ -168,7 +168,7 @@ async function test() {
   // await getCommunities();
   // await mint(daoExpander);
   // await getCommunities();
-  // await isCoreTeam(daoExpander, user);
+  // await isAdmin(daoExpander, user);
   // await getDAOExpanders();
 }
 

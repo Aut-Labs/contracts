@@ -11,8 +11,8 @@ interface IDAOExpander {
     event ActivitiesAddressRemoved();
     event DiscordServerSet();
     event MemberAdded();
-    event CoreTeamMemberAdded(address member);
-    event CoreTeamMemberRemoved(address member);
+    event AdminMemberAdded(address member);
+    event AdminMemberRemoved(address member);
 
     struct Activity {
         address actAddr;
@@ -29,7 +29,7 @@ interface IDAOExpander {
     }
 
     /// @notice The DAO can connect a discord server to their DAO extension contract
-    /// @dev Can be called only by the core team members
+    /// @dev Can be called only by the admin members
     /// @param discordServer the URL of the discord server
     function setDiscordServer(string calldata discordServer) external;
 
@@ -58,7 +58,7 @@ interface IDAOExpander {
     /// @dev checks if the member is a part of a DAO
     /// @param member the address of the member that's checked
     /// @return true if they're a member, false otherwise
-    function isMemberOfExtendedDAO(address member) external view returns (bool);
+    function isMember(address member) external view returns (bool);
 
     /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
     /// @dev checks if the member is a part of a DAO
@@ -66,25 +66,20 @@ interface IDAOExpander {
     /// @return true if they're a member, false otherwise
     function isMemberOfOriginalDAO(address member) external view returns (bool);
 
-    /// @notice Checks if the passed member is a core team member within the AutID extension of the membership
+    /// @notice Checks if the passed member is a admin member within the AutID extension of the membership
     /// @param member the address of the member that's checked
-    /// @return true if they're a core team member, false otherwise
-    function isCoreTeam(address member) external view returns (bool);
+    /// @return true if they're a admin member, false otherwise
+    function isAdmin(address member) external view returns (bool);
 
-    function addToCoreTeam(address member) external;
+    function addAdmin(address member) external;
 
-    function removeFromCoreTeam(address member) external;
+    function removeAdmin(address member) external;
 
-    /// @notice Checks if a specific contract address is listed as Activity
-    /// @dev Activity contracts can increase the interaction index of the AutID holders
-    /// @param activity the address of the activity that's checked
-    /// @return true if the address is listed, false otherwise
-    function isActivityWhitelisted(address activity)
-        external
-        view
-        returns (bool);
+    function setMetadataUri(string calldata metadata) external;
 
     function join(address newMember) external;
+
+    //  GETTERS
 
     function getAllMembers() external view returns (address[] memory);
 
@@ -99,17 +94,6 @@ interface IDAOExpander {
 
     function autIDAddr() external view returns (address);
 
-    function getActivitiesWhitelist()
-        external
-        view
-        returns (Activity[] calldata);
 
-    function addActivitiesAddress(address activityAddr, uint256 activityType)
-        external;
-
-    function removeActivitiesAddress(address activityAddr) external;
-
-    function setMetadataUri(string calldata metadata) external;
-
-    function getCoreTeamWhitelist() external view returns (address[] memory);
+    function getAdmins() external view returns (address[] memory);
 }
