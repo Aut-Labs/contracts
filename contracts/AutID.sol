@@ -139,18 +139,6 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
             "Commitment lower than the DAOs min commitment"
         );
 
-        address[] memory userDAOs = holderToDAOs[msg.sender];
-        uint256 totalCommitment = 0;
-        for (uint256 index = 0; index < userDAOs.length; index++) {
-            totalCommitment += holderToDAOMembershipData[msg.sender][
-                userDAOs[index]
-            ].commitment;
-        }
-        require(
-            totalCommitment + commitment < 11,
-            "Maximum commitment reached"
-        );
-
         require(
             IDAOExpander(daoExpander).isMemberOfOriginalDAO(msg.sender),
             "AutID: Not a member of this DAO!"
@@ -199,20 +187,6 @@ contract AutID is ERC721URIStorageUpgradeable, IAutID {
             "Commitment lower than the DAOs min commitment"
         );
 
-        address[] memory userDAOs = holderToDAOs[msg.sender];
-        uint256 totalCommitment = 0;
-        for (uint256 index = 0; index < userDAOs.length; index++) {
-            totalCommitment += holderToDAOMembershipData[msg.sender][
-                userDAOs[index]
-            ].commitment;
-        }
-        require(
-            totalCommitment +
-                newCommitment -
-                holderToDAOMembershipData[msg.sender][daoExpander].commitment <
-                11,
-            "Maximum commitment reached"
-        );
         holderToDAOMembershipData[msg.sender][daoExpander]
             .commitment = newCommitment;
 
