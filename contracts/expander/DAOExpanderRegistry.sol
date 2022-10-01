@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./IDAOExpanderFactory.sol";
-import "./membershipCheckers/IDAOTypes.sol";
-import "./membershipCheckers/IMembershipChecker.sol";
+import "./interfaces/IDAOExpanderFactory.sol";
+import "../membershipCheckers/IDAOTypes.sol";
+import "../membershipCheckers/IMembershipChecker.sol";
 import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 contract DAOExpanderRegistry is ERC2771Recipient {

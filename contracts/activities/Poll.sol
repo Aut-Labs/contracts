@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "../Interaction.sol";
-import "../IDAOExpander.sol";
+import "../expander/interfaces/IDAOExpander.sol";
 import "../IAutID.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 

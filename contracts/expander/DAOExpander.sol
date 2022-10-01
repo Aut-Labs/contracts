@@ -1,10 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./IDAOExpander.sol";
-import "./Interaction.sol";
-import "./membershipCheckers/IDAOTypes.sol";
-import "./membershipCheckers/IMembershipChecker.sol";
+import "./interfaces/IDAOExpander.sol";
+import "../Interaction.sol";
+import "../membershipCheckers/IDAOTypes.sol";
+import "../membershipCheckers/IMembershipChecker.sol";
 
 /// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
@@ -252,6 +252,8 @@ contract DAOExpander is IDAOExpander {
         emit MetadataUriUpdated();
     }
 
+
+    /// Admins
     function addAdmin(address member) public override onlyAdmin {
         require(isMember[member], "Not a member");
         isAdmin[member] = true;
