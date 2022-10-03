@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./IDAOExpander.sol";
+import "./expander/interfaces/IDAOExpander.sol";
 
 contract Interaction {
     event InteractionIndexIncreased(address member, uint256 total);
-    event AllowedAddress(address addr);
+    event AddressAllowed(address addr);
     using Counters for Counters.Counter;
 
     Counters.Counter private idCounter;
@@ -38,7 +38,7 @@ contract Interaction {
         require(daoExpander.isAdmin(msg.sender), 'Not an admin');
         isAllowed[addr] = true;
 
-        emit AllowedAddress(addr);
+        emit AddressAllowed(addr);
     }
 
     function addInteraction(uint256 activityID, address member) public onlyAllowed {

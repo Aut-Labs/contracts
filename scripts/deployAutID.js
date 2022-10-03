@@ -14,8 +14,13 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
+
+  const goerliTrustedFrowarder = '0xE041608922d06a4F26C0d4c27d8bCD01daf1f792';
+  const mumbaiTustedForwarder = '0x69015912AA33720b842dCD6aC059Ed623F28d9f7';
+  const trustedForwarder = hre.network.name == 'mumbai' ? mumbaiTustedForwarder : goerliTrustedFrowarder;
+
   const AutID = await hre.ethers.getContractFactory("AutID");
-  const autID = await hre.upgrades.deployProxy(AutID, [], { initializer: 'initialize' });
+  const autID = await hre.upgrades.deployProxy(AutID, [trustedForwarder], { initializer: 'initialize' });
 
   await autID.deployed();
 

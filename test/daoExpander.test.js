@@ -290,7 +290,7 @@ describe("DAOExpander", function () {
       expect(urls[1]).to.equal("https://test2.test");
     });
   });
-  describe.only("Admins", async () => {
+  describe("Admins", async () => {
     before(async function () {
       [dep, notAMem, ad1, ad2, ...addrs] = await ethers.getSigners();
       deployer = dep;

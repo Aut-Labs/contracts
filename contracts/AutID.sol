@@ -8,7 +8,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 import "./IAutID.sol";
-import "./IDAOExpander.sol";
+import "./expander/interfaces/IDAOExpanderMembership.sol";
+import "./expander/interfaces/IDAOExpanderData.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
 
 /// @title AutID
@@ -79,7 +80,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
 
         require(
-            IDAOExpander(daoExpander).isMemberOfOriginalDAO(_msgSender()),
+            IDAOExpanderMembership(daoExpander).isMemberOfOriginalDAO(_msgSender()),
             "AutID: Not a member of this DAO!"
         );
 
@@ -101,7 +102,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         autIDUsername[lowerCase] = _msgSender();
         _tokenIds.increment();
 
-        IDAOExpander(daoExpander).join(_msgSender());
+        IDAOExpanderMembership(daoExpander).join(_msgSender());
 
         emit AutIDCreated(_msgSender(), tokenId);
         emit DAOJoined(daoExpander, _msgSender());
@@ -137,12 +138,12 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         }
 
         require(
-            commitment >= IDAOExpander(daoExpander).getDAOData().commitment,
+            commitment >= IDAOExpanderData(daoExpander).getDAOData().commitment,
             "Commitment lower than the DAOs min commitment"
         );
 
         require(
-            IDAOExpander(daoExpander).isMemberOfOriginalDAO(_msgSender()),
+            IDAOExpanderMembership(daoExpander).isMemberOfOriginalDAO(_msgSender()),
             "AutID: Not a member of this DAO!"
         );
 
@@ -154,7 +155,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
         holderToDAOs[_msgSender()].push(daoExpander);
 
-        IDAOExpander(daoExpander).join(_msgSender());
+        IDAOExpanderMembership(daoExpander).join(_msgSender());
 
         emit DAOJoined(daoExpander, _msgSender());
     }
@@ -185,7 +186,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
 
         require(
-            newCommitment >= IDAOExpander(daoExpander).getDAOData().commitment,
+            newCommitment >= IDAOExpanderData(daoExpander).getDAOData().commitment,
             "Commitment lower than the DAOs min commitment"
         );
 

@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./IDAOExpanderFactory.sol";
+import "./interfaces/IDAOExpanderFactory.sol";
 import "./DAOExpander.sol";
 
 contract DAOExpanderFactory is IDAOExpanderFactory {
