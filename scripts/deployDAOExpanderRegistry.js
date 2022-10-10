@@ -18,9 +18,10 @@ async function main() {
   const mumbaiTustedForwarder = '0x69015912AA33720b842dCD6aC059Ed623F28d9f7';
   const trustedForwarder = hre.network.name == 'mumbai' ? mumbaiTustedForwarder : goerliTrustedFrowarder;
 
-  const autIDAddr = "0x4957f46a74A1c6C9e761c46298A9975A3CD6b1B8";
-  const daoTypesAddr = "0xD6D405673fF4D1563B9E2dDD3ff7C4B20Af755fc";
-  const daoExpanderFactoryAddr = "0x9B1DBe25A8190F5A34EDA9c6E14a6885f39c1BA4";
+  const daoTypesAddr = hre.network.name == 'mumbai' ? "0x814B36802359E0233f38B8A29A96EA9e4c261E37" : "0xD6D405673fF4D1563B9E2dDD3ff7C4B20Af755fc";
+  
+  const autIDAddr = "0x643Bc34268dD65b6F57031f22b70ce20D2b4D7Fe";
+  const daoExpanderFactoryAddr = "0xdd84eFa065BFCe1d1ee2bCbdCfbeC877703BBA24";
 
   const DAOExpanderRegistry = await hre.ethers.getContractFactory(
     "DAOExpanderRegistry"

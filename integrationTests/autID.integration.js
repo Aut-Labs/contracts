@@ -11,27 +11,27 @@ require("dotenv").config();
 var autIDAbi = require("../artifacts/contracts/AutID.sol/AutID.json").abi;
 
 var daoExpanderRegistryAbi =
-  require("../artifacts/contracts/DAOExpanderRegistry.sol/DAOExpanderRegistry.json").abi;
+  require("../artifacts/contracts/expander/DAOExpanderRegistry.sol/DAOExpanderRegistry.json").abi;
 
 var daoExpanderAbi =
-  require("../artifacts/contracts/DAOExpander.sol/DAOExpander.json").abi;
+  require("../artifacts/contracts/expander/DAOExpander.sol/DAOExpander.json").abi;
 
 const provider = new ethers.providers.JsonRpcProvider(
   "https://matic-mumbai.chainstacklabs.com/"
 );
 
 // Wallet connected to a provider
-// const senderWalletMnemonic = ethers.Wallet.fromMnemonic(
-//   process.env.MNEMONIC,
-//   "m/44'/60'/0'/0/0"
-// );
-const senderWallet = new ethers.Wallet(process.env.PRIVATE_KEY);
-let signer = senderWallet.connect(provider);
-console.log(signer.address)
+const senderWalletMnemonic = ethers.Wallet.fromMnemonic(
+  process.env.MNEMONIC_2,
+  "m/44'/60'/0'/0/0"
+);
+// const senderWallet = new ethers.Wallet(process.env.PRIVATE_KEY);
+let signer = senderWalletMnemonic.connect(provider);
+// console.log(signer.address)
 // const wallet = ethers.Wallet.createRandom();
-// console.log(signer.address);
-// console.log(wallet.mnemonic);
-// console.log(wallet.privateKey);
+// console.log(senderWalletMnemonic.address);
+console.log(senderWalletMnemonic.mnemonic);
+console.log(senderWalletMnemonic.privateKey);
 
 const autIDContract = new ethers.Contract(autIDAddress, autIDAbi, signer);
 const daoExpanderRegistryContract = new ethers.Contract(
