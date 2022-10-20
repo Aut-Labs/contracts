@@ -64,6 +64,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         uint256 commitment,
         address daoExpander
     ) external override {
+        require(bytes(username).length < 17, "Username must be max 16 characters");
         require(role > 0 && role < 4, "Role must be between 1 and 3");
         require(
             commitment > 0 && commitment < 11,
