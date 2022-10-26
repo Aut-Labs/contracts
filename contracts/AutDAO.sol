@@ -13,8 +13,14 @@ import "./daoUtils/abstracts/DAOCommitment.sol";
 /// @title AutDAO
 /// @notice
 /// @dev
-contract AutDAO is DAOMembers, DAOInteractions, DAOMetadata, DAOUrls, DAOMarket, DAOCommitment {
-    
+contract AutDAO is
+    DAOMembers,
+    DAOInteractions,
+    DAOMetadata,
+    DAOUrls,
+    DAOMarket,
+    DAOCommitment
+{
     address private deployer;
 
     /// @notice Sets the initial details of the DAO
@@ -41,7 +47,7 @@ contract AutDAO is DAOMembers, DAOInteractions, DAOMetadata, DAOUrls, DAOMarket,
         deployer = _deployer;
         isAdmin[_deployer] = true;
         admins.push(_deployer);
-        
+
         setMarket(_market);
         setAutIDAddress(_autAddr);
         deployInteractions();
@@ -49,5 +55,15 @@ contract AutDAO is DAOMembers, DAOInteractions, DAOMetadata, DAOUrls, DAOMarket,
         super.setMetadataUri(_metadata);
     }
 
+    function setMetadataUri(string memory metadata) public override onlyAdmin {
+        super.setMetadataUri(metadata);
+    }
 
+    function addURL(string calldata _url) public override onlyAdmin {
+        super.addURL(_url);
+    }
+
+    function setCommitment(uint commitment) public override onlyAdmin {
+        super.setCommitment(commitment);
+    }
 }

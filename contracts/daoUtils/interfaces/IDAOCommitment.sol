@@ -8,6 +8,7 @@ interface IDAOCommitment {
     event CommitmentSet();
 
     function getCommitment() external view returns(uint commitment);
+    
     function setCommitment(uint commitment) external;
 
 }

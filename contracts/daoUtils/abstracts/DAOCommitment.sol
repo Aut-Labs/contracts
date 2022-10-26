@@ -16,12 +16,12 @@ abstract contract DAOCommitment is IDAOCommitment {
         override
     {
          require(
-            _commitment > 0 && _commitment < 11,
+            commitment > 0 && commitment < 11,
             "Commitment should be between 1 and 10"
         );
 
         _commitment = commitment;
-        emit CommitmentSet();;
+        emit CommitmentSet();
     }
 
     function getCommitment() public override view returns(uint) {

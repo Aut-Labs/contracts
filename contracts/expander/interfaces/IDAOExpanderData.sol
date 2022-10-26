@@ -9,7 +9,6 @@ interface IDAOExpanderData {
     struct DAOExpanssionData {
         uint256 contractType;
         address daoAddress;
-        uint256 market;
     }
 
     function getDAOData() external view returns (DAOExpanssionData memory data);

@@ -16,7 +16,7 @@ abstract contract DAOMarket is IDAOMarket {
         override
     {
          require(
-            _market > 0 && _market < 11,
+            market > 0 && market < 4,
             "Market invalid"
         );
 

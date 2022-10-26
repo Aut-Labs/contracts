@@ -9,7 +9,7 @@ import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 import "./IAutID.sol";
 import "./expander/interfaces/IDAOExpanderMembership.sol";
-import "./expander/interfaces/IDAOExpanderData.sol";
+import "./daoUtils/interfaces/IDAOCommitment.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
 
 /// @title AutID
@@ -138,7 +138,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         }
 
         require(
-            commitment >= IDAOExpanderData(daoExpander).getDAOData().commitment,
+            commitment >= IDAOCommitment(daoExpander).getCommitment(),
             "Commitment lower than the DAOs min commitment"
         );
 
@@ -186,7 +186,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
 
         require(
-            newCommitment >= IDAOExpanderData(daoExpander).getDAOData().commitment,
+            newCommitment >= IDAOCommitment(daoExpander).getCommitment(),
             "Commitment lower than the DAOs min commitment"
         );
 

@@ -63,11 +63,9 @@ contract DAOExpander is AutIDAddress, DAOMembers, DAOUrls, DAOMetadata, DAOInter
         );
         daoData = DAOExpanssionData(
             _daoType,
-            _daoAddr,
-            _commitment,
-            _market
+            _daoAddr
         );
-        
+
         isAdmin[_deployer] = true;
         admins.push(_deployer);
         daoTypes = IDAOTypes(_daoTypes);
