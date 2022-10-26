@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../daoUtils/interfaces/IDAOMembership.sol";
+import "../../daoUtils/interfaces/get/IDAOMembership.sol";
 
 /// @title IDAOExpander
 /// @notice The interface for the extension of each DAO that integrates AutID

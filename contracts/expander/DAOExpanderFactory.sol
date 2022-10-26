@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "../IAutID.sol";
 import "./interfaces/IDAOExpanderFactory.sol";
 import "./DAOExpander.sol";
 

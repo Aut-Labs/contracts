@@ -13,8 +13,6 @@ interface IDAOMembership {
     /// @return true if they're a member, false otherwise
     function isMember(address member) external view returns (bool);
 
-    function join(address newMember) external;
-
     function getAllMembers() external view returns (address[] memory);
 
 }

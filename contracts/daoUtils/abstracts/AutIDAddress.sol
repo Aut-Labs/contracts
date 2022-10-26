@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interfaces/IAutIDAddress.sol";
+import "../interfaces/get/IAutIDAddress.sol";
 import "../../IAutID.sol";
 
 /// @title DAOExpander
@@ -23,7 +23,7 @@ abstract contract AutIDAddress is IAutIDAddress {
         return address(_autID);
     }
 
-    function setAutIDAddress(address autIDAddress) public override {
+    function _setAutIDAddress(IAutID autIDAddress) internal {
         _autID = IAutID(autIDAddress);
     }
 }

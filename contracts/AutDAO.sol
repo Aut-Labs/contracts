@@ -8,7 +8,7 @@ import "./daoUtils/abstracts/AutIDAddress.sol";
 import "./daoUtils/abstracts/DAOMetadata.sol";
 import "./daoUtils/abstracts/DAOMarket.sol";
 import "./daoUtils/abstracts/DAOCommitment.sol";
-
+import "./IAutDAO.sol";
 
 /// @title AutDAO
 /// @notice
@@ -19,7 +19,8 @@ contract AutDAO is
     DAOMetadata,
     DAOUrls,
     DAOMarket,
-    DAOCommitment
+    DAOCommitment,
+    IAutDAO
 {
     address private deployer;
 
@@ -32,7 +33,7 @@ contract AutDAO is
     /// @param _commitment minimum commitment that the DAO requires
     constructor(
         address _deployer,
-        address _autAddr,
+        IAutID _autAddr,
         uint256 _market,
         string memory _metadata,
         uint256 _commitment
@@ -48,22 +49,37 @@ contract AutDAO is
         isAdmin[_deployer] = true;
         admins.push(_deployer);
 
-        setMarket(_market);
-        setAutIDAddress(_autAddr);
-        deployInteractions();
-        setCommitment(_commitment);
-        super.setMetadataUri(_metadata);
+        super._setMarket(_market);
+        super._setAutIDAddress(_autAddr);
+        super._setCommitment(_commitment);
+        super._setMetadataUri(_metadata);
+        super._deployInteractions();
     }
 
     function setMetadataUri(string memory metadata) public override onlyAdmin {
-        super.setMetadataUri(metadata);
+        _setMetadataUri(metadata);
+    }
+    function addURL(string memory url)
+        external
+        override
+        onlyAdmin
+    {
+        _addURL(url);
     }
 
-    function addURL(string calldata _url) public override onlyAdmin {
-        super.addURL(_url);
+    function removeURL(string memory url)
+        external
+        override
+        onlyAdmin
+    {
+        _removeURL(url);
     }
 
-    function setCommitment(uint commitment) public override onlyAdmin {
-        super.setCommitment(commitment);
+    function setCommitment(uint256 commitment)
+        external
+        override
+        onlyAdmin
+    {
+        _setCommitment(commitment);
     }
 }

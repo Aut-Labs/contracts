@@ -87,7 +87,7 @@ describe("DAOExpander", function () {
           URL,
           10
         )
-      ).to.be.revertedWith("Invalid market");
+      ).to.be.revertedWith("Market invalid");
 
       await expect(
         DAOExpander.deploy(
@@ -163,7 +163,7 @@ describe("DAOExpander", function () {
       sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
       await sWLegacyMembershipChecker.deployed();
 
-      daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
+      await (await daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address)).wait();
 
       const DAOExpander = await ethers.getContractFactory("DAOExpander");
       daoExpander = await DAOExpander.deploy(
@@ -317,7 +317,7 @@ describe("DAOExpander", function () {
       sWLegacyMembershipChecker = await SWLegacyMembershipChecker.deploy();
       await sWLegacyMembershipChecker.deployed();
 
-      daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
+      await (await daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address)).wait();
 
       const DAOExpander = await ethers.getContractFactory("DAOExpander");
       daoExpander = await DAOExpander.deploy(

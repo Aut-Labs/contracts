@@ -1,17 +1,17 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interfaces/IDAOInteractions.sol";
+import "../interfaces/get/IDAOInteractions.sol";
 import "../../Interaction.sol";
 
 /// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-abstract contract DAOInteractions is IDAOInteractions  {
+abstract contract DAOInteractions is IDAOInteractions {
 
     Interaction private interactions;
 
-    function deployInteractions() public { 
+    function _deployInteractions() internal { 
         require(address(interactions) == address(0));
         interactions = new Interaction();
     }
@@ -23,7 +23,7 @@ abstract contract DAOInteractions is IDAOInteractions  {
     function getInteractionsPerUser(address member)
         public
         view
-        override
+      override
         returns (uint256)
     {
         return

@@ -1,13 +1,14 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interfaces/IDAOURL.sol";
-import "../interfaces/IDAOAdmin.sol";
+import "../interfaces/get/IDAOURL.sol";
 
 /// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 abstract contract DAOUrls is IDAOURL {
+    event UrlAdded(string url);
+    event UrlRemoved(string url);
 
     /// @notice all urls listed for the DAuth
     string[] private urls;
@@ -19,7 +20,7 @@ abstract contract DAOUrls is IDAOURL {
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev adds a URL in the listed ones
     /// @param _url the URL that's going to be added
-    function addURL(string memory _url) public override virtual {
+    function _addURL(string memory _url) internal {
         bytes32 urlHash = keccak256(bytes(_url));
         bool exists = false;
         if (urls.length != 0) {
@@ -38,7 +39,7 @@ abstract contract DAOUrls is IDAOURL {
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev removes URL from the listed ones
     /// @param _url the URL that's going to be removed
-    function removeURL(string memory _url) public override virtual {
+    function _removeURL(string memory _url) internal {
         require(isURLListed(_url), "url doesnt exist");
 
         bytes32 urlHash = keccak256(bytes(_url));

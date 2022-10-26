@@ -6,5 +6,4 @@ pragma solidity ^0.8.0;
 /// @dev The extension of each DAO that integrates Aut
 interface IAutIDAddress {
     function getAutIDAddress() external view returns (address);
-    function setAutIDAddress(address autIDAddress) external;
 }

@@ -1,10 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interfaces/IDAOMarket.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-/// @title DAOExpander
+/// @title IMarket
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 interface IMarket {

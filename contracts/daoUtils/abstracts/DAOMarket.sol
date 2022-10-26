@@ -1,19 +1,18 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interfaces/IDAOMarket.sol";
+import "../interfaces/get/IDAOMarket.sol";
 
 /// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 abstract contract DAOMarket is IDAOMarket {
+    event MarketSet();
 
     uint _market;
 
-    function setMarket(uint market)
-        public
-        virtual
-        override
+    function _setMarket(uint market)
+        internal
     {
          require(
             market > 0 && market < 4,

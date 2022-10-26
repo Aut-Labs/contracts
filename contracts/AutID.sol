@@ -9,7 +9,8 @@ import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 import "./IAutID.sol";
 import "./expander/interfaces/IDAOExpanderMembership.sol";
-import "./daoUtils/interfaces/IDAOCommitment.sol";
+import "./daoUtils/interfaces/get/IDAOCommitment.sol";
+import "./daoUtils/interfaces/set/IDAOMembershipSet.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
 
 /// @title AutID
@@ -102,7 +103,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         autIDUsername[lowerCase] = _msgSender();
         _tokenIds.increment();
 
-        IDAOExpanderMembership(daoExpander).join(_msgSender());
+        IDAOMembershipSet(daoExpander).join(_msgSender());
 
         emit AutIDCreated(_msgSender(), tokenId);
         emit DAOJoined(daoExpander, _msgSender());
@@ -155,7 +156,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
         holderToDAOs[_msgSender()].push(daoExpander);
 
-        IDAOExpanderMembership(daoExpander).join(_msgSender());
+        IDAOMembershipSet(daoExpander).join(_msgSender());
 
         emit DAOJoined(daoExpander, _msgSender());
     }

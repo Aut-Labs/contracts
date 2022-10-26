@@ -2,13 +2,15 @@
 pragma solidity ^0.8.0;
 
 import "./AutIDAddress.sol";
-import "../interfaces/IDAOAdmin.sol";
-import "../interfaces/IDAOMembership.sol";
+import "../interfaces/get/IDAOAdmin.sol";
+import "../interfaces/get/IDAOMembership.sol";
+import "../interfaces/set/IDAOMembershipSet.sol";
+import "../interfaces/set/IDAOAdminSet.sol";
 
 /// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-abstract contract DAOMembers is IDAOAdmin, IDAOMembership, AutIDAddress {
+abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, IDAOAdminSet, AutIDAddress {
 
     address[] public members;
 

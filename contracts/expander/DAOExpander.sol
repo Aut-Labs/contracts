@@ -13,18 +13,27 @@ import "../daoUtils/abstracts/DAOCommitment.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOInteractions.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
+import "../expander/interfaces/IDAOExpander.sol";
 
 /// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-contract DAOExpander is AutIDAddress, DAOMembers, DAOUrls, DAOMetadata, DAOInteractions, DAOCommitment, DAOMarket, IDAOExpander {
-
+contract DAOExpander is
+    AutIDAddress,
+    DAOMembers,
+    DAOUrls,
+    DAOMetadata,
+    DAOInteractions,
+    DAOCommitment,
+    DAOMarket,
+    IDAOExpander
+{
     /// @notice the basic DAO data
     DAOExpanssionData daoData;
 
     /// @notice the address of the DAOTypes.sol contract
     IDAOTypes private daoTypes;
-    
+
     /// @notice Sets the initial details of the DAO
     /// @dev all parameters are required.
     /// @param _deployer the address of the DAOTypes.sol contract
@@ -48,43 +57,33 @@ contract DAOExpander is AutIDAddress, DAOMembers, DAOUrls, DAOMetadata, DAOInter
         require(_daoAddr != address(0), "Missing DAO Address");
         require(address(_daoTypes) != address(0), "Missing DAO Types address");
         require(
-            IDAOTypes(_daoTypes).getMembershipCheckerAddress(
-                _daoType
-            ) != address(0),
+            IDAOTypes(_daoTypes).getMembershipCheckerAddress(_daoType) !=
+                address(0),
             "Invalid membership type"
         );
         require(
             IMembershipChecker(
-                IDAOTypes(_daoTypes).getMembershipCheckerAddress(
-                    _daoType
-                )
+                IDAOTypes(_daoTypes).getMembershipCheckerAddress(_daoType)
             ).isMember(_daoAddr, _deployer),
             "AutID: Not a member of this DAO!"
         );
-        daoData = DAOExpanssionData(
-            _daoType,
-            _daoAddr
-        );
+        daoData = DAOExpanssionData(_daoType, _daoAddr);
 
         isAdmin[_deployer] = true;
         admins.push(_deployer);
         daoTypes = IDAOTypes(_daoTypes);
 
-        setMarket(_market);
-        setAutIDAddress(_autAddr);
-        deployInteractions();
-        setCommitment(_commitment);
-        super.setMetadataUri(_metadata);
+        super._setMarket(_market);
+        super._setAutIDAddress(IAutID(_autAddr));
+        super._setCommitment(_commitment);
+        super._setMetadataUri(_metadata);
+        super._deployInteractions();
     }
 
-    function join(address newMember) public override(DAOMembers, IDAOMembership) onlyAutID {
-        require(
-            isMemberOfOriginalDAO(newMember),
-            "Not a member of the DAO."
-        );
-       super.join(newMember);
+    function join(address newMember) public override onlyAutID {
+        require(isMemberOfOriginalDAO(newMember), "Not a member of the DAO.");
+        super.join(newMember);
     }
-
 
     /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
     /// @dev checks if the member is a part of a DAO
@@ -112,11 +111,24 @@ contract DAOExpander is AutIDAddress, DAOMembers, DAOUrls, DAOMetadata, DAOInter
     {
         return daoData;
     }
+
+    function addURL(string memory url) external override onlyAdmin {
+        _addURL(url);
+    }
+
+    function removeURL(string memory url) external override onlyAdmin {
+        _removeURL(url);
+    }
+
+    function setCommitment(uint256 commitment) external override onlyAdmin {
+        _setCommitment(commitment);
+    }
+
     function setMetadataUri(string memory metadata)
-        public
+        external
         override
         onlyAdmin
     {
-        super.setMetadataUri(metadata);
+        _setMetadataUri(metadata);
     }
 }
