@@ -45,8 +45,8 @@ contract DAOExpanderRegistry is ERC2771Recipient {
             "DAO Type incorrect"
         );
         require(daoAddr != address(0), "Missing DAO Address");
-        require(market > 0 && market < 4, "Invalid market");
-        require(bytes(metadata).length > 0, "Metadata URL empty");
+        require(market > 0 && market < 4, "Market invalid");
+        require(bytes(metadata).length > 0, "Missing Metadata URL");
         require(commitment > 0 && commitment < 11, "Invalid commitment");
         require(
             IMembershipChecker(
