@@ -3,6 +3,7 @@ const { ethers, upgrades } = require("hardhat");
 const URL = "https://someurl.com";
 const username = "Username";
 const username1 = "username1";
+const tooLongUsername = "17CharStringMax16";
 
 let daoExpander;
 let daoExpander2;
@@ -43,7 +44,9 @@ describe("AutID", function () {
 
       const AutID = await ethers.getContractFactory("AutID");
       // TODO: change with trusted forwarde
-      autID = await upgrades.deployProxy(AutID, [deployer.address], { from: deployer });
+      autID = await upgrades.deployProxy(AutID, [deployer.address], {
+        from: deployer,
+      });
       await autID.deployed();
 
       const DAOExpander = await ethers.getContractFactory("DAOExpander");
@@ -64,6 +67,9 @@ describe("AutID", function () {
       await dao.addMember(daoMember2.address);
     });
     it("Should fail if arguemnts are incorret", async function () {
+      await expect(
+        autID.mint(tooLongUsername, URL, 3, 8, daoExpander.address)
+      ).to.revertedWith("Username must be max 16 characters");
       await expect(
         autID.mint(username, URL, 4, 8, daoExpander.address)
       ).to.revertedWith("Role must be between 1 and 3");
@@ -107,7 +113,9 @@ describe("AutID", function () {
 
       const url = await autID.tokenURI(tokenId);
       const swUsername = await autID.getAutIDHolderByUsername(username);
-      const swUsernameLowercase = await autID.getAutIDHolderByUsername(username.toLowerCase());
+      const swUsernameLowercase = await autID.getAutIDHolderByUsername(
+        username.toLowerCase()
+      );
 
       expect(url).to.eq(URL);
       expect(swUsername).to.eq(daoMember.address);
@@ -119,9 +127,7 @@ describe("AutID", function () {
       expect(await daoExpander.isMemberOfOriginalDAO(daoMember.address)).to.eq(
         true
       );
-      expect(await daoExpander.isMember(daoMember.address)).to.eq(
-        true
-      );
+      expect(await daoExpander.isMember(daoMember.address)).to.eq(true);
     });
     it("Should not mint an AutID twice", async function () {
       await (
@@ -290,9 +296,7 @@ describe("AutID", function () {
       expect(
         await daoExpander2.isMemberOfOriginalDAO(daoMember2.address)
       ).to.eq(true);
-      expect(
-        await daoExpander2.isMember(daoMember2.address)
-      ).to.eq(true);
+      expect(await daoExpander2.isMember(daoMember2.address)).to.eq(true);
     });
     it("Should not join one community twice", async function () {
       await expect(
@@ -393,9 +397,7 @@ describe("AutID", function () {
       ).to.be.revertedWith("Commitment lower than the DAOs min commitment");
     });
     it("Should edit the commitment successfully", async function () {
-      const totalComBefore = await autID.getTotalCommitment(
-        daoMember.address
-      );
+      const totalComBefore = await autID.getTotalCommitment(daoMember.address);
       const events = await (
         await autID.connect(daoMember).editCommitment(daoExpander.address, 4)
       ).wait();
@@ -414,9 +416,7 @@ describe("AutID", function () {
       expect(comData["role"].toString()).to.eq("3");
       expect(comData["commitment"].toString()).to.eq("4");
 
-      const totalComAfter = await autID.getTotalCommitment(
-        daoMember.address
-      );
+      const totalComAfter = await autID.getTotalCommitment(daoMember.address);
       expect(totalComAfter.toString()).to.eq("9");
       expect(totalComBefore.toString()).to.eq("10");
     });
