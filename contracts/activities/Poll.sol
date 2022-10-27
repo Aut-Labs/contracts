@@ -75,7 +75,7 @@ contract Polls {
             if (
                 daoExpander.isMember(participants[i]) &&
                 uint256(
-                    IAutID(IDAOExpander(daoExpander).autIDAddr())
+                    IAutID(IDAOExpander(daoExpander).getAutIDAddress())
                         .getMembershipData(
                             participants[i],
                             address(daoExpander)

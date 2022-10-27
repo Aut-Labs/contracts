@@ -93,7 +93,7 @@ contract CommunityCalls {
             if (
                 daoExpander.isMember(participants[i]) &&
                 uint256(
-                    IAutID(daoExpander.autIDAddr())
+                    IAutID(daoExpander.getAutIDAddress())
                         .getMembershipData(
                             participants[i],
                             address(daoExpander)

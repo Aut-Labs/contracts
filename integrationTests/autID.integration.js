@@ -1,5 +1,5 @@
-const autIDAddress = "0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B";
-const daoExpanderRegistryAddress = "0xB126D97141E5f379b14988985e18Af93a5C1B938";
+const autIDAddress = "0x0b3e1f75c415125B30b51384DE69C0b819CF4b52";
+const daoExpanderRegistryAddress = "0xde80c0eF7FFE533b095B5DAeb6F7A7298a201b39";
 
 const comMetadata =
   "bafkreidjy6xlyf2he4iopzijy7bws3yl34xhwh726ca2xd7temqoqkz6xy";
@@ -30,8 +30,8 @@ let signer = senderWalletMnemonic.connect(provider);
 // console.log(signer.address)
 // const wallet = ethers.Wallet.createRandom();
 // console.log(senderWalletMnemonic.address);
-console.log(senderWalletMnemonic.mnemonic);
-console.log(senderWalletMnemonic.privateKey);
+// console.log(senderWalletMnemonic.mnemonic);
+// console.log(senderWalletMnemonic.privateKey);
 
 const autIDContract = new ethers.Contract(autIDAddress, autIDAbi, signer);
 const daoExpanderRegistryContract = new ethers.Contract(
@@ -42,8 +42,8 @@ const daoExpanderRegistryContract = new ethers.Contract(
 
 async function mint(daoExpander) {
   const a = await autIDContract.mint(
-    'migrenaa',
-    "bafkreigigsavco2dtgcg6ehmunu5cjzr7xiarsrxm6bfw5m5wpor5rfpoi",
+    'tao',
+    "bafkreibjs7jvzzxiqrpyyhjvk3dwxgsff6ctgjyfnmwjksir6dhqni2m3a",
     1,
     7,
     daoExpander,
@@ -147,9 +147,7 @@ async function test() {
   // await addMember('0x6706a83EF8E2228D639fBA5f6cc5308d6A6114Bd', signer.address);
 
   // await deployDAOExpander();
-  const daoExpander = "0xEf300E25897343e8d2d4b55F7b606fc90958beB0";
-  const daoAddr = '0x3Dcf2c5D8b8997A3E5740DC8507Ed4E5533Dde14'
-  const user = "0x1d6571bcCEa66F624d1232c63195D7E9708A0BB4";
+  const daoExpander = "0xa7459CdDfaBaE01d5976D3303C22E889db22456d";
   // await getAutIDUsername('Taualnt');
   // await getAutIDMetadata(2);
   // await getPoll(pollsAddress, 0);
@@ -166,7 +164,7 @@ async function test() {
   // await getSWMetadata(0);
   // await createCommunity(1, "0x7DeF7A0C6553B9f7993a131b5e30AB59386837E0");
   // await getCommunities();
-  // await mint(daoExpander);
+  await mint(daoExpander);
   // await getCommunities();
   // await isAdmin(daoExpander, user);
   // await getDAOExpanders();
