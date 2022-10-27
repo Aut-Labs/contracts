@@ -85,11 +85,11 @@ describe("DAOExpanderRegistry", function () {
 
       await expect(
         daoExpanderRegistry.deployDAOExpander(1, dao.address, 9, URL, 8)
-      ).to.be.revertedWith("Invalid market");
+      ).to.be.revertedWith("Market invalid");
 
       await expect(
         daoExpanderRegistry.deployDAOExpander(1, dao.address, 1, "", 8)
-      ).to.be.revertedWith("Metadata URL empty");
+      ).to.be.revertedWith("Missing Metadata URL");
 
       await expect(
         daoExpanderRegistry.deployDAOExpander(1, dao.address, 1, URL, 12)

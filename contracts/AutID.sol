@@ -199,7 +199,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     }
 
     function setMetadataUri(string calldata metadataUri) public override {
-        require(balanceOf(_msgSender()) == 1, "AutID: Doesn't have an AutID.");
+        require(balanceOf(_msgSender()) == 1, "AutID: There is no AutID registered for this address.");
         uint256 tokenId = _autIDByOwner[_msgSender()];
         _setTokenURI(tokenId, metadataUri);
 
@@ -215,7 +215,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         override
         returns (address[] memory daos)
     {
-        require(balanceOf(autIDHolder) == 1, "AutID: Doesn't have an AutID.");
+        require(balanceOf(autIDHolder) == 1, "AutID: There is no AutID registered for this address.");
         return holderToDAOs[autIDHolder];
     }
 
@@ -237,10 +237,6 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         override
         returns (uint256)
     {
-        require(
-            balanceOf(autIDOwner) == 1,
-            "AutID: The AutID owner is invalid."
-        );
         return _autIDByOwner[autIDOwner];
     }
 
@@ -250,10 +246,6 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         override
         returns (uint256)
     {
-        require(
-            balanceOf(autIDHolder) == 1,
-            "AutID: The AutID owner is invalid."
-        );
         address[] memory userDAOs = holderToDAOs[autIDHolder];
 
         uint256 totalCommitment = 0;

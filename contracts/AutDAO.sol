@@ -38,7 +38,7 @@ contract AutDAO is
         string memory _metadata,
         uint256 _commitment
     ) {
-        require(_market > 0 && _market < 4, "Invalid market");
+        require(_market > 0 && _market < 4, "Market invalid");
         require(bytes(_metadata).length > 0, "Missing Metadata URL");
         require(
             _commitment > 0 && _commitment < 11,
