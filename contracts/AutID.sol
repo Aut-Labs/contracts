@@ -8,9 +8,9 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 import "./IAutID.sol";
-import "./expander/interfaces/IDAOExpanderMembership.sol";
 import "./daoUtils/interfaces/get/IDAOCommitment.sol";
 import "./daoUtils/interfaces/set/IDAOMembershipSet.sol";
+import "./daoUtils/interfaces/get/IDAOMembership.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
 
 /// @title AutID
@@ -57,13 +57,13 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     /// @param url the NFT metadata that holds username, avatar
     /// @param role the role that the user has selected within the specified DAO
     /// @param commitment the commitment value that the user has selected for this DAO
-    /// @param daoExpander the address of the DAOExpender contract
+    /// @param daoAddress the address of the DAOExpender contract
     function mint(
         string memory username,
         string memory url,
         uint256 role,
         uint256 commitment,
-        address daoExpander
+        address daoAddress
     ) external override {
         require(bytes(username).length < 17, "Username must be max 16 characters");
         require(role > 0 && role < 4, "Role must be between 1 and 3");
@@ -71,7 +71,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
             commitment > 0 && commitment < 11,
             "AutID: Commitment should be between 1 and 10"
         );
-        require(daoExpander != address(0), "AutID: Missing DAO Expander");
+        require(daoAddress != address(0), "AutID: Missing DAO");
         require(
             balanceOf(_msgSender()) == 0,
             "AutID: There is AutID already registered for this address."
@@ -82,7 +82,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
 
         require(
-            IDAOExpanderMembership(daoExpander).isMemberOfOriginalDAO(_msgSender()),
+            IDAOMembership(daoAddress).canJoin(_msgSender()),
             "AutID: Not a member of this DAO!"
         );
 
@@ -92,40 +92,40 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         _safeMint(_msgSender(), tokenId);
         _setTokenURI(tokenId, url);
 
-        holderToDAOMembershipData[_msgSender()][daoExpander] = DAOMember(
-            daoExpander,
+        holderToDAOMembershipData[_msgSender()][daoAddress] = DAOMember(
+            daoAddress,
             role,
             commitment,
             true
         );
-        holderToDAOs[_msgSender()].push(daoExpander);
+        holderToDAOs[_msgSender()].push(daoAddress);
 
         _autIDByOwner[_msgSender()] = tokenId;
         autIDUsername[lowerCase] = _msgSender();
         _tokenIds.increment();
 
-        IDAOMembershipSet(daoExpander).join(_msgSender());
+        IDAOMembershipSet(daoAddress).join(_msgSender());
 
         emit AutIDCreated(_msgSender(), tokenId);
-        emit DAOJoined(daoExpander, _msgSender());
+        emit DAOJoined(daoAddress, _msgSender());
     }
 
     /// @notice associates an AutID to a new DAO
     /// @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other communities
     /// @param role the role that the user has selected within the specified DAO
     /// @param commitment the commitment value that the user has selected for this DAO
-    /// @param daoExpander the address of the daoExpander contract
+    /// @param daoAddress the address of the daoAddress contract
     function joinDAO(
         uint256 role,
         uint256 commitment,
-        address daoExpander
+        address daoAddress
     ) external override {
         require(role > 0 && role < 4, "Role must be between 1 and 3");
         require(
             commitment > 0 && commitment < 11,
             "AutID: Commitment should be between 1 and 10"
         );
-        require(daoExpander != address(0), "AutID: Missing DAO Expander");
+        require(daoAddress != address(0), "AutID: Missing DAO");
         require(
             balanceOf(_msgSender()) == 1,
             "AutID: There is no AutID registered for this address."
@@ -134,51 +134,51 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         address[] memory currentComs = holderToDAOs[_msgSender()];
         for (uint256 index = 0; index < currentComs.length; index++) {
             require(
-                currentComs[index] != daoExpander,
+                currentComs[index] != daoAddress,
                 "AutID: Already a member"
             );
         }
 
         require(
-            commitment >= IDAOCommitment(daoExpander).getCommitment(),
+            commitment >= IDAOCommitment(daoAddress).getCommitment(),
             "Commitment lower than the DAOs min commitment"
         );
 
         require(
-            IDAOExpanderMembership(daoExpander).isMemberOfOriginalDAO(_msgSender()),
+            IDAOMembership(daoAddress).canJoin(_msgSender()),
             "AutID: Not a member of this DAO!"
         );
 
-        holderToDAOMembershipData[_msgSender()][daoExpander] = DAOMember(
-            daoExpander,
+        holderToDAOMembershipData[_msgSender()][daoAddress] = DAOMember(
+            daoAddress,
             role,
             commitment,
             true
         );
-        holderToDAOs[_msgSender()].push(daoExpander);
+        holderToDAOs[_msgSender()].push(daoAddress);
 
-        IDAOMembershipSet(daoExpander).join(_msgSender());
+        IDAOMembershipSet(daoAddress).join(_msgSender());
 
-        emit DAOJoined(daoExpander, _msgSender());
+        emit DAOJoined(daoAddress, _msgSender());
     }
 
-    function withdraw(address daoExpander) external override {
+    function withdraw(address daoAddress) external override {
         require(
-            holderToDAOMembershipData[_msgSender()][daoExpander].isActive,
+            holderToDAOMembershipData[_msgSender()][daoAddress].isActive,
             "AutID: Not a member"
         );
-        holderToDAOMembershipData[_msgSender()][daoExpander].isActive = false;
-        holderToDAOMembershipData[_msgSender()][daoExpander].commitment = 0;
+        holderToDAOMembershipData[_msgSender()][daoAddress].isActive = false;
+        holderToDAOMembershipData[_msgSender()][daoAddress].commitment = 0;
 
-        emit DAOWithdrown(daoExpander, _msgSender());
+        emit DAOWithdrown(daoAddress, _msgSender());
     }
 
-    function editCommitment(address daoExpander, uint256 newCommitment)
+    function editCommitment(address daoAddress, uint256 newCommitment)
         external
         override
     {
         require(
-            holderToDAOMembershipData[_msgSender()][daoExpander].isActive,
+            holderToDAOMembershipData[_msgSender()][daoAddress].isActive,
             "AutID: Not a member"
         );
 
@@ -188,14 +188,14 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
 
         require(
-            newCommitment >= IDAOCommitment(daoExpander).getCommitment(),
+            newCommitment >= IDAOCommitment(daoAddress).getCommitment(),
             "Commitment lower than the DAOs min commitment"
         );
 
-        holderToDAOMembershipData[_msgSender()][daoExpander]
+        holderToDAOMembershipData[_msgSender()][daoAddress]
             .commitment = newCommitment;
 
-        emit CommitmentUpdated(daoExpander, _msgSender(), newCommitment);
+        emit CommitmentUpdated(daoAddress, _msgSender(), newCommitment);
     }
 
     function setMetadataUri(string calldata metadataUri) public override {
@@ -219,13 +219,13 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         return holderToDAOs[autIDHolder];
     }
 
-    function getMembershipData(address autIDHolder, address daoExpander)
+    function getMembershipData(address autIDHolder, address daoAddress)
         external
         view
         override
         returns (DAOMember memory)
     {
-        return holderToDAOMembershipData[autIDHolder][daoExpander];
+        return holderToDAOMembershipData[autIDHolder][daoAddress];
     }
 
     /// @notice returns NFT ID of the holder

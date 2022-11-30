@@ -1,21 +1,22 @@
 {
   "manifestVersion": "3.2",
   "admin": {
-    "address": "0xc6d5D4683F01f2F5709EF4f072e2DF559fF54D47",
-    "txHash": "0x5cebdfa7932a938e1e889ab0da73ef89d45ba6a195a6b46963cd892d5ce7fb26"
+    "address": "0x42a27750246D3C9Bc966a14ba6cec6d8936Ec4Cb",
+    "txHash": "0xf9cbec9719b9d2ade4149131cfb019e3af44774b6572321dba63075f466f34bb"
   },
   "proxies": [
     {
-      "address": "0x4957f46a74A1c6C9e761c46298A9975A3CD6b1B8",
-      "txHash": "0x51c5784cf48c4ae8254579ecdca623de4e71ffe01fdf7975e2a05574f7c1adb4",
+      "address": "0x30c75acefe29315ecb23eb6Dfd0e5fDA57054c2c",
+      "txHash": "0xedad4728a1a5cb7dce7e507ddb0260131aff5dd08681a706d2932322c1171806",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "cf445ed40891e3516c9b1bbf390f6bdea777144a0b0a3a38af7abccd48dd2d9f": {
-      "address": "0x8B6fFB91B4F7c6Dad9d90a62e96Cb0C6e00Fed51",
-      "txHash": "0xb123f8feb909a9199f2049f9db72e7fc13104d35e766d59f075903b1a75f563c",
+    "437f3cbcc83303bff9b63151d0d5642957f1a28efe07ff128bc1db33a2a7234d": {
+      "address": "0xE529Ec1e610CA91dD2f2EDe7C8Bad6403e4b8598",
+      "txHash": "0xf183b3a7a592672af75d83209009c246115445a89b2f162af637b67493d51e91",
       "layout": {
+        "solcVersion": "0.8.4",
         "storage": [
           {
             "label": "_trustedForwarder",
@@ -134,17 +135,17 @@
             "label": "_tokenIds",
             "offset": 0,
             "slot": "201",
-            "type": "t_struct(Counter)2048_storage",
+            "type": "t_struct(Counter)2872_storage",
             "contract": "AutID",
-            "src": "contracts/AutID.sol:21"
+            "src": "contracts/AutID.sol:22"
           },
           {
             "label": "holderToDAOMembershipData",
             "offset": 0,
             "slot": "202",
-            "type": "t_mapping(t_address,t_mapping(t_address,t_struct(DAOMember)2999_storage))",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_struct(DAOMember)4019_storage))",
             "contract": "AutID",
-            "src": "contracts/AutID.sol:24"
+            "src": "contracts/AutID.sol:25"
           },
           {
             "label": "holderToDAOs",
@@ -152,7 +153,7 @@
             "slot": "203",
             "type": "t_mapping(t_address,t_array(t_address)dyn_storage)",
             "contract": "AutID",
-            "src": "contracts/AutID.sol:26"
+            "src": "contracts/AutID.sol:27"
           },
           {
             "label": "_autIDByOwner",
@@ -160,7 +161,7 @@
             "slot": "204",
             "type": "t_mapping(t_address,t_uint256)",
             "contract": "AutID",
-            "src": "contracts/AutID.sol:29"
+            "src": "contracts/AutID.sol:30"
           },
           {
             "label": "autIDUsername",
@@ -168,7 +169,7 @@
             "slot": "205",
             "type": "t_mapping(t_string_memory_ptr,t_address)",
             "contract": "AutID",
-            "src": "contracts/AutID.sol:31"
+            "src": "contracts/AutID.sol:32"
           },
           {
             "label": "autIDToDiscordID",
@@ -176,7 +177,7 @@
             "slot": "206",
             "type": "t_mapping(t_uint256,t_string_storage)",
             "contract": "AutID",
-            "src": "contracts/AutID.sol:34"
+            "src": "contracts/AutID.sol:35"
           },
           {
             "label": "discordIDToAddress",
@@ -184,7 +185,7 @@
             "slot": "207",
             "type": "t_mapping(t_string_memory_ptr,t_address)",
             "contract": "AutID",
-            "src": "contracts/AutID.sol:35"
+            "src": "contracts/AutID.sol:36"
           }
         ],
         "types": {
@@ -224,11 +225,11 @@
             "label": "mapping(address => mapping(address => bool))",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_address,t_mapping(t_address,t_struct(DAOMember)2999_storage))": {
+          "t_mapping(t_address,t_mapping(t_address,t_struct(DAOMember)4019_storage))": {
             "label": "mapping(address => mapping(address => struct IAutID.DAOMember))",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_address,t_struct(DAOMember)2999_storage)": {
+          "t_mapping(t_address,t_struct(DAOMember)4019_storage)": {
             "label": "mapping(address => struct IAutID.DAOMember)",
             "numberOfBytes": "32"
           },
@@ -256,7 +257,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(Counter)2048_storage": {
+          "t_struct(Counter)2872_storage": {
             "label": "struct Counters.Counter",
             "members": [
               {
@@ -268,7 +269,7 @@
             ],
             "numberOfBytes": "32"
           },
-          "t_struct(DAOMember)2999_storage": {
+          "t_struct(DAOMember)4019_storage": {
             "label": "struct IAutID.DAOMember",
             "members": [
               {

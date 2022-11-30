@@ -1,14 +1,14 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./daoUtils/abstracts/DAOMembers.sol";
-import "./daoUtils/abstracts/DAOInteractions.sol";
-import "./daoUtils/abstracts/DAOUrls.sol";
-import "./daoUtils/abstracts/AutIDAddress.sol";
-import "./daoUtils/abstracts/DAOMetadata.sol";
-import "./daoUtils/abstracts/DAOMarket.sol";
-import "./daoUtils/abstracts/DAOCommitment.sol";
-import "./IAutDAO.sol";
+import "../daoUtils/abstracts/DAOMembers.sol";
+import "../daoUtils/abstracts/DAOInteractions.sol";
+import "../daoUtils/abstracts/DAOUrls.sol";
+import "../daoUtils/abstracts/AutIDAddress.sol";
+import "../daoUtils/abstracts/DAOMetadata.sol";
+import "../daoUtils/abstracts/DAOMarket.sol";
+import "../daoUtils/abstracts/DAOCommitment.sol";
+import "./interfaces/IAutDAO.sol";
 
 /// @title AutDAO
 /// @notice
@@ -82,4 +82,16 @@ contract AutDAO is
     {
         _setCommitment(commitment);
     }
+
+    function canJoin(address member)
+        external
+        view
+        override
+        returns (bool)
+    {
+        // check onboarding
+        return true;
+    }
+
+    
 }

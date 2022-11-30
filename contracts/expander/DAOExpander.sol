@@ -81,7 +81,7 @@ contract DAOExpander is
     }
 
     function join(address newMember) public override onlyAutID {
-        require(isMemberOfOriginalDAO(newMember), "Not a member of the DAO.");
+        require(canJoin(newMember), "Not a member of the DAO.");
         super.join(newMember);
     }
 
@@ -101,6 +101,15 @@ contract DAOExpander is
                     daoData.contractType
                 )
             ).isMember(daoData.daoAddress, member);
+    }
+
+    /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
+    /// @dev checks if the member is a part of a DAO
+    /// @param member the address of the member that's checked
+    /// @return true if they're a member, false otherwise
+    function canJoin(address member) public view override(DAOMembers, IDAOMembership) returns (bool) {
+        // TODO: check onboarding
+        return isMemberOfOriginalDAO(member);
     }
 
     function getDAOData()

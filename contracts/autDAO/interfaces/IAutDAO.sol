@@ -13,21 +13,17 @@ import "../../daoUtils/interfaces/set/IDAOCommitmentSet.sol";
 import "../../daoUtils/interfaces/set/IDAOMetadataSet.sol";
 
 
-import "./IDAOExpanderMembership.sol";
-import "./IDAOExpanderData.sol";
-
 /// @title IDAOExpander
 /// @notice The interface for the extension of each DAO that integrates AutID
-interface IDAOExpander is
+interface IAutDAO is
     IDAOURLSet,
     IDAOCommitmentSet,
     IDAOMetadataSet,
     IDAOAdmin,
-    IDAOExpanderData,
     IDAOInteractions,
-    IDAOExpanderMembership,
     IDAOURL,
     IDAOCommitment,
     IAutIDAddress
 {
+
 }

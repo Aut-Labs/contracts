@@ -82,7 +82,7 @@ describe("AutID", function () {
 
       await expect(
         autID.mint(username, URL, 3, 8, ethers.constants.AddressZero)
-      ).to.revertedWith("Missing DAO Expander");
+      ).to.revertedWith("Missing DAO");
     });
     it("Should fail if the signer is not a member of the DAO", async function () {
       await expect(
@@ -236,7 +236,7 @@ describe("AutID", function () {
       );
       await expect(
         autID.joinDAO(3, 8, ethers.constants.AddressZero)
-      ).to.revertedWith("Missing DAO Expander");
+      ).to.revertedWith("Missing DAO");
     });
     it("Should fail if there's no AutID minted for the signer", async function () {
       await expect(

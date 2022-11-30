@@ -139,6 +139,13 @@ async function getAutIDAddrFrinDAOExpander(daoExpander) {
   console.log('[getAutIDAddrFrinDAOExpander]: addr', addr);
 }
 
+async function getDAOMetadata(daoExpander) {
+  const daoExpanderContract = new ethers.Contract(daoExpander, daoExpanderRegistryAbi, signer);
+  const metadata = await daoExpanderContract.getMetadataUri();
+  console.log('[getDAOMetadata]:', metadata);
+}
+
+
 async function getAutIDUsername(username) {
   const addr = await autIDContract.autIDUsername(username);
   console.log('[autIDUsername]: addr', addr);
@@ -147,7 +154,7 @@ async function test() {
   // await addMember('0x6706a83EF8E2228D639fBA5f6cc5308d6A6114Bd', signer.address);
 
   // await deployDAOExpander();
-  const daoExpander = "0xa7459CdDfaBaE01d5976D3303C22E889db22456d";
+  const daoExpander = "0xCe050Ee1166D15a16B173Bed3b2Ebb856c67Ac27";
   // await getAutIDUsername('Taualnt');
   // await getAutIDMetadata(2);
   // await getPoll(pollsAddress, 0);
@@ -156,18 +163,16 @@ async function test() {
   // await getAutIDAddrForComExt(daoExpander);
   // await depl(1, '0x73297cb191a7f510C440a1Ce64Cb2E1b18753409')
   // await passOnboarding(daoExpander, '0x7660aa261d27A2A32d4e7e605C1bc2BA515E5f81');
-  // await getCommunities();
   // await getComData(daoExpander);
   // const community = '0x96dCCC06b1729CD8ccFe849CE9cA7e020e19515c';
   // await getCommunityData(user, daoExpander);
   // await getComData(daoExpander)
   // await getSWMetadata(0);
   // await createCommunity(1, "0x7DeF7A0C6553B9f7993a131b5e30AB59386837E0");
-  // await getCommunities();
-  await mint(daoExpander);
-  // await getCommunities();
+  // await mint(daoExpander);
   // await isAdmin(daoExpander, user);
   // await getDAOExpanders();
+  await getDAOMetadata(daoExpander);
 }
 
 test();

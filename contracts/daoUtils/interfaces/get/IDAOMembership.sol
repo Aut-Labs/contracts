@@ -15,4 +15,6 @@ interface IDAOMembership {
 
     function getAllMembers() external view returns (address[] memory);
 
+    function canJoin(address member) external view returns(bool);
+
 }

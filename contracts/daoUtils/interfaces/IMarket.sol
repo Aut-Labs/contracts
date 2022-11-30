@@ -10,10 +10,10 @@ interface IMarket {
     
     struct MarketModel {
         uint id;
-        string name;
+        string metadata;
     }
 
-    function addMarket(string calldata marketName) external;
+    function addMarket(string calldata metadata) external;
 
     function getMarket() external view returns(string memory);
 }
