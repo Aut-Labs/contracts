@@ -20,8 +20,8 @@ async function main() {
 
   const daoTypesAddr = hre.network.name == 'mumbai' ? "0x814B36802359E0233f38B8A29A96EA9e4c261E37" : "0xD6D405673fF4D1563B9E2dDD3ff7C4B20Af755fc";
   
-  const autIDAddr = "0xA09f57d39bFD445D8884297b86d3190a22C4a80c";
-  const daoExpanderFactoryAddr = "0x78675531afBFB975F4d89BDaC494A1A0F8675Af3";
+  const autIDAddr = hre.network.name == 'mumbai' ? "0x8b8c7dB115c3CC0f80a8CE64b9d64d2AE728E7aD" : "0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8";
+  const daoExpanderFactoryAddr = hre.network.name == 'mumbai' ? "0x777067281a056aE76691485E5F66A525f7D4d7a1" : "0xdaf0E93AAa24b846d8991a314E9466c0c91d9175";
 
   const DAOExpanderRegistry = await hre.ethers.getContractFactory(
     "DAOExpanderRegistry"

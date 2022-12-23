@@ -8,6 +8,7 @@ import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../daoUtils/abstracts/DAOMetadata.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
+import "../modules/IOnboardingPlugin.sol";
 import "./interfaces/IAutDAO.sol";
 
 /// @title AutDAO
@@ -23,6 +24,7 @@ contract AutDAO is
     IAutDAO
 {
     address private deployer;
+    address private onboardingAddr;
 
     /// @notice Sets the initial details of the DAO
     /// @dev all parameters are required.
@@ -54,6 +56,10 @@ contract AutDAO is
         super._setCommitment(_commitment);
         super._setMetadataUri(_metadata);
         super._deployInteractions();
+    }
+
+    function setOnboardingStrategy(address onboardingPlugin) public onlyAdmin {
+        onboardingAddr = onboardingPlugin;
     }
 
     function setMetadataUri(string memory metadata) public override onlyAdmin {
@@ -89,8 +95,8 @@ contract AutDAO is
         override
         returns (bool)
     {
-        // check onboarding
-        return true;
+        if(onboardingAddr == address(0)) return true;
+        else IOnboardingPlugin(onboardingAddr).isOnboarded(member);
     }
 
     

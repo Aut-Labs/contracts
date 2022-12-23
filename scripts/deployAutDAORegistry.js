@@ -17,9 +17,9 @@ async function main() {
   const mumbaiTustedForwarder = '0x69015912AA33720b842dCD6aC059Ed623F28d9f7';
   const trustedForwarder = hre.network.name == 'mumbai' ? mumbaiTustedForwarder : goerliTrustedFrowarder;
 
-  const autIDAddr = hre.network.name == 'mumbai'? "0x643Bc34268dD65b6F57031f22b70ce20D2b4D7Fe" : '0x4957f46a74A1c6C9e761c46298A9975A3CD6b1B8';
+  const autIDAddr = hre.network.name == 'mumbai'? "0x8b8c7dB115c3CC0f80a8CE64b9d64d2AE728E7aD" : '0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8';
 
-  const autDAOFactoryAddr = "";
+  const autDAOFactoryAddr = hre.network.name == 'mumbai'? "0x6bABD1Ac5A80d7a894f69493a9AD8936cd8AbFd4" : "0x775F7DF7df61f7060ffC4060eBE363D60A951155";
 
   const AutDAORegistry = await hre.ethers.getContractFactory(
     "AutDAORegistry"
