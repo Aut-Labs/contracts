@@ -1,9 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-/// @title IDAOMetadata
+/// @title IDAOModules
 /// @notice The interface for the extension of each DAO that integrates AutID
-interface IDAOCommitment {
-    function getCommitment() external view returns(uint commitment);
-
+interface IDAOModules {
+    function getPluginRegistryAddress() external view returns (address);
 }

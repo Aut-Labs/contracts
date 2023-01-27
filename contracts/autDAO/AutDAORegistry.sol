@@ -12,14 +12,17 @@ contract AutDAORegistry is ERC2771Recipient {
     address[] public autDAOs;
     address public autIDAddr;
     IAutDAOFactory private autDAOFactory;
+    address public pluginRegistry;
 
-    constructor(address trustedForwarder, address _autIDAddr, address _autDAOFactory) {
+    constructor(address trustedForwarder, address _autIDAddr, address _autDAOFactory, address _pluginRegistry) {
         require(_autIDAddr != address(0), "AutID Address not passed");
         require(_autDAOFactory != address(0), "AutDAOFactory address not passed");
+        require(_pluginRegistry != address(0), "PluginRegistry address not passed");
 
         autIDAddr = _autIDAddr;
         autDAOFactory = IAutDAOFactory(_autDAOFactory);
         _setTrustedForwarder(trustedForwarder);
+        pluginRegistry = _pluginRegistry;
     }
 
     /**
@@ -39,7 +42,8 @@ contract AutDAORegistry is ERC2771Recipient {
             autIDAddr,
             market,
             metadata,
-            commitment
+            commitment,
+            pluginRegistry
         );
         autDAOs.push(newAutDAOAddress);
         autDAODeployers[_msgSender()].push(newAutDAOAddress);

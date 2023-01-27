@@ -6,9 +6,10 @@ import "../daoUtils/abstracts/DAOInteractions.sol";
 import "../daoUtils/abstracts/DAOUrls.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../daoUtils/abstracts/DAOMetadata.sol";
+import "../daoUtils/abstracts/DAOModules.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
-import "../modules/IOnboardingPlugin.sol";
+import "../modules/interfaces/modules/onboarding/IOnboardingPlugin.sol";
 import "./interfaces/IAutDAO.sol";
 
 /// @title AutDAO
@@ -20,6 +21,7 @@ contract AutDAO is
     DAOMetadata,
     DAOUrls,
     DAOMarket,
+    DAOModules,
     DAOCommitment,
     IAutDAO
 {
@@ -38,15 +40,9 @@ contract AutDAO is
         IAutID _autAddr,
         uint256 _market,
         string memory _metadata,
-        uint256 _commitment
+        uint256 _commitment,
+        address _pluginRegistry
     ) {
-        require(_market > 0 && _market < 4, "Market invalid");
-        require(bytes(_metadata).length > 0, "Missing Metadata URL");
-        require(
-            _commitment > 0 && _commitment < 11,
-            "Commitment should be between 1 and 10"
-        );
-
         deployer = _deployer;
         isAdmin[_deployer] = true;
         admins.push(_deployer);
@@ -56,6 +52,7 @@ contract AutDAO is
         super._setCommitment(_commitment);
         super._setMetadataUri(_metadata);
         super._deployInteractions();
+        super._setPluginRegistry(_pluginRegistry);
     }
 
     function setOnboardingStrategy(address onboardingPlugin) public onlyAdmin {
@@ -65,39 +62,21 @@ contract AutDAO is
     function setMetadataUri(string memory metadata) public override onlyAdmin {
         _setMetadataUri(metadata);
     }
-    function addURL(string memory url)
-        external
-        override
-        onlyAdmin
-    {
+
+    function addURL(string memory url) external override onlyAdmin {
         _addURL(url);
     }
 
-    function removeURL(string memory url)
-        external
-        override
-        onlyAdmin
-    {
+    function removeURL(string memory url) external override onlyAdmin {
         _removeURL(url);
     }
 
-    function setCommitment(uint256 commitment)
-        external
-        override
-        onlyAdmin
-    {
+    function setCommitment(uint256 commitment) external override onlyAdmin {
         _setCommitment(commitment);
     }
 
-    function canJoin(address member)
-        external
-        view
-        override
-        returns (bool)
-    {
-        if(onboardingAddr == address(0)) return true;
-        else IOnboardingPlugin(onboardingAddr).isOnboarded(member);
+    function canJoin(address member, uint role) external view override returns (bool) {
+        if (onboardingAddr == address(0)) return true;
+        else IOnboardingPlugin(onboardingAddr).isOnboarded(member, role);
     }
-
-    
 }

@@ -8,6 +8,7 @@ import "../membershipCheckers/IMembershipChecker.sol";
 
 import "../daoUtils/abstracts/DAOUrls.sol";
 import "../daoUtils/abstracts/DAOMembers.sol";
+import "../daoUtils/abstracts/DAOModules.sol";
 import "../daoUtils/abstracts/DAOMetadata.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
@@ -26,6 +27,7 @@ contract DAOExpander is
     DAOInteractions,
     DAOCommitment,
     DAOMarket,
+    DAOModules,
     IDAOExpander
 {
     /// @notice the basic DAO data
@@ -80,9 +82,9 @@ contract DAOExpander is
         super._deployInteractions();
     }
 
-    function join(address newMember) public override onlyAutID {
-        require(canJoin(newMember), "Not a member of the DAO.");
-        super.join(newMember);
+    function join(address newMember, uint role) public override onlyAutID {
+        require(canJoin(newMember, role), "Not a member of the DAO.");
+        super.join(newMember, role);
     }
 
     /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
@@ -107,7 +109,7 @@ contract DAOExpander is
     /// @dev checks if the member is a part of a DAO
     /// @param member the address of the member that's checked
     /// @return true if they're a member, false otherwise
-    function canJoin(address member) public view override(DAOMembers, IDAOMembership) returns (bool) {
+    function canJoin(address member, uint role) public view override(DAOMembers, IDAOMembership) returns (bool) {
         // TODO: check onboarding
         return isMemberOfOriginalDAO(member);
     }
