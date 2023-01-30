@@ -13,6 +13,17 @@ interface IPluginRegistry {
         address pluginAddress;
         uint256 pluginTypeId;
     }
+    event PluginRegistered(
+        uint256 indexed tokenId,
+        address indexed pluginAddress
+    );
+    event PluginDefinitionAdded(uint256 indexed pluginTypeId);
+
+    event PluginAddedToDAO(
+        uint256 indexed tokenId,
+        uint256 indexed pluginTypeId,
+        address indexed dao
+    );
 
     function getOwnerOfPlugin(address pluginAddress)
         external
@@ -28,4 +39,9 @@ interface IPluginRegistry {
         external
         view
         returns (bool);
+
+    function getPluginIdsByDAO(address dao)
+        external
+        view
+        returns (uint256[] memory);
 }

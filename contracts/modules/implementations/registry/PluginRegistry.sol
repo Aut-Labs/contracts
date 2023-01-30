@@ -31,6 +31,7 @@ contract PluginRegistry is
     mapping(address => uint256) public tokenIdByPluginAddress;
     mapping(address => mapping(uint256 => bool))
         public override pluginTypesInstalledByDAO;
+    mapping(address => uint[]) pluginIdsByDAO;
 
     modifier onlyOracle() {
         require(
@@ -46,13 +47,6 @@ contract PluginRegistry is
     }
 
     // Plugin creation
-
-    event PluginAddedToDAO(
-        uint256 indexed tokenId,
-        uint256 indexed pluginTypeId,
-        address indexed dao
-    );
-
     function addPluginToDAO(uint256 pluginTypeId, address dao)
         external
         payable
@@ -75,6 +69,8 @@ contract PluginRegistry is
         pluginTypesInstalledByDAO[dao][pluginTypeId] = true;
 
         uint256 tokenId = _mintPluginNFT(pluginTypeId, msg.sender);
+        
+        pluginIdsByDAO[dao].push(tokenId);
 
         uint256 fee = (pluginDefinition.price * feeBase1000) / 1000;
 
@@ -103,10 +99,6 @@ contract PluginRegistry is
         return tokenId;
     }
 
-    event PluginRegistered(
-        uint256 indexed tokenId,
-        address indexed pluginAddress
-    );
 
     function registerPlugin(uint256 tokenId, IPlugin plugin) public {
         require(ownerOf(tokenId) == msg.sender, " Not the owner of the plugin");
@@ -134,9 +126,6 @@ contract PluginRegistry is
     }
 
     // Plugin type management
-
-    event PluginDefinitionAdded(uint256 indexed pluginTypeId);
-
     function addPluginDefinition(
         address payable creator,
         string memory metadataURI,
@@ -180,7 +169,6 @@ contract PluginRegistry is
     }
 
     // Admin
-
     function setFeeBase1000(uint256 newFeeBase1000) public onlyOwner {
         feeBase1000 = newFeeBase1000;
     }
@@ -200,5 +188,9 @@ contract PluginRegistry is
         returns (PluginInstance memory)
     {
         return pluginInstanceByTokenId[tokenId];
+    }
+
+    function getPluginIdsByDAO(address dao) public view override returns(uint[] memory) {
+        return pluginIdsByDAO[dao];
     }
 }
