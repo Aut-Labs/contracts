@@ -17,7 +17,7 @@ async function main() {
 
 
     // We get the contract to deploy
-    const pluginRegistryAddress = ""; // mumbai
+    const pluginRegistryAddress = "0x6822cF9d7c405C8cC691aAA55D1D424a7616F964"; // mumbai
     const PluginRegistry = await hre.ethers.getContractFactory("PluginRegistry");
     const pluginRegistry = await PluginRegistry.attach(pluginRegistryAddress);
     const ipfsUrl = "ipfs://bafkreidcjyszmqbzt47vaum6jvppplqocdt4h6xcgj25bg3vz7l426shcy";

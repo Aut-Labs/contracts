@@ -22,7 +22,7 @@ async function main() {
   
   const autIDAddr = hre.network.name == 'mumbai' ? "0x6B2E07F92ed50Cb20c6fAe1866161B89F5620911" : "0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8";
   const daoExpanderFactoryAddr = hre.network.name == 'mumbai' ? "0xA03a33EEB6c60dCAd9e7AD922A8735d4755d3B50" : "0xdaf0E93AAa24b846d8991a314E9466c0c91d9175";
-  const pluginsRegistry = hre.network.name == 'mumbai' ? '0xE041608922d06a4F26C0d4c27d8bCD01daf1f792' : "";
+  const pluginsRegistry = hre.network.name == 'mumbai' ? '0x6822cF9d7c405C8cC691aAA55D1D424a7616F964' : "";
 
   const DAOExpanderRegistry = await hre.ethers.getContractFactory(
     "DAOExpanderRegistry"
