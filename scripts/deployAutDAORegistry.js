@@ -17,9 +17,10 @@ async function main() {
   const mumbaiTustedForwarder = '0x69015912AA33720b842dCD6aC059Ed623F28d9f7';
   const trustedForwarder = hre.network.name == 'mumbai' ? mumbaiTustedForwarder : goerliTrustedFrowarder;
 
-  const autIDAddr = hre.network.name == 'mumbai'? "0x8b8c7dB115c3CC0f80a8CE64b9d64d2AE728E7aD" : '0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8';
+  const autIDAddr = hre.network.name == 'mumbai' ? "0x6B2E07F92ed50Cb20c6fAe1866161B89F5620911" : '0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8';
 
-  const autDAOFactoryAddr = hre.network.name == 'mumbai'? "0x6bABD1Ac5A80d7a894f69493a9AD8936cd8AbFd4" : "0x775F7DF7df61f7060ffC4060eBE363D60A951155";
+  const pluginsRegistry = hre.network.name == 'mumbai' ? '0x6822cF9d7c405C8cC691aAA55D1D424a7616F964' : "";
+  const autDAOFactoryAddr = hre.network.name == 'mumbai' ? "0x9Fb3095dC124B9A8cEEce9BD3Ba599989084D828" : "0x775F7DF7df61f7060ffC4060eBE363D60A951155";
 
   const AutDAORegistry = await hre.ethers.getContractFactory(
     "AutDAORegistry"
@@ -27,7 +28,8 @@ async function main() {
   const autDAORegistry = await AutDAORegistry.deploy(
     trustedForwarder,
     autIDAddr,
-    autDAOFactoryAddr
+    autDAOFactoryAddr,
+    pluginsRegistry
   );
   await autDAORegistry.deployed();
 

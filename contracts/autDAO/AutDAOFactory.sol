@@ -10,14 +10,16 @@ contract AutDAOFactory is IAutDAOFactory {
         address autIDAddr,
         uint256 market,
         string calldata metadata,
-        uint256 commitment
+        uint256 commitment,
+        address pluginRegistry
     ) public override returns (address _autDAOAddress) {
         AutDAO newAutDAO = new AutDAO(
             deployer,
             IAutID(autIDAddr),
             market,
             metadata,
-            commitment
+            commitment,
+            pluginRegistry
         );
         return address(newAutDAO);
     }

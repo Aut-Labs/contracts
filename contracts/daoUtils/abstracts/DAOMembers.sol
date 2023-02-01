@@ -27,7 +27,7 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
         _;
     }
 
-    function join(address newMember) public virtual override onlyAutID {
+    function join(address newMember, uint role) public virtual override onlyAutID {
         require(!isMember[newMember], "Already a member");
         isMember[newMember] = true;
         members.push(newMember);
@@ -63,7 +63,7 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
         return admins;
     }
 
-    function canJoin(address member) external virtual view override returns(bool) {
+    function canJoin(address member, uint role) external virtual view override returns(bool) {
         require(false, "Must be implemented");
     }
 }

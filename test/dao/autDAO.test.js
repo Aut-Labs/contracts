@@ -6,10 +6,16 @@ let autID;
 let deployer;
 let admin1;
 let admin2;
+let pluginRegistry;
 
 describe("AutDAO", function () {
   describe("deployment", function () {
     before(async function () {
+      const PluginRegistryFactory = await ethers.getContractFactory(
+        "PluginRegistry"
+      );
+      pluginRegistry = await PluginRegistryFactory.deploy();
+
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
 
@@ -20,43 +26,23 @@ describe("AutDAO", function () {
     it("Should fail if arguemnts are incorret", async function () {
       const AutDAO = await ethers.getContractFactory("AutDAO");
       await expect(
-        AutDAO.deploy(
-          deployer.address,
-          autID.address,
-          7,
-          URL,
-          10
-        )
+        AutDAO.deploy(deployer.address, autID.address, 7, URL, 10, pluginRegistry.address)
       ).to.be.revertedWith("Market invalid");
 
       await expect(
-        AutDAO.deploy(
-          deployer.address,
-          autID.address,
-          2,
-          "",
-          10
-        )
+        AutDAO.deploy(deployer.address, autID.address, 2, "", 10, pluginRegistry.address)
       ).to.be.revertedWith("Missing Metadata URL");
 
       await expect(
-        AutDAO.deploy(
-          deployer.address,
-          autID.address,
-          2,
-          URL,
-          0
-        )
+        AutDAO.deploy(deployer.address, autID.address, 2, URL, 0, pluginRegistry.address)
       ).to.be.revertedWith("Commitment should be between 1 and 10");
       await expect(
-        AutDAO.deploy(
-          deployer.address,
-          autID.address,
-          2,
-          URL,
-          11
-        )
+        AutDAO.deploy(deployer.address, autID.address, 2, URL, 11, pluginRegistry.address)
       ).to.be.revertedWith("Commitment should be between 1 and 10");
+
+      await expect(
+        AutDAO.deploy(deployer.address, autID.address, 2, URL, 7, ethers.constants.AddressZero)
+      ).to.be.revertedWith("Missing pluginRegistry");
     });
     it("Should deploy an AutDAO", async function () {
       const AutDAO = await ethers.getContractFactory("AutDAO");
@@ -65,7 +51,8 @@ describe("AutDAO", function () {
         autID.address,
         1,
         URL,
-        10
+        10,
+        pluginRegistry.address
       );
 
       await autDAO.deployed();
@@ -75,15 +62,14 @@ describe("AutDAO", function () {
   });
   describe("Manage URLs", async () => {
     before(async function () {
-     
-      const AutDAO = await ethers.getContractFactory("AutDAO");
-      autDAO = await AutDAO.deploy(
-        deployer.address,
-        autID.address,
-        1,
-        URL,
-        10
+
+      const PluginRegistryFactory = await ethers.getContractFactory(
+        "PluginRegistry"
       );
+      pluginRegistry = await PluginRegistryFactory.deploy();
+
+      const AutDAO = await ethers.getContractFactory("AutDAO");
+      autDAO = await AutDAO.deploy(deployer.address, autID.address, 1, URL, 10, pluginRegistry.address);
       await autDAO.deployed();
     });
     it("Should return false when URL list is empty", async () => {
@@ -93,9 +79,7 @@ describe("AutDAO", function () {
       await autDAO.addURL("https://test1.test");
       const urls = await autDAO.getURLs();
 
-      expect(await autDAO.isURLListed("https://test1.test")).to.equal(
-        true
-      );
+      expect(await autDAO.isURLListed("https://test1.test")).to.equal(true);
       expect(urls.length).to.equal(1);
       expect(urls[0]).to.equal("https://test1.test");
     });
@@ -103,9 +87,7 @@ describe("AutDAO", function () {
       await autDAO.removeURL("https://test1.test");
       const urls = await autDAO.getURLs();
 
-      expect(await autDAO.isURLListed("https://test1.test")).to.equal(
-        false
-      );
+      expect(await autDAO.isURLListed("https://test1.test")).to.equal(false);
       expect(urls.length).to.equal(0);
     });
     it("Should add 3 more URLs to the list", async () => {
@@ -114,15 +96,9 @@ describe("AutDAO", function () {
       await autDAO.addURL("https://test3.test");
       const urls = await autDAO.getURLs();
 
-      expect(await autDAO.isURLListed("https://test1.test")).to.equal(
-        true
-      );
-      expect(await autDAO.isURLListed("https://test2.test")).to.equal(
-        true
-      );
-      expect(await autDAO.isURLListed("https://test3.test")).to.equal(
-        true
-      );
+      expect(await autDAO.isURLListed("https://test1.test")).to.equal(true);
+      expect(await autDAO.isURLListed("https://test2.test")).to.equal(true);
+      expect(await autDAO.isURLListed("https://test3.test")).to.equal(true);
       expect(urls.length).to.equal(3);
       expect(urls[0]).to.equal("https://test1.test");
       expect(urls[1]).to.equal("https://test2.test");
@@ -134,32 +110,22 @@ describe("AutDAO", function () {
       );
     });
     it("Should return false when URL is not listed", async () => {
-      expect(await autDAO.isURLListed("https://test4.test")).to.equal(
-        false
-      );
+      expect(await autDAO.isURLListed("https://test4.test")).to.equal(false);
       expect(await autDAO.isURLListed("")).to.equal(false);
     });
     it("Should not allow removing of non existing URL", async () => {
-      await expect(
-        autDAO.removeURL("https://test4.test")
-      ).to.be.revertedWith("url doesnt exist");
-      await expect(autDAO.removeURL("")).to.be.revertedWith(
+      await expect(autDAO.removeURL("https://test4.test")).to.be.revertedWith(
         "url doesnt exist"
       );
+      await expect(autDAO.removeURL("")).to.be.revertedWith("url doesnt exist");
     });
     it("Should remove one of the URLs from the list", async () => {
       await autDAO.removeURL("https://test2.test");
       const urls = await autDAO.getURLs();
 
-      expect(await autDAO.isURLListed("https://test1.test")).to.equal(
-        true
-      );
-      expect(await autDAO.isURLListed("https://test2.test")).to.equal(
-        false
-      );
-      expect(await autDAO.isURLListed("https://test3.test")).to.equal(
-        true
-      );
+      expect(await autDAO.isURLListed("https://test1.test")).to.equal(true);
+      expect(await autDAO.isURLListed("https://test2.test")).to.equal(false);
+      expect(await autDAO.isURLListed("https://test3.test")).to.equal(true);
       expect(urls.length).to.equal(2);
       expect(urls[0]).to.equal("https://test1.test");
       expect(urls[1]).to.equal("https://test3.test");
@@ -168,15 +134,9 @@ describe("AutDAO", function () {
       await autDAO.removeURL("https://test3.test");
       const urls = await autDAO.getURLs();
 
-      expect(await autDAO.isURLListed("https://test1.test")).to.equal(
-        true
-      );
-      expect(await autDAO.isURLListed("https://test2.test")).to.equal(
-        false
-      );
-      expect(await autDAO.isURLListed("https://test3.test")).to.equal(
-        false
-      );
+      expect(await autDAO.isURLListed("https://test1.test")).to.equal(true);
+      expect(await autDAO.isURLListed("https://test2.test")).to.equal(false);
+      expect(await autDAO.isURLListed("https://test3.test")).to.equal(false);
       expect(urls.length).to.equal(1);
       expect(urls[0]).to.equal("https://test1.test");
     });
@@ -184,15 +144,9 @@ describe("AutDAO", function () {
       await autDAO.addURL("https://test2.test");
       const urls = await autDAO.getURLs();
 
-      expect(await autDAO.isURLListed("https://test1.test")).to.equal(
-        true
-      );
-      expect(await autDAO.isURLListed("https://test2.test")).to.equal(
-        true
-      );
-      expect(await autDAO.isURLListed("https://test3.test")).to.equal(
-        false
-      );
+      expect(await autDAO.isURLListed("https://test1.test")).to.equal(true);
+      expect(await autDAO.isURLListed("https://test2.test")).to.equal(true);
+      expect(await autDAO.isURLListed("https://test3.test")).to.equal(false);
       expect(urls.length).to.equal(2);
       expect(urls[0]).to.equal("https://test1.test");
       expect(urls[1]).to.equal("https://test2.test");
@@ -205,18 +159,17 @@ describe("AutDAO", function () {
       admin1 = ad1;
       admin2 = ad2;
 
+      const PluginRegistryFactory = await ethers.getContractFactory(
+        "PluginRegistry"
+      );
+      pluginRegistry = await PluginRegistryFactory.deploy();
+
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();
       await autID.deployed();
 
       const AutDAO = await ethers.getContractFactory("AutDAO");
-      autDAO = await AutDAO.deploy(
-        deployer.address,
-        autID.address,
-        1,
-        URL,
-        10
-      );
+      autDAO = await AutDAO.deploy(deployer.address, autID.address, 1, URL, 10, pluginRegistry.address);
 
       await autDAO.deployed();
 
@@ -228,9 +181,11 @@ describe("AutDAO", function () {
       );
     });
     it("Should succeed when the owner adds new admin", async () => {
-      await (await autID
-        .connect(admin1)
-        .mint("username", "URL", 3, 10, autDAO.address)).wait();
+      await (
+        await autID
+          .connect(admin1)
+          .mint("username", "URL", 3, 10, autDAO.address)
+      ).wait();
 
       await autDAO.addAdmin(admin1.address);
       const admins = await autDAO.getAdmins();
@@ -239,9 +194,11 @@ describe("AutDAO", function () {
       expect(admins[1]).to.eq(admin1.address);
     });
     it("Should succeed when an admin adds new admins to the whitelist", async () => {
-      await (await autID
-        .connect(admin2)
-        .mint("username1", "URL", 3, 10, autDAO.address)).wait();
+      await (
+        await autID
+          .connect(admin2)
+          .mint("username1", "URL", 3, 10, autDAO.address)
+      ).wait();
 
       await autDAO.connect(admin1).addAdmin(admin2.address);
       const admins = await autDAO.getAdmins();
@@ -251,7 +208,9 @@ describe("AutDAO", function () {
       expect(admins[2]).to.eq(admin2.address);
     });
     it("Should remove an admin correctly", async () => {
-      const a =await (await autDAO.connect(admin2).removeAdmin(admin1.address)).wait();
+      const a = await (
+        await autDAO.connect(admin2).removeAdmin(admin1.address)
+      ).wait();
       const admins = await autDAO.getAdmins();
       expect(admins[0]).to.eq(deployer.address);
       expect(admins[1]).to.eq(ethers.constants.AddressZero);

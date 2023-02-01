@@ -15,7 +15,8 @@ contract DAOExpanderFactory is IDAOExpanderFactory {
         address daoAddr,
         uint256 market,
         string calldata metadata,
-        uint256 commitment
+        uint256 commitment,
+        address pluginRegistry
     ) public override returns (address _daoExpanderAddress) {
         DAOExpander newDAOExpander = new DAOExpander(
             deployer,
@@ -25,7 +26,8 @@ contract DAOExpanderFactory is IDAOExpanderFactory {
             daoAddr,
             market,
             metadata,
-            commitment
+            commitment,
+            pluginRegistry
         );
         return address(newDAOExpander);
     }

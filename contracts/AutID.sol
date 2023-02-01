@@ -82,7 +82,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
 
         require(
-            IDAOMembership(daoAddress).canJoin(_msgSender()),
+            IDAOMembership(daoAddress).canJoin(_msgSender(), role),
             "AutID: Not a member of this DAO!"
         );
 
@@ -104,7 +104,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         autIDUsername[lowerCase] = _msgSender();
         _tokenIds.increment();
 
-        IDAOMembershipSet(daoAddress).join(_msgSender());
+        IDAOMembershipSet(daoAddress).join(_msgSender(), role);
 
         emit AutIDCreated(_msgSender(), tokenId);
         emit DAOJoined(daoAddress, _msgSender());
@@ -145,7 +145,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
 
         require(
-            IDAOMembership(daoAddress).canJoin(_msgSender()),
+            IDAOMembership(daoAddress).canJoin(_msgSender(), role),
             "AutID: Not a member of this DAO!"
         );
 
@@ -157,7 +157,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         );
         holderToDAOs[_msgSender()].push(daoAddress);
 
-        IDAOMembershipSet(daoAddress).join(_msgSender());
+        IDAOMembershipSet(daoAddress).join(_msgSender(), role);
 
         emit DAOJoined(daoAddress, _msgSender());
     }
