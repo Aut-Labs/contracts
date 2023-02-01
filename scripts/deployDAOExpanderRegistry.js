@@ -20,8 +20,9 @@ async function main() {
 
   const daoTypesAddr = hre.network.name == 'mumbai' ? "0x814B36802359E0233f38B8A29A96EA9e4c261E37" : "0xD6D405673fF4D1563B9E2dDD3ff7C4B20Af755fc";
   
-  const autIDAddr = hre.network.name == 'mumbai' ? "0x8b8c7dB115c3CC0f80a8CE64b9d64d2AE728E7aD" : "0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8";
-  const daoExpanderFactoryAddr = hre.network.name == 'mumbai' ? "0x777067281a056aE76691485E5F66A525f7D4d7a1" : "0xdaf0E93AAa24b846d8991a314E9466c0c91d9175";
+  const autIDAddr = hre.network.name == 'mumbai' ? "0x6B2E07F92ed50Cb20c6fAe1866161B89F5620911" : "0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8";
+  const daoExpanderFactoryAddr = hre.network.name == 'mumbai' ? "0xA03a33EEB6c60dCAd9e7AD922A8735d4755d3B50" : "0xdaf0E93AAa24b846d8991a314E9466c0c91d9175";
+  const pluginsRegistry = hre.network.name == 'mumbai' ? '0xE041608922d06a4F26C0d4c27d8bCD01daf1f792' : "";
 
   const DAOExpanderRegistry = await hre.ethers.getContractFactory(
     "DAOExpanderRegistry"
@@ -30,7 +31,8 @@ async function main() {
     trustedForwarder,
     autIDAddr,
     daoTypesAddr,
-    daoExpanderFactoryAddr
+    daoExpanderFactoryAddr,
+    pluginsRegistry
   );
   await daoExpanderRegistry.deployed();
 

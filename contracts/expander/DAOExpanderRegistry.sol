@@ -13,15 +13,18 @@ contract DAOExpanderRegistry is ERC2771Recipient {
      
     address[] public daoExpanders;
     address public autIDAddr;
+    address public pluginRegistryAddr;
     IDAOTypes public daoTypes;
     IDAOExpanderFactory private daoExpanderFactory;
 
-    constructor(address trustedForwarder, address _autIDAddr, address _daoTypes, address _daoExpanderFactory) {
+    constructor(address trustedForwarder, address _autIDAddr, address _daoTypes, address _daoExpanderFactory, address _pluginRegistryAddr) {
         require(_autIDAddr != address(0), "AutID Address not passed");
         require(_daoTypes != address(0), "DAOTypes Address not passed");
         require(_daoExpanderFactory != address(0), "DAOExpanderFactory address not passed");
+        require(_pluginRegistryAddr != address(0), "PluginRegistry address not passed");
 
         autIDAddr = _autIDAddr;
+        pluginRegistryAddr = _pluginRegistryAddr;
         daoTypes = IDAOTypes(_daoTypes);
         daoExpanderFactory = IDAOExpanderFactory(_daoExpanderFactory);
         _setTrustedForwarder(trustedForwarder);
@@ -64,7 +67,8 @@ contract DAOExpanderRegistry is ERC2771Recipient {
             daoAddr,
             market,
             metadata,
-            commitment
+            commitment,
+            pluginRegistryAddr
         );
         daoExpanders.push(newDAOExpanderAddress);
         daoExpanderDeployers[_msgSender()].push(newDAOExpanderAddress);

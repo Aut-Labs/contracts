@@ -54,7 +54,8 @@ contract DAOExpander is
         address _daoAddr,
         uint256 _market,
         string memory _metadata,
-        uint256 _commitment
+        uint256 _commitment,
+        address _pluginRegistry
     ) {
         require(_daoAddr != address(0), "Missing DAO Address");
         require(address(_daoTypes) != address(0), "Missing DAO Types address");
@@ -80,6 +81,7 @@ contract DAOExpander is
         super._setCommitment(_commitment);
         super._setMetadataUri(_metadata);
         super._deployInteractions();
+        super._setPluginRegistry(_pluginRegistry);
     }
 
     function join(address newMember, uint role) public override onlyAutID {
