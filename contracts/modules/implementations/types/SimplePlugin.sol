@@ -1,11 +1,11 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../interfaces/modules/IPlugin.sol";
+import "../../interfaces/modules/IModule.sol";
 import "../../interfaces/registry/IPluginRegistry.sol";
 import "../../../daoUtils/interfaces/get/IDAOModules.sol";
 
-abstract contract SimplePlugin is IPlugin {
+abstract contract SimplePlugin is IModule {
     address _deployer;
     address _dao;
     IPluginRegistry public pluginRegistry; // This shouldn't exist. This needs to check the holder of the NFT...

@@ -9,7 +9,7 @@ import "../daoUtils/abstracts/DAOMetadata.sol";
 import "../daoUtils/abstracts/DAOModules.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
-import "../modules/interfaces/modules/onboarding/IOnboardingPlugin.sol";
+import "../modules/interfaces/modules/onboarding/OnboardingModule.sol";
 import "./interfaces/IAutDAO.sol";
 
 /// @title AutDAO
@@ -77,6 +77,6 @@ contract AutDAO is
 
     function canJoin(address member, uint role) external view override returns (bool) {
         if (onboardingAddr == address(0)) return true;
-        else IOnboardingPlugin(onboardingAddr).isOnboarded(member, role);
+        else OnboardingModule(onboardingAddr).isOnboarded(member, role);
     }
 }

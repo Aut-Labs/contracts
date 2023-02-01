@@ -4,12 +4,12 @@ pragma solidity ^0.8.0;
 import "../../../../../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../../../../../daoUtils/interfaces/get/IDAOAdmin.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "../../../../interfaces/modules/quest/IQuestPlugin.sol";
+import "../../../../interfaces/modules/quest/QuestsModule.sol";
 import "../../SimplePlugin.sol";
-import "../../../../interfaces/modules/tasks/ITasksPlugin.sol";
+import "../../../../interfaces/modules/tasks/TasksModule.sol";
 import "../../../../interfaces/registry/IPluginRegistry.sol";
 
-contract QuestPlugin is IQuestPlugin, SimplePlugin {
+contract QuestPlugin is QuestsModule, SimplePlugin {
     using Counters for Counters.Counter;
 
     Counters.Counter private idCounter;
@@ -64,7 +64,7 @@ contract QuestPlugin is IQuestPlugin, SimplePlugin {
             bool isInstalled = IPluginRegistry(pluginRegistry)
                 .pluginTypesInstalledByDAO(daoAddress(), plugin.pluginTypeId);
             if (
-                ITasksPlugin(plugin.pluginAddress).daoAddress() ==
+                TasksModule(plugin.pluginAddress).daoAddress() ==
                 daoAddress() &&
                 isInstalled
             ) {
@@ -151,7 +151,7 @@ contract QuestPlugin is IQuestPlugin, SimplePlugin {
                 .getPluginInstanceByTokenId(questTasks[questId][i].pluginId)
                 .pluginAddress;
             if (
-                !ITasksPlugin(tasksAddress).hasCompletedTheTask(
+                !TasksModule(tasksAddress).hasCompletedTheTask(
                     user,
                     questTasks[questId][i].taskId
                 )

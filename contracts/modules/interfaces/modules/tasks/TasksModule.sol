@@ -1,6 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import "../IPlugin.sol";
+import "../IModule.sol";
 /* 
 The tasks module implements a simple State Machine for on chain tasks. 
 The state machine has 4 states - Created, Taken, Submitted, Finalized. 
@@ -10,7 +10,7 @@ Every tasks plugin must implement this interface.
 */
 /// @title TasksModule - interaface
 /// @notice Every tasks plugin must implement this interface
-interface ITasksPlugin is IPlugin {
+interface TasksModule is IModule {
 
     // reverted when the current state of a task is invalid for executing an action
     error FunctionInvalidAtThisStage();
@@ -69,6 +69,9 @@ interface ITasksPlugin is IPlugin {
     /// @param taskID the task ID 
     function finalize(uint256 taskID) external;
 
+    /// @notice A function for finalizing a task for a specific member. 
+    /// @param taskID the task ID 
+    /// @param submitter the address of the submitter 
     function finalizeFor(uint256 taskID, address submitter) external;
 
     /// @notice Fetches task by ID
@@ -76,5 +79,10 @@ interface ITasksPlugin is IPlugin {
     /// @return the Task structure.
     function getById(uint256 taskID) external view returns (Task memory);
 
+
+    /// @notice Checks if a specific user has completed a task by ID
+    /// @param user the address of the user
+    /// @param taskID the id of the task
+    /// @return bool
     function hasCompletedTheTask(address user, uint taskID) external view returns(bool);
 }

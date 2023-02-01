@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "../../interfaces/modules/IPlugin.sol";
+import "../../interfaces/modules/IModule.sol";
 import "../../interfaces/registry/IPluginRegistry.sol";
 import "../../../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../../../daoUtils/interfaces/get/IDAOAdmin.sol";
@@ -100,7 +100,7 @@ contract PluginRegistry is
     }
 
 
-    function registerPlugin(uint256 tokenId, IPlugin plugin) public {
+    function registerPlugin(uint256 tokenId, IModule plugin) public {
         require(ownerOf(tokenId) == msg.sender, " Not the owner of the plugin");
         require(
             IDAOAdmin(plugin.daoAddress()).isAdmin(msg.sender) == true,

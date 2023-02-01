@@ -4,10 +4,10 @@ pragma solidity ^0.8.0;
 import "../../../../../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../../../../../IInteraction.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "../../../../interfaces/modules/tasks/ITasksPlugin.sol";
+import "../../../../interfaces/modules/tasks/TasksModule.sol";
 import "../../SimplePlugin.sol";
 
-contract OffchainVerifiedTaskPlugin is ITasksPlugin, SimplePlugin {
+contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
     using Counters for Counters.Counter;
 
     Counters.Counter private idCounter;

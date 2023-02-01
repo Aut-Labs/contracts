@@ -1,11 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../registry/IPluginRegistry.sol";
-
-/// @title IPlugin
+/// @title IModule
 /// @notice Every module interface should inherite this one. This interface is a standard configuration of a Plugin. Plugins can only be usable if they implement these functions
-interface IPlugin {
+interface IModule {
 
     // Custom error used when a certain function in the plugin is not implemented.
     error FunctionNotImplemented();
