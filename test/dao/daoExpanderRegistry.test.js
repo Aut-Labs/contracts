@@ -9,6 +9,7 @@ let daoExpanderRegistry;
 let daoExpanderFactory;
 let deployer;
 let notAMember;
+let pluginRegistry;
 
 describe("DAOExpanderRegistry", function () {
   describe("deployDAOExpander", function () {
@@ -57,15 +58,19 @@ describe("DAOExpanderRegistry", function () {
       const DAOExpanderRegistry = await ethers.getContractFactory(
         "DAOExpanderRegistry"
       );
+      const PluginRegistryFactory = await ethers.getContractFactory("PluginRegistry");
+      pluginRegistry = await PluginRegistryFactory.deploy();
 
       daoExpanderRegistry = await DAOExpanderRegistry.deploy(
         // TODO: change
         autID.address,
         autID.address,
         daoTypes.address,
-        daoExpanderFactory.address
+        daoExpanderFactory.address,
+        pluginRegistry.address
       );
       await daoExpanderRegistry.deployed();
+
     });
 
     it("Should fail if arguemnts are incorret", async function () {

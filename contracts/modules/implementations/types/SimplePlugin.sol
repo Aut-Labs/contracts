@@ -8,10 +8,14 @@ import "../../../daoUtils/interfaces/get/IDAOModules.sol";
 abstract contract SimplePlugin is IModule {
     address _deployer;
     address _dao;
+    bool public override isActive;
     IPluginRegistry public pluginRegistry; // This shouldn't exist. This needs to check the holder of the NFT...
 
     modifier onlyDeployer() {
-        require(msg.sender == _deployer, "Only deployer can call this function");
+        require(
+            msg.sender == _deployer,
+            "Only deployer can call this function"
+        );
         _;
     }
 
@@ -22,7 +26,9 @@ abstract contract SimplePlugin is IModule {
 
     constructor(address dao) {
         _dao = dao;
-        pluginRegistry = IPluginRegistry(IDAOModules(dao).getPluginRegistryAddress());
+        pluginRegistry = IPluginRegistry(
+            IDAOModules(dao).getPluginRegistryAddress()
+        );
         _deployer = msg.sender;
     }
 
@@ -36,5 +42,9 @@ abstract contract SimplePlugin is IModule {
 
     function daoAddress() public view override returns (address) {
         return _dao;
+    }
+
+    function _setActive(bool newActive) internal {
+        isActive = newActive;
     }
 }

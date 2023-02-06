@@ -11,10 +11,10 @@ let pluginRegistry;
 describe("AutDAO", function () {
   describe("deployment", function () {
     before(async function () {
-      const PluginRegistryFactory = await ethers.getContractFactory(
+      const PluginRegistry = await ethers.getContractFactory(
         "PluginRegistry"
       );
-      pluginRegistry = await PluginRegistryFactory.deploy();
+      pluginRegistry = await PluginRegistry.deploy();
 
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;

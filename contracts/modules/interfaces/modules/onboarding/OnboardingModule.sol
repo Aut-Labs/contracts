@@ -31,4 +31,5 @@ interface OnboardingModule is IModule {
     /// @param member The member to be onboarded
     /// @param role The role for which the member is onboarded
     function onboard(address member, uint role) external;
+
 }

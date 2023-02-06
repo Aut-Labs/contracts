@@ -55,18 +55,10 @@ describe("OffchainVerifiedTaskPlugin", (accounts) => {
     it("Should mint an NFT for it", async () => {
       const tx = await pluginRegistry
         .connect(admin)
-        .addPluginToDAO(pluginTypeId, dao.address);
+        .addPluginToDAO(offchainVerifiedTaskPlugin.address, pluginTypeId);
       await expect(tx)
         .to.emit(pluginRegistry, "PluginAddedToDAO")
         .withArgs(1, pluginTypeId, dao.address);
-    });
-    it("Should register the plugin", async () => {
-      const tx = await pluginRegistry
-        .connect(admin)
-        .registerPlugin(1, offchainVerifiedTaskPlugin.address);
-      await expect(tx)
-        .to.emit(pluginRegistry, "PluginRegistered")
-        .withArgs(1, offchainVerifiedTaskPlugin.address);
     });
   });
 

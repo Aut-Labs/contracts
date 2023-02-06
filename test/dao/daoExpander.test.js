@@ -9,6 +9,7 @@ let autID;
 let deployer;
 let admin1;
 let admin2;
+let pluginRegistry;
 
 describe("DAOExpander", function () {
   describe("deployment", function () {
@@ -37,6 +38,9 @@ describe("DAOExpander", function () {
       await sWLegacyMembershipChecker.deployed();
 
       daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
+      const PluginRegistryFactory = await ethers.getContractFactory("PluginRegistry");
+      pluginRegistry = await PluginRegistryFactory.deploy();
+
     });
     it("Should fail if arguemnts are incorret", async function () {
       const DAOExpander = await ethers.getContractFactory("DAOExpander");
@@ -49,7 +53,9 @@ describe("DAOExpander", function () {
           dao.address,
           1,
           URL,
-          10
+          10,
+          pluginRegistry.address
+
         )
       ).to.be.revertedWith("Missing DAO Types address");
       await expect(
@@ -61,7 +67,9 @@ describe("DAOExpander", function () {
           dao.address,
           1,
           URL,
-          10
+          10,
+          pluginRegistry.address
+
         )
       ).to.be.revertedWith("Invalid membership type");
       await expect(
@@ -73,7 +81,9 @@ describe("DAOExpander", function () {
           ethers.constants.AddressZero,
           1,
           URL,
-          10
+          10,
+          pluginRegistry.address
+
         )
       ).to.be.revertedWith("Missing DAO Address");
       await expect(
@@ -85,7 +95,8 @@ describe("DAOExpander", function () {
           dao.address,
           7,
           URL,
-          10
+          10,
+          pluginRegistry.address
         )
       ).to.be.revertedWith("Market invalid");
 
@@ -98,7 +109,9 @@ describe("DAOExpander", function () {
           dao.address,
           2,
           "",
-          10
+          10,
+          pluginRegistry.address
+
         )
       ).to.be.revertedWith("Missing Metadata URL");
 
@@ -111,7 +124,9 @@ describe("DAOExpander", function () {
           dao.address,
           2,
           URL,
-          0
+          0,
+          pluginRegistry.address
+
         )
       ).to.be.revertedWith("Commitment should be between 1 and 10");
       await expect(
@@ -123,7 +138,9 @@ describe("DAOExpander", function () {
           dao.address,
           2,
           URL,
-          11
+          11,
+          pluginRegistry.address
+
         )
       ).to.be.revertedWith("Commitment should be between 1 and 10");
     });
@@ -137,7 +154,9 @@ describe("DAOExpander", function () {
         dao.address,
         1,
         URL,
-        10
+        10,
+        pluginRegistry.address
+
       );
 
       await daoExpander.deployed();
@@ -174,7 +193,8 @@ describe("DAOExpander", function () {
         dao.address,
         1,
         URL,
-        10
+        10,
+        pluginRegistry.address
       );
       await daoExpander.deployed();
     });
@@ -328,7 +348,8 @@ describe("DAOExpander", function () {
         dao.address,
         1,
         URL,
-        10
+        10,
+        pluginRegistry.address
       );
 
       await daoExpander.deployed();
@@ -366,7 +387,7 @@ describe("DAOExpander", function () {
       expect(admins[2]).to.eq(admin2.address);
     });
     it("Should remove an admin correctly", async () => {
-      const a =await (await daoExpander.connect(admin2).removeAdmin(admin1.address)).wait();
+      const a = await (await daoExpander.connect(admin2).removeAdmin(admin1.address)).wait();
       const admins = await daoExpander.getAdmins();
       expect(admins[0]).to.eq(deployer.address);
       expect(admins[1]).to.eq(ethers.constants.AddressZero);

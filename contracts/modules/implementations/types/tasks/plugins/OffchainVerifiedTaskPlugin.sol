@@ -49,6 +49,12 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         _;
     }
 
+    // modifier onlyDAOModule() {
+    //     address pluginRegistry = IDAOModules(_dao).getPluginRegistryAddress();
+    //     IPluginRegistry(pluginRegistry).getPluginIdsByDAO(_dao);
+
+    // }
+
     modifier onlyOffchainVerifier() {
         require(
             _offchainVerifierAddress == msg.sender,

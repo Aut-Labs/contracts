@@ -15,4 +15,6 @@ interface IModule {
     /// @notice When a plugin is deployed, the deployer must be set in the constructor. Only the deployer can further on asociate it to a daoExpander.
     /// @return the address of the deployer of the plugin
     function deployer() external view returns (address);
+
+    function isActive() external view returns(bool);
 }

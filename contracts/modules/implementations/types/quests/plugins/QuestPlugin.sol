@@ -19,6 +19,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     mapping(uint256 => PluginTasks[]) questTasks;
     uint256 constant SECONDS_IN_DAY = 86400;
     mapping(uint256 => uint256) public roleToQuestID;
+    uint public maxAmountOfCompletions; 
 
     constructor(address dao) SimplePlugin(dao) {
         idCounter.increment();
@@ -50,6 +51,10 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         return questId;
     }
 
+    function createTask(address tasksAddress, uint256 _role, string memory _uri) onlyAdmin public {
+        TasksModule(tasksAddress).create(_role, _uri);
+    }
+
     function addTasks(uint256 questId, PluginTasks[] calldata tasks)
         public
         override
@@ -62,7 +67,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
             require(plugin.pluginAddress != address(0), "Invalid plugin");
             bool isInstalled = IPluginRegistry(pluginRegistry)
-                .pluginTypesInstalledByDAO(daoAddress(), plugin.pluginTypeId);
+                .pluginDefinitionsInstalledByDAO(daoAddress(), plugin.pluginDefinitionId);
             if (
                 TasksModule(plugin.pluginAddress).daoAddress() ==
                 daoAddress() &&
@@ -114,12 +119,16 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         emit TasksRemovedFromQuest();
     }
 
-    function isActive(uint256 questId) public view override returns (bool) {
+    function isQuestActive(uint256 questId) public view override returns (bool) {
         return
             quests[questId].start +
                 quests[questId].durationInDays *
                 SECONDS_IN_DAY <
             block.timestamp;
+    }
+
+    function setActive(bool active) public {
+        _setActive(active);
     }
 
     function getById(uint256 questId)

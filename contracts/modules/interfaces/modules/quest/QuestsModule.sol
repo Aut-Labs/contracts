@@ -63,7 +63,7 @@ interface QuestsModule is IModule {
     /// @notice Checks if a quest is still active
     /// @param questId The id of the quest
     /// @return bool.
-    function isActive(uint256 questId) external view returns (bool);
+    function isQuestActive(uint256 questId) external view returns (bool);
 
 
     /// @notice Checks if a user has completed a quest. This one is used for onboarding, when the user doesn't yet have a role

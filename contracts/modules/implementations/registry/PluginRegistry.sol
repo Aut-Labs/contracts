@@ -19,19 +19,23 @@ contract PluginRegistry is
     ReentrancyGuard,
     IPluginRegistry
 {
-    uint256 public _numPluginTypes;
+    uint256 public _numPluginDefinitions;
     uint256 public _numPluginsMinted;
 
     uint256 public feeBase1000 = 1;
     address payable public feeReciever;
     address public oracleAddress;
 
-    mapping(uint256 => PluginDefinition) public pluginTypesById;
+    mapping(uint256 => PluginDefinition) public pluginDefinitionsById;
     mapping(uint256 => PluginInstance) public pluginInstanceByTokenId;
+
     mapping(address => uint256) public tokenIdByPluginAddress;
+
     mapping(address => mapping(uint256 => bool))
-        public override pluginTypesInstalledByDAO;
-    mapping(address => uint[]) pluginIdsByDAO;
+        public
+        override pluginDefinitionsInstalledByDAO;
+
+    mapping(address => uint256[]) pluginIdsByDAO;
 
     modifier onlyOracle() {
         require(
@@ -47,71 +51,76 @@ contract PluginRegistry is
     }
 
     // Plugin creation
-    function addPluginToDAO(uint256 pluginTypeId, address dao)
-        external
-        payable
-        nonReentrant
-    {
-        PluginDefinition storage pluginDefinition = pluginTypesById[
-            pluginTypeId
+    function addPluginToDAO(
+        address pluginAddress,
+        uint256 pluginDefinitionId
+    ) external payable nonReentrant {
+
+        IModule plugin = IModule(pluginAddress);
+        address dao = plugin.daoAddress();
+
+        require(
+            IDAOAdmin(plugin.daoAddress()).isAdmin(msg.sender) == true,
+            "Not an admin"
+        );
+
+        PluginDefinition storage pluginDefinition = pluginDefinitionsById[
+            pluginDefinitionId
         ];
 
-        require(pluginDefinition.active, "AUT: Plugin not active");
         require(
             msg.value >= pluginDefinition.price,
             "AUT: Insufficient price paid"
         );
         require(
-            pluginTypesInstalledByDAO[dao][pluginTypeId] == false,
+            !pluginDefinitionsInstalledByDAO[dao][pluginDefinitionId],
             "AUT: Plugin already installed on dao"
         );
 
-        pluginTypesInstalledByDAO[dao][pluginTypeId] = true;
+        pluginDefinitionsInstalledByDAO[dao][pluginDefinitionId] = true;
 
-        uint256 tokenId = _mintPluginNFT(pluginTypeId, msg.sender);
-        
+        uint256 tokenId = _mintPluginNFT(pluginDefinitionId, msg.sender);
+
         pluginIdsByDAO[dao].push(tokenId);
 
         uint256 fee = (pluginDefinition.price * feeBase1000) / 1000;
 
         feeReciever.transfer(fee);
-        pluginTypesById[pluginTypeId].creator.transfer(msg.value - fee);
+        pluginDefinitionsById[pluginDefinitionId].creator.transfer(
+            msg.value - fee
+        );
 
-        emit PluginAddedToDAO(tokenId, pluginTypeId, dao);
+        emit PluginAddedToDAO(tokenId, pluginDefinitionId, dao);
+
+        pluginInstanceByTokenId[tokenId].pluginAddress = pluginAddress;
+
+        tokenIdByPluginAddress[pluginAddress] = tokenId;
+        
+        // allow interactions to be used from plugin
+        address interactions = IDAOInteractions(dao).getInteractionsAddr();
+        IInteraction(interactions).allowAccess(pluginAddress);
+
+        emit PluginRegistered(tokenId, pluginAddress);
     }
 
-    function _mintPluginNFT(uint256 pluginTypeId, address to)
+    function _mintPluginNFT(uint256 pluginDefinitionId, address to)
         internal
         returns (uint256 tokenId)
     {
-        PluginDefinition storage pluginDefinition = pluginTypesById[
-            pluginTypeId
+        PluginDefinition storage pluginDefinition = pluginDefinitionsById[
+            pluginDefinitionId
         ];
 
         _numPluginsMinted++;
         tokenId = _numPluginsMinted;
 
-        pluginInstanceByTokenId[tokenId].pluginTypeId = pluginTypeId;
+        pluginInstanceByTokenId[tokenId]
+            .pluginDefinitionId = pluginDefinitionId;
 
         _mint(to, tokenId);
         _setTokenURI(tokenId, pluginDefinition.metadataURI);
 
         return tokenId;
-    }
-
-
-    function registerPlugin(uint256 tokenId, IModule plugin) public {
-        require(ownerOf(tokenId) == msg.sender, " Not the owner of the plugin");
-        require(
-            IDAOAdmin(plugin.daoAddress()).isAdmin(msg.sender) == true,
-            "Not an admin"
-        );
-        pluginInstanceByTokenId[tokenId].pluginAddress = address(plugin);
-        tokenIdByPluginAddress[address(plugin)] = tokenId;
-        address dao = plugin.daoAddress();
-        address interactions = IDAOInteractions(dao).getInteractionsAddr();
-        IInteraction(interactions).allowAccess(address(plugin));
-        emit PluginRegistered(tokenId, address(plugin));
     }
 
     function getOwnerOfPlugin(address pluginAddress)
@@ -133,22 +142,22 @@ contract PluginRegistry is
     ) external onlyOwner {
         require(bytes(metadataURI).length > 0, "AUT: Metadata URI is empty");
 
-        _numPluginTypes++;
-        uint256 pluginTypeId = _numPluginTypes;
+        _numPluginDefinitions++;
+        uint256 pluginDefinitionId = _numPluginDefinitions;
 
-        pluginTypesById[pluginTypeId] = PluginDefinition(
+        pluginDefinitionsById[pluginDefinitionId] = PluginDefinition(
             metadataURI,
             price,
             creator,
             true
         );
 
-        emit PluginDefinitionAdded(pluginTypeId);
+        emit PluginDefinitionAdded(pluginDefinitionId);
     }
 
-    function setPrice(uint256 pluginTypeId, uint256 newPrice) public {
-        PluginDefinition storage pluginDefinition = pluginTypesById[
-            pluginTypeId
+    function setPrice(uint256 pluginDefinitionId, uint256 newPrice) public {
+        PluginDefinition storage pluginDefinition = pluginDefinitionsById[
+            pluginDefinitionId
         ];
         require(
             msg.sender == pluginDefinition.creator,
@@ -157,9 +166,9 @@ contract PluginRegistry is
         pluginDefinition.price = newPrice;
     }
 
-    function setActive(uint256 pluginTypeId, bool newActive) public {
-        PluginDefinition storage pluginDefinition = pluginTypesById[
-            pluginTypeId
+    function setActive(uint256 pluginDefinitionId, bool newActive) public {
+        PluginDefinition storage pluginDefinition = pluginDefinitionsById[
+            pluginDefinitionId
         ];
         require(
             msg.sender == pluginDefinition.creator,
@@ -190,7 +199,12 @@ contract PluginRegistry is
         return pluginInstanceByTokenId[tokenId];
     }
 
-    function getPluginIdsByDAO(address dao) public view override returns(uint[] memory) {
+    function getPluginIdsByDAO(address dao)
+        public
+        view
+        override
+        returns (uint256[] memory)
+    {
         return pluginIdsByDAO[dao];
     }
 }

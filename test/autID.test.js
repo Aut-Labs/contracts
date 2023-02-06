@@ -13,6 +13,7 @@ let autID;
 let daoTypes;
 let sWLegacyMembershipChecker;
 let deployer;
+let pluginRegistry;
 
 describe("AutID", function () {
   describe("mint", function () {
@@ -37,6 +38,10 @@ describe("AutID", function () {
       await sWLegacyMembershipChecker.deployed();
 
       daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
+
+      const PluginRegistryFactory = await ethers.getContractFactory("PluginRegistry");
+      pluginRegistry = await PluginRegistryFactory.deploy();
+
     });
     beforeEach(async function () {
       [deployer, daoMember, daoMember2, user1, user2, user3, ...addrs] =
@@ -59,7 +64,8 @@ describe("AutID", function () {
         dao.address,
         1,
         URL,
-        5
+        5,
+        pluginRegistry.address
       );
       await daoExpander.deployed();
 
@@ -199,7 +205,8 @@ describe("AutID", function () {
         dao.address,
         1,
         URL,
-        5
+        5,
+        pluginRegistry.address
       );
       await daoExpander.deployed();
       daoExpander2 = await DAOExpander.deploy(
@@ -210,7 +217,8 @@ describe("AutID", function () {
         dao2.address,
         1,
         URL,
-        5
+        5,
+        pluginRegistry.address
       );
       await daoExpander2.deployed();
 
@@ -350,7 +358,9 @@ describe("AutID", function () {
         dao.address,
         1,
         URL,
-        4
+        4,
+        pluginRegistry.address
+
       );
       await daoExpander.deployed();
       daoExpander2 = await DAOExpander.deploy(
@@ -361,7 +371,9 @@ describe("AutID", function () {
         dao2.address,
         1,
         URL,
-        5
+        5,
+        pluginRegistry.address
+
       );
       await daoExpander2.deployed();
 
@@ -462,7 +474,9 @@ describe("AutID", function () {
         dao.address,
         1,
         URL,
-        10
+        10,
+        pluginRegistry.address
+         
       );
       await daoExpander.deployed();
 

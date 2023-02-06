@@ -63,18 +63,10 @@ describe("OnboardingOpenTaskPlugin", (accounts) => {
     it("Should mint an NFT for it", async () => {
       const tx = await pluginRegistry
         .connect(admin)
-        .addPluginToDAO(pluginTypeId, dao.address);
+        .addPluginToDAO(onboardingOpenTaskPlugin.address, pluginTypeId);
       await expect(tx)
         .to.emit(pluginRegistry, "PluginAddedToDAO")
         .withArgs(1, pluginTypeId, dao.address);
-    });
-    it("Should register the plugin", async () => {
-      const tx = await pluginRegistry
-        .connect(admin)
-        .registerPlugin(1, onboardingOpenTaskPlugin.address);
-      await expect(tx)
-        .to.emit(pluginRegistry, "PluginRegistered")
-        .withArgs(1, onboardingOpenTaskPlugin.address);
     });
   });
 

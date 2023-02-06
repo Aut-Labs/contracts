@@ -71,31 +71,17 @@ describe("QuestPlugin", (accounts) => {
     // Add plugins to the DAO
     let tx = await pluginRegistry
       .connect(admin)
-      .addPluginToDAO(offchainVerifiedTaskPluginType, dao.address);
+      .addPluginToDAO(offchainVerifiedTaskPlugin.address, offchainVerifiedTaskPluginType);
     await expect(tx)
       .to.emit(pluginRegistry, "PluginAddedToDAO")
       .withArgs(1, offchainVerifiedTaskPluginType, dao.address);
 
     tx = await pluginRegistry
       .connect(admin)
-      .addPluginToDAO(onboardingOpenTaskPluginType, dao.address);
+      .addPluginToDAO(onboardingOpenTaskPlugin.address, onboardingOpenTaskPluginType);
     await expect(tx)
       .to.emit(pluginRegistry, "PluginAddedToDAO")
       .withArgs(2, onboardingOpenTaskPluginType, dao.address);
-
-    tx = await pluginRegistry
-      .connect(admin)
-      .registerPlugin(1, offchainVerifiedTaskPlugin.address);
-    await expect(tx)
-      .to.emit(pluginRegistry, "PluginRegistered")
-      .withArgs(1, offchainVerifiedTaskPlugin.address);
-
-    tx = await pluginRegistry
-      .connect(admin)
-      .registerPlugin(2, onboardingOpenTaskPlugin.address);
-    await expect(tx)
-      .to.emit(pluginRegistry, "PluginRegistered")
-      .withArgs(2, onboardingOpenTaskPlugin.address);
 
     tx = await onboardingOpenTaskPlugin.connect(admin).create(0, url);
     await expect(tx)
@@ -120,18 +106,10 @@ describe("QuestPlugin", (accounts) => {
     it("Should mint an NFT for it", async () => {
       const tx = await pluginRegistry
         .connect(admin)
-        .addPluginToDAO(questPluginType, dao.address);
+        .addPluginToDAO(questPlugin.address, questPluginType);
       await expect(tx)
         .to.emit(pluginRegistry, "PluginAddedToDAO")
         .withArgs(3, questPluginType, dao.address);
-    });
-    it("Should register the plugin", async () => {
-      const tx = await pluginRegistry
-        .connect(admin)
-        .registerPlugin(1, questPlugin.address);
-      await expect(tx)
-        .to.emit(pluginRegistry, "PluginRegistered")
-        .withArgs(1, questPlugin.address);
     });
     it("Should create a quest", async () => {
       const tx = await questPlugin.create(1, url, 3);
@@ -150,16 +128,16 @@ describe("QuestPlugin", (accounts) => {
     });
 
     it("Should not add a task to a quest unless task plugin is registered", async () => {
-      const tx = questPlugin.addTasks(1, [{ pluginId: 3, taskId: 1 }]);
+      const tx = questPlugin.addTasks(1, [{ pluginId: 9, taskId: 1 }]);
       await expect(tx).to.be.revertedWith("Invalid plugin");
     });
 
-    it.skip("Should not add a task to a quest if task not created", async () => {
-      const tx = questPlugin.addTasks(1, [
-        { pluginId: offchainVerifiedTaskPluginType, taskId: 10 },
-      ]);
-      await expect(tx).to.be.revertedWith("Invalid task");
-    });
+    // it("Should not add a task to a quest if task not created", async () => {
+    //   const tx = questPlugin.addTasks(1, [
+    //     { pluginId: offchainVerifiedTaskPluginType, taskId: 10 },
+    //   ]);
+    //   await expect(tx).to.be.revertedWith("Invalid task");
+    // });
 
     it("Should not add the same tasks twice", async () => {
       const tx = await questPlugin.addTasks(1, [

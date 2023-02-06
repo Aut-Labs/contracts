@@ -11,7 +11,7 @@ interface IPluginRegistry {
 
     struct PluginInstance {
         address pluginAddress;
-        uint256 pluginTypeId;
+        uint256 pluginDefinitionId;
     }
     event PluginRegistered(
         uint256 indexed tokenId,
@@ -35,7 +35,7 @@ interface IPluginRegistry {
         view
         returns (PluginInstance memory);
 
-    function pluginTypesInstalledByDAO(address dao, uint256 pluginTypeId)
+    function pluginDefinitionsInstalledByDAO(address dao, uint256 pluginTypeId)
         external
         view
         returns (bool);
