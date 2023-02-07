@@ -8,8 +8,20 @@ import "../../../daoUtils/interfaces/get/IDAOModules.sol";
 abstract contract SimplePlugin is IModule {
     address _deployer;
     address _dao;
+    uint256 public pluginId;
     bool public override isActive;
     IPluginRegistry public pluginRegistry; // This shouldn't exist. This needs to check the holder of the NFT...
+
+    modifier onlyDAOModule() {
+        uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry)
+            .getPluginIdsByDAO(_dao);
+        bool pluginFound = false;
+        for (uint256 i = 0; i < installedPlugins.length; i++) {
+            if (installedPlugins[i] == pluginId) pluginFound = true; _;
+        }
+        require(pluginFound, "Only DAO Module");
+        _;
+    }
 
     modifier onlyDeployer() {
         require(
@@ -21,6 +33,11 @@ abstract contract SimplePlugin is IModule {
 
     modifier onlyOwner() {
         require(msg.sender == owner(), "Only owner can call this function");
+        _;
+    }
+
+    modifier onlyPluginRegistry() {
+        require(msg.sender == address(pluginRegistry), "Only plugin registry");
         _;
     }
 
@@ -46,5 +63,9 @@ abstract contract SimplePlugin is IModule {
 
     function _setActive(bool newActive) internal {
         isActive = newActive;
+    }
+
+    function storePluginId(uint256 tokenId) public override onlyPluginRegistry {
+        pluginId = tokenId;
     }
 }

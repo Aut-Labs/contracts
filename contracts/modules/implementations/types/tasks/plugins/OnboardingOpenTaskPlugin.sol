@@ -72,6 +72,31 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         return taskId;
     }
 
+    function createBy(
+        address creator,
+        uint256 _role,
+        string memory _uri
+    ) public override onlyDAOModule returns (uint256) {
+        require(bytes(_uri).length > 0, "No URI");
+        uint256 taskId = idCounter.current();
+
+        tasks.push(
+            Task(
+                block.timestamp,
+                TaskStatus.Created,
+                creator,
+                address(0),
+                "",
+                0,
+                _uri
+            )
+        );
+
+        idCounter.increment();
+        emit TaskCreated(taskId, _uri);
+        return taskId;
+    }
+
     function take(uint256 taskId) public override {
         revert FunctionNotImplemented();
     }

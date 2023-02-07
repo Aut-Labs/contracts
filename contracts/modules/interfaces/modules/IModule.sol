@@ -17,4 +17,6 @@ interface IModule {
     function deployer() external view returns (address);
 
     function isActive() external view returns(bool);
+    
+    function storePluginId(uint256 tokenId) external;
 }

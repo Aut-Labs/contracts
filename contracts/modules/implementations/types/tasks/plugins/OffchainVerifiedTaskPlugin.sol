@@ -49,11 +49,6 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         _;
     }
 
-    // modifier onlyDAOModule() {
-    //     address pluginRegistry = IDAOModules(_dao).getPluginRegistryAddress();
-    //     IPluginRegistry(pluginRegistry).getPluginIdsByDAO(_dao);
-
-    // }
 
     modifier onlyOffchainVerifier() {
         require(
@@ -77,6 +72,33 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
                 block.timestamp,
                 TaskStatus.Created,
                 msg.sender,
+                address(0),
+                "",
+                _role,
+                _uri
+            )
+        );
+
+        idCounter.increment();
+        emit TaskCreated(taskId, _uri);
+        return taskId;
+    }
+
+
+    function createBy(address creator, uint256 _role, string memory _uri)
+        public
+        override
+        onlyDAOModule
+        returns (uint256)
+    {
+        require(bytes(_uri).length > 0, "No URI");
+        uint256 taskId = idCounter.current();
+
+        tasks.push(
+            Task(
+                block.timestamp,
+                TaskStatus.Created,
+                creator,
                 address(0),
                 "",
                 _role,

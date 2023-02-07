@@ -96,6 +96,7 @@ contract PluginRegistry is
 
         tokenIdByPluginAddress[pluginAddress] = tokenId;
         
+        IModule(pluginAddress).storePluginId(tokenId);
         // allow interactions to be used from plugin
         address interactions = IDAOInteractions(dao).getInteractionsAddr();
         IInteraction(interactions).allowAccess(pluginAddress);
