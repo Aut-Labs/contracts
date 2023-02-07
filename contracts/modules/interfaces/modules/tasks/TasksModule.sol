@@ -47,6 +47,8 @@ interface TasksModule is IModule {
         string submitionUrl;
         uint256 role;
         string metadata;
+        uint startDate;
+        uint endDate;
     }
 
     
@@ -54,14 +56,14 @@ interface TasksModule is IModule {
     /// @param role The role with which the task is associated
     /// @param uri IPFS CID with the off-chain data of the task
     /// @return The id of the newly created task.
-    function create(uint256 role, string memory uri) external returns (uint256);
+    function create(uint256 role, string memory uri, uint startDate, uint endDate) external returns (uint256);
 
     /// @notice Creates a new task
     /// @param creator The creator of the task
     /// @param role The role with which the task is associated
     /// @param uri IPFS CID with the off-chain data of the task
     /// @return The id of the newly created task.
-    function createBy(address creator, uint256 role, string memory uri) external returns (uint256); 
+    function createBy(address creator, uint256 role, string memory uri, uint startDate, uint endDate) external returns (uint256); 
     
     /// @notice A function for taking a task. The signer is the taker.
     /// @param taskID the id of the task

@@ -9,6 +9,7 @@ let offchainVerifiedTaskPluginType;
 let onboardingOpenTaskPluginType;
 let questPluginType;
 let autID;
+let block;
 
 describe("QuestPlugin", (accounts) => {
   before(async function () {
@@ -81,15 +82,19 @@ describe("QuestPlugin", (accounts) => {
       .to.emit(pluginRegistry, "PluginAddedToDAO")
       .withArgs(2, onboardingOpenTaskPluginType, dao.address);
 
-    tx = await onboardingOpenTaskPlugin.connect(admin).create(0, url);
+      const blockNumber = await ethers.provider.getBlockNumber();
+      block = await ethers.provider.getBlock(blockNumber);
+  
+
+    tx = await onboardingOpenTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
     await expect(tx)
       .to.emit(onboardingOpenTaskPlugin, "TaskCreated")
       .withArgs(1, url);
-    tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url);
+    tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
     await expect(tx)
       .to.emit(offchainVerifiedTaskPlugin, "TaskCreated")
       .withArgs(1, url);
-    tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url);
+    tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
     await expect(tx)
       .to.emit(offchainVerifiedTaskPlugin, "TaskCreated")
       .withArgs(2, url);

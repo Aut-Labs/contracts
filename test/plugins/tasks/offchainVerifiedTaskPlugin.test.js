@@ -8,6 +8,7 @@ let addr1, addr2, addr3, addrs;
 const url = "https://something";
 let pluginTypeId;
 let autID;
+let block;
 
 describe("OffchainVerifiedTaskPlugin", (accounts) => {
   before(async function () {
@@ -38,6 +39,10 @@ describe("OffchainVerifiedTaskPlugin", (accounts) => {
       await pluginRegistry.addPluginDefinition(verifier.address, url, 0)
     ).wait();
     pluginTypeId = pluginDefinition.events[0].args.pluginTypeId.toString();
+
+    const blockNumber = await ethers.provider.getBlockNumber();
+    block = await ethers.provider.getBlock(blockNumber);
+
   });
 
   describe("Plugin Registration", async () => {
@@ -64,11 +69,15 @@ describe("OffchainVerifiedTaskPlugin", (accounts) => {
 
   describe("OffchainVerifiedTaskPlugin", async () => {
     it("Should not create if signer is not an admin", async () => {
-      const tx = offchainVerifiedTaskPlugin.connect(addr2).create(1, url);
+      const tx = offchainVerifiedTaskPlugin.connect(addr2).create(1, url, block.timestamp, block.timestamp + 1000);
       await expect(tx).to.be.revertedWith("Only admin.");
     });
+    it("Should not create a task if wront dates", async () => {
+      const tx = offchainVerifiedTaskPlugin.connect(admin).create(1, url, block.timestamp, block.timestamp - 1000);
+      await expect(tx).to.be.revertedWith("Invalid endDate");
+    });
     it("Should create a task", async () => {
-      const tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url);
+      const tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
 
       await expect(tx)
         .to.emit(offchainVerifiedTaskPlugin, "TaskCreated")
@@ -97,6 +106,14 @@ describe("OffchainVerifiedTaskPlugin", (accounts) => {
     it("Should revert finalizeFor if signer not offchain verifier", async () => {
       const tx = offchainVerifiedTaskPlugin.finalizeFor(1, addr2.address);
       await expect(tx).to.be.revertedWith("Only offchain verifier.");
+    });
+
+    it("Should revert finalizeFor if task has expired", async () => {
+      const createTx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 5);
+      const a = await createTx.wait();
+
+      const tx = offchainVerifiedTaskPlugin.connect(verifier).finalizeFor(a.events[0].args.taskID.toString(), addr2.address);
+      await expect(tx).to.be.revertedWith("The task has ended");
     });
     it("Should finalize", async () => {
       let status = await offchainVerifiedTaskPlugin.getStatusPerSubmitter(

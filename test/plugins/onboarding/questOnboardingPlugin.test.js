@@ -10,6 +10,7 @@ const url = "https://something";
 let pluginTypeId;
 let offchainVerifiedTaskPluginTypeId;
 let autID;
+let block;
 
 describe("QuestOnboardingPlugin", (accounts) => {
   before(async function () {
@@ -66,6 +67,9 @@ describe("QuestOnboardingPlugin", (accounts) => {
       .to.emit(pluginRegistry, "PluginAddedToDAO")
       .withArgs(1, offchainVerifiedTaskPluginTypeId, dao.address);
 
+    const blockNumber = await ethers.provider.getBlockNumber();
+    block = await ethers.provider.getBlock(blockNumber);
+
 
   });
 
@@ -120,7 +124,7 @@ describe("QuestOnboardingPlugin", (accounts) => {
     });
 
     it("isOnboarded should return true if onboarded for the correct role", async () => {
-      tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url);
+      tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
 
       await expect(tx)
         .to.emit(offchainVerifiedTaskPlugin, "TaskCreated")

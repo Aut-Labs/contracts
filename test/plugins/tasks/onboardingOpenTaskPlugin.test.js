@@ -8,6 +8,9 @@ let admin, submitter1, submitter2, addr1, addr2, addr3, addrs;
 const url = "https://something";
 let pluginTypeId;
 let autID;
+let block;
+
+
 describe("OnboardingOpenTaskPlugin", (accounts) => {
   before(async function () {
     [
@@ -34,7 +37,7 @@ describe("OnboardingOpenTaskPlugin", (accounts) => {
     });
     await autID.deployed();
     const AutDAO = await ethers.getContractFactory("AutDAO");
-    dao =  await AutDAO.deploy(
+    dao = await AutDAO.deploy(
       admin.address,
       autID.address,
       1,
@@ -42,11 +45,14 @@ describe("OnboardingOpenTaskPlugin", (accounts) => {
       10,
       pluginRegistry.address
     );
-    
+
     const pluginDefinition = await (
       await pluginRegistry.addPluginDefinition(verifier.address, url, 0)
     ).wait();
     pluginTypeId = pluginDefinition.events[0].args.pluginTypeId.toString();
+
+    const blockNumber = await ethers.provider.getBlockNumber();
+    block = await ethers.provider.getBlock(blockNumber);
   });
 
   describe("Plugin Registration", async () => {
@@ -72,11 +78,15 @@ describe("OnboardingOpenTaskPlugin", (accounts) => {
 
   describe("OnboardingOpenTaskPlugin", async () => {
     it("Should not create if signer is not an admin", async () => {
-      const tx = onboardingOpenTaskPlugin.create(1, url);
+      const tx = onboardingOpenTaskPlugin.create(1, url, block.timestamp, block.timestamp + 1000);
       await expect(tx).to.be.revertedWith("Only admin.");
     });
+    it("Should not create a task if wront dates", async () => {
+      const tx = onboardingOpenTaskPlugin.connect(admin).create(1, url, block.timestamp, block.timestamp - 1000);
+      await expect(tx).to.be.revertedWith("Invalid endDate");
+    });
     it("Should create a task", async () => {
-      const tx = await onboardingOpenTaskPlugin.connect(admin).create(0, url);
+      const tx = await onboardingOpenTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
 
       await expect(tx)
         .to.emit(onboardingOpenTaskPlugin, "TaskCreated")

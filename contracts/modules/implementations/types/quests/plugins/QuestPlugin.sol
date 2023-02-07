@@ -62,7 +62,9 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         uint256 taskId = TasksModule(pluginInstance.pluginAddress).createBy(
             msg.sender,
             quests[questId].role,
-            uri
+            uri,
+            quests[questId].start,
+            quests[questId].start + quests[questId].durationInDays * SECONDS_IN_DAY
         );
         _addTask(questId, PluginTasks(tasksPluginId, taskId));
         emit TasksAddedToQuest();

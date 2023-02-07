@@ -26,7 +26,7 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
     {
         _offchainVerifierAddress = offchainVerifierAddress;
         tasks.push(
-            Task(0, TaskStatus.Created, address(0), address(0), "", 0, "")
+            Task(0, TaskStatus.Created, address(0), address(0), "", 0, "", 0, 0)
         );
         idCounter.increment();
     }
@@ -49,7 +49,6 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         _;
     }
 
-
     modifier onlyOffchainVerifier() {
         require(
             _offchainVerifierAddress == msg.sender,
@@ -58,13 +57,14 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         _;
     }
 
-    function create(uint256 _role, string memory _uri)
-        public
-        override
-        onlyAdmin
-        returns (uint256)
-    {
-        require(bytes(_uri).length > 0, "No URI");
+    function create(
+        uint256 role,
+        string memory uri,
+        uint256 startDate,
+        uint256 endDate
+    ) public override onlyAdmin returns (uint256) {
+        require(endDate > block.timestamp, "Invalid endDate");
+        require(bytes(uri).length > 0, "No URI");
         uint256 taskId = idCounter.current();
 
         tasks.push(
@@ -74,24 +74,27 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
                 msg.sender,
                 address(0),
                 "",
-                _role,
-                _uri
+                role,
+                uri,
+                startDate,
+                endDate
             )
         );
 
         idCounter.increment();
-        emit TaskCreated(taskId, _uri);
+        emit TaskCreated(taskId, uri);
         return taskId;
     }
 
-
-    function createBy(address creator, uint256 _role, string memory _uri)
-        public
-        override
-        onlyDAOModule
-        returns (uint256)
-    {
-        require(bytes(_uri).length > 0, "No URI");
+    function createBy(
+        address creator,
+        uint256 role,
+        string memory uri,
+        uint256 startDate,
+        uint256 endDate
+    ) public override onlyDAOModule returns (uint256) {
+        require(endDate > block.timestamp, "Invalid endDate");
+        require(bytes(uri).length > 0, "No URI");
         uint256 taskId = idCounter.current();
 
         tasks.push(
@@ -101,13 +104,15 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
                 creator,
                 address(0),
                 "",
-                _role,
-                _uri
+                role,
+                uri,
+                startDate,
+                endDate
             )
         );
 
         idCounter.increment();
-        emit TaskCreated(taskId, _uri);
+        emit TaskCreated(taskId, uri);
         return taskId;
     }
 
@@ -131,6 +136,9 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         override
         onlyOffchainVerifier
     {
+        require(tasks[taskId].startDate < block.timestamp, "Not started yet");
+        require(tasks[taskId].endDate > block.timestamp, "The task has ended");
+
         taskStatuses[taskId][submitter] = TaskStatus.Finished;
 
         IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr())
