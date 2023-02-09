@@ -10,8 +10,8 @@ abstract contract SimplePlugin is IModule {
     address _dao;
     uint256 public pluginId;
     bool public override isActive;
-    IPluginRegistry public pluginRegistry; // This shouldn't exist. This needs to check the holder of the NFT...
-
+    IPluginRegistry public pluginRegistry; 
+    
     modifier onlyDAOModule() {
         uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry)
             .getPluginIdsByDAO(_dao);

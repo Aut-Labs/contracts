@@ -46,35 +46,6 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         idCounter.increment();
     }
 
-    function create(
-        uint256 role,
-        string memory uri,
-        uint256 startDate,
-        uint256 endDate
-    ) public override onlyAdmin returns (uint256) {
-        require(endDate > block.timestamp, "Invalid endDate");
-        require(bytes(uri).length > 0, "No URI");
-        uint256 taskId = idCounter.current();
-
-        tasks.push(
-            Task(
-                block.timestamp,
-                TaskStatus.Created,
-                msg.sender,
-                address(0),
-                "",
-                0,
-                uri,
-                startDate,
-                endDate
-            )
-        );
-
-        idCounter.increment();
-        emit TaskCreated(taskId, uri);
-        return taskId;
-    }
-
     function createBy(
         address creator,
         uint256 role,
@@ -105,10 +76,7 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         return taskId;
     }
 
-    function take(uint256 taskId) public override {
-        revert FunctionNotImplemented();
-    }
-
+    // not implemented
     function submit(uint256 taskId, string calldata submitionUrl)
         public
         override
@@ -118,10 +86,6 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         tasks[taskId].submitionUrl = submitionUrl;
 
         emit TaskSubmitted(taskId);
-    }
-
-    function finalize(uint256 taskId) public override {
-        revert FunctionNotImplemented();
     }
 
     function finalizeFor(uint256 taskId, address submitter)
@@ -165,5 +129,42 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         returns (bool)
     {
         return taskStatuses[taskId][user] == TaskStatus.Finished;
+    }
+
+    function create(
+        uint256 role,
+        string memory uri,
+        uint256 startDate,
+        uint256 endDate
+    ) public override onlyAdmin returns (uint256) {
+        require(endDate > block.timestamp, "Invalid endDate");
+        require(bytes(uri).length > 0, "No URI");
+        uint256 taskId = idCounter.current();
+
+        tasks.push(
+            Task(
+                block.timestamp,
+                TaskStatus.Created,
+                msg.sender,
+                address(0),
+                "",
+                0,
+                uri,
+                startDate,
+                endDate
+            )
+        );
+
+        idCounter.increment();
+        emit TaskCreated(taskId, uri);
+        return taskId;
+    }
+
+    function take(uint256 taskId) public override {
+        revert FunctionNotImplemented();
+    }
+
+    function finalize(uint256 taskId) public override {
+        revert FunctionNotImplemented();
     }
 }

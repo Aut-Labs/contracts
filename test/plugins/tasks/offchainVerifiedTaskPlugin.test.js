@@ -10,7 +10,7 @@ let pluginTypeId;
 let autID;
 let block;
 
-describe("OffchainVerifiedTaskPlugin", (accounts) => {
+describe("OnboardingOffchainVerifiedTaskPlugin", (accounts) => {
   before(async function () {
     [admin, verifier, dao, addr2, addr3, ...addrs] =
       await ethers.getSigners();
@@ -46,9 +46,9 @@ describe("OffchainVerifiedTaskPlugin", (accounts) => {
   });
 
   describe("Plugin Registration", async () => {
-    it("Should deploy an OffchainVerifiedTaskPlugin", async () => {
+    it("Should deploy an OnboardingOffchainVerifiedTaskPlugin", async () => {
       const OffchainVerifiedTaskPlugin = await ethers.getContractFactory(
-        "OffchainVerifiedTaskPlugin"
+        "OnboardingOffchainVerifiedTaskPlugin"
       );
       offchainVerifiedTaskPlugin = await OffchainVerifiedTaskPlugin.deploy(
         dao.address,

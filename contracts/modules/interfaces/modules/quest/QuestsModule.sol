@@ -7,6 +7,7 @@ import "../IModule.sol";
 /// @dev The extension of each DAO that integrates Aut
 interface QuestsModule is IModule {
     event QuestCreated(uint256 questId);
+    event QuestEditted();
     event TasksAddedToQuest();
     event TasksRemovedFromQuest();
 
@@ -20,7 +21,7 @@ interface QuestsModule is IModule {
         bool active;
         string metadataUri;
         uint256 durationInDays;
-        uint256 start;
+        uint256 startDate;
         uint256 tasksCount;
     }
     /// @notice Creates a new quest
@@ -33,6 +34,18 @@ interface QuestsModule is IModule {
         string memory uri,
         uint256 durationInDays
     ) external returns (uint256);
+
+    /// @notice Edits a Quest
+    /// @param questId The id of the quest to edit
+    /// @param role The role of the quest
+    /// @param uri IPFS CID with the off-chain data of the quest
+    /// @param durationInDays Duration of the quest
+    function editQuest(
+        uint256 questId,
+        uint256 role,
+        string memory uri,
+        uint256 durationInDays
+    ) external;
 
     /// @notice Fetches quest by ID
     /// @param questId the id of the quest
@@ -60,10 +73,15 @@ interface QuestsModule is IModule {
         external;
 
 
-    /// @notice Checks if a quest is still active
+    /// @notice Checks if a quest is ongoing
     /// @param questId The id of the quest
     /// @return bool.
-    function isQuestActive(uint256 questId) external view returns (bool);
+    function isOngoing(uint256 questId) external view returns (bool);
+
+    /// @notice Checks if a quest is pending
+    /// @param questId The id of the quest
+    /// @return bool.
+    function isPending(uint256 questId) external view returns (bool);
 
 
     /// @notice Checks if a user has completed a quest. This one is used for onboarding, when the user doesn't yet have a role

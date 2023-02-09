@@ -33,11 +33,21 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         _;
     }
 
+    modifier onlyOngoing(uint256 questId) {
+        require(isOngoing(questId), "Only ongoing");
+        _;
+    }
+
+    modifier onlyPending(uint256 questId) {
+        require(isPending(questId), "Only pending");
+        _;
+    }
+
     function create(
         uint256 _role,
         string memory _uri,
         uint256 _durationInDays
-    ) public onlyAdmin override returns (uint256) {
+    ) public override onlyAdmin returns (uint256) {
         require(bytes(_uri).length > 0, "No URI");
         uint256 questId = idCounter.current();
 
@@ -56,15 +66,17 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         uint256 questId,
         uint256 tasksPluginId,
         string memory uri
-    ) public onlyAdmin {
+    ) public onlyAdmin onlyPending(questId) {
         IPluginRegistry.PluginInstance memory pluginInstance = pluginRegistry
             .getPluginInstanceByTokenId(tasksPluginId);
         uint256 taskId = TasksModule(pluginInstance.pluginAddress).createBy(
             msg.sender,
             quests[questId].role,
             uri,
-            quests[questId].start,
-            quests[questId].start + quests[questId].durationInDays * SECONDS_IN_DAY
+            quests[questId].startDate,
+            quests[questId].startDate +
+                quests[questId].durationInDays *
+                SECONDS_IN_DAY
         );
         _addTask(questId, PluginTasks(tasksPluginId, taskId));
         emit TasksAddedToQuest();
@@ -72,12 +84,13 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     function addTasks(uint256 questId, PluginTasks[] calldata tasks)
         public
-        onlyAdmin
         override
+        onlyAdmin
+        onlyPending(questId)
     {
         require(idCounter.current() >= questId, "invalid quest id");
         for (uint256 i = 0; i < tasks.length; i++) {
-           _addTask(questId, tasks[i]);
+            _addTask(questId, tasks[i]);
         }
 
         emit TasksAddedToQuest();
@@ -85,8 +98,9 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     function removeTasks(uint256 questId, PluginTasks[] calldata tasksToRemove)
         public
-        onlyAdmin
         override
+        onlyAdmin
+        onlyPending(questId)
     {
         require(idCounter.current() >= questId, "invalid quest id");
 
@@ -97,20 +111,43 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         emit TasksRemovedFromQuest();
     }
 
-    function isQuestActive(uint256 questId)
+    function editQuest(
+        uint256 questId,
+        uint256 _role,
+        string memory _uri,
+        uint256 _durationInDays
+    ) public override onlyAdmin onlyPending(questId) {
+        require(idCounter.current() >= questId, "invalid quest id");
+        require(_role > 0, "invalid _role");
+        require(bytes(_uri).length > 0, "invalid _uri");
+        require(_durationInDays > 0, "invalid _durationInDays");
+
+        quests[questId].metadataUri = _uri;
+        quests[questId].durationInDays = _durationInDays;
+        quests[questId].role = _role;
+
+        emit QuestEditted();
+    }
+
+    function isOngoing(uint256 questId)
         public
         view
         override
         returns (bool)
     {
         return
-            quests[questId].start +
+            quests[questId].startDate +
                 quests[questId].durationInDays *
                 SECONDS_IN_DAY <
-            block.timestamp;
+            block.timestamp &&
+            quests[questId].startDate > block.timestamp;
     }
 
-    function setActive(bool active) onlyAdmin public {
+    function isPending(uint256 questId) public view override returns (bool) {
+        return quests[questId].startDate < block.timestamp;
+    }
+
+    function setActive(bool active) public onlyAdmin {
         _setActive(active);
     }
 
@@ -212,13 +249,13 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     {
         require(idCounter.current() >= questId, "invalid quest id");
 
-            int256 index = findTask(questId, taskToRemove);
+        int256 index = findTask(questId, taskToRemove);
 
-            if (index != -1) {
-                questTasks[questId][uint256(index)].taskId = 0;
-                questTasks[questId][uint256(index)].pluginId = 0;
-                quests[questId].tasksCount--;
-            }
+        if (index != -1) {
+            questTasks[questId][uint256(index)].taskId = 0;
+            questTasks[questId][uint256(index)].pluginId = 0;
+            quests[questId].tasksCount--;
+        }
 
         emit TasksRemovedFromQuest();
     }

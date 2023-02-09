@@ -53,7 +53,7 @@ describe("QuestPlugin", (accounts) => {
     questPluginType = pluginDefinition3.events[0].args.pluginTypeId.toString();
 
     const OffchainVerifiedTaskPlugin = await ethers.getContractFactory(
-      "OffchainVerifiedTaskPlugin"
+      "OnboardingOffchainVerifiedTaskPlugin"
     );
     offchainVerifiedTaskPlugin = await OffchainVerifiedTaskPlugin.deploy(
       dao.address,

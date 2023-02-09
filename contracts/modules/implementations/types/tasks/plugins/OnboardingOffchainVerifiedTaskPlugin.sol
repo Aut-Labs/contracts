@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "../../../../interfaces/modules/tasks/TasksModule.sol";
 import "../../SimplePlugin.sol";
 
-contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
+contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
     using Counters for Counters.Counter;
 
     Counters.Counter private idCounter;
@@ -57,35 +57,6 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         _;
     }
 
-    function create(
-        uint256 role,
-        string memory uri,
-        uint256 startDate,
-        uint256 endDate
-    ) public override onlyAdmin returns (uint256) {
-        require(endDate > block.timestamp, "Invalid endDate");
-        require(bytes(uri).length > 0, "No URI");
-        uint256 taskId = idCounter.current();
-
-        tasks.push(
-            Task(
-                block.timestamp,
-                TaskStatus.Created,
-                msg.sender,
-                address(0),
-                "",
-                role,
-                uri,
-                startDate,
-                endDate
-            )
-        );
-
-        idCounter.increment();
-        emit TaskCreated(taskId, uri);
-        return taskId;
-    }
-
     function createBy(
         address creator,
         uint256 role,
@@ -114,21 +85,6 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         idCounter.increment();
         emit TaskCreated(taskId, uri);
         return taskId;
-    }
-
-    function take(uint256 taskId) public override {
-        revert FunctionNotImplemented();
-    }
-
-    function submit(uint256 taskId, string calldata submitionUrl)
-        public
-        override
-    {
-        revert FunctionNotImplemented();
-    }
-
-    function finalize(uint256 taskId) public override {
-        revert FunctionNotImplemented();
     }
 
     function finalizeFor(uint256 taskId, address submitter)
@@ -178,5 +134,50 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         returns (bool)
     {
         return taskStatuses[taskId][user] == TaskStatus.Finished;
+    }
+
+    // not implemented
+    function create(
+        uint256 role,
+        string memory uri,
+        uint256 startDate,
+        uint256 endDate
+    ) public override onlyAdmin returns (uint256) {
+        require(endDate > block.timestamp, "Invalid endDate");
+        require(bytes(uri).length > 0, "No URI");
+        uint256 taskId = idCounter.current();
+
+        tasks.push(
+            Task(
+                block.timestamp,
+                TaskStatus.Created,
+                msg.sender,
+                address(0),
+                "",
+                role,
+                uri,
+                startDate,
+                endDate
+            )
+        );
+
+        idCounter.increment();
+        emit TaskCreated(taskId, uri);
+        return taskId;
+    }
+
+    function take(uint256 taskId) public override {
+        revert FunctionNotImplemented();
+    }
+
+    function submit(uint256 taskId, string calldata submitionUrl)
+        public
+        override
+    {
+        revert FunctionNotImplemented();
+    }
+
+    function finalize(uint256 taskId) public override {
+        revert FunctionNotImplemented();
     }
 }

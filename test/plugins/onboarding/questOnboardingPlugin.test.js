@@ -52,7 +52,7 @@ describe("QuestOnboardingPlugin", (accounts) => {
 
 
     const OffchainVerifiedTaskPlugin = await ethers.getContractFactory(
-      "OffchainVerifiedTaskPlugin"
+      "OnboardingOffchainVerifiedTaskPlugin"
     );
     offchainVerifiedTaskPlugin = await OffchainVerifiedTaskPlugin.deploy(
       dao.address,
