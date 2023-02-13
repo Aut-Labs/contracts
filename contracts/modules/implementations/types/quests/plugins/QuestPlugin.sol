@@ -8,6 +8,7 @@ import "../../../../interfaces/modules/quest/QuestsModule.sol";
 import "../../SimplePlugin.sol";
 import "../../../../interfaces/modules/tasks/TasksModule.sol";
 import "../../../../interfaces/registry/IPluginRegistry.sol";
+import "hardhat/console.sol";
 
 contract QuestPlugin is QuestsModule, SimplePlugin {
     using Counters for Counters.Counter;
@@ -129,12 +130,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         emit QuestEditted();
     }
 
-    function isOngoing(uint256 questId)
-        public
-        view
-        override
-        returns (bool)
-    {
+    function isOngoing(uint256 questId) public view override returns (bool) {
         return
             quests[questId].startDate +
                 quests[questId].durationInDays *
@@ -174,19 +170,39 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         override
         returns (bool)
     {
-        if (questTasks[questId].length == 0) return false;
+        return getTimeOfCompletion(user, questId) > 0;
+    }
+
+    function getTimeOfCompletion(address user, uint256 questId)
+        public
+        view
+        override
+        returns (uint256)
+    {
+        if (questTasks[questId].length == 0) return 0;
+        uint256 lastTaskTime = 0;
         for (uint256 i = 0; i < questTasks[questId].length; i++) {
             address tasksAddress = IPluginRegistry(pluginRegistry)
                 .getPluginInstanceByTokenId(questTasks[questId][i].pluginId)
                 .pluginAddress;
+            console.log(
+                "questTasks[questId][i].taskId",
+                questTasks[questId][i].taskId
+            );
             if (
-                !TasksModule(tasksAddress).hasCompletedTheTask(
+                TasksModule(tasksAddress).hasCompletedTheTask(
                     user,
                     questTasks[questId][i].taskId
                 )
-            ) return false;
+            ) {
+                uint256 completionTime = TasksModule(tasksAddress)
+                    .getCompletionTime(questTasks[questId][i].taskId, user);
+
+                if (completionTime > lastTaskTime)
+                    lastTaskTime = completionTime;
+            }
         }
-        return true;
+        return lastTaskTime;
     }
 
     function hasCompletedQuestForRole(address user, uint256 role)

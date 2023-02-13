@@ -13,18 +13,18 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
     Task[] public tasks;
 
     struct OnboardingTaskDetails {
-        address taker;
+        uint completionTime;
         TaskStatus status;
     }
 
-    mapping(uint256 => mapping(address => TaskStatus)) taskStatuses;
+    mapping(uint256 => mapping(address => OnboardingTaskDetails)) taskStatusDetails;
 
     modifier atStatus(
         uint256 taskID,
         address user,
         TaskStatus status
     ) {
-        if (status != taskStatuses[taskID][user])
+        if (status != taskStatusDetails[taskID][user].status)
             revert FunctionInvalidAtThisStage();
         _;
     }
@@ -64,7 +64,7 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
                 creator,
                 address(0),
                 "",
-                0,
+                role,
                 uri,
                 startDate,
                 endDate
@@ -82,7 +82,7 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         override
         atStatus(taskId, msg.sender, TaskStatus.Created)
     {
-        taskStatuses[taskId][msg.sender] = TaskStatus.Submitted;
+        taskStatusDetails[taskId][msg.sender].status = TaskStatus.Submitted;
         tasks[taskId].submitionUrl = submitionUrl;
 
         emit TaskSubmitted(taskId);
@@ -97,7 +97,8 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         require(tasks[taskId].startDate < block.timestamp, "Not started yet");
         require(tasks[taskId].endDate > block.timestamp, "The task has ended");
 
-        taskStatuses[taskId][submitter] = TaskStatus.Finished;
+        taskStatusDetails[taskId][submitter].status = TaskStatus.Finished;
+        taskStatusDetails[taskId][submitter].completionTime = block.timestamp;
 
         IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr())
             .addInteraction(taskId, submitter);
@@ -116,11 +117,22 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
 
     function getStatusPerSubmitter(uint256 taskId, address submitter)
         public
+        override
         view
         returns (TaskStatus)
     {
-        return taskStatuses[taskId][submitter];
+        return taskStatusDetails[taskId][submitter].status;
     }
+
+    function getCompletionTime(uint256 taskId, address user)
+        public
+        override
+        view
+        returns (uint)
+    {
+        return taskStatusDetails[taskId][user].completionTime;
+    }
+
 
     function hasCompletedTheTask(address user, uint256 taskId)
         public
@@ -128,7 +140,7 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         override
         returns (bool)
     {
-        return taskStatuses[taskId][user] == TaskStatus.Finished;
+        return taskStatusDetails[taskId][user].status == TaskStatus.Finished;
     }
 
     function create(
@@ -148,7 +160,7 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
                 msg.sender,
                 address(0),
                 "",
-                0,
+                role,
                 uri,
                 startDate,
                 endDate

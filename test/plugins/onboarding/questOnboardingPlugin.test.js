@@ -109,6 +109,12 @@ describe("QuestOnboardingPlugin", (accounts) => {
         0
       );
       expect(isOnboarded).to.be.false;
+
+      const isCooldownPassed = questOnboardingPlugin.isCooldownPassed(
+        addr1.address,
+        0
+      );
+      await expect(isCooldownPassed).to.be.revertedWith("User not onboarded");
     });
 
     it("isOnboarded should return false if the quest doesn't have tasks yet", async () => {
@@ -121,6 +127,12 @@ describe("QuestOnboardingPlugin", (accounts) => {
         1
       );
       expect(isOnboarded).to.be.false;
+
+      const isCooldownPassed = questOnboardingPlugin.isCooldownPassed(
+        addr1.address,
+        0
+      );
+      await expect(isCooldownPassed).to.be.revertedWith("User not onboarded");
     });
 
     it("isOnboarded should return true if onboarded for the correct role", async () => {
@@ -130,34 +142,63 @@ describe("QuestOnboardingPlugin", (accounts) => {
         .to.emit(offchainVerifiedTaskPlugin, "TaskCreated")
         .withArgs(1, url);
 
-      tx = questsPlugin.addTasks(1, [{ pluginId: 1, taskId: 1 }]);
+      tx = questsPlugin.createTask(1, 1, url);
 
       await expect(tx)
         .to.emit(questsPlugin, "TasksAddedToQuest");
 
-      //     const task = await offchainVerifiedTaskPlugin.getById(1);
-      //   expect(task["creator"]).to.eql(admin.address);
-      //    tx = offchainVerifiedTaskPlugin
-      //     .connect(verifier)
-      //     .finalizeFor(1, addr1.address);
+      const task = await offchainVerifiedTaskPlugin.getById(1);
+      expect(task["creator"]).to.eql(admin.address);
+      tx = offchainVerifiedTaskPlugin
+        .connect(verifier)
+        .finalizeFor(4, addr1.address);
 
-      //     await expect(tx)
-      //     .to.emit(offchainVerifiedTaskPlugin, "TaskFinalized")
-      //     .withArgs(1, addr1.address);
-
-      //   const isOnboarded = await questOnboardingPlugin.isOnboarded(
-      //     addr1.address,
-      //     1
-      //   );
-      //   expect(isOnboarded).to.be.true;
-    });
-    it("isOnboarded should return false if the quest doesn't have tasks yet", async () => {
+      await expect(tx)
+        .to.emit(offchainVerifiedTaskPlugin, "TaskFinalized")
+        .withArgs(4, addr1.address);
 
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr1.address,
-        2
+        1
       );
-      expect(isOnboarded).to.be.false;
+      expect(isOnboarded).to.be.true;
+
+      const isCooldownPassed = await questOnboardingPlugin.isCooldownPassed(
+        addr1.address,
+        1
+      );
+      expect(isCooldownPassed).to.be.true;
     });
+
+    it("Should set _cooldownPeriod", async () => {
+      tx = questOnboardingPlugin.connect(admin).setCooldownPeriod(1);
+
+      await expect(tx)
+        .to.emit(questOnboardingPlugin, "CooldownPeriodSet");
+
+    });
+
+    it("Should onboard another user", async () => {
+      tx = offchainVerifiedTaskPlugin
+      .connect(verifier)
+      .finalizeFor(4, addr2.address);
+
+      await expect(tx)
+        .to.emit(offchainVerifiedTaskPlugin, "TaskFinalized")
+        .withArgs(4, addr2.address);
+
+      const isOnboarded = await questOnboardingPlugin.isOnboarded(
+        addr2.address,
+        1
+      );
+      expect(isOnboarded).to.be.true;
+
+      const isCooldownPassed = await questOnboardingPlugin.isCooldownPassed(
+        addr2.address,
+        1
+      );
+      expect(isCooldownPassed).to.be.false; 
+    });
+    
   });
 });

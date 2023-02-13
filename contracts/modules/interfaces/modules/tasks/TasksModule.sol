@@ -94,4 +94,14 @@ interface TasksModule is IModule {
     /// @param taskID the id of the task
     /// @return bool
     function hasCompletedTheTask(address user, uint taskID) external view returns(bool);
+
+    function getStatusPerSubmitter(uint256 taskId, address submitter)
+        external
+        view
+        returns (TaskStatus);
+
+    function getCompletionTime(uint256 taskId, address user)
+        external
+        view
+        returns (uint);
 }

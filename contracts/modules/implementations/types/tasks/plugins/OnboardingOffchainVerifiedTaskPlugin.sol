@@ -15,11 +15,11 @@ contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
     address public _offchainVerifierAddress;
 
     struct OnboardingTaskDetails {
-        address taker;
+        uint completionTime;
         TaskStatus status;
     }
 
-    mapping(uint256 => mapping(address => TaskStatus)) taskStatuses;
+    mapping(uint256 => mapping(address => OnboardingTaskDetails)) taskStatusDetails;
 
     constructor(address dao, address offchainVerifierAddress)
         SimplePlugin(dao)
@@ -34,7 +34,7 @@ contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
     modifier atStatus(uint256 taskID, TaskStatus status) {
         if (
             status != tasks[taskID].status ||
-            status != taskStatuses[taskID][msg.sender]
+            status != taskStatusDetails[taskID][msg.sender].status
         ) revert FunctionInvalidAtThisStage();
         _;
     }
@@ -95,7 +95,8 @@ contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         require(tasks[taskId].startDate < block.timestamp, "Not started yet");
         require(tasks[taskId].endDate > block.timestamp, "The task has ended");
 
-        taskStatuses[taskId][submitter] = TaskStatus.Finished;
+        taskStatusDetails[taskId][submitter].status = TaskStatus.Finished;
+        taskStatusDetails[taskId][submitter].completionTime = block.timestamp;
 
         IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr())
             .addInteraction(taskId, submitter);
@@ -121,10 +122,21 @@ contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
 
     function getStatusPerSubmitter(uint256 taskId, address submitter)
         public
+        override
         view
         returns (TaskStatus)
     {
-        return taskStatuses[taskId][submitter];
+        return taskStatusDetails[taskId][submitter].status;
+    }
+
+
+    function getCompletionTime(uint256 taskId, address user)
+        public
+        override
+        view
+        returns (uint)
+    {
+        return taskStatusDetails[taskId][user].completionTime;
     }
 
     function hasCompletedTheTask(address user, uint256 taskId)
@@ -133,7 +145,7 @@ contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         override
         returns (bool)
     {
-        return taskStatuses[taskId][user] == TaskStatus.Finished;
+        return taskStatusDetails[taskId][user].status == TaskStatus.Finished;
     }
 
     // not implemented

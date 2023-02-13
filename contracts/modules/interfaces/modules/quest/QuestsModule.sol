@@ -92,4 +92,9 @@ interface QuestsModule is IModule {
         external
         view
         returns (bool);
+
+    function getTimeOfCompletion(address user, uint256 questId)
+        external
+        view
+        returns (uint256);
 }
