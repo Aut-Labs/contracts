@@ -75,8 +75,15 @@ contract AutDAO is
         _setCommitment(commitment);
     }
 
-    function canJoin(address member, uint role) external view override returns (bool) {
+    function canJoin(address member, uint256 role)
+        external
+        view
+        override
+        returns (bool)
+    {
         if (onboardingAddr == address(0)) return true;
-        else OnboardingModule(onboardingAddr).isOnboarded(member, role);
+        else
+            OnboardingModule(onboardingAddr).isOnboarded(member, role) &&
+                OnboardingModule(onboardingAddr).isCooldownPassed(member, role);
     }
 }

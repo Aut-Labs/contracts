@@ -12,11 +12,17 @@ contract QuestOnboardingPlugin is SimplePlugin, CooldownOnboardingPeriod, Onboar
 
     constructor(address dao) SimplePlugin(dao) {
         questsPlugin = new QuestPlugin(dao);
+        _setActive(false);
     }
     
     function setCooldownPeriod(uint amountOfDays) public {
         require(IDAOAdmin(_dao).isAdmin(msg.sender), "not an admin");
         _setCooldownPeriod(amountOfDays * SECONDS_IN_DAY);
+    }
+
+    function setActive(bool active) public {
+        require(IDAOAdmin(_dao).isAdmin(msg.sender), "not an admin");
+        _setActive(active);
     }
     // Implements the onboard function from the OnboardingModule interface
     function isOnboarded(address member, uint256 role)
@@ -28,11 +34,6 @@ contract QuestOnboardingPlugin is SimplePlugin, CooldownOnboardingPeriod, Onboar
         return questsPlugin.hasCompletedQuestForRole(member, role);
     }
 
-    // Implements the onboard function from the OnboardingModule interface
-    function onboard(address member, uint256 role) public override {
-        revert FunctionNotImplemented();
-    }
-
     function getQuestsPluginAddress() public view returns (address) {
         return address(questsPlugin);
     }
@@ -41,5 +42,10 @@ contract QuestOnboardingPlugin is SimplePlugin, CooldownOnboardingPeriod, Onboar
         require(isOnboarded(user, role), "User not onboarded");
         uint completionTime = questsPlugin.getTimeOfCompletion(user, role);
         return completionTime + getCooldownPeriod() <= block.timestamp;
+    }
+
+    // Implements the onboard function from the OnboardingModule interface
+    function onboard(address member, uint256 role) public override {
+        revert FunctionNotImplemented();
     }
 }

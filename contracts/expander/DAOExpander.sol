@@ -15,6 +15,7 @@ import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOInteractions.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../expander/interfaces/IDAOExpander.sol";
+import "../modules/interfaces/modules/onboarding/OnboardingModule.sol";
 
 /// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
@@ -35,6 +36,7 @@ contract DAOExpander is
 
     /// @notice the address of the DAOTypes.sol contract
     IDAOTypes private daoTypes;
+    address private onboardingAddr;
 
     /// @notice Sets the initial details of the DAO
     /// @dev all parameters are required.
@@ -84,7 +86,10 @@ contract DAOExpander is
         super._setPluginRegistry(_pluginRegistry);
     }
 
-    function join(address newMember, uint role) public override onlyAutID {
+    function setOnboardingStrategy(address onboardingPlugin) public onlyAdmin {
+        onboardingAddr = onboardingPlugin;
+    }
+    function join(address newMember, uint256 role) public override onlyAutID {
         require(canJoin(newMember, role), "Not a member of the DAO.");
         super.join(newMember, role);
     }
@@ -111,9 +116,21 @@ contract DAOExpander is
     /// @dev checks if the member is a part of a DAO
     /// @param member the address of the member that's checked
     /// @return true if they're a member, false otherwise
-    function canJoin(address member, uint role) public view override(DAOMembers, IDAOMembership) returns (bool) {
+    function canJoin(address member, uint256 role)
+        public
+        view
+        override(DAOMembers, IDAOMembership)
+        returns (bool)
+    {
         // TODO: check onboarding
-        return isMemberOfOriginalDAO(member);
+        return
+            isMemberOfOriginalDAO(member) ||
+            (onboardingAddr != address(0) &&
+                OnboardingModule(onboardingAddr).isOnboarded(member, role) &&
+                OnboardingModule(onboardingAddr).isCooldownPassed(
+                    member,
+                    role
+                ));
     }
 
     function getDAOData()
