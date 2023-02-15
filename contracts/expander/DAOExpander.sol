@@ -89,6 +89,7 @@ contract DAOExpander is
     function setOnboardingStrategy(address onboardingPlugin) public onlyAdmin {
         onboardingAddr = onboardingPlugin;
     }
+
     function join(address newMember, uint256 role) public override onlyAutID {
         require(canJoin(newMember, role), "Not a member of the DAO.");
         super.join(newMember, role);
@@ -119,18 +120,15 @@ contract DAOExpander is
     function canJoin(address member, uint256 role)
         public
         view
-        override(DAOMembers, IDAOMembership)
+        override(IDAOMembership)
         returns (bool)
     {
         // TODO: check onboarding
         return
             isMemberOfOriginalDAO(member) ||
             (onboardingAddr != address(0) &&
-                OnboardingModule(onboardingAddr).isOnboarded(member, role) &&
-                OnboardingModule(onboardingAddr).isCooldownPassed(
-                    member,
-                    role
-                ));
+                OnboardingModule(onboardingAddr).isActive() &&
+                OnboardingModule(onboardingAddr).isOnboarded(member, role));
     }
 
     function getDAOData()

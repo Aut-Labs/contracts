@@ -9,19 +9,16 @@ import "../interfaces/get/IDAOMetadata.sol";
 abstract contract DAOMetadata is IDAOMetadata {
     event MetadataUriUpdated();
 
-    string _metadata;
+    string public override metadataUrl;
 
-    function _setMetadataUri(string memory metadata)
+    function _setMetadataUri(string memory _metadata)
         internal
         virtual
     {
-        require(bytes(metadata).length > 0, "Missing Metadata URL");
+        require(bytes(_metadata).length > 0, "invalid url");
 
-        _metadata = metadata;
+        metadataUrl = _metadata;
         emit MetadataUriUpdated();
     }
 
-    function getMetadataUri() public view override returns(string memory) {
-        return _metadata;
-    }
 }

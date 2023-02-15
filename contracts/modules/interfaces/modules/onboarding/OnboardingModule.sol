@@ -32,5 +32,4 @@ interface OnboardingModule is IModule {
     /// @param role The role for which the member is onboarded
     function onboard(address member, uint role) external;
 
-    function isCooldownPassed(address user, uint256 role) external view returns (bool);
 }

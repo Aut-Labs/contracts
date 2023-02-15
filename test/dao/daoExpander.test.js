@@ -98,7 +98,7 @@ describe("DAOExpander", function () {
           10,
           pluginRegistry.address
         )
-      ).to.be.revertedWith("Market invalid");
+      ).to.be.revertedWith("invalid market");
 
       await expect(
         DAOExpander.deploy(
@@ -113,7 +113,7 @@ describe("DAOExpander", function () {
           pluginRegistry.address
 
         )
-      ).to.be.revertedWith("Missing Metadata URL");
+      ).to.be.revertedWith("invalid url");
 
       await expect(
         DAOExpander.deploy(
@@ -128,7 +128,7 @@ describe("DAOExpander", function () {
           pluginRegistry.address
 
         )
-      ).to.be.revertedWith("Commitment should be between 1 and 10");
+      ).to.be.revertedWith("invalid commitment");
       await expect(
         DAOExpander.deploy(
           deployer.address,
@@ -142,7 +142,7 @@ describe("DAOExpander", function () {
           pluginRegistry.address
 
         )
-      ).to.be.revertedWith("Commitment should be between 1 and 10");
+      ).to.be.revertedWith("invalid commitment");
     });
     it("Should deploy a DAOExpander", async function () {
       const DAOExpander = await ethers.getContractFactory("DAOExpander");

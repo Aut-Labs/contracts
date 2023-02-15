@@ -53,18 +53,21 @@ describe("QuestPlugin", (accounts) => {
     questPluginType = pluginDefinition3.events[0].args.pluginTypeId.toString();
 
     const OffchainVerifiedTaskPlugin = await ethers.getContractFactory(
-      "OnboardingOffchainVerifiedTaskPlugin"
+      "OnboardingQuestOffchainVerifiedTaskPlugin"
     );
     offchainVerifiedTaskPlugin = await OffchainVerifiedTaskPlugin.deploy(
       dao.address,
-      verifier.address
+      verifier.address,
+      ethers.constants.AddressZero
+
     );
 
     const OnboardingOpenTaskPlugin = await ethers.getContractFactory(
-      "OnboardingOpenTaskPlugin"
+      "OnboardingQuestOpenTaskPlugin"
     );
     onboardingOpenTaskPlugin = await OnboardingOpenTaskPlugin.deploy(
-      dao.address
+      dao.address,
+      ethers.constants.AddressZero
     );
 
     // Add plugins to the DAO
@@ -105,6 +108,9 @@ describe("QuestPlugin", (accounts) => {
       const QuestPlugin = await ethers.getContractFactory("QuestPlugin");
       questPlugin = await QuestPlugin.deploy(dao.address);
       expect(questPlugin.address).not.null;
+
+      await offchainVerifiedTaskPlugin.connect(admin).setQuestsAddress(questPlugin.address);
+      await onboardingOpenTaskPlugin.connect(admin).setQuestsAddress(questPlugin.address);
     });
     it("Should mint an NFT for it", async () => {
       const tx = await pluginRegistry
@@ -115,93 +121,57 @@ describe("QuestPlugin", (accounts) => {
         .withArgs(3, questPluginType, dao.address);
     });
     it("Should create a quest", async () => {
-      const tx = await questPlugin.connect(admin).create(1, url, 3);
+      const tx = await questPlugin.connect(admin).create(1, url, 3, 100);
       await expect(tx).to.emit(questPlugin, "QuestCreated").withArgs(1);
     });
     it("Should not create a quest if not an admin", async () => {
-      const tx = questPlugin.create(1, url, 3);
-      await expect(tx).to.be.revertedWith("Not an admin.");
-    });
-    it("Should add a task to a quest", async () => {
-      const tx = await questPlugin.connect(admin).addTasks(1, [
-        { pluginId: offchainVerifiedTaskPluginType, taskId: 1 },
-        { pluginId: onboardingOpenTaskPluginType, taskId: 1 },
-      ]);
-
-      await expect(tx).to.emit(questPlugin, "TasksAddedToQuest");
-
-      const tasks = await questPlugin.getTasksPerQuest(1);
-      expect(tasks.length).eql(2);
-    });
-
-    it("Should not add a task to a quest unless task plugin is registered", async () => {
-      const tx = questPlugin.connect(admin).addTasks(1, [{ pluginId: 9, taskId: 1 }]);
-      await expect(tx).to.be.revertedWith("Invalid plugin");
-    });
-
-    it("Should not add a task to a quest if not an admin", async () => {
-      const tx = questPlugin.addTasks(1, [{ pluginId: 9, taskId: 1 }]);
+      const tx = questPlugin.create(1, url, 3, 100);
       await expect(tx).to.be.revertedWith("Not an admin.");
     });
 
-    // it("Should not add a task to a quest if task not created", async () => {
-    //   const tx = questPlugin.addTasks(1, [
-    //     { pluginId: offchainVerifiedTaskPluginType, taskId: 10 },
-    //   ]);
-    //   await expect(tx).to.be.revertedWith("Invalid task");
-    // });
 
-    it("Should not add the same tasks twice", async () => {
-      const tx = await questPlugin.connect(admin).addTasks(1, [
-        { pluginId: offchainVerifiedTaskPluginType, taskId: 2 },
-        { pluginId: offchainVerifiedTaskPluginType, taskId: 1 },
-      ]);
+    it("Should not create a task if not an admin", async () => {
+      const tx = questPlugin.createTask(1, 1, url);
+      await expect(tx).to.be.revertedWith("Not an admin.");
+    });
 
-      await expect(tx).to.emit(questPlugin, "TasksAddedToQuest");
+    it("Should create a task", async () => {
+      const tx = await questPlugin.connect(admin).createTask(1, offchainVerifiedTaskPluginType, url);
+      await expect(tx).to.emit(questPlugin, "TasksAddedToQuest").withArgs(1, 6);
 
-      const tasks = await questPlugin.getTasksPerQuest(1);
       const quest = await questPlugin.getById(1);
-
-      expect(tasks.length).eql(3);
-      expect(quest.tasksCount.toString()).eql("3");
+      expect(quest.tasksCount.toString()).eql("1");
     });
 
     it("Should not remove a task to a quest if not an admin", async () => {
       const tx = questPlugin.removeTasks(1, [{ pluginId: 9, taskId: 1 }]);
       await expect(tx).to.be.revertedWith("Not an admin.");
     });
+    it("Should not remove a task if not added", async () => {
+      const tx = questPlugin.connect(admin).removeTasks(1, [
+        { pluginId: offchainVerifiedTaskPluginType, taskId: 1 },
+      ]);
+      await expect(tx).to.be.revertedWith("invalid task");
+
+    });
+
     it("Should remove a task", async () => {
       const tx = await questPlugin.connect(admin).removeTasks(1, [
-        { pluginId: offchainVerifiedTaskPluginType, taskId: 1 },
+        { pluginId: offchainVerifiedTaskPluginType, taskId: 6 },
       ]);
 
       await expect(tx).to.emit(questPlugin, "TasksRemovedFromQuest");
 
       const quest = await questPlugin.getById(1);
-      expect(quest.tasksCount.toString()).eql("2");
+      expect(quest.tasksCount.toString()).eql("0");
     });
     it("Should not remove a task if it's not present", async () => {
-      const tx = await questPlugin.connect(admin).removeTasks(1, [
+      const tx = questPlugin.connect(admin).removeTasks(1, [
         { pluginId: offchainVerifiedTaskPluginType, taskId: 1 },
       ]);
 
-      await expect(tx).to.emit(questPlugin, "TasksRemovedFromQuest");
-
-      const quest = await questPlugin.getById(1);
-      expect(quest.tasksCount.toString()).eql("2");
+      await expect(tx).to.be.revertedWith("invalid task");
     });
-
-    it("Should not create a task if not an admin", async () => {
-      const tx = questPlugin.createTask(1, 1, url);
-      await expect(tx).to.be.revertedWith("Not an admin.");
-    });
-    it("Should create a task", async () => {
-      const tx = await questPlugin.connect(admin).createTask(1, 1, url);
-
-      await expect(tx).to.emit(questPlugin, "TasksAddedToQuest");
-
-      const quest = await questPlugin.getById(1);
-      expect(quest.tasksCount.toString()).eql("3");
-    });
+    
   });
 });

@@ -16,7 +16,7 @@ abstract contract DAOCommitment is IDAOCommitment {
     {
          require(
             commitment > 0 && commitment < 11,
-            "Commitment should be between 1 and 10"
+            "invalid commitment"
         );
 
         _commitment = commitment;

@@ -1,34 +1,46 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../../../../daoUtils/interfaces/get/IDAOInteractions.sol";
-import "../../../../../IInteraction.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "../../../../interfaces/modules/tasks/TasksModule.sol";
-import "../../SimplePlugin.sol";
 
-contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
+import "../../../../../../daoUtils/interfaces/get/IDAOInteractions.sol";
+import "../../../../../../IInteraction.sol";
+import "../../../../../interfaces/modules/tasks/QuestTasksModule.sol";
+import "../../../../../interfaces/modules/quest/QuestsModule.sol";
+import "../../../SimplePlugin.sol";
+
+contract OnboardingQuestOffchainVerifiedTaskPlugin is
+    QuestTasksModule,
+    SimplePlugin
+{
     using Counters for Counters.Counter;
 
     Counters.Counter private idCounter;
     Task[] public tasks;
     address public _offchainVerifierAddress;
 
+    QuestsModule quests;
+
     struct OnboardingTaskDetails {
-        uint completionTime;
+        uint256 completionTime;
         TaskStatus status;
     }
 
     mapping(uint256 => mapping(address => OnboardingTaskDetails)) taskStatusDetails;
+    mapping(uint256 => uint256[]) questTasks;
 
-    constructor(address dao, address offchainVerifierAddress)
-        SimplePlugin(dao)
-    {
+    constructor(
+        address dao,
+        address offchainVerifierAddress,
+        address questsAddress
+    ) SimplePlugin(dao) {
         _offchainVerifierAddress = offchainVerifierAddress;
         tasks.push(
             Task(0, TaskStatus.Created, address(0), address(0), "", 0, "", 0, 0)
         );
         idCounter.increment();
+
+        quests = QuestsModule(questsAddress);
     }
 
     modifier atStatus(uint256 taskID, TaskStatus status) {
@@ -53,6 +65,15 @@ contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         require(
             _offchainVerifierAddress == msg.sender,
             "Only offchain verifier."
+        );
+        _;
+    }
+
+
+    modifier onlyQuests() {
+        require(
+            address(quests) == msg.sender,
+            "Only quests."
         );
         _;
     }
@@ -83,6 +104,7 @@ contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         );
 
         idCounter.increment();
+
         emit TaskCreated(taskId, uri);
         return taskId;
     }
@@ -122,19 +144,18 @@ contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
 
     function getStatusPerSubmitter(uint256 taskId, address submitter)
         public
-        override
         view
+        override
         returns (TaskStatus)
     {
         return taskStatusDetails[taskId][submitter].status;
     }
 
-
     function getCompletionTime(uint256 taskId, address user)
         public
-        override
         view
-        returns (uint)
+        override
+        returns (uint256)
     {
         return taskStatusDetails[taskId][user].completionTime;
     }
@@ -176,6 +197,35 @@ contract OnboardingOffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         idCounter.increment();
         emit TaskCreated(taskId, uri);
         return taskId;
+    }
+
+    function setQuestsAddress(address questsAddress) public override onlyAdmin {
+        quests = QuestsModule(questsAddress);
+    }
+
+    function addTaskToAQuest(uint256 taskId, uint256 questId) public override {
+        require(idCounter.current() > taskId, "invalid taskId");
+        require(quests.isPending(questId), "invalid quest");
+
+        questTasks[questId].push(taskId);
+        emit TaskAddedToAQuest(taskId, questId);
+    }
+
+    function removeTaskFromAQuest(uint256 taskId, uint256 questId) public override {
+        require(idCounter.current() > taskId, "invalid taskId");
+        require(quests.isPending(questId), "invalid quest");
+
+        questTasks[questId].push(taskId);
+        emit TaskRemovedFromAQuest(taskId, questId);
+    }
+
+    function getTasksByQuestID(uint256 questID)
+        public
+        override
+        view
+        returns (uint256[] memory)
+    {
+        return questTasks[questID];
     }
 
     function take(uint256 taskId) public override {

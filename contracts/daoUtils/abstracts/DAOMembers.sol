@@ -62,8 +62,4 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
     function getAdmins() public view override returns (address[] memory) {
         return admins;
     }
-
-    function canJoin(address member, uint role) external virtual view override returns(bool) {
-        require(false, "Must be implemented");
-    }
 }

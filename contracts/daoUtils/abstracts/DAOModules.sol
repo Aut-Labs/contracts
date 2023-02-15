@@ -7,15 +7,10 @@ import "../interfaces/get/IDAOModules.sol";
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 abstract contract DAOModules is IDAOModules {
-    address public pluginRegistry;
-
-
-    function getPluginRegistryAddress() public view override returns (address) {
-        return pluginRegistry;
-    }
+    address public override pluginRegistry;
 
     function _setPluginRegistry(address _pluginRegistry) internal {
-        require(_pluginRegistry != address(0), "Missing pluginRegistry");
+        require(_pluginRegistry != address(0), "invalid pluginRegistry");
         pluginRegistry = _pluginRegistry;
     }
 }

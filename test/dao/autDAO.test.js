@@ -27,22 +27,22 @@ describe("AutDAO", function () {
       const AutDAO = await ethers.getContractFactory("AutDAO");
       await expect(
         AutDAO.deploy(deployer.address, autID.address, 7, URL, 10, pluginRegistry.address)
-      ).to.be.revertedWith("Market invalid");
+      ).to.be.revertedWith("invalid market");
 
       await expect(
         AutDAO.deploy(deployer.address, autID.address, 2, "", 10, pluginRegistry.address)
-      ).to.be.revertedWith("Missing Metadata URL");
+      ).to.be.revertedWith("invalid url");
 
       await expect(
         AutDAO.deploy(deployer.address, autID.address, 2, URL, 0, pluginRegistry.address)
-      ).to.be.revertedWith("Commitment should be between 1 and 10");
+      ).to.be.revertedWith("invalid commitment");
       await expect(
         AutDAO.deploy(deployer.address, autID.address, 2, URL, 11, pluginRegistry.address)
-      ).to.be.revertedWith("Commitment should be between 1 and 10");
+      ).to.be.revertedWith("invalid commitment");
 
       await expect(
         AutDAO.deploy(deployer.address, autID.address, 2, URL, 7, ethers.constants.AddressZero)
-      ).to.be.revertedWith("Missing pluginRegistry");
+      ).to.be.revertedWith("invalid pluginRegistry");
     });
     it("Should deploy an AutDAO", async function () {
       const AutDAO = await ethers.getContractFactory("AutDAO");

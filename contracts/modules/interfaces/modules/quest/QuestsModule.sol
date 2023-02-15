@@ -8,8 +8,9 @@ import "../IModule.sol";
 interface QuestsModule is IModule {
     event QuestCreated(uint256 questId);
     event QuestEditted();
-    event TasksAddedToQuest();
+    event TasksAddedToQuest(uint256 questId, uint taskId);
     event TasksRemovedFromQuest();
+    event QuestCompleted(uint256 questId, address user);
 
     struct PluginTasks {
         uint256 pluginId;
@@ -23,16 +24,20 @@ interface QuestsModule is IModule {
         uint256 durationInDays;
         uint256 startDate;
         uint256 tasksCount;
+        uint256 maxAmountOfCompletions;
     }
+
     /// @notice Creates a new quest
     /// @param role The role of the quest
     /// @param uri IPFS CID with the off-chain data of the quest
     /// @param durationInDays Duration of the quest
+    /// @param maxAmountOfCompletions Max amount of completions of the quest
     /// @return The id of the newly created quest.
     function create(
         uint256 role,
         string memory uri,
-        uint256 durationInDays
+        uint256 durationInDays,
+        uint maxAmountOfCompletions
     ) external returns (uint256);
 
     /// @notice Edits a Quest
@@ -61,17 +66,11 @@ interface QuestsModule is IModule {
         view
         returns (bool);
 
-    /// @notice Adds tasks to the quest
-    /// @param questId The id of the quest
-    /// @param tasks The tasks to add 
-    function addTasks(uint256 questId, PluginTasks[] calldata tasks) external;
-
     /// @notice Removes tasks to the quest
     /// @param questId The id of the quest
-    /// @param tasksToRemove The tasks to add 
+    /// @param tasksToRemove The tasks to add
     function removeTasks(uint256 questId, PluginTasks[] calldata tasksToRemove)
         external;
-
 
     /// @notice Checks if a quest is ongoing
     /// @param questId The id of the quest
@@ -82,7 +81,6 @@ interface QuestsModule is IModule {
     /// @param questId The id of the quest
     /// @return bool.
     function isPending(uint256 questId) external view returns (bool);
-
 
     /// @notice Checks if a user has completed a quest. This one is used for onboarding, when the user doesn't yet have a role
     /// @param user the address of the user

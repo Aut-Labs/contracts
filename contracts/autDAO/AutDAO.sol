@@ -1,14 +1,14 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-
-import "../daoUtils/abstracts/DAOMembers.sol";
-import "../daoUtils/abstracts/DAOInteractions.sol";
 import "../daoUtils/abstracts/DAOUrls.sol";
-import "../daoUtils/abstracts/AutIDAddress.sol";
-import "../daoUtils/abstracts/DAOMetadata.sol";
-import "../daoUtils/abstracts/DAOModules.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
+import "../daoUtils/abstracts/DAOMembers.sol";
+import "../daoUtils/abstracts/DAOModules.sol";
+import "../daoUtils/abstracts/DAOMetadata.sol";
+import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
+import "../daoUtils/abstracts/DAOInteractions.sol";
+
 import "../modules/interfaces/modules/onboarding/OnboardingModule.sol";
 import "./interfaces/IAutDAO.sol";
 
@@ -82,8 +82,11 @@ contract AutDAO is
         returns (bool)
     {
         if (onboardingAddr == address(0)) return true;
+        if (
+            onboardingAddr != address(0) &&
+            OnboardingModule(onboardingAddr).isActive()
+        ) return false;
         else
-            OnboardingModule(onboardingAddr).isOnboarded(member, role) &&
-                OnboardingModule(onboardingAddr).isCooldownPassed(member, role);
+            return OnboardingModule(onboardingAddr).isOnboarded(member, role);
     }
 }

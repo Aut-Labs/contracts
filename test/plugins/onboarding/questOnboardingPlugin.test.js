@@ -10,7 +10,6 @@ const url = "https://something";
 let pluginTypeId;
 let offchainVerifiedTaskPluginTypeId;
 let autID;
-let block;
 
 describe("QuestOnboardingPlugin", (accounts) => {
   before(async function () {
@@ -52,11 +51,12 @@ describe("QuestOnboardingPlugin", (accounts) => {
 
 
     const OffchainVerifiedTaskPlugin = await ethers.getContractFactory(
-      "OnboardingOffchainVerifiedTaskPlugin"
+      "OnboardingQuestOffchainVerifiedTaskPlugin"
     );
     offchainVerifiedTaskPlugin = await OffchainVerifiedTaskPlugin.deploy(
       dao.address,
-      verifier.address
+      verifier.address,
+      ethers.constants.AddressZero
     );
     expect(offchainVerifiedTaskPlugin.address).not.null;
 
@@ -109,18 +109,10 @@ describe("QuestOnboardingPlugin", (accounts) => {
         0
       );
       expect(isOnboarded).to.be.false;
-
-      const isCooldownPassed = questOnboardingPlugin.isCooldownPassed(
-        addr1.address,
-        0
-      );
-      await expect(isCooldownPassed).to.be.revertedWith("User not onboarded");
     });
 
     it("isOnboarded should return false if the quest doesn't have tasks yet", async () => {
-      await questsPlugin.create(1, url, 1);
-      const questID = await questsPlugin.roleToQuestID(1);
-      expect(questID.toString()).to.eql("1");
+      await questsPlugin.create(1, url, 1, 100);
 
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr1.address,
@@ -128,76 +120,45 @@ describe("QuestOnboardingPlugin", (accounts) => {
       );
       expect(isOnboarded).to.be.false;
 
-      const isCooldownPassed = questOnboardingPlugin.isCooldownPassed(
-        addr1.address,
-        0
-      );
-      await expect(isCooldownPassed).to.be.revertedWith("User not onboarded");
     });
 
     it("isOnboarded should return true if onboarded for the correct role", async () => {
-      tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
+      tx = await questsPlugin.createTask(1, 1, url);
 
       await expect(tx)
-        .to.emit(offchainVerifiedTaskPlugin, "TaskCreated")
-        .withArgs(1, url);
-
-      tx = questsPlugin.createTask(1, 1, url);
-
-      await expect(tx)
-        .to.emit(questsPlugin, "TasksAddedToQuest");
+        .to.emit(questsPlugin, "TasksAddedToQuest").withArgs(1,3);
 
       const task = await offchainVerifiedTaskPlugin.getById(1);
       expect(task["creator"]).to.eql(admin.address);
       tx = offchainVerifiedTaskPlugin
         .connect(verifier)
-        .finalizeFor(4, addr1.address);
+        .finalizeFor(3, addr1.address);
 
       await expect(tx)
         .to.emit(offchainVerifiedTaskPlugin, "TaskFinalized")
-        .withArgs(4, addr1.address);
+        .withArgs(3, addr1.address);
 
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr1.address,
         1
       );
       expect(isOnboarded).to.be.true;
-
-      const isCooldownPassed = await questOnboardingPlugin.isCooldownPassed(
-        addr1.address,
-        1
-      );
-      expect(isCooldownPassed).to.be.true;
-    });
-
-    it("Should set _cooldownPeriod", async () => {
-      tx = questOnboardingPlugin.connect(admin).setCooldownPeriod(1);
-
-      await expect(tx)
-        .to.emit(questOnboardingPlugin, "CooldownPeriodSet");
-
     });
 
     it("Should onboard another user", async () => {
       tx = offchainVerifiedTaskPlugin
       .connect(verifier)
-      .finalizeFor(4, addr2.address);
+      .finalizeFor(3, addr2.address);
 
       await expect(tx)
         .to.emit(offchainVerifiedTaskPlugin, "TaskFinalized")
-        .withArgs(4, addr2.address);
+        .withArgs(3, addr2.address);
 
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr2.address,
         1
       );
       expect(isOnboarded).to.be.true;
-
-      const isCooldownPassed = await questOnboardingPlugin.isCooldownPassed(
-        addr2.address,
-        1
-      );
-      expect(isCooldownPassed).to.be.false; 
     });
     
   });

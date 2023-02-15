@@ -1,23 +1,28 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import "../../../../../daoUtils/interfaces/get/IDAOInteractions.sol";
-import "../../../../../IInteraction.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "../../../../interfaces/modules/tasks/TasksModule.sol";
-import "../../SimplePlugin.sol";
 
-contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+import "../../../../../../daoUtils/interfaces/get/IDAOInteractions.sol";
+import "../../../../../../IInteraction.sol";
+import "../../../../../interfaces/modules/tasks/QuestTasksModule.sol";
+import "../../../../../interfaces/modules/quest/QuestsModule.sol";
+import "../../../SimplePlugin.sol";
+
+contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
     using Counters for Counters.Counter;
 
     Counters.Counter private idCounter;
     Task[] public tasks;
+    QuestsModule quests;
 
     struct OnboardingTaskDetails {
-        uint completionTime;
+        uint256 completionTime;
         TaskStatus status;
     }
 
     mapping(uint256 => mapping(address => OnboardingTaskDetails)) taskStatusDetails;
+    mapping(uint256 => uint256[]) questTasks;
 
     modifier atStatus(
         uint256 taskID,
@@ -39,11 +44,17 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         _;
     }
 
-    constructor(address dao) SimplePlugin(dao) {
+    modifier onlyQuests() {
+        require(address(quests) == msg.sender, "Only quests.");
+        _;
+    }
+
+    constructor(address dao, address questsAddress) SimplePlugin(dao) {
         tasks.push(
             Task(0, TaskStatus.Created, address(0), address(0), "", 0, "", 0, 0)
         );
         idCounter.increment();
+        quests = QuestsModule(questsAddress);
     }
 
     function createBy(
@@ -117,8 +128,8 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
 
     function getStatusPerSubmitter(uint256 taskId, address submitter)
         public
-        override
         view
+        override
         returns (TaskStatus)
     {
         return taskStatusDetails[taskId][submitter].status;
@@ -126,13 +137,12 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
 
     function getCompletionTime(uint256 taskId, address user)
         public
-        override
         view
-        returns (uint)
+        override
+        returns (uint256)
     {
         return taskStatusDetails[taskId][user].completionTime;
     }
-
 
     function hasCompletedTheTask(address user, uint256 taskId)
         public
@@ -170,6 +180,38 @@ contract OnboardingOpenTaskPlugin is TasksModule, SimplePlugin {
         idCounter.increment();
         emit TaskCreated(taskId, uri);
         return taskId;
+    }
+
+    function setQuestsAddress(address questsAddress) public override onlyAdmin {
+        quests = QuestsModule(questsAddress);
+    }
+
+    function addTaskToAQuest(uint256 taskId, uint256 questId) public override {
+        require(idCounter.current() > taskId, "invalid taskId");
+        require(quests.isPending(questId), "invalid quest");
+
+        questTasks[questId].push(taskId);
+        emit TaskAddedToAQuest(taskId, questId);
+    }
+
+    function removeTaskFromAQuest(uint256 taskId, uint256 questId)
+        public
+        override
+    {
+        require(idCounter.current() > taskId, "invalid taskId");
+        require(quests.isPending(questId), "invalid quest");
+
+        questTasks[questId].push(taskId);
+        emit TaskRemovedFromAQuest(taskId, questId);
+    }
+
+    function getTasksByQuestID(uint256 questID)
+        public
+        view
+        override
+        returns (uint256[] memory)
+    {
+        return questTasks[questID];
     }
 
     function take(uint256 taskId) public override {

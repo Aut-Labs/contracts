@@ -30,7 +30,7 @@ contract Interaction is IInteraction {
     function allowAccess(address addr) public override {
         require(
             dao.isAdmin(msg.sender) ||
-                IDAOModules(address(dao)).getPluginRegistryAddress() ==
+                IDAOModules(address(dao)).pluginRegistry() ==
                 msg.sender,
             "Not allowed"
         );

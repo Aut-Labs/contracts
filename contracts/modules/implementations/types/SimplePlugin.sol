@@ -44,7 +44,7 @@ abstract contract SimplePlugin is IModule {
     constructor(address dao) {
         _dao = dao;
         pluginRegistry = IPluginRegistry(
-            IDAOModules(dao).getPluginRegistryAddress()
+            IDAOModules(dao).pluginRegistry()
         );
         _deployer = msg.sender;
     }

@@ -11,7 +11,7 @@ let autID;
 let block;
 
 
-describe("OnboardingOpenTaskPlugin", (accounts) => {
+describe("OnboardingQuestOpenTaskPlugin", (accounts) => {
   before(async function () {
     [
       admin,
@@ -53,15 +53,19 @@ describe("OnboardingOpenTaskPlugin", (accounts) => {
 
     const blockNumber = await ethers.provider.getBlockNumber();
     block = await ethers.provider.getBlock(blockNumber);
+
+    const QuestPlugin = await ethers.getContractFactory("QuestPlugin");
+    questPlugin = await QuestPlugin.deploy(dao.address);
   });
 
   describe("Plugin Registration", async () => {
-    it("Should deploy an OnboardingOpenTaskPlugin", async () => {
+    it("Should deploy an OnboardingQuestOpenTaskPlugin", async () => {
       const OnboardingOpenTaskPlugin = await ethers.getContractFactory(
-        "OnboardingOpenTaskPlugin"
+        "OnboardingQuestOpenTaskPlugin"
       );
       onboardingOpenTaskPlugin = await OnboardingOpenTaskPlugin.deploy(
-        dao.address
+        dao.address,
+        questPlugin.address
       );
 
       expect(onboardingOpenTaskPlugin.address).not.null;

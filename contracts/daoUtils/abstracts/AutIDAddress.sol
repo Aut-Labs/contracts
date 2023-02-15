@@ -14,7 +14,7 @@ abstract contract AutIDAddress is IAutIDAddress {
     modifier onlyAutID() {
         require(
             msg.sender == address(_autID),
-            "Only AutID Contract can call this!"
+            "Only AutID"
         );
         _;
     }

@@ -17,16 +17,16 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     QuestModel[] quests;
     address public onboardingPlugin;
-    uint256 public maxAmountOfCompletions;
 
     uint256 constant SECONDS_IN_DAY = 86400;
     mapping(uint256 => PluginTasks[]) questTasks;
-    mapping(uint256 => uint256) public roleToQuestID;
+    mapping(uint256 => address[]) questCompletions;
+    mapping(uint256 => uint256) public activeQuestsPerRole;
 
     constructor(address dao) SimplePlugin(dao) {
         idCounter.increment();
         onboardingPlugin = msg.sender;
-        quests.push(QuestModel(0, false, "", 0, block.timestamp, 0));
+        quests.push(QuestModel(0, false, "", 0, block.timestamp, 0, 0));
     }
 
     modifier onlyAdmin() {
@@ -44,19 +44,34 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         _;
     }
 
+    modifier onlyActive(uint256 questId) {
+        require(quests[questId].active, "Only active quest");
+        _;
+    }
+
     function create(
         uint256 _role,
         string memory _uri,
+        uint256 _maxAmountOfCompletions,
         uint256 _durationInDays
     ) public override onlyAdmin returns (uint256) {
         require(bytes(_uri).length > 0, "No URI");
         uint256 questId = idCounter.current();
 
         quests.push(
-            QuestModel(_role, false, _uri, _durationInDays, block.timestamp, 0)
+            QuestModel(
+                _role,
+                false,
+                _uri,
+                _durationInDays,
+                block.timestamp,
+                0,
+                _maxAmountOfCompletions
+            )
         );
 
-        roleToQuestID[_role] = questId;
+        if (activeQuestsPerRole[_role] == 0)
+            activeQuestsPerRole[_role] = questId;
 
         idCounter.increment();
         emit QuestCreated(questId);
@@ -80,21 +95,20 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
                 SECONDS_IN_DAY
         );
         _addTask(questId, PluginTasks(tasksPluginId, taskId));
-        emit TasksAddedToQuest();
+        emit TasksAddedToQuest(questId, taskId);
     }
 
-    function addTasks(uint256 questId, PluginTasks[] calldata tasks)
+    function markAsFinalized(address user, uint questId)
         public
-        override
-        onlyAdmin
-        onlyPending(questId)
+        onlyDAOModule
+        onlyActive(questId)
+        onlyOngoing(questId)
     {
         require(idCounter.current() >= questId, "invalid quest id");
-        for (uint256 i = 0; i < tasks.length; i++) {
-            _addTask(questId, tasks[i]);
+        if (hasCompletedAQuest(user, questId)) {
+            questCompletions[questId].push(user);
+            emit QuestCompleted(questId, user);
         }
-
-        emit TasksAddedToQuest();
     }
 
     function removeTasks(uint256 questId, PluginTasks[] calldata tasksToRemove)
@@ -141,10 +155,6 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     function isPending(uint256 questId) public view override returns (bool) {
         return quests[questId].startDate < block.timestamp;
-    }
-
-    function setActive(bool active) public onlyAdmin {
-        _setActive(active);
     }
 
     function getById(uint256 questId)
@@ -211,7 +221,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         override
         returns (bool)
     {
-        uint256 questId = roleToQuestID[role];
+        uint256 questId = activeQuestsPerRole[role];
         if (questId == 0) return false;
         return hasCompletedAQuest(user, questId);
     }
@@ -254,25 +264,18 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
             if (index == -1) {
                 questTasks[questId].push(task);
                 quests[questId].tasksCount++;
+                emit TasksAddedToQuest(questId, task.taskId);
             }
         }
-
-        emit TasksAddedToQuest();
     }
 
     function _removeTask(uint256 questId, PluginTasks calldata taskToRemove)
         public
     {
-        require(idCounter.current() >= questId, "invalid quest id");
-
         int256 index = findTask(questId, taskToRemove);
-
-        if (index != -1) {
-            questTasks[questId][uint256(index)].taskId = 0;
-            questTasks[questId][uint256(index)].pluginId = 0;
-            quests[questId].tasksCount--;
-        }
-
-        emit TasksRemovedFromQuest();
+        require(index != -1, "invalid task");
+        questTasks[questId][uint256(index)].taskId = 0;
+        questTasks[questId][uint256(index)].pluginId = 0;
+        quests[questId].tasksCount--;
     }
 }
