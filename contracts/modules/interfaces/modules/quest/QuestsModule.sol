@@ -8,7 +8,7 @@ import "../IModule.sol";
 interface QuestsModule is IModule {
     event QuestCreated(uint256 questId);
     event QuestEditted();
-    event TasksAddedToQuest(uint256 questId, uint taskId);
+    event TasksAddedToQuest(uint256 questId, uint256 taskId);
     event TasksRemovedFromQuest();
     event QuestCompleted(uint256 questId, address user);
 
@@ -37,7 +37,7 @@ interface QuestsModule is IModule {
         uint256 role,
         string memory uri,
         uint256 durationInDays,
-        uint maxAmountOfCompletions
+        uint256 maxAmountOfCompletions
     ) external returns (uint256);
 
     /// @notice Edits a Quest
@@ -95,4 +95,8 @@ interface QuestsModule is IModule {
         external
         view
         returns (uint256);
+
+    function markAsFinalized(address user, uint256 questId) external;
+
+    function getQuestsOfATask(uint taskId) external view returns(uint[] memory);
 }

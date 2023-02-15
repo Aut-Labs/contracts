@@ -20,6 +20,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     uint256 constant SECONDS_IN_DAY = 86400;
     mapping(uint256 => PluginTasks[]) questTasks;
+    mapping(uint256 => uint[]) public taskToQuests;
     mapping(uint256 => address[]) questCompletions;
     mapping(uint256 => uint256) public activeQuestsPerRole;
 
@@ -100,6 +101,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     function markAsFinalized(address user, uint questId)
         public
+        override
         onlyDAOModule
         onlyActive(questId)
         onlyOngoing(questId)
@@ -242,6 +244,10 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
             }
         }
         return -1;
+    }
+
+    function getQuestsOfATask(uint taskId) public override view returns(uint[] memory) {
+        return taskToQuests[taskId];
     }
 
     function _addTask(uint256 questId, PluginTasks memory task) private {

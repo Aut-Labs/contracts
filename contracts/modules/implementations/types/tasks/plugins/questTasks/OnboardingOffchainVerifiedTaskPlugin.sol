@@ -27,7 +27,6 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
     }
 
     mapping(uint256 => mapping(address => OnboardingTaskDetails)) taskStatusDetails;
-    mapping(uint256 => uint256[]) questTasks;
 
     constructor(
         address dao,
@@ -69,12 +68,8 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         _;
     }
 
-
     modifier onlyQuests() {
-        require(
-            address(quests) == msg.sender,
-            "Only quests."
-        );
+        require(address(quests) == msg.sender, "Only quests.");
         _;
     }
 
@@ -114,6 +109,7 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         override
         onlyOffchainVerifier
     {
+        require(address(quests) != address(0), "not linked to a quest");
         require(tasks[taskId].startDate < block.timestamp, "Not started yet");
         require(tasks[taskId].endDate > block.timestamp, "The task has ended");
 
@@ -122,6 +118,12 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
 
         IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr())
             .addInteraction(taskId, submitter);
+
+        uint[] memory questsOfTask = quests.getQuestsOfATask(taskId);
+
+        for (uint256 i = 0; i < questsOfTask.length; i++) {
+            quests.markAsFinalized(submitter, questsOfTask[i]);
+        }
 
         emit TaskFinalized(taskId, submitter);
     }
@@ -201,31 +203,6 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
 
     function setQuestsAddress(address questsAddress) public override onlyAdmin {
         quests = QuestsModule(questsAddress);
-    }
-
-    function addTaskToAQuest(uint256 taskId, uint256 questId) public override {
-        require(idCounter.current() > taskId, "invalid taskId");
-        require(quests.isPending(questId), "invalid quest");
-
-        questTasks[questId].push(taskId);
-        emit TaskAddedToAQuest(taskId, questId);
-    }
-
-    function removeTaskFromAQuest(uint256 taskId, uint256 questId) public override {
-        require(idCounter.current() > taskId, "invalid taskId");
-        require(quests.isPending(questId), "invalid quest");
-
-        questTasks[questId].push(taskId);
-        emit TaskRemovedFromAQuest(taskId, questId);
-    }
-
-    function getTasksByQuestID(uint256 questID)
-        public
-        override
-        view
-        returns (uint256[] memory)
-    {
-        return questTasks[questID];
     }
 
     function take(uint256 taskId) public override {

@@ -13,15 +13,5 @@ Every tasks plugin must implement this interface.
 /// @notice Every tasks plugin must implement this interface
 interface QuestTasksModule is TasksModule {
 
-    event TaskAddedToAQuest(uint taskId, uint questId);
-
-    event TaskRemovedFromAQuest(uint taskId, uint questId);
-    
-    function addTaskToAQuest(uint taskId, uint questId) external;
-
-    function removeTaskFromAQuest(uint taskId, uint questId) external;
-
-    function getTasksByQuestID(uint questId) view external returns(uint[] memory);
-
     function setQuestsAddress(address questsAddress) external;
 }

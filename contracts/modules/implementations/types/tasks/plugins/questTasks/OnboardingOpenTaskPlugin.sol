@@ -186,33 +186,6 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         quests = QuestsModule(questsAddress);
     }
 
-    function addTaskToAQuest(uint256 taskId, uint256 questId) public override {
-        require(idCounter.current() > taskId, "invalid taskId");
-        require(quests.isPending(questId), "invalid quest");
-
-        questTasks[questId].push(taskId);
-        emit TaskAddedToAQuest(taskId, questId);
-    }
-
-    function removeTaskFromAQuest(uint256 taskId, uint256 questId)
-        public
-        override
-    {
-        require(idCounter.current() > taskId, "invalid taskId");
-        require(quests.isPending(questId), "invalid quest");
-
-        questTasks[questId].push(taskId);
-        emit TaskRemovedFromAQuest(taskId, questId);
-    }
-
-    function getTasksByQuestID(uint256 questID)
-        public
-        view
-        override
-        returns (uint256[] memory)
-    {
-        return questTasks[questID];
-    }
 
     function take(uint256 taskId) public override {
         revert FunctionNotImplemented();

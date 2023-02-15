@@ -83,6 +83,8 @@ describe("QuestOnboardingPlugin", (accounts) => {
       expect(questOnboardingPlugin.address).not.null;
 
       questsPluginAddress = await questOnboardingPlugin.questsPlugin();
+      
+      await offchainVerifiedTaskPlugin.setQuestsAddress(questsPluginAddress);
 
       expect(questsPluginAddress).not.null;
       const QuestPlugin = await ethers.getContractFactory("QuestPlugin");
