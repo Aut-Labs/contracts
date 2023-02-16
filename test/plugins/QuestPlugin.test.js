@@ -85,9 +85,9 @@ describe("QuestPlugin", (accounts) => {
       .to.emit(pluginRegistry, "PluginAddedToDAO")
       .withArgs(2, onboardingOpenTaskPluginType, dao.address);
 
-      const blockNumber = await ethers.provider.getBlockNumber();
-      block = await ethers.provider.getBlock(blockNumber);
-  
+    const blockNumber = await ethers.provider.getBlockNumber();
+    block = await ethers.provider.getBlock(blockNumber);
+
 
     tx = await onboardingOpenTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
     await expect(tx)
@@ -121,14 +121,13 @@ describe("QuestPlugin", (accounts) => {
         .withArgs(3, questPluginType, dao.address);
     });
     it("Should create a quest", async () => {
-      const tx = await questPlugin.connect(admin).create(1, url, 3, 100);
+      const tx = await questPlugin.connect(admin).create(1, url, 3, block.timestamp + 20, 3);
       await expect(tx).to.emit(questPlugin, "QuestCreated").withArgs(1);
     });
     it("Should not create a quest if not an admin", async () => {
-      const tx = questPlugin.create(1, url, 3, 100);
+      const tx = questPlugin.create(1, url, 3, block.timestamp, 100);
       await expect(tx).to.be.revertedWith("Not an admin.");
     });
-
 
     it("Should not create a task if not an admin", async () => {
       const tx = questPlugin.createTask(1, 1, url);
@@ -172,6 +171,12 @@ describe("QuestPlugin", (accounts) => {
 
       await expect(tx).to.be.revertedWith("invalid task");
     });
-    
+
+
+    // it("Should not complete if upper limit is reached", async () => {
+
+    //   await expect(tx).to.be.revertedWith("invalid task");
+    // });
+
   });
 });

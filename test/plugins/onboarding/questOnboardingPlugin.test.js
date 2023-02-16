@@ -114,7 +114,7 @@ describe("QuestOnboardingPlugin", (accounts) => {
     });
 
     it("isOnboarded should return false if the quest doesn't have tasks yet", async () => {
-      await questsPlugin.create(1, url, 1, 100);
+      await questsPlugin.create(1, url, 1, block.timestamp + 10, 100);
 
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr1.address,
@@ -129,6 +129,8 @@ describe("QuestOnboardingPlugin", (accounts) => {
 
       await expect(tx)
         .to.emit(questsPlugin, "TasksAddedToQuest").withArgs(1,3);
+      
+        await new Promise(r => setTimeout(r, 6000));
 
       const task = await offchainVerifiedTaskPlugin.getById(1);
       expect(task["creator"]).to.eql(admin.address);

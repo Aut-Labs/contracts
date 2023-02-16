@@ -21,13 +21,16 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     uint256 constant SECONDS_IN_DAY = 86400;
     mapping(uint256 => PluginTasks[]) questTasks;
     mapping(uint256 => uint[]) public taskToQuests;
-    mapping(uint256 => address[]) questCompletions;
     mapping(uint256 => uint256) public activeQuestsPerRole;
+
+    mapping(uint => mapping(address => bool)) hasApplied;
+    mapping(uint => mapping(address => bool)) hasCompleted;
+    mapping(uint => uint) completionsPerQuest;
 
     constructor(address dao) SimplePlugin(dao) {
         idCounter.increment();
         onboardingPlugin = msg.sender;
-        quests.push(QuestModel(0, false, "", 0, block.timestamp, 0, 0));
+        quests.push(QuestModel(0, false, "", 0, block.timestamp, 0, 0, 0));
     }
 
     modifier onlyAdmin() {
@@ -50,13 +53,24 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         _;
     }
 
+    modifier onlyApplied(uint questId, address user) {
+        require(hasApplied[questId][user], "Only applied");
+        _;
+    }
+
+    function applyForAQuest(uint questId) public {
+        hasApplied[questId][msg.sender] = true;
+    }
+
     function create(
         uint256 _role,
         string memory _uri,
         uint256 _maxAmountOfCompletions,
+        uint _startDate,
         uint256 _durationInDays
     ) public override onlyAdmin returns (uint256) {
-        require(bytes(_uri).length > 0, "No URI");
+        require(bytes(_uri).length > 0, "invalid uri");
+        require(_startDate > block.timestamp, "invalid startDate");
         uint256 questId = idCounter.current();
 
         quests.push(
@@ -65,9 +79,10 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
                 false,
                 _uri,
                 _durationInDays,
-                block.timestamp,
+                _startDate,
                 0,
-                _maxAmountOfCompletions
+                _maxAmountOfCompletions,
+                0
             )
         );
 
@@ -103,12 +118,16 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         public
         override
         onlyDAOModule
+        onlyApplied(questId, user)
         onlyActive(questId)
         onlyOngoing(questId)
     {
         require(idCounter.current() >= questId, "invalid quest id");
+        require(quests[questId].currentAmountOfCompletions < quests[questId].maxAmountOfCompletions, "max completions reached");
         if (hasCompletedAQuest(user, questId)) {
-            questCompletions[questId].push(user);
+            completionsPerQuest[questId]++;
+            hasCompleted[questId][user] = true;
+            quests[questId].currentAmountOfCompletions++;
             emit QuestCompleted(questId, user);
         }
     }
@@ -156,7 +175,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     }
 
     function isPending(uint256 questId) public view override returns (bool) {
-        return quests[questId].startDate < block.timestamp;
+        return quests[questId].startDate > block.timestamp;
     }
 
     function getById(uint256 questId)
@@ -228,8 +247,11 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         return hasCompletedAQuest(user, questId);
     }
 
-    // private
+    function getQuestsOfATask(uint taskId) public override view returns(uint[] memory) {
+        return taskToQuests[taskId];
+    }
 
+    // private
     function findTask(uint256 questId, PluginTasks memory task)
         private
         view
@@ -244,10 +266,6 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
             }
         }
         return -1;
-    }
-
-    function getQuestsOfATask(uint taskId) public override view returns(uint[] memory) {
-        return taskToQuests[taskId];
     }
 
     function _addTask(uint256 questId, PluginTasks memory task) private {

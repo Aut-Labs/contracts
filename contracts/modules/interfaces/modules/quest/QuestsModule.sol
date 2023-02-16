@@ -25,19 +25,22 @@ interface QuestsModule is IModule {
         uint256 startDate;
         uint256 tasksCount;
         uint256 maxAmountOfCompletions;
+        uint256 currentAmountOfCompletions;
     }
 
     /// @notice Creates a new quest
     /// @param role The role of the quest
     /// @param uri IPFS CID with the off-chain data of the quest
-    /// @param durationInDays Duration of the quest
     /// @param maxAmountOfCompletions Max amount of completions of the quest
+    /// @param startDate startDate of the quest
+    /// @param durationInDays Duration of the quest
     /// @return The id of the newly created quest.
     function create(
         uint256 role,
         string memory uri,
-        uint256 durationInDays,
-        uint256 maxAmountOfCompletions
+        uint256 maxAmountOfCompletions,
+        uint startDate,
+        uint256 durationInDays
     ) external returns (uint256);
 
     /// @notice Edits a Quest
