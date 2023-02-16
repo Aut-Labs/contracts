@@ -15,7 +15,7 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
 {
     using Counters for Counters.Counter;
 
-    Counters.Counter private idCounter;
+    Counters.Counter public idCounter;
     Task[] public tasks;
     address public _offchainVerifierAddress;
 
@@ -118,12 +118,6 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
 
         IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr())
             .addInteraction(taskId, submitter);
-
-        uint[] memory questsOfTask = quests.getQuestsOfATask(taskId);
-
-        for (uint256 i = 0; i < questsOfTask.length; i++) {
-            quests.markAsFinalized(submitter, questsOfTask[i]);
-        }
 
         emit TaskFinalized(taskId, submitter);
     }

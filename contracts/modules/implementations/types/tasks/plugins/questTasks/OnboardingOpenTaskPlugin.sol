@@ -12,7 +12,7 @@ import "../../../SimplePlugin.sol";
 contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
     using Counters for Counters.Counter;
 
-    Counters.Counter private idCounter;
+    Counters.Counter public idCounter;
     Task[] public tasks;
     QuestsModule quests;
 

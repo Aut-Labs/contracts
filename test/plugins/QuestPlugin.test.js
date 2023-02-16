@@ -121,11 +121,11 @@ describe("QuestPlugin", (accounts) => {
         .withArgs(3, questPluginType, dao.address);
     });
     it("Should create a quest", async () => {
-      const tx = await questPlugin.connect(admin).create(1, url, 3, block.timestamp + 20, 3);
+      const tx = await questPlugin.connect(admin).create(1, url, block.timestamp + 20, 3);
       await expect(tx).to.emit(questPlugin, "QuestCreated").withArgs(1);
     });
     it("Should not create a quest if not an admin", async () => {
-      const tx = questPlugin.create(1, url, 3, block.timestamp, 100);
+      const tx = questPlugin.create(1, url, block.timestamp, 3);
       await expect(tx).to.be.revertedWith("Not an admin.");
     });
 

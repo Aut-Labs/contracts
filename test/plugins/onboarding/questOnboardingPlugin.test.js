@@ -114,7 +114,7 @@ describe("QuestOnboardingPlugin", (accounts) => {
     });
 
     it("isOnboarded should return false if the quest doesn't have tasks yet", async () => {
-      await questsPlugin.create(1, url, 1, block.timestamp + 10, 100);
+      await questsPlugin.create(1, url, block.timestamp + 10, 1);
 
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr1.address,

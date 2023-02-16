@@ -24,13 +24,12 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     mapping(uint256 => uint256) public activeQuestsPerRole;
 
     mapping(uint => mapping(address => bool)) hasApplied;
-    mapping(uint => mapping(address => bool)) hasCompleted;
     mapping(uint => uint) completionsPerQuest;
 
     constructor(address dao) SimplePlugin(dao) {
         idCounter.increment();
         onboardingPlugin = msg.sender;
-        quests.push(QuestModel(0, false, "", 0, block.timestamp, 0, 0, 0));
+        quests.push(QuestModel(0, false, "", 0, block.timestamp, 0));
     }
 
     modifier onlyAdmin() {
@@ -65,7 +64,6 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     function create(
         uint256 _role,
         string memory _uri,
-        uint256 _maxAmountOfCompletions,
         uint _startDate,
         uint256 _durationInDays
     ) public override onlyAdmin returns (uint256) {
@@ -80,8 +78,6 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
                 _uri,
                 _durationInDays,
                 _startDate,
-                0,
-                _maxAmountOfCompletions,
                 0
             )
         );
@@ -114,23 +110,6 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         emit TasksAddedToQuest(questId, taskId);
     }
 
-    function markAsFinalized(address user, uint questId)
-        public
-        override
-        onlyDAOModule
-        onlyApplied(questId, user)
-        onlyActive(questId)
-        onlyOngoing(questId)
-    {
-        require(idCounter.current() >= questId, "invalid quest id");
-        require(quests[questId].currentAmountOfCompletions < quests[questId].maxAmountOfCompletions, "max completions reached");
-        if (hasCompletedAQuest(user, questId)) {
-            completionsPerQuest[questId]++;
-            hasCompleted[questId][user] = true;
-            quests[questId].currentAmountOfCompletions++;
-            emit QuestCompleted(questId, user);
-        }
-    }
 
     function removeTasks(uint256 questId, PluginTasks[] calldata tasksToRemove)
         public
@@ -245,10 +224,6 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         uint256 questId = activeQuestsPerRole[role];
         if (questId == 0) return false;
         return hasCompletedAQuest(user, questId);
-    }
-
-    function getQuestsOfATask(uint taskId) public override view returns(uint[] memory) {
-        return taskToQuests[taskId];
     }
 
     // private
