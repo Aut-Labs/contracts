@@ -94,4 +94,6 @@ interface QuestsModule is IModule {
         external
         view
         returns (uint256);
+
+    function getTotalQuests() external view returns(uint);
 }

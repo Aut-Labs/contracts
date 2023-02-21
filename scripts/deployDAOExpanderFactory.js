@@ -13,7 +13,7 @@ async function main() {
   const daoExpanderFactory = await DAOExpanderFactory.deploy();
   await daoExpanderFactory.deployed();
 
-  console.log('DAOExpanderFactory', daoExpanderFactory.address);
+  console.log('DAOExpanderFactory deployed to:', daoExpanderFactory.address);
 
 }
 

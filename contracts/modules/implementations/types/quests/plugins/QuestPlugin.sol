@@ -277,4 +277,8 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         questTasks[questId][uint256(index)].pluginId = 0;
         quests[questId].tasksCount--;
     }
+
+    function getTotalQuests() public override view returns(uint)  {
+        return idCounter.current() - 1;
+    }
 }

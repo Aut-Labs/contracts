@@ -15,11 +15,7 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
     }
     
     function setActive(bool active) public {
-        // require(IDAOAdmin(_dao).isAdmin(msg.sender), "not an admin");
-        // require(questsPlugin.roleToQuestID(1), "No quest added for role 1");
-        // require(questsPlugin.roleToQuestID(2), "No quest added for role 2");
-        // require(questsPlugin.roleToQuestID(3), "No quest added for role 3");
-        // _setActive(active);
+        _setActive(active);
     }
     // Implements the onboard function from the OnboardingModule interface
     function isOnboarded(address member, uint256 role)
