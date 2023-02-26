@@ -20,11 +20,11 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     uint256 constant SECONDS_IN_DAY = 86400;
     mapping(uint256 => PluginTasks[]) questTasks;
-    mapping(uint256 => uint[]) public taskToQuests;
+    mapping(uint256 => uint256[]) public taskToQuests;
     mapping(uint256 => uint256) public activeQuestsPerRole;
 
-    mapping(uint => mapping(address => bool)) hasApplied;
-    mapping(uint => uint) completionsPerQuest;
+    mapping(uint256 => mapping(address => bool)) hasApplied;
+    mapping(uint256 => uint256) completionsPerQuest;
 
     constructor(address dao) SimplePlugin(dao) {
         idCounter.increment();
@@ -52,19 +52,19 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         _;
     }
 
-    modifier onlyApplied(uint questId, address user) {
+    modifier onlyApplied(uint256 questId, address user) {
         require(hasApplied[questId][user], "Only applied");
         _;
     }
 
-    function applyForAQuest(uint questId) public {
+    function applyForAQuest(uint256 questId) public {
         hasApplied[questId][msg.sender] = true;
     }
 
     function create(
         uint256 _role,
         string memory _uri,
-        uint _startDate,
+        uint256 _startDate,
         uint256 _durationInDays
     ) public override onlyAdmin returns (uint256) {
         require(bytes(_uri).length > 0, "invalid uri");
@@ -72,14 +72,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         uint256 questId = idCounter.current();
 
         quests.push(
-            QuestModel(
-                _role,
-                false,
-                _uri,
-                _durationInDays,
-                _startDate,
-                0
-            )
+            QuestModel(_role, false, _uri, _durationInDays, _startDate, 0)
         );
 
         if (activeQuestsPerRole[_role] == 0)
@@ -109,7 +102,6 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         _addTask(questId, PluginTasks(tasksPluginId, taskId));
         emit TasksAddedToQuest(questId, taskId);
     }
-
 
     function removeTasks(uint256 questId, PluginTasks[] calldata tasksToRemove)
         public
@@ -245,16 +237,14 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     function _addTask(uint256 questId, PluginTasks memory task) private {
         require(idCounter.current() >= questId, "invalid quest id");
-        IPluginRegistry.PluginInstance memory plugin = IPluginRegistry(
-            pluginRegistry
-        ).getPluginInstanceByTokenId(task.pluginId);
+        IPluginRegistry.PluginInstance memory plugin = pluginRegistry
+            .getPluginInstanceByTokenId(task.pluginId);
 
         require(plugin.pluginAddress != address(0), "Invalid plugin");
-        bool isInstalled = IPluginRegistry(pluginRegistry)
-            .pluginDefinitionsInstalledByDAO(
-                daoAddress(),
-                plugin.pluginDefinitionId
-            );
+        bool isInstalled = pluginRegistry.pluginDefinitionsInstalledByDAO(
+            daoAddress(),
+            plugin.pluginDefinitionId
+        );
         if (
             TasksModule(plugin.pluginAddress).daoAddress() == daoAddress() &&
             isInstalled
@@ -278,7 +268,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         quests[questId].tasksCount--;
     }
 
-    function getTotalQuests() public override view returns(uint)  {
+    function getTotalQuests() public view override returns (uint256) {
         return idCounter.current() - 1;
     }
 }
