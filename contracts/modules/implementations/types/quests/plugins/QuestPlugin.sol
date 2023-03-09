@@ -67,6 +67,11 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         emit Applied(questId, msg.sender);
     }
 
+    function withdrawFromAQuest(uint256 questId) public onlyActive(questId) {
+        hasApplied[questId][msg.sender] = false;
+        emit Withdrown(questId, msg.sender);
+    }
+
     function create(
         uint256 _role,
         string memory _uri,
