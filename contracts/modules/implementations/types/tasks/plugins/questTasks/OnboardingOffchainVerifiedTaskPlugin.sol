@@ -14,7 +14,7 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
     SimplePlugin
 {
     using Counters for Counters.Counter;
-
+    
     Counters.Counter public idCounter;
     Task[] public tasks;
     address public _offchainVerifierAddress;
@@ -60,6 +60,7 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         _;
     }
 
+
     modifier onlyOffchainVerifier() {
         require(
             _offchainVerifierAddress == msg.sender,
@@ -79,7 +80,7 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         string memory uri,
         uint256 startDate,
         uint256 endDate
-    ) public override onlyDAOModule returns (uint256) {
+    ) public override onlyQuests returns (uint256) {
         require(endDate > block.timestamp, "Invalid endDate");
         require(bytes(uri).length > 0, "No URI");
         uint256 taskId = idCounter.current();

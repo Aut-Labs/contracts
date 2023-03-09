@@ -11,6 +11,7 @@ interface QuestsModule is IModule {
     event TasksAddedToQuest(uint256 questId, uint256 taskId);
     event TasksRemovedFromQuest();
     event QuestCompleted(uint256 questId, address user);
+    event Applied(uint256 questId, address user);
 
     struct PluginTasks {
         uint256 pluginId;

@@ -136,7 +136,7 @@ describe("QuestPlugin", (accounts) => {
 
     it("Should create a task", async () => {
       const tx = await questPlugin.connect(admin).createTask(1, offchainVerifiedTaskPluginType, url);
-      await expect(tx).to.emit(questPlugin, "TasksAddedToQuest").withArgs(1, 6);
+      await expect(tx).to.emit(questPlugin, "TasksAddedToQuest").withArgs(1, 3);
 
       const quest = await questPlugin.getById(1);
       expect(quest.tasksCount.toString()).eql("1");
@@ -156,7 +156,7 @@ describe("QuestPlugin", (accounts) => {
 
     it("Should remove a task", async () => {
       const tx = await questPlugin.connect(admin).removeTasks(1, [
-        { pluginId: offchainVerifiedTaskPluginType, taskId: 6 },
+        { pluginId: offchainVerifiedTaskPluginType, taskId: 3 },
       ]);
 
       await expect(tx).to.emit(questPlugin, "TasksRemovedFromQuest");
