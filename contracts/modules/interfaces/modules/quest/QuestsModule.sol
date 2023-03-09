@@ -12,7 +12,7 @@ interface QuestsModule is IModule {
     event TasksRemovedFromQuest();
     event QuestCompleted(uint256 questId, address user);
     event Applied(uint256 questId, address user);
-    event Withdrown(uint256 questId, address user);
+    event Withdrawn(uint256 questId, address user);
 
     struct PluginTasks {
         uint256 pluginId;
