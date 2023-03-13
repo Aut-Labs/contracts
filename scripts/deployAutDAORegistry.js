@@ -17,9 +17,9 @@ async function main() {
   const mumbaiTustedForwarder = '0x69015912AA33720b842dCD6aC059Ed623F28d9f7';
   const trustedForwarder = hre.network.name == 'mumbai' ? mumbaiTustedForwarder : goerliTrustedFrowarder;
 
-  const autIDAddr = hre.network.name == 'mumbai' ? "0xB0622b5A38a96f354934C308a28d9E1E69D6Bc21" : '0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8';
-  const pluginsRegistry = hre.network.name == 'mumbai' ? '0x103A8ab5be0B72331833677F240453171370197F' : "";
-  const autDAOFactoryAddr = hre.network.name == 'mumbai' ? "0x6704eefC709b90Eb4C0C70f30Fa35206a6296c6C" : "0x775F7DF7df61f7060ffC4060eBE363D60A951155";
+  const autIDAddr = hre.network.name == 'mumbai' ? "0x7121f7a86D9908761db2A9512ea3ED22894a24Af" : '0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8';
+  const pluginsRegistry = hre.network.name == 'mumbai' ? '0xd7c229E15B5831C9EA3f1A12011e0C861bA38e61' : "";
+  const autDAOFactoryAddr = hre.network.name == 'mumbai' ? "0x07A7b58a8c729770c3895EbA2175B4C8940e97D7" : "0x775F7DF7df61f7060ffC4060eBE363D60A951155";
 
   const AutDAORegistry = await hre.ethers.getContractFactory(
     "AutDAORegistry"

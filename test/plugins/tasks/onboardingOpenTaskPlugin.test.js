@@ -99,9 +99,7 @@ describe("OnboardingQuestOpenTaskPlugin", (accounts) => {
 
       expect(task["metadata"]).to.eql(url);
       expect(task["creator"]).to.eql(admin.address);
-      expect(task["taker"]).to.eql(ethers.constants.AddressZero);
       expect(task["role"].toString()).to.eql("0");
-      expect(task["status"]).to.eql(0);
     });
 
     it("Should revert take", async () => {
@@ -116,6 +114,20 @@ describe("OnboardingQuestOpenTaskPlugin", (accounts) => {
       const status = await onboardingOpenTaskPlugin.getStatusPerSubmitter(1, submitter1.address);
       expect(status).to.eql(2);
     });
+    it("Should return correct submissions", async () => {
+      const status = await onboardingOpenTaskPlugin.getStatusPerSubmitter(1, submitter1.address);
+      const subIds = await onboardingOpenTaskPlugin.getSubmissionIdsPerTask(1);
+      const subId = await onboardingOpenTaskPlugin.getSubmissionIdPerTaskAndUser(1, submitter1.address);
+      const submission = await onboardingOpenTaskPlugin.submissions(1);
+      expect(status).to.eql(2);
+      expect(subIds[0].toString()).to.eql("1");
+      expect(subIds.length).to.eql(1);
+      expect(subId.toString()).to.eql("1");
+      expect(submission["submitter"]).to.eql(submitter1.address);
+      expect(submission["submissionMetadata"]).to.eql(url);
+      expect(submission["completionTime"].toString()).to.eql("0");
+      expect(submission["status"].toString()).to.eql("2");
+    });
     it("Should not submit same task twice", async () => {
       const tx = onboardingOpenTaskPlugin.connect(submitter1).submit(1, url);
       await expect(tx).to.be.revertedWith("FunctionInvalidAtThisStage");
@@ -125,7 +137,6 @@ describe("OnboardingQuestOpenTaskPlugin", (accounts) => {
       await expect(tx).to.be.revertedWith("FunctionNotImplemented");
     });
     it("Should revert finalizeFor if signer not creator", async () => {
-      const status = await onboardingOpenTaskPlugin.getStatusPerSubmitter(1, submitter1.address);
       const tx = onboardingOpenTaskPlugin.connect(submitter1).finalizeFor(1, submitter1.address);
       await expect(tx).to.be.revertedWith("Only creator.");
     });
@@ -154,7 +165,15 @@ describe("OnboardingQuestOpenTaskPlugin", (accounts) => {
         1,
         submitter1.address
       );
+
       expect(status).to.eql(3);
+
+      const submission = await onboardingOpenTaskPlugin.submissions(1);
+      expect(submission["submitter"]).to.eql(submitter1.address);
+      expect(submission["submissionMetadata"]).to.eql(url);
+      expect(+submission["completionTime"].toString()).to.gt(100000);
+      expect(submission["status"].toString()).to.eql("3");
+
     });
 
     it("Should return correctly hasCompletedTheTask", async () => {

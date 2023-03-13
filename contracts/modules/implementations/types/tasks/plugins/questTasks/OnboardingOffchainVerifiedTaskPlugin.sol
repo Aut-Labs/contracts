@@ -14,7 +14,7 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
     SimplePlugin
 {
     using Counters for Counters.Counter;
-    
+
     Counters.Counter public idCounter;
     Task[] public tasks;
     address public _offchainVerifierAddress;
@@ -26,7 +26,7 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         TaskStatus status;
     }
 
-    mapping(uint256 => mapping(address => OnboardingTaskDetails)) taskStatusDetails;
+    mapping(uint256 => mapping(address => OnboardingTaskDetails)) taskStatuses;
 
     constructor(
         address dao,
@@ -34,19 +34,15 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         address questsAddress
     ) SimplePlugin(dao) {
         _offchainVerifierAddress = offchainVerifierAddress;
-        tasks.push(
-            Task(0, TaskStatus.Created, address(0), address(0), "", 0, "", 0, 0)
-        );
+        tasks.push(Task(0, address(0), 0, "", 0, 0));
         idCounter.increment();
 
         quests = QuestsModule(questsAddress);
     }
 
     modifier atStatus(uint256 taskID, TaskStatus status) {
-        if (
-            status != tasks[taskID].status ||
-            status != taskStatusDetails[taskID][msg.sender].status
-        ) revert FunctionInvalidAtThisStage();
+        if (status != taskStatuses[taskID][msg.sender].status)
+            revert FunctionInvalidAtThisStage();
         _;
     }
 
@@ -59,7 +55,6 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         require(IDAOAdmin(_dao).isAdmin(msg.sender), "Only admin.");
         _;
     }
-
 
     modifier onlyOffchainVerifier() {
         require(
@@ -86,17 +81,7 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         uint256 taskId = idCounter.current();
 
         tasks.push(
-            Task(
-                block.timestamp,
-                TaskStatus.Created,
-                creator,
-                address(0),
-                "",
-                role,
-                uri,
-                startDate,
-                endDate
-            )
+            Task(block.timestamp, creator, role, uri, startDate, endDate)
         );
 
         idCounter.increment();
@@ -105,17 +90,16 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         return taskId;
     }
 
-    function finalizeFor(uint256 taskId, address submitter)
-        public
-        override
-        onlyOffchainVerifier
-    {
+    function finalizeFor(
+        uint256 taskId,
+        address submitter
+    ) public override onlyOffchainVerifier {
         require(address(quests) != address(0), "not linked to a quest");
         require(tasks[taskId].startDate < block.timestamp, "Not started yet");
         require(tasks[taskId].endDate > block.timestamp, "The task has ended");
 
-        taskStatusDetails[taskId][submitter].status = TaskStatus.Finished;
-        taskStatusDetails[taskId][submitter].completionTime = block.timestamp;
+        taskStatuses[taskId][submitter].status = TaskStatus.Finished;
+        taskStatuses[taskId][submitter].completionTime = block.timestamp;
 
         IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr())
             .addInteraction(taskId, submitter);
@@ -123,47 +107,37 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         emit TaskFinalized(taskId, submitter);
     }
 
-    function getById(uint256 taskId)
-        public
-        view
-        override
-        returns (Task memory)
-    {
+    function getById(
+        uint256 taskId
+    ) public view override returns (Task memory) {
         return tasks[taskId];
     }
 
-    function setOffchainVerifierAddress(address offchainVerifierAddress)
-        public
-        onlyAdmin
-    {
+    function setOffchainVerifierAddress(
+        address offchainVerifierAddress
+    ) public onlyAdmin {
         _offchainVerifierAddress = offchainVerifierAddress;
     }
 
-    function getStatusPerSubmitter(uint256 taskId, address submitter)
-        public
-        view
-        override
-        returns (TaskStatus)
-    {
-        return taskStatusDetails[taskId][submitter].status;
+    function getStatusPerSubmitter(
+        uint256 taskId,
+        address submitter
+    ) public view override returns (TaskStatus) {
+        return taskStatuses[taskId][submitter].status;
     }
 
-    function getCompletionTime(uint256 taskId, address user)
-        public
-        view
-        override
-        returns (uint256)
-    {
-        return taskStatusDetails[taskId][user].completionTime;
+    function getCompletionTime(
+        uint256 taskId,
+        address user
+    ) public view override returns (uint256) {
+        return taskStatuses[taskId][user].completionTime;
     }
 
-    function hasCompletedTheTask(address user, uint256 taskId)
-        public
-        view
-        override
-        returns (bool)
-    {
-        return taskStatusDetails[taskId][user].status == TaskStatus.Finished;
+    function hasCompletedTheTask(
+        address user,
+        uint256 taskId
+    ) public view override returns (bool) {
+        return taskStatuses[taskId][user].status == TaskStatus.Finished;
     }
 
     // not implemented
@@ -178,17 +152,7 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         uint256 taskId = idCounter.current();
 
         tasks.push(
-            Task(
-                block.timestamp,
-                TaskStatus.Created,
-                msg.sender,
-                address(0),
-                "",
-                role,
-                uri,
-                startDate,
-                endDate
-            )
+            Task(block.timestamp, msg.sender, role, uri, startDate, endDate)
         );
 
         idCounter.increment();
@@ -204,10 +168,10 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         revert FunctionNotImplemented();
     }
 
-    function submit(uint256 taskId, string calldata submitionUrl)
-        public
-        override
-    {
+    function submit(
+        uint256 taskId,
+        string calldata submitionUrl
+    ) public override {
         revert FunctionNotImplemented();
     }
 

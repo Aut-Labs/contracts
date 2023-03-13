@@ -90,9 +90,7 @@ describe("OnboardingOffchainVerifiedTaskPlugin", (accounts) => {
 
       expect(task["metadata"]).to.eql(url);
       expect(task["creator"]).to.eql(admin.address);
-      expect(task["taker"]).to.eql(ethers.constants.AddressZero);
       expect(task["role"].toString()).to.eql("0");
-      expect(task["status"]).to.eql(0);
     });
 
     it("Should revert take", async () => {

@@ -13,15 +13,23 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
     using Counters for Counters.Counter;
 
     Counters.Counter public idCounter;
+    Counters.Counter public submissionIds;
+
     Task[] public tasks;
     QuestsModule quests;
 
-    struct OnboardingTaskDetails {
+    struct Submission {
+        address submitter;
+        string submissionMetadata;
         uint256 completionTime;
         TaskStatus status;
     }
 
-    mapping(uint256 => mapping(address => OnboardingTaskDetails)) taskStatusDetails;
+    mapping(uint => uint[]) public taskSubmissions;
+    mapping(uint => mapping(address => uint)) submitterToSubmissionId;
+
+    Submission[] public submissions;
+
     mapping(uint256 => uint256[]) questTasks;
 
     modifier atStatus(
@@ -29,7 +37,7 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         address user,
         TaskStatus status
     ) {
-        if (status != taskStatusDetails[taskID][user].status)
+        if (status != submissions[submitterToSubmissionId[taskID][user]].status)
             revert FunctionInvalidAtThisStage();
         _;
     }
@@ -51,9 +59,11 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
 
     constructor(address dao, address questsAddress) SimplePlugin(dao) {
         tasks.push(
-            Task(0, TaskStatus.Created, address(0), address(0), "", 0, "", 0, 0)
+            Task(0, address(0), 0, "", 0, 0)
         );
+        submissions.push(Submission(address(0), "", 0, TaskStatus.Created));
         idCounter.increment();
+        submissionIds.increment();
         quests = QuestsModule(questsAddress);
     }
 
@@ -69,17 +79,7 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         uint256 taskId = idCounter.current();
 
         tasks.push(
-            Task(
-                block.timestamp,
-                TaskStatus.Created,
-                creator,
-                address(0),
-                "",
-                role,
-                uri,
-                startDate,
-                endDate
-            )
+            Task(block.timestamp, creator, role, uri, startDate, endDate)
         );
 
         idCounter.increment();
@@ -88,18 +88,21 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
     }
 
     // not implemented
-    function submit(uint256 taskId, string calldata submitionUrl)
-        public
-        override
-        atStatus(taskId, msg.sender, TaskStatus.Created)
-    {
-        taskStatusDetails[taskId][msg.sender].status = TaskStatus.Submitted;
-        tasks[taskId].submitionUrl = submitionUrl;
-
+    function submit(
+        uint256 taskId,
+        string calldata submitionUrl
+    ) public override atStatus(taskId, msg.sender, TaskStatus.Created) {
+        uint256 submissionId = submissionIds.current();
+        submissions.push(Submission(msg.sender, submitionUrl, 0, TaskStatus.Submitted));
+        taskSubmissions[taskId].push(submissionId);
+        submitterToSubmissionId[taskId][msg.sender] = submissionId;
         emit TaskSubmitted(taskId);
     }
 
-    function finalizeFor(uint256 taskId, address submitter)
+    function finalizeFor(
+        uint256 taskId,
+        address submitter
+    )
         public
         override
         atStatus(taskId, submitter, TaskStatus.Submitted)
@@ -108,8 +111,8 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         require(tasks[taskId].startDate < block.timestamp, "Not started yet");
         require(tasks[taskId].endDate > block.timestamp, "The task has ended");
 
-        taskStatusDetails[taskId][submitter].status = TaskStatus.Finished;
-        taskStatusDetails[taskId][submitter].completionTime = block.timestamp;
+        submissions[submitterToSubmissionId[taskId][submitter]].status = TaskStatus.Finished;
+        submissions[submitterToSubmissionId[taskId][submitter]].completionTime = block.timestamp;
 
         IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr())
             .addInteraction(taskId, submitter);
@@ -117,40 +120,39 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         emit TaskFinalized(taskId, submitter);
     }
 
-    function getById(uint256 taskId)
-        public
-        view
-        override
-        returns (Task memory)
-    {
+    function getById(
+        uint256 taskId
+    ) public view override returns (Task memory) {
         return tasks[taskId];
     }
 
-    function getStatusPerSubmitter(uint256 taskId, address submitter)
-        public
-        view
-        override
-        returns (TaskStatus)
-    {
-        return taskStatusDetails[taskId][submitter].status;
+    function getStatusPerSubmitter(
+        uint256 taskId,
+        address submitter
+    ) public view override returns (TaskStatus) {
+        return submissions[submitterToSubmissionId[taskId][submitter]].status;
     }
 
-    function getCompletionTime(uint256 taskId, address user)
-        public
-        view
-        override
-        returns (uint256)
-    {
-        return taskStatusDetails[taskId][user].completionTime;
+    function getSubmissionIdsPerTask(uint taskId) public view returns (uint[] memory) {
+        return taskSubmissions[taskId];
+    }
+    
+    function getSubmissionIdPerTaskAndUser(uint taskId, address submitter) public view returns (uint) {
+        return submitterToSubmissionId[taskId][submitter];
     }
 
-    function hasCompletedTheTask(address user, uint256 taskId)
-        public
-        view
-        override
-        returns (bool)
-    {
-        return taskStatusDetails[taskId][user].status == TaskStatus.Finished;
+    function getCompletionTime(
+        uint256 taskId,
+        address user
+    ) public view override returns (uint256) {
+        return submissions[submitterToSubmissionId[taskId][user]].completionTime;
+    }
+
+    function hasCompletedTheTask(
+        address user,
+        uint256 taskId
+    ) public view override returns (bool) {
+        return submissions[submitterToSubmissionId[taskId][user]].status == TaskStatus.Finished;
     }
 
     function create(
@@ -166,10 +168,7 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         tasks.push(
             Task(
                 block.timestamp,
-                TaskStatus.Created,
                 msg.sender,
-                address(0),
-                "",
                 role,
                 uri,
                 startDate,
@@ -185,7 +184,6 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
     function setQuestsAddress(address questsAddress) public override onlyAdmin {
         quests = QuestsModule(questsAddress);
     }
-
 
     function take(uint256 taskId) public override {
         revert FunctionNotImplemented();

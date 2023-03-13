@@ -1,4 +1,4 @@
-# Āut Protocol - Smart Contracts
+# Āut Labs - Smart Contracts
 Āut is an expandable protocol for Role-based Membership in Web3 Communities & DAOs.
 
 DAOs can be much more than _Smart Treasuries_, Āut introduces native Roles & Interactions directly at contract level, to power the 2nd generation of DAOs. The DAO 2.0s, or a Coordination Renaissance.
@@ -27,7 +27,7 @@ Below, you'll find a simple walkthrough to get started using Āut's Smart Contra
 
 You're ready to go! 🚀🚀🚀
 
-> **_Recommendation:_** If you're building on top of the Aut Protocol Contracts, we strongly recommend running them locally and testing on Hardhat Network/Ganache Network before moving forward with a testnet deployment.
+> **_Recommendation:_** If you're building on top of the Aut Labs Contracts, we strongly recommend running them locally and testing on Hardhat Network/Ganache Network before moving forward with a testnet deployment.
 ----
 > > **_Resources:_** 🍫 🍫 🍫 Ganachere sources: https://trufflesuite.com/docs/ganache/
 🎩 🎩 🎩 Hardhat sources: https://hardhat.org/tutorial

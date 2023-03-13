@@ -35,16 +35,11 @@ interface TasksModule is IModule {
     // createdOn - timestamp 
     // status - on of the TaskStatus
     // creator - address of the creator
-    // taker - address of the taker
-    // submitionUrl - IPFS CID with JSON file with the submition data
     // role - the role of the task, if 0 - it means it is for all roles
     // metadata - IPFS CID with JSON file with the task data
     struct Task {
         uint256 createdOn;
-        TaskStatus status;
         address creator;
-        address taker;
-        string submitionUrl;
         uint256 role;
         string metadata;
         uint startDate;
