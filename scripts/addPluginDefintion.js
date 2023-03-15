@@ -17,14 +17,14 @@ async function main() {
 
 
     // We get the contract to deploy
-    const pluginRegistryAddress = "0xd7c229E15B5831C9EA3f1A12011e0C861bA38e61"; // mumbai
+    const pluginRegistryAddress = "0x9951eA56186fe1B3a6cE880D85717a598A14086B"; // mumbai
     const PluginRegistry = await hre.ethers.getContractFactory("PluginRegistry");
     const pluginRegistry = await PluginRegistry.attach(pluginRegistryAddress);
-    const onboardingIpfsUrl = "ipfs://bafkreiesyv4jzvez4kvis6cs6k2xfknmtbi7ld5br5ydy4q5o2i5jyrp3u";
-    const discordUrl = "ipfs://bafkreic6jkmskyuxcs7seaqq4e3joluvwa2byh3b6sbczpylf2y2pawycq";
-    const openTaskUrl = "ipfs://bafkreibvwhsgccsoes6aivhknpas5zjmmtxvdzdhsbyvpz3fdd2zuxotje";
-    const quizUrl = "ipfs://bafkreidyjtoq432npomz34sagyjde3oehvtsqz5tuwlj3ggyf555kwfrwa";
-    const transactionTaskUrl = "ipfs://bafkreiblxyyaj7sqzrlkknuhnnsnpifrmzxqfjjfuqvzdymxrepgt6cv7i";
+    const onboardingIpfsUrl = "ipfs://bafkreibtjnmk3l26rsgl7xhgesutl3y4x5qqloiz7uc4utlpkkgyikd7v4";
+    const discordUrl = "ipfs://bafkreihgqnkbatwcso7ssn62p2bj24x6siikj7ii423z3ia34m527xhwwq";
+    const openTaskUrl = "ipfs://bafkreigjquuqg5ywat2t3nddq6orakosrnidotwlnagurcuvtmwu4xkzdu";
+    const quizUrl = "ipfs://bafkreibczf5den7hxdr4hywlrurhzdqbjd3uyiinnistodmsw5st2zjyzm";
+    const transactionTaskUrl = "ipfs://bafkreidxhhc5ta4nnoqdf4u3jxbtnpjnacxrcml7sbblffcd4cd6emdihe";
     const a = await (
         await pluginRegistry.addPluginDefinition(
             '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', onboardingIpfsUrl, 0)

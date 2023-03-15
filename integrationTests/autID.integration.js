@@ -28,10 +28,10 @@ const senderWalletMnemonic = ethers.Wallet.fromMnemonic(
 // const senderWallet = new ethers.Wallet(process.env.PRIVATE_KEY);
 let signer = senderWalletMnemonic.connect(provider);
 // console.log(signer.address)
-// const wallet = ethers.Wallet.createRandom();
-// console.log(senderWalletMnemonic.address);
-// console.log(senderWalletMnemonic.mnemonic);
-// console.log(senderWalletMnemonic.privateKey);
+const wallet = ethers.Wallet.createRandom();
+console.log(wallet.address);
+console.log(wallet.mnemonic);
+console.log(wallet.privateKey);
 
 const autIDContract = new ethers.Contract(autIDAddress, autIDAbi, signer);
 const daoExpanderRegistryContract = new ethers.Contract(
@@ -154,7 +154,7 @@ async function test() {
   // await addMember('0x6706a83EF8E2228D639fBA5f6cc5308d6A6114Bd', signer.address);
 
   // await deployDAOExpander();
-  const daoExpander = "0xCe050Ee1166D15a16B173Bed3b2Ebb856c67Ac27";
+  // const daoExpander = "0xCe050Ee1166D15a16B173Bed3b2Ebb856c67Ac27";
   // await getAutIDUsername('Taualnt');
   // await getAutIDMetadata(2);
   // await getPoll(pollsAddress, 0);
@@ -172,7 +172,7 @@ async function test() {
   // await mint(daoExpander);
   // await isAdmin(daoExpander, user);
   // await getDAOExpanders();
-  await getDAOMetadata(daoExpander);
+  // await getDAOMetadata(daoExpander);
 }
 
 test();
