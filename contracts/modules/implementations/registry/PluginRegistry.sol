@@ -55,7 +55,6 @@ contract PluginRegistry is
         address pluginAddress,
         uint256 pluginDefinitionId
     ) external payable nonReentrant {
-
         IModule plugin = IModule(pluginAddress);
         address dao = plugin.daoAddress();
 
@@ -95,7 +94,7 @@ contract PluginRegistry is
         pluginInstanceByTokenId[tokenId].pluginAddress = pluginAddress;
 
         tokenIdByPluginAddress[pluginAddress] = tokenId;
-        
+
         IModule(pluginAddress).storePluginId(tokenId);
         // allow interactions to be used from plugin
         address interactions = IDAOInteractions(dao).getInteractionsAddr();
@@ -104,10 +103,10 @@ contract PluginRegistry is
         emit PluginRegistered(tokenId, pluginAddress);
     }
 
-    function _mintPluginNFT(uint256 pluginDefinitionId, address to)
-        internal
-        returns (uint256 tokenId)
-    {
+    function _mintPluginNFT(
+        uint256 pluginDefinitionId,
+        address to
+    ) internal returns (uint256 tokenId) {
         PluginDefinition storage pluginDefinition = pluginDefinitionsById[
             pluginDefinitionId
         ];
@@ -124,15 +123,17 @@ contract PluginRegistry is
         return tokenId;
     }
 
-    function getOwnerOfPlugin(address pluginAddress)
-        external
-        view
-        override
-        returns (address owner)
-    {
+    function getOwnerOfPlugin(
+        address pluginAddress
+    ) external view override returns (address owner) {
         uint256 tokenId = tokenIdByPluginAddress[pluginAddress];
         owner = ownerOf(tokenId);
         return owner;
+    }
+
+    function editPluginMetadata(uint pluginId, string memory url) override external {
+        require(msg.sender == ownerOf(pluginId), "only plugin owner");
+        _setTokenURI(pluginId, url);
     }
 
     // Plugin type management
@@ -191,21 +192,15 @@ contract PluginRegistry is
         oracleAddress = newOracleAddress;
     }
 
-    function getPluginInstanceByTokenId(uint256 tokenId)
-        public
-        view
-        override
-        returns (PluginInstance memory)
-    {
+    function getPluginInstanceByTokenId(
+        uint256 tokenId
+    ) public view override returns (PluginInstance memory) {
         return pluginInstanceByTokenId[tokenId];
     }
 
-    function getPluginIdsByDAO(address dao)
-        public
-        view
-        override
-        returns (uint256[] memory)
-    {
+    function getPluginIdsByDAO(
+        address dao
+    ) public view override returns (uint256[] memory) {
         return pluginIdsByDAO[dao];
     }
 }

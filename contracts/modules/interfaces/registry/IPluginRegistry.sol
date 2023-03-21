@@ -44,4 +44,6 @@ interface IPluginRegistry {
         external
         view
         returns (uint256[] memory);
+
+    function editPluginMetadata(uint pluginId, string memory url) external;
 }
