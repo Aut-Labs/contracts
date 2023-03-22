@@ -20,21 +20,29 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
     }
 
     function setActive(bool active) public onlyAdmin {
+        uint activeQuestRole1 = questsPlugin.activeQuestsPerRole(1);
+        uint activeQuestRole2 = questsPlugin.activeQuestsPerRole(2);
+        uint activeQuestRole3 = questsPlugin.activeQuestsPerRole(3);
         require(
-            questsPlugin.activeQuestsPerRole(1) > 0 &&
-                questsPlugin.activeQuestsPerRole(2) > 0 &&
-                questsPlugin.activeQuestsPerRole(3) > 0,
+            activeQuestRole1 > 0 &&
+                activeQuestRole2 > 0 &&
+                activeQuestRole3 > 0,
             "not all quests are defined"
+        );
+        require(
+            questsPlugin.getTasksPerQuest(activeQuestRole1).length > 0 &&
+                questsPlugin.getTasksPerQuest(activeQuestRole2).length > 0 &&
+                questsPlugin.getTasksPerQuest(activeQuestRole3).length > 0,
+            "not all quests have tasks"
         );
         _setActive(active);
     }
+
     // Implements the onboard function from the OnboardingModule interface
-    function isOnboarded(address member, uint256 role)
-        public
-        view
-        override
-        returns (bool)
-    {
+    function isOnboarded(
+        address member,
+        uint256 role
+    ) public view override returns (bool) {
         return questsPlugin.hasCompletedQuestForRole(member, role);
     }
 

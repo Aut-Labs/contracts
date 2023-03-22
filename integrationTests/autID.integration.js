@@ -16,6 +16,10 @@ var daoExpanderRegistryAbi =
 var daoExpanderAbi =
   require("../artifacts/contracts/expander/DAOExpander.sol/DAOExpander.json").abi;
 
+  // /Users/tagamite/Desktop/dev/aut/contracts/artifacts/contracts/modules/implementations/types/tasks/plugins/questTasks/OnboardingOffchainVerifiedTaskPlugin.sol/OnboardingQuestOffchainVerifiedTaskPlugin.dbg.json
+var offchaintaskabi =
+require("../artifacts/contracts/modules/implementations/types/tasks/plugins/questTasks/OnboardingOffchainVerifiedTaskPlugin.sol/OnboardingQuestOffchainVerifiedTaskPlugin.json").abi;
+
 const provider = new ethers.providers.JsonRpcProvider(
   "https://matic-mumbai.chainstacklabs.com/"
 );
@@ -150,7 +154,15 @@ async function getAutIDUsername(username) {
   const addr = await autIDContract.autIDUsername(username);
   console.log('[autIDUsername]: addr', addr);
 }
+
+async function setOffchainVerifierAddress(taskAddr, addr) {
+const contr = new ethers.Contract(taskAddr, offchaintaskabi, signer);
+const a = await contr.setOffchainVerifierAddress(addr);
+console.log(a);
+  
+}
 async function test() {
+  setOffchainVerifierAddress('0xcFe8a416eDDd29e53B408223c887D765dc071502','0xa5332a8BFeaff6AD8c195A3EC55F46a028ca02cC')
   // await addMember('0x6706a83EF8E2228D639fBA5f6cc5308d6A6114Bd', signer.address);
 
   // await deployDAOExpander();
