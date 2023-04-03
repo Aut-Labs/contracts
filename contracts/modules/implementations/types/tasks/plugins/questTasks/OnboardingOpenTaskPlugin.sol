@@ -96,7 +96,8 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         submissions.push(Submission(msg.sender, submitionUrl, 0, TaskStatus.Submitted));
         taskSubmissions[taskId].push(submissionId);
         submitterToSubmissionId[taskId][msg.sender] = submissionId;
-        emit TaskSubmitted(taskId);
+        submissionIds.increment();
+        emit TaskSubmitted(taskId, submissionId);
     }
 
     function finalizeFor(

@@ -19,7 +19,7 @@ interface TasksModule is IModule {
     // emitted when task is taken
     event TaskTaken(uint256 taskID, address taker);
     // emitted when a task is submitted
-    event TaskSubmitted(uint256 taskID);
+    event TaskSubmitted(uint256 taskID, uint256 submissionId);
     // emitted when a task is finalized
     event TaskFinalized(uint256 taskID, address taker);
 

@@ -20,6 +20,9 @@ var daoExpanderAbi =
 var offchaintaskabi =
 require("../artifacts/contracts/modules/implementations/types/tasks/plugins/questTasks/OnboardingOffchainVerifiedTaskPlugin.sol/OnboardingQuestOffchainVerifiedTaskPlugin.json").abi;
 
+var onchaintaskabi =
+require("../artifacts/contracts/modules/implementations/types/tasks/plugins/questTasks/OnboardingOpenTaskPlugin.sol/OnboardingQuestOpenTaskPlugin.json").abi;
+
 const provider = new ethers.providers.JsonRpcProvider(
   "https://matic-mumbai.chainstacklabs.com/"
 );
@@ -27,15 +30,15 @@ const provider = new ethers.providers.JsonRpcProvider(
 // Wallet connected to a provider
 const senderWalletMnemonic = ethers.Wallet.fromMnemonic(
   process.env.MNEMONIC_2,
-  "m/44'/60'/0'/0/0"
+  "m/44'/60'/0'/0/3"
 );
 // const senderWallet = new ethers.Wallet(process.env.PRIVATE_KEY);
 let signer = senderWalletMnemonic.connect(provider);
-// console.log(signer.address)
-const wallet = ethers.Wallet.createRandom();
-console.log(wallet.address);
-console.log(wallet.mnemonic);
-console.log(wallet.privateKey);
+console.log(signer.address)
+// const wallet = ethers.Wallet.createRandom();
+// console.log(wallet.address);
+// console.log(wallet.mnemonic);
+// console.log(wallet.privateKey);
 
 const autIDContract = new ethers.Contract(autIDAddress, autIDAbi, signer);
 const daoExpanderRegistryContract = new ethers.Contract(
@@ -159,10 +162,31 @@ async function setOffchainVerifierAddress(taskAddr, addr) {
 const contr = new ethers.Contract(taskAddr, offchaintaskabi, signer);
 const a = await contr.setOffchainVerifierAddress(addr);
 console.log(a);
-  
 }
+
+
+async function getStatusPerSubmitter(taskAddr, taskID, submitter) {
+  const contr = new ethers.Contract(taskAddr, onchaintaskabi, signer);
+  const a = await contr.getStatusPerSubmitter(taskID, submitter);
+  console.log(a);
+}
+
+async function getSubmissionIdPerTaskAndUser(taskAddr, taskID, submitter) {
+  const contr = new ethers.Contract(taskAddr, onchaintaskabi, signer);
+  const a = await contr.getSubmissionIdPerTaskAndUser(taskID, submitter);
+  console.log(a);
+}
+
+
+
 async function test() {
-  setOffchainVerifierAddress('0xcFe8a416eDDd29e53B408223c887D765dc071502','0xa5332a8BFeaff6AD8c195A3EC55F46a028ca02cC')
+  // await getStatusPerSubmitter('0xE951f9c7DE2ca53f187deE7628B5fa90259E34c0', 6, '0x257a674aC62296326d78e6260571A077Ea4bF81b')
+  // await getSubmissionIdPerTaskAndUser('0xE951f9c7DE2ca53f187deE7628B5fa90259E34c0', 6, '0x257a674aC62296326d78e6260571A077Ea4bF81b')
+  await getStatusPerSubmitter('0xbdA9192aEC4faA1F6F2C430c377522eF763DE842', 6, '0x6A05B67b071d4efcA312f689Bc0Aa73606A72e05')
+  await getSubmissionIdPerTaskAndUser('0xbdA9192aEC4faA1F6F2C430c377522eF763DE842', 6, '0x6A05B67b071d4efcA312f689Bc0Aa73606A72e05');
+  await getSubmissionIdPerTaskAndUser('0xbdA9192aEC4faA1F6F2C430c377522eF763DE842', 12, '0x2d41B96735108e4EF8B2C5C6e9eFfA425Cb7f6dF');
+  // await getSubmissionIdPerTaskAndUser('0xE951f9c7DE2ca53f187deE7628B5fa90259E34c0', 3, '0x257a674aC62296326d78e6260571A077Ea4bF81b')
+  // setOffchainVerifierAddress('0xb49CB4361A9314d6cA676CE259E6D8857DC66c5f','0xa5332a8BFeaff6AD8c195A3EC55F46a028ca02cC')
   // await addMember('0x6706a83EF8E2228D639fBA5f6cc5308d6A6114Bd', signer.address);
 
   // await deployDAOExpander();

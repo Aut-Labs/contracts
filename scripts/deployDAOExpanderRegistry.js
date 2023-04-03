@@ -20,9 +20,9 @@ async function main() {
 
   const daoTypesAddr = hre.network.name == 'mumbai' ? "0x814B36802359E0233f38B8A29A96EA9e4c261E37" : "0xD6D405673fF4D1563B9E2dDD3ff7C4B20Af755fc";
   
-  const autIDAddr = hre.network.name == 'mumbai' ? "0x04CCAE199B72008CcD755560626Ba94d5d51DF41" : "0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8";
-  const daoExpanderFactoryAddr = hre.network.name == 'mumbai' ? "0xdDB11F5B56AF0E95a4cEA1329596DD5aEAf0aF55" : "0xdaf0E93AAa24b846d8991a314E9466c0c91d9175";
-  const pluginsRegistry = hre.network.name == 'mumbai' ? '0x9951eA56186fe1B3a6cE880D85717a598A14086B' : "";
+  const autIDAddr = hre.network.name == 'mumbai' ? "0x4Ea22B2e73c2c65b8D378Dc312AEefCAADEe6b48" : "0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8";
+  const daoExpanderFactoryAddr = hre.network.name == 'mumbai' ? "0xa159bdfD82BAB76917466526b31Ebcd5642D9fB8" : "0xdaf0E93AAa24b846d8991a314E9466c0c91d9175";
+  const pluginsRegistry = hre.network.name == 'mumbai' ? '0x4eDb2CfaD71aD7D3C645BEF1B4b1304f6800C894' : "";
 
   const DAOExpanderRegistry = await hre.ethers.getContractFactory(
     "DAOExpanderRegistry"
