@@ -8,6 +8,7 @@ import "../../../daoUtils/interfaces/get/IDAOModules.sol";
 abstract contract SimplePlugin is IModule {
     address _deployer;
     address _dao;
+    uint public override moduleId;
     uint256 public pluginId;
     bool public override isActive;
     IPluginRegistry public pluginRegistry; 
@@ -41,12 +42,13 @@ abstract contract SimplePlugin is IModule {
         _;
     }
 
-    constructor(address dao) {
+    constructor(address dao, uint modId) {
         _dao = dao;
         pluginRegistry = IPluginRegistry(
             IDAOModules(dao).pluginRegistry()
         );
         _deployer = msg.sender;
+        moduleId = modId;
     }
 
     function owner() public view returns (address) {

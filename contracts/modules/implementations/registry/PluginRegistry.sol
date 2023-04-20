@@ -9,6 +9,7 @@ import "../../interfaces/modules/IModule.sol";
 import "../../interfaces/registry/IPluginRegistry.sol";
 import "../../../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../../../daoUtils/interfaces/get/IDAOAdmin.sol";
+import "../../../autDAO/interfaces/IAutDAO.sol";
 import "../../../IInteraction.sol";
 
 /// @title PluginRegistry
@@ -100,6 +101,9 @@ contract PluginRegistry is
         address interactions = IDAOInteractions(dao).getInteractionsAddr();
         IInteraction(interactions).allowAccess(pluginAddress);
 
+        if (IModule(pluginAddress).moduleId() == 1)
+            IAutDAO(dao).setOnboardingStrategy(pluginAddress);
+
         emit PluginRegistered(tokenId, pluginAddress);
     }
 
@@ -131,7 +135,10 @@ contract PluginRegistry is
         return owner;
     }
 
-    function editPluginMetadata(uint pluginId, string memory url) override external {
+    function editPluginMetadata(
+        uint pluginId,
+        string memory url
+    ) external override {
         require(msg.sender == ownerOf(pluginId), "only plugin owner");
         _setTokenURI(pluginId, url);
     }

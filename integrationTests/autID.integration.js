@@ -23,6 +23,13 @@ require("../artifacts/contracts/modules/implementations/types/tasks/plugins/ques
 var onchaintaskabi =
 require("../artifacts/contracts/modules/implementations/types/tasks/plugins/questTasks/OnboardingOpenTaskPlugin.sol/OnboardingQuestOpenTaskPlugin.json").abi;
 
+
+var onboardingAbi =
+require("../artifacts/contracts/modules/implementations/types/onboarding/plugins/QuestOnboardingPlugin.sol/QuestOnboardingPlugin.json").abi;
+
+var autDAOAbi = 
+require("../artifacts/contracts/autDAO/AutDAO.sol/AutDAO.json").abi;
+
 const provider = new ethers.providers.JsonRpcProvider(
   "https://matic-mumbai.chainstacklabs.com/"
 );
@@ -30,7 +37,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 // Wallet connected to a provider
 const senderWalletMnemonic = ethers.Wallet.fromMnemonic(
   process.env.MNEMONIC_2,
-  "m/44'/60'/0'/0/3"
+  "m/44'/60'/0'/0/0"
 );
 // const senderWallet = new ethers.Wallet(process.env.PRIVATE_KEY);
 let signer = senderWalletMnemonic.connect(provider);
@@ -171,6 +178,14 @@ async function getStatusPerSubmitter(taskAddr, taskID, submitter) {
   console.log(a);
 }
 
+async function getCompletionTime(taskAddr, taskID, submitter) {
+  const contr = new ethers.Contract(taskAddr, onchaintaskabi, signer);
+  const a = await contr.getCompletionTime(taskID, submitter);
+  console.log(a);
+}
+
+
+
 async function getSubmissionIdPerTaskAndUser(taskAddr, taskID, submitter) {
   const contr = new ethers.Contract(taskAddr, onchaintaskabi, signer);
   const a = await contr.getSubmissionIdPerTaskAndUser(taskID, submitter);
@@ -179,12 +194,51 @@ async function getSubmissionIdPerTaskAndUser(taskAddr, taskID, submitter) {
 
 
 
+async function getTaskByID(taskAddr, taskID) {
+  const contr = new ethers.Contract(taskAddr, onchaintaskabi, signer);
+  const a = await contr.getById(taskID);
+  console.log(a);
+}
+
+async function finalize(taskAddr, taskID, submitter) {
+  const contr = new ethers.Contract(taskAddr, offchaintaskabi, signer);
+  const a = await contr.finalizeFor(taskID, submitter);
+  console.log(await a.wait());
+}
+
+async function isOnboarded(onboardingAddress, member, role) {
+  const contr = new ethers.Contract(onboardingAddress, onboardingAbi, signer);
+  const a = await contr.isOnboarded(member, role);
+  console.log(a);
+}
+
+async function canJoin(daoAddress, member, role) {
+  const contr = new ethers.Contract(daoAddress, autDAOAbi, signer);
+  const a = await contr.canJoin(member, role);
+  console.log(a);
+}
+
+async function onboardingAddr(daoAddress) {
+  const contr = new ethers.Contract(daoAddress, autDAOAbi, signer);
+  const a = await contr.canJoin(member, role);
+  console.log(a);
+}
+
 async function test() {
-  // await getStatusPerSubmitter('0xE951f9c7DE2ca53f187deE7628B5fa90259E34c0', 6, '0x257a674aC62296326d78e6260571A077Ea4bF81b')
   // await getSubmissionIdPerTaskAndUser('0xE951f9c7DE2ca53f187deE7628B5fa90259E34c0', 6, '0x257a674aC62296326d78e6260571A077Ea4bF81b')
-  await getStatusPerSubmitter('0xbdA9192aEC4faA1F6F2C430c377522eF763DE842', 6, '0x6A05B67b071d4efcA312f689Bc0Aa73606A72e05')
-  await getSubmissionIdPerTaskAndUser('0xbdA9192aEC4faA1F6F2C430c377522eF763DE842', 6, '0x6A05B67b071d4efcA312f689Bc0Aa73606A72e05');
-  await getSubmissionIdPerTaskAndUser('0xbdA9192aEC4faA1F6F2C430c377522eF763DE842', 12, '0x2d41B96735108e4EF8B2C5C6e9eFfA425Cb7f6dF');
+  // await finalize('0x8ED093b0e09F06f120f7FF2BA39F1ddfF73Ded59', 1, '0x0d6d3183697aA153d7861B137b9cc13757f25C87')
+  // await getStatusPerSubmitter('0xadA9D147b4857f00BE52Df72463E4A90112f938F', 2, '0xE79A5fbc800ABA2074b0e54c68e51a5F6a38E07e')
+  await isOnboarded('0xF73731fa594ffe43FB402dCa181CAD8De15c55ac','0x7dE061b5949865F9Fe8510a5F7eFe2071f6E2A74', 1);
+  await isOnboarded('0xF73731fa594ffe43FB402dCa181CAD8De15c55ac','0x7dE061b5949865F9Fe8510a5F7eFe2071f6E2A74', 2);
+  await isOnboarded('0xF73731fa594ffe43FB402dCa181CAD8De15c55ac','0x7dE061b5949865F9Fe8510a5F7eFe2071f6E2A74', 3);
+
+  await canJoin('0x173E09f0df70d60b7141D0dDa9e316E1e5d5C3E6','0x7dE061b5949865F9Fe8510a5F7eFe2071f6E2A74', 1);
+  await canJoin('0x173E09f0df70d60b7141D0dDa9e316E1e5d5C3E6','0x7dE061b5949865F9Fe8510a5F7eFe2071f6E2A74', 2);
+  await canJoin('0x173E09f0df70d60b7141D0dDa9e316E1e5d5C3E6','0x7dE061b5949865F9Fe8510a5F7eFe2071f6E2A74', 3);
+  // await getTaskByID('0xadA9D147b4857f00BE52Df72463E4A90112f938F', 2);
+  // await getCompletionTime('0xadA9D147b4857f00BE52Df72463E4A90112f938F', 2, '0xE79A5fbc800ABA2074b0e54c68e51a5F6a38E07e')
+  // await getSubmissionIdPerTaskAndUser('0x8ED093b0e09F06f120f7FF2BA39F1ddfF73Ded59', 1, '0x0d6d3183697aA153d7861B137b9cc13757f25C87')
+  // await getSubmissionIdPerTaskAndUser('0x8ED093b0e09F06f120f7FF2BA39F1ddfF73Ded59', 1, '0x2d41B96735108e4EF8B2C5C6e9eFfA425Cb7f6dF');
   // await getSubmissionIdPerTaskAndUser('0xE951f9c7DE2ca53f187deE7628B5fa90259E34c0', 3, '0x257a674aC62296326d78e6260571A077Ea4bF81b')
   // setOffchainVerifierAddress('0xb49CB4361A9314d6cA676CE259E6D8857DC66c5f','0xa5332a8BFeaff6AD8c195A3EC55F46a028ca02cC')
   // await addMember('0x6706a83EF8E2228D639fBA5f6cc5308d6A6114Bd', signer.address);

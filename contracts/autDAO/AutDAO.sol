@@ -55,7 +55,14 @@ contract AutDAO is
         super._setPluginRegistry(_pluginRegistry);
     }
 
-    function setOnboardingStrategy(address onboardingPlugin) public onlyAdmin {
+    function setOnboardingStrategy(address onboardingPlugin) override public {
+        require(IModule(onboardingPlugin).moduleId() == 1, "Only Onboarding Plugin");
+
+        if(onboardingAddr == address(0)) 
+            require(msg.sender == pluginRegistry, "Only Plugin Registry");
+        else 
+            require(DAOMembers(this).isAdmin(msg.sender), "Only Admin");
+
         onboardingAddr = onboardingPlugin;
     }
 

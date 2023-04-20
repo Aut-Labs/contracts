@@ -9,6 +9,11 @@ import "../interfaces/get/IDAOModules.sol";
 abstract contract DAOModules is IDAOModules {
     address public override pluginRegistry;
 
+    modifier onlyPluginRegistry() {
+        require(msg.sender == address(pluginRegistry), "Only plugin registry");
+        _;
+    }
+
     function _setPluginRegistry(address _pluginRegistry) internal {
         require(_pluginRegistry != address(0), "invalid pluginRegistry");
         pluginRegistry = _pluginRegistry;

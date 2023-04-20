@@ -27,7 +27,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     mapping(uint256 => mapping(address => bool)) hasApplied;
     mapping(uint256 => uint256) completionsPerQuest;
 
-    constructor(address dao) SimplePlugin(dao) {
+    constructor(address dao) SimplePlugin(dao, 3) {
         idCounter.increment();
         onboardingPlugin = msg.sender;
         quests.push(QuestModel(0, false, "", 0, block.timestamp, 0));

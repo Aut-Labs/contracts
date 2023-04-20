@@ -110,7 +110,7 @@ describe("OnboardingQuestOpenTaskPlugin", (accounts) => {
       const tx = onboardingOpenTaskPlugin.connect(submitter1).submit(1, url);
       await expect(tx)
         .to.emit(onboardingOpenTaskPlugin, "TaskSubmitted")
-        .withArgs(1);
+        .withArgs(1, 1);
       const status = await onboardingOpenTaskPlugin.getStatusPerSubmitter(1, submitter1.address);
       expect(status).to.eql(2);
     });

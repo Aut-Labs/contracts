@@ -43,12 +43,10 @@ describe("QuestOnboardingPlugin", (accounts) => {
     ).wait();
     pluginTypeId = pluginDefinition.events[0].args.pluginTypeId.toString();
 
-    // milena
     const pluginDefinition2 = await (
       await pluginRegistry.addPluginDefinition(verifier.address, url, 0)
     ).wait();
     offchainVerifiedTaskPluginTypeId = pluginDefinition2.events[0].args.pluginTypeId.toString();
-
 
     const OffchainVerifiedTaskPlugin = await ethers.getContractFactory(
       "OnboardingQuestOffchainVerifiedTaskPlugin"
@@ -69,7 +67,6 @@ describe("QuestOnboardingPlugin", (accounts) => {
 
     const blockNumber = await ethers.provider.getBlockNumber();
     block = await ethers.provider.getBlock(blockNumber);
-
 
   });
 
@@ -128,7 +125,12 @@ describe("QuestOnboardingPlugin", (accounts) => {
     it("should add all 3 quests", async () => {
       await questsPlugin.create(2, url, block.timestamp + 10, 1);
       await questsPlugin.create(3, url, block.timestamp + 10, 1);
+    });
 
+    it("should add task for the quests", async () => {
+      tx = await questsPlugin.createTask(1, 1, url);
+      tx = await questsPlugin.createTask(2, 1, url);
+      tx = await questsPlugin.createTask(3, 1, url);
     });
 
     it("should activate onboarding", async () => {
@@ -137,9 +139,7 @@ describe("QuestOnboardingPlugin", (accounts) => {
       expect(isActive).to.be.true;
     });
 
-    it("isOnboarded should return false if the quest doesn't have tasks yet", async () => {
-      await questsPlugin.create(1, url, block.timestamp + 10, 1);
-
+    it("isOnboarded should return false if the quest is not active", async () => {
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr1.address,
         1
@@ -149,12 +149,6 @@ describe("QuestOnboardingPlugin", (accounts) => {
     });
 
     it("isOnboarded should return false if user hasn't applied for a quest", async () => {
-      tx = await questsPlugin.createTask(1, 1, url);
-
-      await expect(tx)
-        .to.emit(questsPlugin, "TasksAddedToQuest").withArgs(1,1);
-      
-      await new Promise(r => setTimeout(r, 6000));
 
       const task = await offchainVerifiedTaskPlugin.getById(1);
       expect(task["creator"]).to.eql(admin.address);
@@ -165,6 +159,10 @@ describe("QuestOnboardingPlugin", (accounts) => {
       await expect(tx)
         .to.emit(offchainVerifiedTaskPlugin, "TaskFinalized")
         .withArgs(1, addr1.address);
+
+
+      const submissionStatus = await offchainVerifiedTaskPlugin.getStatusPerSubmitter(1, addr1.address);
+      expect(submissionStatus.toString()).eq('3');
 
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr1.address,
@@ -205,6 +203,9 @@ describe("QuestOnboardingPlugin", (accounts) => {
       await expect(tx)
         .to.emit(offchainVerifiedTaskPlugin, "TaskFinalized")
         .withArgs(1, addr2.address);
+
+      const submissionStatus = await offchainVerifiedTaskPlugin.getStatusPerSubmitter(1, addr2.address);
+      expect(submissionStatus.toString()).eq('3');
 
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr2.address,

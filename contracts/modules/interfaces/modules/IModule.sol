@@ -8,6 +8,8 @@ interface IModule {
     // Custom error used when a certain function in the plugin is not implemented.
     error FunctionNotImplemented();
 
+    function moduleId() external view returns(uint);
+
     /// @notice A plugin contract is deployed for each daoExpander that uses it. When a plugin is associated to a daoExpander, the address is set by the DAOExpander.
     /// @return the address of the daoExpander contract that uses this module.
     function daoAddress() external view returns (address);
