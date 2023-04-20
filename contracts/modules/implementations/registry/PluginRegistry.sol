@@ -26,6 +26,7 @@ contract PluginRegistry is
     uint256 public feeBase1000 = 1;
     address payable public feeReciever;
     address public oracleAddress;
+    address public override modulesRegistry;
 
     mapping(uint256 => PluginDefinition) public pluginDefinitionsById;
     mapping(uint256 => PluginInstance) public pluginInstanceByTokenId;
@@ -46,9 +47,10 @@ contract PluginRegistry is
         _;
     }
 
-    constructor() ERC721("Aut Plugin", "Aut Plugin") {
+    constructor(address _modulesRegistry) ERC721("Aut Plugin", "Aut Plugin") {
         feeReciever = payable(msg.sender);
         oracleAddress = msg.sender;
+        modulesRegistry = _modulesRegistry;
     }
 
     // Plugin creation
