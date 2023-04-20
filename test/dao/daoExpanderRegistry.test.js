@@ -58,8 +58,12 @@ describe("DAOExpanderRegistry", function () {
       const DAOExpanderRegistry = await ethers.getContractFactory(
         "DAOExpanderRegistry"
       );
+
+      const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+      const moduleRegistry = await ModuleRegistryFactory.deploy();
+  
       const PluginRegistryFactory = await ethers.getContractFactory("PluginRegistry");
-      pluginRegistry = await PluginRegistryFactory.deploy();
+      pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
 
       daoExpanderRegistry = await DAOExpanderRegistry.deploy(
         // TODO: change

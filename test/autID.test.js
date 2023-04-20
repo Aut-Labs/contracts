@@ -39,8 +39,11 @@ describe("AutID", function () {
 
       daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
 
+      const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+      const moduleRegistry = await ModuleRegistryFactory.deploy();
+
       const PluginRegistryFactory = await ethers.getContractFactory("PluginRegistry");
-      pluginRegistry = await PluginRegistryFactory.deploy();
+      pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
 
     });
     beforeEach(async function () {
@@ -476,7 +479,7 @@ describe("AutID", function () {
         URL,
         10,
         pluginRegistry.address
-         
+
       );
       await daoExpander.deployed();
 

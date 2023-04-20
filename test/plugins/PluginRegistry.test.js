@@ -8,9 +8,11 @@ let addr1, addr2, addr3, addrs;
 describe.skip("PluginRegistry", (accounts) => {
     before(async function() {
         [deployer, addr1, addr2, addr3, ...addrs] = await ethers.getSigners();
-
+        const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+        const moduleRegistry = await ModuleRegistryFactory.deploy();
+  
         const PluginRegistryFactory = await ethers.getContractFactory("PluginRegistry");
-        pluginRegistry = await PluginRegistryFactory.deploy();
+        pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
     });
 
     describe("Plugin Registry", async() => {

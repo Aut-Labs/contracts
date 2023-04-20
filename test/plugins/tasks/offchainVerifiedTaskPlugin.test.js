@@ -14,11 +14,12 @@ describe("OnboardingOffchainVerifiedTaskPlugin", (accounts) => {
   before(async function () {
     [admin, verifier, dao, addr2, addr3, ...addrs] =
       await ethers.getSigners();
-
+    const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+    const moduleRegistry = await ModuleRegistryFactory.deploy();
     const PluginRegistryFactory = await ethers.getContractFactory(
       "PluginRegistry"
     );
-    pluginRegistry = await PluginRegistryFactory.deploy();
+    pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
     const AutID = await ethers.getContractFactory("AutID");
 
     autID = await upgrades.deployProxy(AutID, [admin.address], {
@@ -26,7 +27,7 @@ describe("OnboardingOffchainVerifiedTaskPlugin", (accounts) => {
     });
     await autID.deployed();
     const AutDAO = await ethers.getContractFactory("AutDAO");
-    dao =  await AutDAO.deploy(
+    dao = await AutDAO.deploy(
       admin.address,
       autID.address,
       1,
@@ -34,7 +35,7 @@ describe("OnboardingOffchainVerifiedTaskPlugin", (accounts) => {
       10,
       pluginRegistry.address
     );
-    
+
     const pluginDefinition = await (
       await pluginRegistry.addPluginDefinition(verifier.address, url, 0)
     ).wait();

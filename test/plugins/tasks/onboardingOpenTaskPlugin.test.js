@@ -26,10 +26,13 @@ describe("OnboardingQuestOpenTaskPlugin", (accounts) => {
       ...addrs
     ] = await ethers.getSigners();
 
+    const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+    const moduleRegistry = await ModuleRegistryFactory.deploy();
+
     const PluginRegistryFactory = await ethers.getContractFactory(
       "PluginRegistry"
     );
-    pluginRegistry = await PluginRegistryFactory.deploy();
+    pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
     const AutID = await ethers.getContractFactory("AutID");
 
     autID = await upgrades.deployProxy(AutID, [admin.address], {

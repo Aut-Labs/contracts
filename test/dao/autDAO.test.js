@@ -11,10 +11,14 @@ let pluginRegistry;
 describe("AutDAO", function () {
   describe("deployment", function () {
     before(async function () {
+
+      const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+      const moduleRegistry = await ModuleRegistryFactory.deploy();
+  
       const PluginRegistry = await ethers.getContractFactory(
         "PluginRegistry"
       );
-      pluginRegistry = await PluginRegistry.deploy();
+      pluginRegistry = await PluginRegistry.deploy(moduleRegistry.address);
 
       [dep, notAMem, ...addrs] = await ethers.getSigners();
       deployer = dep;
@@ -62,11 +66,13 @@ describe("AutDAO", function () {
   });
   describe("Manage URLs", async () => {
     before(async function () {
+      const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+      const moduleRegistry = await ModuleRegistryFactory.deploy();
 
       const PluginRegistryFactory = await ethers.getContractFactory(
         "PluginRegistry"
       );
-      pluginRegistry = await PluginRegistryFactory.deploy();
+      pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
 
       const AutDAO = await ethers.getContractFactory("AutDAO");
       autDAO = await AutDAO.deploy(deployer.address, autID.address, 1, URL, 10, pluginRegistry.address);
@@ -158,11 +164,13 @@ describe("AutDAO", function () {
       deployer = dep;
       admin1 = ad1;
       admin2 = ad2;
+      const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+      const moduleRegistry = await ModuleRegistryFactory.deploy();
 
       const PluginRegistryFactory = await ethers.getContractFactory(
         "PluginRegistry"
       );
-      pluginRegistry = await PluginRegistryFactory.deploy();
+      pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
 
       const AutID = await ethers.getContractFactory("AutID");
       autID = await AutID.deploy();

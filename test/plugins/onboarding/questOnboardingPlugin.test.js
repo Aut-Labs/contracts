@@ -15,11 +15,13 @@ describe("QuestOnboardingPlugin", (accounts) => {
   before(async function () {
     [admin, verifier, dao, addr1, addr2, addr3, ...addrs] =
       await ethers.getSigners();
+    const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+    const moduleRegistry = await ModuleRegistryFactory.deploy();
 
     const PluginRegistryFactory = await ethers.getContractFactory(
       "PluginRegistry"
     );
-    pluginRegistry = await PluginRegistryFactory.deploy();
+    pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
     const AutID = await ethers.getContractFactory("AutID");
 
     autID = await upgrades.deployProxy(AutID, [admin.address], {
@@ -80,7 +82,7 @@ describe("QuestOnboardingPlugin", (accounts) => {
       expect(questOnboardingPlugin.address).not.null;
 
       questsPluginAddress = await questOnboardingPlugin.questsPlugin();
-      
+
       await offchainVerifiedTaskPlugin.setQuestsAddress(questsPluginAddress);
 
       expect(questsPluginAddress).not.null;
@@ -121,7 +123,7 @@ describe("QuestOnboardingPlugin", (accounts) => {
       expect(isOnboarded).to.be.false;
 
     });
-    
+
     it("should add all 3 quests", async () => {
       await questsPlugin.create(2, url, block.timestamp + 10, 1);
       await questsPlugin.create(3, url, block.timestamp + 10, 1);
@@ -190,15 +192,15 @@ describe("QuestOnboardingPlugin", (accounts) => {
 
     it("Should onboard another user", async () => {
 
-      let tx =  questsPlugin.connect(addr2).applyForAQuest(1);
+      let tx = questsPlugin.connect(addr2).applyForAQuest(1);
 
       await expect(tx)
         .to.emit(questsPlugin, "Applied")
         .withArgs(1, addr2.address);
 
       tx = offchainVerifiedTaskPlugin
-      .connect(verifier)
-      .finalizeFor(1, addr2.address);
+        .connect(verifier)
+        .finalizeFor(1, addr2.address);
 
       await expect(tx)
         .to.emit(offchainVerifiedTaskPlugin, "TaskFinalized")
@@ -213,6 +215,6 @@ describe("QuestOnboardingPlugin", (accounts) => {
       );
       expect(isOnboarded).to.be.true;
     });
-    
+
   });
 });
