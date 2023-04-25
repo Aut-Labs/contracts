@@ -40,27 +40,32 @@ describe("QuestOnboardingPlugin", (accounts) => {
     );
 
 
-    const pluginDefinition = await (
-      await pluginRegistry.addPluginDefinition(verifier.address, url, 0)
+    const questOnboardingDefinition = await (
+      await pluginRegistry.addPluginDefinition(verifier.address, url, 0, true, [2])
     ).wait();
-    pluginTypeId = pluginDefinition.events[0].args.pluginTypeId.toString();
+    pluginTypeId = questOnboardingDefinition.events[0].args.pluginTypeId.toString();
 
-    const pluginDefinition2 = await (
-      await pluginRegistry.addPluginDefinition(verifier.address, url, 0)
+    const offchainVerifiedTaskDefinition = await (
+      await pluginRegistry.addPluginDefinition(verifier.address, url, 0, true, [])
     ).wait();
-    offchainVerifiedTaskPluginTypeId = pluginDefinition2.events[0].args.pluginTypeId.toString();
+    offchainVerifiedTaskPluginTypeId = offchainVerifiedTaskDefinition.events[0].args.pluginTypeId.toString();
 
     const OffchainVerifiedTaskPlugin = await ethers.getContractFactory(
-      "OnboardingQuestOffchainVerifiedTaskPlugin"
+      "OffchainVerifiedTaskPlugin"
     );
     offchainVerifiedTaskPlugin = await OffchainVerifiedTaskPlugin.deploy(
       dao.address,
-      verifier.address,
-      ethers.constants.AddressZero
+      verifier.address
     );
     expect(offchainVerifiedTaskPlugin.address).not.null;
 
-    let tx = await pluginRegistry
+    let tx = await dao.connect(admin).activateModule(2);
+
+    await expect(tx)
+      .to.emit(dao, "ModuleActivated")
+      .withArgs(2);
+
+    tx = await pluginRegistry
       .connect(admin)
       .addPluginToDAO(offchainVerifiedTaskPlugin.address, offchainVerifiedTaskPluginTypeId);
     await expect(tx)
@@ -82,8 +87,6 @@ describe("QuestOnboardingPlugin", (accounts) => {
       expect(questOnboardingPlugin.address).not.null;
 
       questsPluginAddress = await questOnboardingPlugin.questsPlugin();
-
-      await offchainVerifiedTaskPlugin.setQuestsAddress(questsPluginAddress);
 
       expect(questsPluginAddress).not.null;
       const QuestPlugin = await ethers.getContractFactory("QuestPlugin");
@@ -125,14 +128,28 @@ describe("QuestOnboardingPlugin", (accounts) => {
     });
 
     it("should add all 3 quests", async () => {
-      await questsPlugin.create(2, url, block.timestamp + 10, 1);
-      await questsPlugin.create(3, url, block.timestamp + 10, 1);
+      await questsPlugin.create(2, url, block.timestamp + 16, 1);
+      await questsPlugin.create(3, url, block.timestamp + 16, 1);
     });
 
     it("should add task for the quests", async () => {
-      tx = await questsPlugin.createTask(1, 1, url);
-      tx = await questsPlugin.createTask(2, 1, url);
-      tx = await questsPlugin.createTask(3, 1, url);
+      tx = questsPlugin.createTask(1, 1, url);
+
+      await expect(tx)
+        .to.emit(offchainVerifiedTaskPlugin, "TaskCreated")
+        .withArgs(1, url);
+
+      tx = questsPlugin.createTask(2, 1, url);
+
+      await expect(tx)
+        .to.emit(offchainVerifiedTaskPlugin, "TaskCreated")
+        .withArgs(2, url);
+      tx = questsPlugin.createTask(3, 1, url);
+
+      await expect(tx)
+        .to.emit(offchainVerifiedTaskPlugin, "TaskCreated")
+        .withArgs(3, url);
+
     });
 
     it("should activate onboarding", async () => {
@@ -149,9 +166,12 @@ describe("QuestOnboardingPlugin", (accounts) => {
       expect(isOnboarded).to.be.false;
 
     });
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
     it("isOnboarded should return false if user hasn't applied for a quest", async () => {
-
+      await sleep(1000);
       const task = await offchainVerifiedTaskPlugin.getById(1);
       expect(task["creator"]).to.eql(admin.address);
       tx = offchainVerifiedTaskPlugin
@@ -182,7 +202,6 @@ describe("QuestOnboardingPlugin", (accounts) => {
     });
 
     it("isOnboarded should return true if onboarded for the correct role", async () => {
-
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr1.address,
         1

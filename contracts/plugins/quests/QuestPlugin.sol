@@ -1,15 +1,17 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../../../../daoUtils/interfaces/get/IDAOInteractions.sol";
-import "../../../../../daoUtils/interfaces/get/IDAOAdmin.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "../../../../interfaces/modules/quest/QuestsModule.sol";
-import "../../../../interfaces/modules/onboarding/OnboardingModule.sol";
-import "../../SimplePlugin.sol";
-import "../../../../interfaces/modules/tasks/TasksModule.sol";
-import "../../../../interfaces/registry/IPluginRegistry.sol";
-import "hardhat/console.sol";
+
+import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
+import "../../daoUtils/interfaces/get/IDAOInteractions.sol";
+
+import "../../modules/tasks/TasksModule.sol";
+import "../../modules/quests/QuestsModule.sol";
+import "../../modules/onboarding/OnboardingModule.sol";
+
+import "../SimplePlugin.sol";
+import "../registry/IPluginRegistry.sol";
 
 contract QuestPlugin is QuestsModule, SimplePlugin {
     using Counters for Counters.Counter;
@@ -27,7 +29,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     mapping(uint256 => mapping(address => bool)) hasApplied;
     mapping(uint256 => uint256) completionsPerQuest;
 
-    constructor(address dao) SimplePlugin(dao, 3) {
+    constructor(address dao) SimplePlugin(dao, 0) {
         idCounter.increment();
         onboardingPlugin = msg.sender;
         quests.push(QuestModel(0, false, "", 0, block.timestamp, 0));
@@ -51,7 +53,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     modifier onlyActive(uint256 questId) {
         require(
             OnboardingModule(onboardingPlugin).isActive() &&
-            activeQuestsPerRole[quests[questId].role] == questId,
+                activeQuestsPerRole[quests[questId].role] == questId,
             "Only active quest"
         );
         _;
@@ -98,7 +100,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         uint256 questId,
         uint256 tasksPluginId,
         string memory uri
-    ) public onlyAdmin onlyPending(questId) {
+    ) public override onlyAdmin onlyPending(questId) {
         IPluginRegistry.PluginInstance memory pluginInstance = pluginRegistry
             .getPluginInstanceByTokenId(tasksPluginId);
         uint256 taskId = TasksModule(pluginInstance.pluginAddress).createBy(
@@ -114,12 +116,10 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         emit TasksAddedToQuest(questId, taskId);
     }
 
-    function removeTasks(uint256 questId, PluginTasks[] calldata tasksToRemove)
-        public
-        override
-        onlyAdmin
-        onlyPending(questId)
-    {
+    function removeTasks(
+        uint256 questId,
+        PluginTasks[] calldata tasksToRemove
+    ) public override onlyAdmin onlyPending(questId) {
         require(idCounter.current() >= questId, "invalid quest id");
 
         for (uint256 i = 0; i < tasksToRemove.length; i++) {
@@ -160,49 +160,36 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         return quests[questId].startDate > block.timestamp;
     }
 
-    function getById(uint256 questId)
-        public
-        view
-        override
-        returns (QuestModel memory)
-    {
+    function getById(
+        uint256 questId
+    ) public view override returns (QuestModel memory) {
         return quests[questId];
     }
 
-    function getTasksPerQuest(uint256 questId)
-        public
-        view
-        returns (PluginTasks[] memory)
-    {
+    function getTasksPerQuest(
+        uint256 questId
+    ) public view returns (PluginTasks[] memory) {
         return questTasks[questId];
     }
 
-    function hasCompletedAQuest(address user, uint256 questId)
-        public
-        view
-        override
-        returns (bool)
-    {
+    function hasCompletedAQuest(
+        address user,
+        uint256 questId
+    ) public view override returns (bool) {
         return
             hasApplied[questId][user] && getTimeOfCompletion(user, questId) > 0;
     }
 
-    function getTimeOfCompletion(address user, uint256 questId)
-        public
-        view
-        override
-        returns (uint256)
-    {
+    function getTimeOfCompletion(
+        address user,
+        uint256 questId
+    ) public view override returns (uint256) {
         if (questTasks[questId].length == 0) return 0;
         uint256 lastTaskTime = 0;
         for (uint256 i = 0; i < questTasks[questId].length; i++) {
             address tasksAddress = IPluginRegistry(pluginRegistry)
                 .getPluginInstanceByTokenId(questTasks[questId][i].pluginId)
                 .pluginAddress;
-            console.log(
-                "questTasks[questId][i].taskId",
-                questTasks[questId][i].taskId
-            );
             if (
                 TasksModule(tasksAddress).hasCompletedTheTask(
                     user,
@@ -219,22 +206,19 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         return lastTaskTime;
     }
 
-    function hasCompletedQuestForRole(address user, uint256 role)
-        public
-        view
-        override
-        returns (bool)
-    {
+    function hasCompletedQuestForRole(
+        address user,
+        uint256 role
+    ) public view override returns (bool) {
         uint256 questId = activeQuestsPerRole[role];
         if (questId == 0) return false;
         return hasCompletedAQuest(user, questId);
     }
 
-    function setActiveQuestPerRole(uint256 role, uint256 questId)
-        public
-        onlyAdmin
-        onlyPending(questId)
-    {
+    function setActiveQuestPerRole(
+        uint256 role,
+        uint256 questId
+    ) public onlyAdmin onlyPending(questId) {
         activeQuestsPerRole[role] = questId;
     }
 
@@ -243,11 +227,10 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     }
 
     // private
-    function findTask(uint256 questId, PluginTasks memory task)
-        private
-        view
-        returns (int256)
-    {
+    function findTask(
+        uint256 questId,
+        PluginTasks memory task
+    ) private view returns (int256) {
         for (uint256 i = 0; i < questTasks[questId].length; i++) {
             if (
                 questTasks[questId][i].pluginId == task.pluginId &&
@@ -282,9 +265,10 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         }
     }
 
-    function _removeTask(uint256 questId, PluginTasks calldata taskToRemove)
-        private
-    {
+    function _removeTask(
+        uint256 questId,
+        PluginTasks calldata taskToRemove
+    ) private {
         int256 index = findTask(questId, taskToRemove);
         require(index != -1, "invalid task");
         questTasks[questId][uint256(index)].taskId = 0;

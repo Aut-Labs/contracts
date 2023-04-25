@@ -9,7 +9,7 @@ import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
 import "../daoUtils/abstracts/DAOInteractions.sol";
 
-import "../modules/interfaces/modules/onboarding/OnboardingModule.sol";
+import "../modules/onboarding/OnboardingModule.sol";
 import "./interfaces/IAutDAO.sol";
 
 /// @title AutDAO
@@ -73,7 +73,7 @@ contract AutDAO is
         onboardingAddr = onboardingPlugin;
     }
 
-    function activatedModule(uint moduleId) public override onlyAdmin {
+    function activateModule(uint moduleId) public override onlyAdmin {
         _activateModule(moduleId);
     }
 

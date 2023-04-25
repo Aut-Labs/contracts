@@ -2,21 +2,24 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "../SimplePlugin.sol";
+import "../../IInteraction.sol";
 
-import "../../../../../../daoUtils/interfaces/get/IDAOInteractions.sol";
-import "../../../../../../IInteraction.sol";
-import "../../../../../interfaces/modules/tasks/QuestTasksModule.sol";
-import "../../../../../interfaces/modules/quest/QuestsModule.sol";
-import "../../../SimplePlugin.sol";
+import "../../modules/tasks/TasksModule.sol";
+import "../../daoUtils/interfaces/get/IDAOInteractions.sol";
+import "../../daoUtils/interfaces/get/IDAOMembership.sol";
 
-contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract OpenTaskPlugin is TasksModule, SimplePlugin {
     using Counters for Counters.Counter;
 
     Counters.Counter public idCounter;
     Counters.Counter public submissionIds;
 
     Task[] public tasks;
-    QuestsModule quests;
+
+    bool public daoMembersOnly;
 
     struct Submission {
         address submitter;
@@ -30,8 +33,6 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
 
     Submission[] public submissions;
 
-    mapping(uint256 => uint256[]) questTasks;
-
     modifier atStatus(
         uint256 taskID,
         address user,
@@ -39,6 +40,15 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
     ) {
         if (status != submissions[submitterToSubmissionId[taskID][user]].status)
             revert FunctionInvalidAtThisStage();
+        _;
+    }
+
+    modifier onlyAllowedToSubmit() {
+        if (daoMembersOnly)
+            require(
+                IDAOMembership(_dao).isMember(msg.sender),
+                "Only DAO members"
+            );
         _;
     }
 
@@ -52,19 +62,13 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         _;
     }
 
-    modifier onlyQuests() {
-        require(address(quests) == msg.sender, "Only quests.");
-        _;
-    }
-
-    constructor(address dao, address questsAddress) SimplePlugin(dao, 2) {
-        tasks.push(
-            Task(0, address(0), 0, "", 0, 0)
-        );
+    constructor(address dao, bool membersOnly) SimplePlugin(dao, 0) {
+        tasks.push(Task(0, address(0), 0, "", 0, 0));
         submissions.push(Submission(address(0), "", 0, TaskStatus.Created));
         idCounter.increment();
         submissionIds.increment();
-        quests = QuestsModule(questsAddress);
+
+        daoMembersOnly = membersOnly;
     }
 
     function createBy(
@@ -87,13 +91,19 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         return taskId;
     }
 
-    // not implemented
     function submit(
         uint256 taskId,
         string calldata submitionUrl
-    ) public override atStatus(taskId, msg.sender, TaskStatus.Created) {
+    )
+        public
+        override
+        onlyAllowedToSubmit
+        atStatus(taskId, msg.sender, TaskStatus.Created)
+    {
         uint256 submissionId = submissionIds.current();
-        submissions.push(Submission(msg.sender, submitionUrl, 0, TaskStatus.Submitted));
+        submissions.push(
+            Submission(msg.sender, submitionUrl, 0, TaskStatus.Submitted)
+        );
         taskSubmissions[taskId].push(submissionId);
         submitterToSubmissionId[taskId][msg.sender] = submissionId;
         submissionIds.increment();
@@ -112,8 +122,10 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         require(tasks[taskId].startDate < block.timestamp, "Not started yet");
         require(tasks[taskId].endDate > block.timestamp, "The task has ended");
 
-        submissions[submitterToSubmissionId[taskId][submitter]].status = TaskStatus.Finished;
-        submissions[submitterToSubmissionId[taskId][submitter]].completionTime = block.timestamp;
+        submissions[submitterToSubmissionId[taskId][submitter]]
+            .status = TaskStatus.Finished;
+        submissions[submitterToSubmissionId[taskId][submitter]]
+            .completionTime = block.timestamp;
 
         IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr())
             .addInteraction(taskId, submitter);
@@ -134,11 +146,16 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         return submissions[submitterToSubmissionId[taskId][submitter]].status;
     }
 
-    function getSubmissionIdsPerTask(uint taskId) public view returns (uint[] memory) {
+    function getSubmissionIdsPerTask(
+        uint taskId
+    ) public view returns (uint[] memory) {
         return taskSubmissions[taskId];
     }
-    
-    function getSubmissionIdPerTaskAndUser(uint taskId, address submitter) public view returns (uint) {
+
+    function getSubmissionIdPerTaskAndUser(
+        uint taskId,
+        address submitter
+    ) public view returns (uint) {
         return submitterToSubmissionId[taskId][submitter];
     }
 
@@ -146,14 +163,17 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         uint256 taskId,
         address user
     ) public view override returns (uint256) {
-        return submissions[submitterToSubmissionId[taskId][user]].completionTime;
+        return
+            submissions[submitterToSubmissionId[taskId][user]].completionTime;
     }
 
     function hasCompletedTheTask(
         address user,
         uint256 taskId
     ) public view override returns (bool) {
-        return submissions[submitterToSubmissionId[taskId][user]].status == TaskStatus.Finished;
+        return
+            submissions[submitterToSubmissionId[taskId][user]].status ==
+            TaskStatus.Finished;
     }
 
     function create(
@@ -167,23 +187,12 @@ contract OnboardingQuestOpenTaskPlugin is QuestTasksModule, SimplePlugin {
         uint256 taskId = idCounter.current();
 
         tasks.push(
-            Task(
-                block.timestamp,
-                msg.sender,
-                role,
-                uri,
-                startDate,
-                endDate
-            )
+            Task(block.timestamp, msg.sender, role, uri, startDate, endDate)
         );
 
         idCounter.increment();
         emit TaskCreated(taskId, uri);
         return taskId;
-    }
-
-    function setQuestsAddress(address questsAddress) public override onlyAdmin {
-        quests = QuestsModule(questsAddress);
     }
 
     function take(uint256 taskId) public override {

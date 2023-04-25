@@ -1,16 +1,17 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "../SimplePlugin.sol";
+import "../../IInteraction.sol";
+
+import "../../modules/tasks/TasksModule.sol";
+import "../../daoUtils/interfaces/get/IDAOInteractions.sol";
+
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "hardhat/console.sol";
 
-import "../../../../../../daoUtils/interfaces/get/IDAOInteractions.sol";
-import "../../../../../../IInteraction.sol";
-import "../../../../../interfaces/modules/tasks/QuestTasksModule.sol";
-import "../../../../../interfaces/modules/quest/QuestsModule.sol";
-import "../../../SimplePlugin.sol";
-
-contract OnboardingQuestOffchainVerifiedTaskPlugin is
-    QuestTasksModule,
+contract OffchainVerifiedTaskPlugin is
+    TasksModule,
     SimplePlugin
 {
     using Counters for Counters.Counter;
@@ -19,25 +20,21 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
     Task[] public tasks;
     address public _offchainVerifierAddress;
 
-    QuestsModule quests;
-
-    struct OnboardingTaskDetails {
+    struct TaskDetails {
         uint256 completionTime;
         TaskStatus status;
     }
 
-    mapping(uint256 => mapping(address => OnboardingTaskDetails)) taskStatuses;
+    mapping(uint256 => mapping(address => TaskDetails)) taskStatuses;
 
     constructor(
         address dao,
-        address offchainVerifierAddress,
-        address questsAddress
-    ) SimplePlugin(dao, 2) {
+        address offchainVerifierAddress
+    ) SimplePlugin(dao, 0) {
         _offchainVerifierAddress = offchainVerifierAddress;
         tasks.push(Task(0, address(0), 0, "", 0, 0));
         idCounter.increment();
 
-        quests = QuestsModule(questsAddress);
     }
 
     modifier atStatus(uint256 taskID, TaskStatus status) {
@@ -64,18 +61,13 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         _;
     }
 
-    modifier onlyQuests() {
-        require(address(quests) == msg.sender, "Only quests.");
-        _;
-    }
-
     function createBy(
         address creator,
         uint256 role,
         string memory uri,
         uint256 startDate,
         uint256 endDate
-    ) public override onlyQuests returns (uint256) {
+    ) public override returns (uint256) {
         require(endDate > block.timestamp, "Invalid endDate");
         require(bytes(uri).length > 0, "No URI");
         uint256 taskId = idCounter.current();
@@ -94,9 +86,8 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         uint256 taskId,
         address submitter
     ) public override onlyOffchainVerifier {
-        require(address(quests) != address(0), "not linked to a quest");
-        require(tasks[taskId].startDate < block.timestamp, "Not started yet");
-        require(tasks[taskId].endDate > block.timestamp, "The task has ended");
+        require(tasks[taskId].startDate <= block.timestamp, "Not started yet");
+        require(tasks[taskId].endDate >= block.timestamp, "The task has ended");
 
         taskStatuses[taskId][submitter].status = TaskStatus.Finished;
         taskStatuses[taskId][submitter].completionTime = block.timestamp;
@@ -158,10 +149,6 @@ contract OnboardingQuestOffchainVerifiedTaskPlugin is
         idCounter.increment();
         emit TaskCreated(taskId, uri);
         return taskId;
-    }
-
-    function setQuestsAddress(address questsAddress) public override onlyAdmin {
-        quests = QuestsModule(questsAddress);
     }
 
     function take(uint256 taskId) public override {

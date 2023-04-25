@@ -5,12 +5,13 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "../../interfaces/modules/IModule.sol";
-import "../../interfaces/registry/IPluginRegistry.sol";
-import "../../../daoUtils/interfaces/get/IDAOInteractions.sol";
-import "../../../daoUtils/interfaces/get/IDAOAdmin.sol";
-import "../../../autDAO/interfaces/IAutDAO.sol";
-import "../../../IInteraction.sol";
+import "../plugins/IPlugin.sol";
+import "../plugins/registry/IPluginRegistry.sol";
+import "../daoUtils/interfaces/get/IDAOInteractions.sol";
+import "../daoUtils/interfaces/get/IDAOAdmin.sol";
+import "../daoUtils/interfaces/get/IDAOModules.sol";
+import "../autDAO/interfaces/IAutDAO.sol";
+import "../IInteraction.sol";
 
 /// @title PluginRegistry
 /// @notice Stores all plugins available and allows them to be added to a dao
@@ -61,15 +62,12 @@ contract PluginRegistry is
         IModule plugin = IModule(pluginAddress);
         address dao = plugin.daoAddress();
 
-        require(
-            IDAOAdmin(plugin.daoAddress()).isAdmin(msg.sender) == true,
-            "Not an admin"
-        );
+        require(IDAOAdmin(dao).isAdmin(msg.sender) == true, "Not an admin");
 
         PluginDefinition storage pluginDefinition = pluginDefinitionsById[
             pluginDefinitionId
         ];
-
+        require(pluginDefinition.canBeStandalone, "can't be standalone");
         require(
             msg.value >= pluginDefinition.price,
             "AUT: Insufficient price paid"
@@ -98,7 +96,7 @@ contract PluginRegistry is
 
         tokenIdByPluginAddress[pluginAddress] = tokenId;
 
-        IModule(pluginAddress).storePluginId(tokenId);
+        IPlugin(pluginAddress).setPluginId(tokenId);
         // allow interactions to be used from plugin
         address interactions = IDAOInteractions(dao).getInteractionsAddr();
         IInteraction(interactions).allowAccess(pluginAddress);
@@ -149,7 +147,9 @@ contract PluginRegistry is
     function addPluginDefinition(
         address payable creator,
         string memory metadataURI,
-        uint256 price
+        uint256 price,
+        bool canBeStandalone,
+        uint[] memory moduleDependencies
     ) external onlyOwner {
         require(bytes(metadataURI).length > 0, "AUT: Metadata URI is empty");
 
@@ -160,7 +160,9 @@ contract PluginRegistry is
             metadataURI,
             price,
             creator,
-            true
+            true,
+            canBeStandalone,
+            moduleDependencies
         );
 
         emit PluginDefinitionAdded(pluginDefinitionId);

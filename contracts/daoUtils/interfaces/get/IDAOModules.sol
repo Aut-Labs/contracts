@@ -8,5 +8,7 @@ interface IDAOModules {
 
     function pluginRegistry() external view returns (address);
 
-    function activatedModule(uint moduleId) external;
+    function activateModule(uint moduleId) external;
+
+    function isModuleActivated(uint moduleId) external view returns(bool);
 }

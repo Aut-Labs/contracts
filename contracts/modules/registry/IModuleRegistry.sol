@@ -6,10 +6,9 @@ interface IModuleRegistry {
     struct ModuleDefinition {
         string metadataURI;
         string name;
-        bool isStandalone;
     }
 
-    function addModuleDefinition(string calldata metadataURI, string calldata name, bool isStandalone)
+    function addModuleDefinition(string calldata metadataURI, string calldata name)
         external
         returns (uint);
 

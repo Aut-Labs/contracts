@@ -7,6 +7,8 @@ interface IPluginRegistry {
         uint256 price;
         address payable creator;
         bool active;
+        bool canBeStandalone;
+        uint[] dependencyModules;
     }
 
     struct PluginInstance {

@@ -15,7 +15,7 @@ import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOInteractions.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../expander/interfaces/IDAOExpander.sol";
-import "../modules/interfaces/modules/onboarding/OnboardingModule.sol";
+import "../modules/onboarding/OnboardingModule.sol";
 
 /// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
@@ -135,7 +135,7 @@ contract DAOExpander is
         }
     }
 
-    function activatedModule(uint moduleId) public override onlyAdmin {
+    function activateModule(uint moduleId) public override onlyAdmin {
         _activateModule(moduleId);
     }
 

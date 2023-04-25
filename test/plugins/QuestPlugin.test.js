@@ -4,21 +4,23 @@ const { ethers } = require("hardhat");
 let questPlugin;
 let dao;
 let pluginRegistry;
+let moduleRegistry;
 const url = "https://something";
 let offchainVerifiedTaskPluginType;
-let onboardingOpenTaskPluginType;
+let openTaskPlugin;
 let questPluginType;
 let autID;
 let block;
+
 
 describe("QuestPlugin", (accounts) => {
   before(async function () {
     [deployer, verifier, admin, addr1, addr2, addr3, ...addrs] =
       await ethers.getSigners();
 
-      const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
-      const moduleRegistry = await ModuleRegistryFactory.deploy();
-  
+    const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+    moduleRegistry = await ModuleRegistryFactory.deploy();
+
     const PluginRegistryFactory = await ethers.getContractFactory(
       "PluginRegistry"
     );
@@ -39,43 +41,53 @@ describe("QuestPlugin", (accounts) => {
       10,
       pluginRegistry.address
     );
-    const pluginDefinition1 = await (
-      await pluginRegistry.addPluginDefinition(verifier.address, url, 0)
+    const offchainTaskPluginDefinition = await (
+      await pluginRegistry.addPluginDefinition(verifier.address, url, 0, true, [])
     ).wait();
     offchainVerifiedTaskPluginType =
-      pluginDefinition1.events[0].args.pluginTypeId.toString();
+    offchainTaskPluginDefinition.events[0].args.pluginTypeId.toString();
 
-    const pluginDefinition2 = await (
-      await pluginRegistry.addPluginDefinition(verifier.address, url, 0)
+    const openTaskPluginDefinition = await (
+      await pluginRegistry.addPluginDefinition(verifier.address, url, 0, true, [])
     ).wait();
-    onboardingOpenTaskPluginType =
-      pluginDefinition2.events[0].args.pluginTypeId.toString();
+    openTaskPluginType =
+    openTaskPluginDefinition.events[0].args.pluginTypeId.toString();
 
-    const pluginDefinition3 = await (
-      await pluginRegistry.addPluginDefinition(verifier.address, url, 0)
+    const questPluginDefinition = await (
+      await pluginRegistry.addPluginDefinition(verifier.address, url, 0, true, [3])
     ).wait();
-    questPluginType = pluginDefinition3.events[0].args.pluginTypeId.toString();
+    questPluginType = questPluginDefinition.events[0].args.pluginTypeId.toString();
 
     const OffchainVerifiedTaskPlugin = await ethers.getContractFactory(
-      "OnboardingQuestOffchainVerifiedTaskPlugin"
+      "OffchainVerifiedTaskPlugin"
     );
     offchainVerifiedTaskPlugin = await OffchainVerifiedTaskPlugin.deploy(
       dao.address,
-      verifier.address,
-      ethers.constants.AddressZero
-
+      verifier.address
     );
 
-    const OnboardingOpenTaskPlugin = await ethers.getContractFactory(
-      "OnboardingQuestOpenTaskPlugin"
+    const OpenTaskPlugin = await ethers.getContractFactory(
+      "OpenTaskPlugin"
     );
-    onboardingOpenTaskPlugin = await OnboardingOpenTaskPlugin.deploy(
+    openTaskPlugin = await OpenTaskPlugin.deploy(
       dao.address,
-      ethers.constants.AddressZero
+      false
     );
-
+    let tx = await dao
+      .connect(admin)
+      .activateModule(1);
+    await expect(tx)
+      .to.emit(dao, "ModuleActivated")
+      .withArgs(1);
+      
+    tx = await dao
+      .connect(admin)
+      .activateModule(2);
+    await expect(tx)
+      .to.emit(dao, "ModuleActivated")
+      .withArgs(2);
     // Add plugins to the DAO
-    let tx = await pluginRegistry
+     tx = await pluginRegistry
       .connect(admin)
       .addPluginToDAO(offchainVerifiedTaskPlugin.address, offchainVerifiedTaskPluginType);
     await expect(tx)
@@ -84,18 +96,17 @@ describe("QuestPlugin", (accounts) => {
 
     tx = await pluginRegistry
       .connect(admin)
-      .addPluginToDAO(onboardingOpenTaskPlugin.address, onboardingOpenTaskPluginType);
+      .addPluginToDAO(openTaskPlugin.address, openTaskPluginType);
     await expect(tx)
       .to.emit(pluginRegistry, "PluginAddedToDAO")
-      .withArgs(2, onboardingOpenTaskPluginType, dao.address);
+      .withArgs(2, openTaskPluginType, dao.address);
 
     const blockNumber = await ethers.provider.getBlockNumber();
     block = await ethers.provider.getBlock(blockNumber);
 
-
-    tx = await onboardingOpenTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
+    tx = await openTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
     await expect(tx)
-      .to.emit(onboardingOpenTaskPlugin, "TaskCreated")
+      .to.emit(openTaskPlugin, "TaskCreated")
       .withArgs(1, url);
     tx = await offchainVerifiedTaskPlugin.connect(admin).create(0, url, block.timestamp, block.timestamp + 1000);
     await expect(tx)
@@ -112,9 +123,6 @@ describe("QuestPlugin", (accounts) => {
       const QuestPlugin = await ethers.getContractFactory("QuestPlugin");
       questPlugin = await QuestPlugin.deploy(dao.address);
       expect(questPlugin.address).not.null;
-
-      await offchainVerifiedTaskPlugin.connect(admin).setQuestsAddress(questPlugin.address);
-      await onboardingOpenTaskPlugin.connect(admin).setQuestsAddress(questPlugin.address);
     });
     it("Should mint an NFT for it", async () => {
       const tx = await pluginRegistry
