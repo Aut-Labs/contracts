@@ -67,11 +67,10 @@ interface QuestsModule is IModule {
         uint256 questId
     ) external view returns (bool);
 
-
     /// @notice Creates a task in relation to a quest
     /// @param questId The id of the quest
     /// @param tasksPluginId The tasks to add
-    /// @param uri metadata of the task 
+    /// @param uri metadata of the task
     function createTask(
         uint256 questId,
         uint256 tasksPluginId,
@@ -105,10 +104,16 @@ interface QuestsModule is IModule {
         uint256 role
     ) external view returns (bool);
 
+    /// @notice gets timestamp of completion of the quest, if quest not completed - it returns 0
+    /// @param user the address of the user
+    /// @param questId The id of the quest
+    /// @return uint256.
     function getTimeOfCompletion(
         address user,
         uint256 questId
     ) external view returns (uint256);
 
-    function getTotalQuests() external view returns (uint);
+    /// @notice gets total amount of quests
+    /// @return uint256.
+    function getTotalQuests() external view returns (uint256);
 }

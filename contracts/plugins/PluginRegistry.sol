@@ -152,6 +152,7 @@ contract PluginRegistry is
         uint[] memory moduleDependencies
     ) external onlyOwner {
         require(bytes(metadataURI).length > 0, "AUT: Metadata URI is empty");
+        require(canBeStandalone || price == 0, "AUT: Should be free if not standalone");
 
         _numPluginDefinitions++;
         uint256 pluginDefinitionId = _numPluginDefinitions;
@@ -213,5 +214,9 @@ contract PluginRegistry is
         address dao
     ) public view override returns (uint256[] memory) {
         return pluginIdsByDAO[dao];
+    }
+
+    function getDependencyModulesForPlugin(uint pluginDefinitionId) public view returns(uint[] memory) {
+        return pluginDefinitionsById[pluginDefinitionId].dependencyModules;
     }
 }
