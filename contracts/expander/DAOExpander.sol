@@ -15,7 +15,7 @@ import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOInteractions.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../expander/interfaces/IDAOExpander.sol";
-import "../modules/interfaces/modules/onboarding/OnboardingModule.sol";
+import "../modules/onboarding/OnboardingModule.sol";
 
 /// @title DAOExpander
 /// @notice The extension of each DAO that integrates Aut
@@ -91,7 +91,7 @@ contract DAOExpander is
     }
 
     function join(address newMember, uint256 role) public override onlyAutID {
-        require(canJoin(newMember, role), "Not a member of the DAO.");
+        require(canJoin(newMember, role), "not allowed");
         super.join(newMember, role);
     }
 
@@ -99,12 +99,9 @@ contract DAOExpander is
     /// @dev checks if the member is a part of a DAO
     /// @param member the address of the member that's checked
     /// @return true if they're a member, false otherwise
-    function isMemberOfOriginalDAO(address member)
-        public
-        view
-        override
-        returns (bool)
-    {
+    function isMemberOfOriginalDAO(
+        address member
+    ) public view override returns (bool) {
         return
             IMembershipChecker(
                 IDAOTypes(daoTypes).getMembershipCheckerAddress(
@@ -117,18 +114,29 @@ contract DAOExpander is
     /// @dev checks if the member is a part of a DAO
     /// @param member the address of the member that's checked
     /// @return true if they're a member, false otherwise
-    function canJoin(address member, uint256 role)
-        public
-        view
-        override(IDAOMembership)
-        returns (bool)
-    {
-        // TODO: check onboarding
-        return
-            isMemberOfOriginalDAO(member) ||
-            (onboardingAddr != address(0) &&
-                OnboardingModule(onboardingAddr).isActive() &&
-                OnboardingModule(onboardingAddr).isOnboarded(member, role));
+    function canJoin(
+        address member,
+        uint256 role
+    ) public view override(IDAOMembership) returns (bool) {
+        if (onboardingAddr == address(0)) {
+            return
+                isMemberOfOriginalDAO(member) ||
+                (onboardingAddr != address(0) &&
+                    OnboardingModule(onboardingAddr).isActive() &&
+                    OnboardingModule(onboardingAddr).isOnboarded(member, role));
+        } else {
+            if (
+                onboardingAddr != address(0) &&
+                OnboardingModule(onboardingAddr).isActive()
+            ) return false;
+            else
+                return
+                    OnboardingModule(onboardingAddr).isOnboarded(member, role);
+        }
+    }
+
+    function activateModule(uint moduleId) public override onlyAdmin {
+        _activateModule(moduleId);
     }
 
     function getDAOData()
@@ -152,11 +160,9 @@ contract DAOExpander is
         _setCommitment(commitment);
     }
 
-    function setMetadataUri(string memory metadata)
-        external
-        override
-        onlyAdmin
-    {
+    function setMetadataUri(
+        string memory metadata
+    ) external override onlyAdmin {
         _setMetadataUri(metadata);
     }
 }

@@ -7,6 +7,8 @@ interface IPluginRegistry {
         uint256 price;
         address payable creator;
         bool active;
+        bool canBeStandalone;
+        uint[] dependencyModules;
     }
 
     struct PluginInstance {
@@ -46,4 +48,6 @@ interface IPluginRegistry {
         returns (uint256[] memory);
 
     function editPluginMetadata(uint pluginId, string memory url) external;
+
+    function modulesRegistry() external view returns(address);
 }

@@ -1,23 +1,27 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../interfaces/modules/IModule.sol";
-import "../../interfaces/registry/IPluginRegistry.sol";
-import "../../../daoUtils/interfaces/get/IDAOModules.sol";
+import "./IPlugin.sol";
+import "./registry/IPluginRegistry.sol";
+import "../daoUtils/interfaces/get/IDAOModules.sol";
 
-abstract contract SimplePlugin is IModule {
+abstract contract SimplePlugin is IPlugin {
     address _deployer;
     address _dao;
-    uint256 public pluginId;
+
+    uint256 public override pluginId;
+    uint public override moduleId;
+
     bool public override isActive;
-    IPluginRegistry public pluginRegistry; 
-    
+    IPluginRegistry public pluginRegistry;
+
     modifier onlyDAOModule() {
         uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry)
             .getPluginIdsByDAO(_dao);
         bool pluginFound = false;
         for (uint256 i = 0; i < installedPlugins.length; i++) {
-            if (installedPlugins[i] == pluginId) pluginFound = true; _;
+            if (installedPlugins[i] == pluginId) pluginFound = true;
+            _;
         }
         require(pluginFound, "Only DAO Module");
         _;
@@ -41,12 +45,11 @@ abstract contract SimplePlugin is IModule {
         _;
     }
 
-    constructor(address dao) {
+    constructor(address dao, uint modId) {
         _dao = dao;
-        pluginRegistry = IPluginRegistry(
-            IDAOModules(dao).pluginRegistry()
-        );
+        pluginRegistry = IPluginRegistry(IDAOModules(dao).pluginRegistry());
         _deployer = msg.sender;
+        moduleId = modId;
     }
 
     function owner() public view returns (address) {
@@ -65,7 +68,7 @@ abstract contract SimplePlugin is IModule {
         isActive = newActive;
     }
 
-    function storePluginId(uint256 tokenId) public override onlyPluginRegistry {
+    function setPluginId(uint256 tokenId) public override onlyPluginRegistry {
         pluginId = tokenId;
     }
 }

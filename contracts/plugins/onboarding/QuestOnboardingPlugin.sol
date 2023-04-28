@@ -1,15 +1,15 @@
 pragma solidity ^0.8.0;
 
-import "../../../../interfaces/modules/onboarding/OnboardingModule.sol";
-import "../../../../implementations/types/quests/plugins/QuestPlugin.sol";
-import "../../SimplePlugin.sol";
-import "../../../../../daoUtils/interfaces/get/IDAOAdmin.sol";
+import "../../modules/onboarding/OnboardingModule.sol";
+import "../quests/QuestPlugin.sol";
+import "../SimplePlugin.sol";
+import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
 
 contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
     uint256 constant SECONDS_IN_DAY = 86400;
     QuestPlugin public questsPlugin;
 
-    constructor(address dao) SimplePlugin(dao) {
+    constructor(address dao) SimplePlugin(dao, 1) {
         questsPlugin = new QuestPlugin(dao);
         _setActive(false);
     }

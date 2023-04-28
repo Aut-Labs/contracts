@@ -23,7 +23,7 @@
 
     const a = await (
       await allowlist.addToAllowlist(
-        '0x26a81c452d748f46dBb21d4beCCe9419CC9E6d0e' // tao
+        '0xbd3D628C2950E7701e97d31F2eA4de6eEF9b05C7' // tao
       )
     ).wait();
     console.log("allowlistTx", a);

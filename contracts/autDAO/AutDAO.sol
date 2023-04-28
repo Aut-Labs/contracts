@@ -9,7 +9,7 @@ import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
 import "../daoUtils/abstracts/DAOInteractions.sol";
 
-import "../modules/interfaces/modules/onboarding/OnboardingModule.sol";
+import "../modules/onboarding/OnboardingModule.sol";
 import "./interfaces/IAutDAO.sol";
 
 /// @title AutDAO
@@ -55,8 +55,26 @@ contract AutDAO is
         super._setPluginRegistry(_pluginRegistry);
     }
 
-    function setOnboardingStrategy(address onboardingPlugin) public onlyAdmin {
+    function join(address newMember, uint256 role) public override onlyAutID {
+        require(this.canJoin(newMember, role), "not allowed");
+        super.join(newMember, role);
+    }
+
+    function setOnboardingStrategy(address onboardingPlugin) public override {
+        require(
+            IModule(onboardingPlugin).moduleId() == 1,
+            "Only Onboarding Plugin"
+        );
+
+        if (onboardingAddr == address(0))
+            require(msg.sender == pluginRegistry, "Only Plugin Registry");
+        else require(DAOMembers(this).isAdmin(msg.sender), "Only Admin");
+
         onboardingAddr = onboardingPlugin;
+    }
+
+    function activateModule(uint moduleId) public override onlyAdmin {
+        _activateModule(moduleId);
     }
 
     function setMetadataUri(string memory metadata) public override onlyAdmin {
@@ -75,18 +93,15 @@ contract AutDAO is
         _setCommitment(commitment);
     }
 
-    function canJoin(address member, uint256 role)
-        external
-        view
-        override
-        returns (bool)
-    {
+    function canJoin(
+        address member,
+        uint256 role
+    ) external view override returns (bool) {
         if (onboardingAddr == address(0)) return true;
         if (
             onboardingAddr != address(0) &&
             OnboardingModule(onboardingAddr).isActive()
         ) return false;
-        else
-            return OnboardingModule(onboardingAddr).isOnboarded(member, role);
+        else return OnboardingModule(onboardingAddr).isOnboarded(member, role);
     }
 }

@@ -25,5 +25,6 @@ interface IAutDAO is
     IDAOCommitment,
     IAutIDAddress
 {
+    function setOnboardingStrategy(address onboardingPlugin) external;
 
 }

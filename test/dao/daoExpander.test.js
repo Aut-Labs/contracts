@@ -38,8 +38,12 @@ describe("DAOExpander", function () {
       await sWLegacyMembershipChecker.deployed();
 
       daoTypes.addNewMembershipChecker(sWLegacyMembershipChecker.address);
+
+      const ModuleRegistryFactory = await ethers.getContractFactory("ModuleRegistry");
+      const moduleRegistry = await ModuleRegistryFactory.deploy();
+  
       const PluginRegistryFactory = await ethers.getContractFactory("PluginRegistry");
-      pluginRegistry = await PluginRegistryFactory.deploy();
+      pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
 
     });
     it("Should fail if arguemnts are incorret", async function () {
