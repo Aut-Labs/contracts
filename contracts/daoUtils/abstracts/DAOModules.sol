@@ -26,7 +26,7 @@ abstract contract DAOModules is IDAOModules {
         address modulesRegistry = IPluginRegistry(pluginRegistry)
             .modulesRegistry();
         require(
-            bytes(IModuleRegistry(modulesRegistry).getModuleById(moduleId).name)
+            bytes(IModuleRegistry(modulesRegistry).getModuleById(moduleId).metadataURI)
                 .length > 0,
             "invalid module"
         );

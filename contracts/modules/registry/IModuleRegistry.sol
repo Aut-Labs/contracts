@@ -6,12 +6,11 @@ interface IModuleRegistry {
 
     struct ModuleDefinition {
         string metadataURI;
-        string name;
+        uint id;
     }
 
     function addModuleDefinition(
-        string calldata metadataURI,
-        string calldata name
+        string calldata metadataURI
     ) external returns (uint);
 
     function getAllModules() external view returns (ModuleDefinition[] memory);
@@ -19,4 +18,6 @@ interface IModuleRegistry {
     function getModuleById(
         uint moduleID
     ) external view returns (ModuleDefinition memory);
+
+    function updateMetadataURI(uint moduleId, string calldata uri) external;
 }

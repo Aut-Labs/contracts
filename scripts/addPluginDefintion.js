@@ -15,42 +15,41 @@ async function main() {
 
     // We get the contract to deploy
 
-
     // We get the contract to deploy
-    const pluginRegistryAddress = "0x1b5603687C299f419e1C89B5eB3e4000d87ed1e8"; // mumbai
+    const pluginRegistryAddress = "0x2f020e3B1aD71BCeeCCaf922d9af13d7F5791cbC"; // mumbai
     const PluginRegistry = await hre.ethers.getContractFactory("PluginRegistry");
     const pluginRegistry = await PluginRegistry.attach(pluginRegistryAddress);
-    const onboardingIpfsUrl = "ipfs://bafkreigzreout66gq7mvfhyglxomsfykz7c3ce62awekwqgksw4kulh7iu";
-    const discordUrl = "ipfs://bafkreierygsg6i2ue5dot5viledq5veesv36fxph6gn2bzbomlfd7no7qq";
-    const openTaskUrl = "ipfs://bafkreib7tvf3yxww35otwai56ov4jzavbpxp2f6mvrlh5voqgukskc4jti";
-    const quizUrl = "ipfs://bafkreidaa7oseatq3tau4olbxxkqfb2gqyf534zyslqrnjgftb4xcknr3a";
-    const transactionTaskUrl = "ipfs://bafkreigabqeilley66bami64o7pxut2kge6a52xkisnirhld25c5yng3o4";
+    const onboardingIpfsUrl = "ipfs://bafkreid63tstlztoeyzm4rquwkdqlbmxaw3wb3d3v6xtajjthrfrafbavy";
+    const discordUrl = "ipfs://bafkreignftmez5sjhr7i3a5aqx3cwvnfqsu7kn4uz6ndsrvak7q7jfpwmi";
+    const openTaskUrl = "ipfs://bafkreibuwgmzj43xffbmmc4ztbguawobofw4eewtlrtrpllt766ohwfhwm";
+    const quizUrl = "ipfs://bafkreie24di5e6lci4ro7tdno2c425tbk3vxxjxer4zdhvajrn7a3ypxgy";
+    const transactionTaskUrl = "ipfs://bafkreib2fveotcphtxhqh4s366cnykq527p2753r7nsjjkqd576y7zx5e4";
     const a = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', onboardingIpfsUrl, 0)
+            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', onboardingIpfsUrl, 0, true, [3])
     ).wait();
     console.log("addPluginDefinition", a);
     const b = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', discordUrl, 0)
+            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', discordUrl, 0, true, [])
     ).wait();
     console.log("addPluginDefinition", b);
 
     const c = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', openTaskUrl, 0)
+            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', openTaskUrl, 0,  true, [])
     ).wait();
     console.log("addPluginDefinition", c);
 
     const d = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', quizUrl, 0)
+            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', quizUrl, 0,  true, [])
     ).wait();
     console.log("addPluginDefinition", d);
 
     const e = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', transactionTaskUrl, 0)
+            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', transactionTaskUrl, 0, true, [])
     ).wait();
     console.log("addPluginDefinition", e);
 

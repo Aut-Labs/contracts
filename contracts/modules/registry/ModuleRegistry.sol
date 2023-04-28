@@ -10,20 +10,18 @@ contract ModuleRegistry is IModuleRegistry, Ownable {
     constructor() {
         _transferOwnership(msg.sender);
         // TODO: put metadata;
-        modules.push(ModuleDefinition("none", "NONE"));
-        modules.push(ModuleDefinition("onboarding uri", "Onboarding"));
-        modules.push(ModuleDefinition("task uri", "Task"));
-        modules.push(ModuleDefinition("quest uri", "Quest"));
+        modules.push(ModuleDefinition("none", 0));
+        modules.push(ModuleDefinition("ipfs://bafkreiajwhzd36nkt44bqgtyh7upkgoiooxqzafp62qh4zagkfihcssgpu", 1));
+        modules.push(ModuleDefinition("ipfs://bafkreihxcz6eytmf6lm5oyqee67jujxepuczl42lw2orlfsw6yds5gm46i", 2));
+        modules.push(ModuleDefinition("ipfs://bafkreieg7dwphs4554g726kalv5ez22hd55k3bksepa6rrvon6gf4mupey", 3));
     }
 
     function addModuleDefinition(
-        string calldata metadataURI,
-        string calldata name
+        string calldata metadataURI
     ) public onlyOwner override returns (uint) {
         require(bytes(metadataURI).length > 0, 'invalid uri');
-        require(bytes(name).length > 0, 'invalid name');
         uint id = modules.length;
-        modules.push(ModuleDefinition(metadataURI, name));
+        modules.push(ModuleDefinition(metadataURI, id));
         emit ModuleDefinitionAdded(id);
         return id;
     }
@@ -33,5 +31,9 @@ contract ModuleRegistry is IModuleRegistry, Ownable {
     }
     function getModuleById(uint moduleId) public view override returns (ModuleDefinition memory) {
         return modules[moduleId];
+    }
+
+    function updateMetadataURI(uint moduleId, string calldata uri) onlyOwner public override {
+         modules[moduleId].metadataURI = uri;
     }
 }
