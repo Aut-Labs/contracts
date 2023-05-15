@@ -218,7 +218,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     function setActiveQuestPerRole(
         uint256 role,
         uint256 questId
-    ) public onlyAdmin onlyPending(questId) {
+    ) public override onlyAdmin onlyPending(questId) {
         activeQuestsPerRole[role] = questId;
     }
 

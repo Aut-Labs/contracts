@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "../../modules/onboarding/OnboardingModule.sol";
@@ -5,10 +6,17 @@ import "../quests/QuestPlugin.sol";
 import "../SimplePlugin.sol";
 import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
 
+/**
+ * @title QuestOnboardingPlugin
+ * @dev A plugin contract that implements the `OnboardingModule` interface and uses a `QuestPlugin` to onboard members via quests.
+ */
 contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
-    uint256 constant SECONDS_IN_DAY = 86400;
     QuestPlugin public questsPlugin;
 
+    /**
+     * @dev Initializes a new `QuestOnboardingPlugin` instance.
+     * @param dao The DAO address.
+     */
     constructor(address dao) SimplePlugin(dao, 1) {
         questsPlugin = new QuestPlugin(dao);
         _setActive(false);
@@ -19,6 +27,10 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
         _;
     }
 
+    /**
+     * @dev Sets the active status of the plugin.
+     * @param active A boolean indicating whether the plugin should be set as active.
+     */
     function setActive(bool active) public onlyAdmin {
         uint activeQuestRole1 = questsPlugin.activeQuestsPerRole(1);
         uint activeQuestRole2 = questsPlugin.activeQuestsPerRole(2);
@@ -30,15 +42,20 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
             "not all quests are defined"
         );
         require(
-            questsPlugin.getTasksPerQuest(activeQuestRole1).length > 0 &&
-                questsPlugin.getTasksPerQuest(activeQuestRole2).length > 0 &&
-                questsPlugin.getTasksPerQuest(activeQuestRole3).length > 0,
+            questsPlugin.getById(activeQuestRole1).tasksCount > 0 &&
+                questsPlugin.getById(activeQuestRole2).tasksCount > 0 &&
+                questsPlugin.getById(activeQuestRole3).tasksCount > 0,
             "not all quests have tasks"
         );
         _setActive(active);
     }
 
-    // Implements the onboard function from the OnboardingModule interface
+    /**
+     * @dev Checks whether a member has been onboarded.
+     * @param member The member address.
+     * @param role The member's role.
+     * @return A boolean indicating whether the member has been onboarded.
+     */
     function isOnboarded(
         address member,
         uint256 role
@@ -46,11 +63,19 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
         return questsPlugin.hasCompletedQuestForRole(member, role);
     }
 
+    /**
+     * @dev Gets the address of the `QuestPlugin` contract.
+     * @return The address of the `QuestPlugin` contract.
+     */
     function getQuestsPluginAddress() public view returns (address) {
         return address(questsPlugin);
     }
 
-    // Implements the onboard function from the OnboardingModule interface
+    /**
+     * @dev Onboards a member.
+     * @param member The member address.
+     * @param role The member's role.
+     */
     function onboard(address member, uint256 role) public override {
         revert FunctionNotImplemented();
     }

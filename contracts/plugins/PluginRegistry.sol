@@ -58,7 +58,7 @@ contract PluginRegistry is
     function addPluginToDAO(
         address pluginAddress,
         uint256 pluginDefinitionId
-    ) external payable nonReentrant {
+    ) external override payable nonReentrant {
         IModule plugin = IModule(pluginAddress);
         address dao = plugin.daoAddress();
 

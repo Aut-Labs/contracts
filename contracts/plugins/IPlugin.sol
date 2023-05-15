@@ -3,16 +3,28 @@ pragma solidity ^0.8.0;
 
 import "../modules/IModule.sol";
 
-/// @title IModule
-/// @notice Every module interface should inherite this one. This interface is a standard configuration of a Plugin. Plugins can only be usable if they implement these functions
+/**
+ * @title IPlugin
+ * @notice This interface defines the standard configuration of a plugin. Every plugin interface should inherit this interface.
+ */
 interface IPlugin is IModule {
 
-    /// @notice When a plugin is deployed, the deployer must be set in the constructor. Only the deployer can further on asociate it to a daoExpander.
-    /// @return the address of the deployer of the plugin
+    /**
+     * @notice Returns the address of the deployer of the plugin
+     * @return The address of the deployer of the plugin
+     */
     function deployer() external view returns (address);
     
+    /**
+     * @notice Sets the plugin ID for the current plugin instance
+     * @param tokenId The ID of the plugin instance to be set
+     */
     function setPluginId(uint256 tokenId) external;
 
+    /**
+     * @notice Returns the ID of the current plugin instance
+     * @return The ID of the current plugin instance
+     */
     function pluginId() external view returns (uint);
 
 }

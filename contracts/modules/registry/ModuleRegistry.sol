@@ -9,7 +9,6 @@ contract ModuleRegistry is IModuleRegistry, Ownable {
 
     constructor() {
         _transferOwnership(msg.sender);
-        // TODO: put metadata;
         modules.push(ModuleDefinition("none", 0));
         modules.push(ModuleDefinition("ipfs://bafkreiajwhzd36nkt44bqgtyh7upkgoiooxqzafp62qh4zagkfihcssgpu", 1));
         modules.push(ModuleDefinition("ipfs://bafkreihxcz6eytmf6lm5oyqee67jujxepuczl42lw2orlfsw6yds5gm46i", 2));

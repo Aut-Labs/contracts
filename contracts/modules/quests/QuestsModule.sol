@@ -116,4 +116,12 @@ interface QuestsModule is IModule {
     /// @notice gets total amount of quests
     /// @return uint256.
     function getTotalQuests() external view returns (uint256);
+
+    /// @notice sets the active quest per role
+    /// @param role the id of the role
+    /// @param questId The id of the quest
+    function setActiveQuestPerRole(
+        uint256 role,
+        uint256 questId
+    ) external;
 }
