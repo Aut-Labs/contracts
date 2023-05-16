@@ -30,45 +30,44 @@ describe("ModulesRegistry", (accounts) => {
             expect(modules.length).to.eq(4);
 
             expect(modules[0]['metadataURI']).to.eq('none');
-            expect(modules[0]['name']).to.eq('NONE');
-            expect(modules[1]['metadataURI']).to.eq('onboarding uri');
-            expect(modules[1]['name']).to.eq('Onboarding');
-            expect(modules[2]['metadataURI']).to.eq('task uri');
-            expect(modules[2]['name']).to.eq('Task');
-            expect(modules[3]['metadataURI']).to.eq('quest uri');
-            expect(modules[3]['name']).to.eq('Quest');
+            expect(modules[0]['id'].toString()).to.eq('0');
+            expect(modules[1]['metadataURI']).to.eq('ipfs://bafkreiajwhzd36nkt44bqgtyh7upkgoiooxqzafp62qh4zagkfihcssgpu');
+            expect(modules[1]['id'].toString()).to.eq('1');
+            expect(modules[2]['metadataURI']).to.eq('ipfs://bafkreihxcz6eytmf6lm5oyqee67jujxepuczl42lw2orlfsw6yds5gm46i');
+            expect(modules[2]['id'].toString()).to.eq('2');
+            expect(modules[3]['metadataURI']).to.eq('ipfs://bafkreieg7dwphs4554g726kalv5ez22hd55k3bksepa6rrvon6gf4mupey');
+            expect(modules[3]['id'].toString()).to.eq('3');
 
             let singleModule1 = await moduleRegistry.getModuleById(1);
-            expect(singleModule1['metadataURI']).to.eq('onboarding uri');
-            expect(singleModule1['name']).to.eq('Onboarding');
+            expect(singleModule1['metadataURI']).to.eq('ipfs://bafkreiajwhzd36nkt44bqgtyh7upkgoiooxqzafp62qh4zagkfihcssgpu');
+            expect(singleModule1['id'].toString()).to.eq('1');
 
             let singleModule3 = await moduleRegistry.getModuleById(3);
-            expect(singleModule3['metadataURI']).to.eq('quest uri');
-            expect(singleModule3['name']).to.eq('Quest');
+            expect(singleModule3['metadataURI']).to.eq('ipfs://bafkreieg7dwphs4554g726kalv5ez22hd55k3bksepa6rrvon6gf4mupey');
+            expect(singleModule3['id'].toString()).to.eq('3');
 
         });
         it("Add module def should fail if not owner", async () => {
-            await expect(moduleRegistry.connect(addr1).addModuleDefinition(url, 'governance')).to.be.revertedWith("Ownable: caller is not the owner");
+            await expect(moduleRegistry.connect(addr1).addModuleDefinition(url)).to.be.revertedWith("Ownable: caller is not the owner");
         });
 
         it("Add module def should fail with invalid arguments", async () => {
-            await expect(moduleRegistry.connect(deployer).addModuleDefinition("", 'governance')).to.be.revertedWith("invalid uri");
-            await expect(moduleRegistry.connect(deployer).addModuleDefinition(url, "")).to.be.revertedWith("invalid name");
+            await expect(moduleRegistry.connect(deployer).addModuleDefinition("")).to.be.revertedWith("invalid uri");
         });
 
         it("Add module def should pass", async () => {
-            const tx = await moduleRegistry.connect(deployer).addModuleDefinition(url, 'governance');
+            const tx = await moduleRegistry.connect(deployer).addModuleDefinition(url);
             await expect(tx).to.emit(moduleRegistry, "ModuleDefinitionAdded").withArgs(4);
 
             let singleModule = await moduleRegistry.getModuleById(4);
             expect(singleModule['metadataURI']).to.eq(url);
-            expect(singleModule['name']).to.eq('governance');
+            expect(singleModule['id'].toString()).to.eq('4');
 
             let modules = await moduleRegistry.getAllModules();
             expect(modules.length).to.eq(5);
 
             expect(modules[4]['metadataURI']).to.eq(url);
-            expect(modules[4]['name']).to.eq('governance');
+            expect(modules[4]['id'].toString()).to.eq('4');
         });
     });
 });

@@ -23,7 +23,7 @@ interface QuestsModule is IModule {
         uint256 role;
         bool active;
         string metadataUri;
-        uint256 durationInDays;
+        uint256 durationInHours;
         uint256 startDate;
         uint256 tasksCount;
     }
@@ -32,25 +32,25 @@ interface QuestsModule is IModule {
     /// @param role The role of the quest
     /// @param uri IPFS CID with the off-chain data of the quest
     /// @param startDate startDate of the quest
-    /// @param durationInDays Duration of the quest
+    /// @param durationInHours Duration of the quest
     /// @return The id of the newly created quest.
     function create(
         uint256 role,
         string memory uri,
         uint startDate,
-        uint256 durationInDays
+        uint256 durationInHours
     ) external returns (uint256);
 
     /// @notice Edits a Quest
     /// @param questId The id of the quest to edit
     /// @param role The role of the quest
     /// @param uri IPFS CID with the off-chain data of the quest
-    /// @param durationInDays Duration of the quest
+    /// @param durationInHours Duration of the quest
     function editQuest(
         uint256 questId,
         uint256 role,
         string memory uri,
-        uint256 durationInDays
+        uint256 durationInHours
     ) external;
 
     /// @notice Fetches quest by ID

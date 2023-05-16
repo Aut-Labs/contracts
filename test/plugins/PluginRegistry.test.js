@@ -7,7 +7,7 @@ let addr1, addr2, addr3, addrs;
 let offchainVerifiedTaskPlugin;
 let dao;
 
-describe.only("PluginRegistry", (accounts) => {
+describe("PluginRegistry", (accounts) => {
     before(async function () {
         [deployer, admin, verifier, addr1, addr2, addr3, ...addrs] = await ethers.getSigners();
         const AutID = await ethers.getContractFactory("AutID");

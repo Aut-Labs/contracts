@@ -21,7 +21,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     QuestModel[] quests;
     address public onboardingPlugin;
 
-    uint256 constant SECONDS_IN_DAY = 86400;
+    uint256 constant SECONDS_IN_HOUR = 3600;
     mapping(uint256 => PluginTasks[]) questTasks;
     mapping(uint256 => uint256[]) public taskToQuests;
     mapping(uint256 => uint256) public activeQuestsPerRole;
@@ -78,14 +78,14 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         uint256 _role,
         string memory _uri,
         uint256 _startDate,
-        uint256 _durationInDays
+        uint256 _durationInHours
     ) public override onlyAdmin returns (uint256) {
         require(bytes(_uri).length > 0, "invalid uri");
         require(_startDate > block.timestamp, "invalid startDate");
         uint256 questId = idCounter.current();
 
         quests.push(
-            QuestModel(_role, false, _uri, _durationInDays, _startDate, 0)
+            QuestModel(_role, false, _uri, _durationInHours, _startDate, 0)
         );
 
         if (activeQuestsPerRole[_role] == 0)
@@ -109,8 +109,8 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
             uri,
             quests[questId].startDate,
             quests[questId].startDate +
-                quests[questId].durationInDays *
-                SECONDS_IN_DAY
+                quests[questId].durationInHours *
+                SECONDS_IN_HOUR
         );
         _addTask(questId, PluginTasks(tasksPluginId, taskId));
         emit TasksAddedToQuest(questId, taskId);
@@ -133,15 +133,15 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         uint256 questId,
         uint256 _role,
         string memory _uri,
-        uint256 _durationInDays
+        uint256 _durationInHours
     ) public override onlyAdmin onlyPending(questId) {
         require(idCounter.current() >= questId, "invalid quest id");
         require(_role > 0, "invalid _role");
         require(bytes(_uri).length > 0, "invalid _uri");
-        require(_durationInDays > 0, "invalid _durationInDays");
+        require(_durationInHours > 0, "invalid _durationInHours");
 
         quests[questId].metadataUri = _uri;
-        quests[questId].durationInDays = _durationInDays;
+        quests[questId].durationInHours = _durationInHours;
         quests[questId].role = _role;
 
         emit QuestEditted();
@@ -150,8 +150,8 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     function isOngoing(uint256 questId) public view override returns (bool) {
         return
             quests[questId].startDate +
-                quests[questId].durationInDays *
-                SECONDS_IN_DAY <
+                quests[questId].durationInHours * 
+                SECONDS_IN_HOUR <
             block.timestamp &&
             quests[questId].startDate > block.timestamp;
     }
