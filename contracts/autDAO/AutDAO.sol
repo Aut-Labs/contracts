@@ -25,8 +25,8 @@ contract AutDAO is
     DAOCommitment,
     IAutDAO
 {
-    address private deployer;
-    address private onboardingAddr;
+    address public deployer;
+    address public onboardingAddr;
 
     /// @notice Sets the initial details of the DAO
     /// @dev all parameters are required.

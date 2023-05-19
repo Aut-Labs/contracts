@@ -65,6 +65,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     }
 
     function applyForAQuest(uint256 questId) public onlyActive(questId) {
+        require(isOngoing(questId) || isPending(questId), "expired quest");
         hasApplied[questId][msg.sender] = true;
         emit Applied(questId, msg.sender);
     }
@@ -201,6 +202,8 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
                 if (completionTime > lastTaskTime)
                     lastTaskTime = completionTime;
+            } else {
+                return 0;
             }
         }
         return lastTaskTime;

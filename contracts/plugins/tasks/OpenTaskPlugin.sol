@@ -100,6 +100,8 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         onlyAllowedToSubmit
         atStatus(taskId, msg.sender, TaskStatus.Created)
     {
+        require(tasks[taskId].startDate < block.timestamp, "Not started yet");
+        require(tasks[taskId].endDate > block.timestamp, "The task has ended");
         uint256 submissionId = submissionIds.current();
         submissions.push(
             Submission(msg.sender, submitionUrl, 0, TaskStatus.Submitted)
