@@ -16,7 +16,7 @@ async function main() {
   
 
   // We get the contract to deploy]
-  const modulesRegistryAddress = "0x005Fc4586090Dccc4E09a2C84D350FdDd3009361";
+  const modulesRegistryAddress = "0x49AfB732f96A346b6474BC1Fa2AB61a9a638037e";
   const PluginRegistry = await hre.ethers.getContractFactory("PluginRegistry");
   const pluginRegistry = await PluginRegistry.deploy(modulesRegistryAddress);
   await pluginRegistry.deployed();

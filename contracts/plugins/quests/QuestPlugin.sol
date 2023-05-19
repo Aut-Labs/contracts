@@ -149,12 +149,12 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     }
 
     function isOngoing(uint256 questId) public view override returns (bool) {
+        uint256 endDate = quests[questId].startDate +
+            quests[questId].durationInHours *
+            SECONDS_IN_HOUR;
         return
-            quests[questId].startDate +
-                quests[questId].durationInHours * 
-                SECONDS_IN_HOUR <
-            block.timestamp &&
-            quests[questId].startDate > block.timestamp;
+            block.timestamp >= quests[questId].startDate &&
+            block.timestamp <= endDate;
     }
 
     function isPending(uint256 questId) public view override returns (bool) {
