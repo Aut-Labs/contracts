@@ -100,7 +100,7 @@ contract AutDAO is
         if (onboardingAddr == address(0)) return true;
         if (
             onboardingAddr != address(0) &&
-            OnboardingModule(onboardingAddr).isActive()
+            !OnboardingModule(onboardingAddr).isActive()
         ) return false;
         else return OnboardingModule(onboardingAddr).isOnboarded(member, role);
     }

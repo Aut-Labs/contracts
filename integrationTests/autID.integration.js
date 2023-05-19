@@ -270,34 +270,49 @@ return a;
 
 
 async function getQuestAddressByOnboarding(onboardingAddr) {
-    const contr = new ethers.Contract(onboardingAddr, onboardingAbi, signer);
-  const a = await contr.questsPlugin();
-  console.log(a);
+  const contr = new ethers.Contract(onboardingAddr, onboardingAbi, signer);
+const a = await contr.questsPlugin();
+console.log(a);
 }
 
+async function hasCompletedTask(taskAddress, taskId, user) {
+  const contr = new ethers.Contract(taskAddress, onchaintaskabi, signer);
+const a = await contr.hasCompletedTheTask( user, taskId);
+console.log(a);
+}
+
+
+
+async function getOnboardingAddrByDAO(daoAddr) {
+  const contr = new ethers.Contract(daoAddr, autDAOAbi, signer);
+const a = await contr.onboardingAddr();
+console.log(a);
+}
 async function test() {
+  await getOnboardingAddrByDAO('0xA99Bd97fDcBd93698DA56277220F19423BaDd969');
+  // const b = await provider.getBlock(35783110);
+  // console.log('current:', b.timestamp);
+  // await getQuestAddressByOnboarding('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58');
+  // await hasCompletedTask('0x36E9829b9216F44A02002f32d9a1C2631b228D86', 1, '0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394');
+  // await hasCompletedTask('0x3c008FB030471826D60B99E152959fA89bea1801', 1, '0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394');
+  // const quest = await getQuestById('0x75a01Ba3E3D71F32981496C16a040865A02C2530', 1);
+  // // await isPending('0x75a01Ba3E3D71F32981496C16a040865A02C2530', 1);
+  // // await isOngoing('0x75a01Ba3E3D71F32981496C16a040865A02C2530', 1);
+  // console.log('start:  ', quest['startDate'].toString());
+  // // console.log(quest['durationInHours'].toString());
+  // console.log('end  :  ', +quest['startDate'].toString() + 2*3600);
 
-  const b = await provider.getBlock(35783110);
-  console.log('current:', b.timestamp);
-  // await getQuestAddressByOnboarding('0xc016Ae39DE9A9bb194d1B6b2DB4E98B0407669e2');
-  const quest = await getQuestById('0x75a01Ba3E3D71F32981496C16a040865A02C2530', 1);
-  // await isPending('0x75a01Ba3E3D71F32981496C16a040865A02C2530', 1);
-  // await isOngoing('0x75a01Ba3E3D71F32981496C16a040865A02C2530', 1);
-  console.log('start:  ', quest['startDate'].toString());
-  // console.log(quest['durationInHours'].toString());
-  console.log('end  :  ', +quest['startDate'].toString() + 2*3600);
-
-  console.log(+quest['startDate'].toString() > b.timestamp);
+  // console.log(+quest['startDate'].toString() > b.timestamp);
   // await getSubmissionIdPerTaskAndUser('0xE951f9c7DE2ca53f187deE7628B5fa90259E34c0', 6, '0x257a674aC62296326d78e6260571A077Ea4bF81b')
   // await finalize('0x8ED093b0e09F06f120f7FF2BA39F1ddfF73Ded59', 1, '0x0d6d3183697aA153d7861B137b9cc13757f25C87')
   // await getStatusPerSubmitter('0xadA9D147b4857f00BE52Df72463E4A90112f938F', 2, '0xE79A5fbc800ABA2074b0e54c68e51a5F6a38E07e')
-  // await isOnboarded('0x9b9B04dca2E1d318fb92DFc5769FF50Ecdc43f23','0x8B5F0fBaaa1C41C0759eae5cCf77f62e4ea3D64f', 1);
-  // await isOnboarded('0x9b9B04dca2E1d318fb92DFc5769FF50Ecdc43f23','0x8B5F0fBaaa1C41C0759eae5cCf77f62e4ea3D64f', 2);
-  // await isOnboarded('0x9b9B04dca2E1d318fb92DFc5769FF50Ecdc43f23','0x8B5F0fBaaa1C41C0759eae5cCf77f62e4ea3D64f', 3);
-
-  // await canJoin('0x86DB01dc85CCEF14b74C7863835fdFbd5485FA16','0x8B5F0fBaaa1C41C0759eae5cCf77f62e4ea3D64f', 1);
-  // await canJoin('0x86DB01dc85CCEF14b74C7863835fdFbd5485FA16','0x8B5F0fBaaa1C41C0759eae5cCf77f62e4ea3D64f', 2);
-  // await canJoin('0x86DB01dc85CCEF14b74C7863835fdFbd5485FA16','0x8B5F0fBaaa1C41C0759eae5cCf77f62e4ea3D64f', 3);
+  // await isOnboarded('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 1);
+  // await isOnboarded('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 2);
+  // await isOnboarded('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 3);
+await isOnboardingActive('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58');
+  // await canJoin('0xA99Bd97fDcBd93698DA56277220F19423BaDd969','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 1);
+  // await canJoin('0xA99Bd97fDcBd93698DA56277220F19423BaDd969','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 2);
+  // await canJoin('0xA99Bd97fDcBd93698DA56277220F19423BaDd969','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 3);
 
   // await isOnboarded('0x9b9B04dca2E1d318fb92DFc5769FF50Ecdc43f23','0x8B5F0fBaaa1C41C0759eae5cCf77f62e4ea3D64f', 2);
   // await isOnboardingActive('0x9b9B04dca2E1d318fb92DFc5769FF50Ecdc43f23');
@@ -311,7 +326,9 @@ async function test() {
   // const user = '0x2d41B96735108e4EF8B2C5C6e9eFfA425Cb7f6dF';
 
   // canJoin('0x86DB01dc85CCEF14b74C7863835fdFbd5485FA16', '0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 1);
-  // await hasCompletedAQuest(quest, user, id);
+  // await hasCompletedAQuest('0x916F5D4B6c0820dF3cf5AA8D5226caD165Fbb92b', '0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 1);
+  // await hasCompletedAQuest('0x916F5D4B6c0820dF3cf5AA8D5226caD165Fbb92b', '0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 2);
+  // await hasCompletedAQuest('0x916F5D4B6c0820dF3cf5AA8D5226caD165Fbb92b', '0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 3);
 
   // await getTimeOfCompletion(quest, user, 1);
   // await getTimeOfCompletion(quest, user, 2);
