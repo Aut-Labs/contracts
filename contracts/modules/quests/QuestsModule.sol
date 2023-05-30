@@ -7,7 +7,7 @@ import "../IModule.sol";
 /// @dev The extension of each DAO that integrates Aut
 interface QuestsModule is IModule {
     event QuestCreated(uint256 questId);
-    event QuestEditted();
+    event QuestEdited();
     event TasksAddedToQuest(uint256 questId, uint256 taskId);
     event TasksRemovedFromQuest();
     event QuestCompleted(uint256 questId, address user);

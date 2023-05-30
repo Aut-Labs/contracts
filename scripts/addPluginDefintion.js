@@ -16,7 +16,7 @@ async function main() {
     // We get the contract to deploy
 
     // We get the contract to deploy
-    const pluginRegistryAddress = "0xa7b3E9fe13FC9A88E9654A51Bd242490c503128A"; // mumbai
+    const pluginRegistryAddress = "0xB57C1d655EA23973029E8bb198f46A321283AE71"; // mumbai
     const PluginRegistry = await hre.ethers.getContractFactory("PluginRegistry");
     const pluginRegistry = await PluginRegistry.attach(pluginRegistryAddress);
     const onboardingIpfsUrl = "ipfs://bafkreid63tstlztoeyzm4rquwkdqlbmxaw3wb3d3v6xtajjthrfrafbavy";
@@ -26,30 +26,30 @@ async function main() {
     const transactionTaskUrl = "ipfs://bafkreihv6y7sbwoa6rwrpsvqx2j2n6spomdvuadw72jma4tvzy6oqw44gq";
     const a = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', onboardingIpfsUrl, 0, true, [3])
+            '0xa5332a8BFeaff6AD8c195A3EC55F46a028ca02cC', onboardingIpfsUrl, 0, true, [3])
     ).wait();
     console.log("addPluginDefinition", a);
     const b = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', discordUrl, 0, true, [])
+            '0xa5332a8BFeaff6AD8c195A3EC55F46a028ca02cC', discordUrl, 0, true, [])
     ).wait();
     console.log("addPluginDefinition", b);
 
     const c = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', openTaskUrl, 0,  true, [])
+            '0xa5332a8BFeaff6AD8c195A3EC55F46a028ca02cC', openTaskUrl, 0,  true, [])
     ).wait();
     console.log("addPluginDefinition", c);
 
     const d = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', quizUrl, 0,  true, [])
+            '0xa5332a8BFeaff6AD8c195A3EC55F46a028ca02cC', quizUrl, 0,  true, [])
     ).wait();
     console.log("addPluginDefinition", d);
 
     const e = await (
         await pluginRegistry.addPluginDefinition(
-            '0xCa05bcE175e9c39Fe015A5fC1E98d2B735fF51d9', transactionTaskUrl, 0, true, [])
+            '0xa5332a8BFeaff6AD8c195A3EC55F46a028ca02cC', transactionTaskUrl, 0, true, [])
     ).wait();
     console.log("addPluginDefinition", e);
 

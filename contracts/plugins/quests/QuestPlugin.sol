@@ -145,7 +145,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         quests[questId].durationInHours = _durationInHours;
         quests[questId].role = _role;
 
-        emit QuestEditted();
+        emit QuestEdited();
     }
 
     function isOngoing(uint256 questId) public view override returns (bool) {
