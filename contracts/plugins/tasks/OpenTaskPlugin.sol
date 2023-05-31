@@ -91,6 +91,28 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         return taskId;
     }
 
+    function editTask(
+        uint256 taskId,
+        uint256 role,
+        string memory uri,
+        uint256 startDate,
+        uint256 endDate
+    ) public override onlyAdmin {
+        require(
+            tasks[taskId].startDate > block.timestamp,
+            "task already started"
+        );
+        require(bytes(uri).length > 0, "No URI");
+        require(taskId < idCounter.current(), "invalid task");
+
+        tasks[taskId].role = role;
+        tasks[taskId].metadata = uri;
+        tasks[taskId].startDate = startDate;
+        tasks[taskId].endDate = endDate;
+
+        emit TaskEdited(taskId, uri);
+    }
+
     function submit(
         uint256 taskId,
         string calldata submitionUrl

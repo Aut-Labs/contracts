@@ -8,12 +8,8 @@ import "../../modules/tasks/TasksModule.sol";
 import "../../daoUtils/interfaces/get/IDAOInteractions.sol";
 
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "hardhat/console.sol";
 
-contract OffchainVerifiedTaskPlugin is
-    TasksModule,
-    SimplePlugin
-{
+contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
     using Counters for Counters.Counter;
 
     Counters.Counter public idCounter;
@@ -34,7 +30,6 @@ contract OffchainVerifiedTaskPlugin is
         _offchainVerifierAddress = offchainVerifierAddress;
         tasks.push(Task(0, address(0), 0, "", 0, 0));
         idCounter.increment();
-
     }
 
     modifier atStatus(uint256 taskID, TaskStatus status) {
@@ -80,6 +75,25 @@ contract OffchainVerifiedTaskPlugin is
 
         emit TaskCreated(taskId, uri);
         return taskId;
+    }
+
+    function editTask(
+        uint256 taskId,
+        uint256 role,
+        string memory uri,
+        uint256 startDate,
+        uint256 endDate
+    ) public override onlyAdmin {
+        require(tasks[taskId].startDate > block.timestamp, "task already started");
+        require(bytes(uri).length > 0, "No URI");
+        require(taskId < idCounter.current(), "invalid task");
+
+        tasks[taskId].role = role;
+        tasks[taskId].metadata = uri;
+        tasks[taskId].startDate = startDate;
+        tasks[taskId].endDate = endDate;
+
+        emit TaskEdited(taskId, uri);
     }
 
     function finalizeFor(

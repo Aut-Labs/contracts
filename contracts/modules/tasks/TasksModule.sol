@@ -24,6 +24,13 @@ interface TasksModule is IModule {
      */
     event TaskCreated(uint256 taskID, string uri);
 
+   /**
+     * @notice Emitted when a task is edited
+     * @param taskID The id of the newly created task
+     * @param uri IPFS CID with the off-chain data of the task
+     */
+    event TaskEdited(uint256 taskID, string uri);
+
     /**
      * @notice Emitted when a task is taken
      * @param taskID The id of the task
@@ -100,6 +107,23 @@ interface TasksModule is IModule {
         uint startDate,
         uint endDate
     ) external returns (uint256);
+
+
+    /**
+     * @notice Edits a task
+     * @param taskId The id of the task
+     * @param role The role with which the task is associated
+     * @param uri IPFS CID with the off-chain data of the task
+     * @param startDate The start date of the task
+     * @param endDate The end date of the task
+     */
+    function editTask(
+        uint256 taskId,
+        uint256 role,
+        string memory uri,
+        uint startDate,
+        uint endDate
+    ) external;
 
     /// @notice A function for taking a task. The signer is the taker.
     /// @param taskID the id of the task

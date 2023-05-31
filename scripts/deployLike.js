@@ -6,9 +6,12 @@
 const hre = require("hardhat");
 
 async function main() {
+  const goerliTrustedFrowarder = '0xE041608922d06a4F26C0d4c27d8bCD01daf1f792';
+  const mumbaiTustedForwarder = '0x69015912AA33720b842dCD6aC059Ed623F28d9f7';
+  const trustedForwarder = hre.network.name == 'mumbai' ? mumbaiTustedForwarder : goerliTrustedFrowarder;
 
   const Like = await hre.ethers.getContractFactory('Like');
-  const like = await Like.deploy();
+  const like = await Like.deploy(trustedForwarder);
   await like.deployed();
 
   console.log('Like', like.address);
