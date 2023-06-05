@@ -10,12 +10,12 @@ import "../daoUtils/abstracts/DAOCommitment.sol";
 import "../daoUtils/abstracts/DAOInteractions.sol";
 
 import "../modules/onboarding/OnboardingModule.sol";
-import "./interfaces/IAutDAO.sol";
+import "./interfaces/INova.sol";
 
-/// @title AutDAO
+/// @title Nova
 /// @notice
 /// @dev
-contract AutDAO is
+contract Nova is
     DAOMembers,
     DAOInteractions,
     DAOMetadata,
@@ -23,7 +23,7 @@ contract AutDAO is
     DAOMarket,
     DAOModules,
     DAOCommitment,
-    IAutDAO
+    INova
 {
     address public deployer;
     address public onboardingAddr;

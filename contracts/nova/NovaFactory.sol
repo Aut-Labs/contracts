@@ -1,19 +1,19 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./interfaces/IAutDAOFactory.sol";
-import "./AutDAO.sol";
+import "./interfaces/INovaFactory.sol";
+import "./Nova.sol";
 
-contract AutDAOFactory is IAutDAOFactory {
-    function deployAutDAO(
+contract NovaFactory is INovaFactory {
+    function deployNova(
         address deployer,
         address autIDAddr,
         uint256 market,
         string calldata metadata,
         uint256 commitment,
         address pluginRegistry
-    ) public override returns (address _autDAOAddress) {
-        AutDAO newAutDAO = new AutDAO(
+    ) public override returns (address _nova) {
+        Nova nova = new Nova(
             deployer,
             IAutID(autIDAddr),
             market,
@@ -21,6 +21,6 @@ contract AutDAOFactory is IAutDAOFactory {
             commitment,
             pluginRegistry
         );
-        return address(newAutDAO);
+        return address(nova);
     }
 }

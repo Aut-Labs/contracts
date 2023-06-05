@@ -5,7 +5,7 @@ let pluginRegistry;
 let deployer, admin, verifier;
 let addr1, addr2, addr3, addrs;
 let offchainVerifiedTaskPlugin;
-let dao;
+let nova;
 
 describe("PluginRegistry", (accounts) => {
     before(async function () {
@@ -23,8 +23,8 @@ describe("PluginRegistry", (accounts) => {
         const PluginRegistryFactory = await ethers.getContractFactory("PluginRegistry");
         pluginRegistry = await PluginRegistryFactory.deploy(moduleRegistry.address);
 
-        const AutDAO = await ethers.getContractFactory("AutDAO");
-        dao = await AutDAO.deploy(
+        const Nova = await ethers.getContractFactory("Nova");
+        nova = await Nova.deploy(
             admin.address,
             autID.address,
             1,
@@ -97,7 +97,7 @@ describe("PluginRegistry", (accounts) => {
                 "OffchainVerifiedTaskPlugin"
             );
             offchainVerifiedTaskPlugin = await OffchainVerifiedTaskPlugin.deploy(
-                dao.address,
+                nova.address,
                 verifier.address
             );
 
@@ -110,7 +110,7 @@ describe("PluginRegistry", (accounts) => {
                 offchainVerifiedTaskPlugin.address,
                 2
             );
-            await expect(tx).to.emit(pluginRegistry, "PluginAddedToDAO").withArgs(1, 2, dao.address);
+            await expect(tx).to.emit(pluginRegistry, "PluginAddedToDAO").withArgs(1, 2, nova.address);
         });
 
         it("Should fail if payment is incorrect", async () => {
@@ -134,7 +134,7 @@ describe("PluginRegistry", (accounts) => {
                     value: ethers.utils.parseEther("0.2")
                 }
             );
-            await expect(tx).to.emit(pluginRegistry, "PluginAddedToDAO").withArgs(2, 1, dao.address);
+            await expect(tx).to.emit(pluginRegistry, "PluginAddedToDAO").withArgs(2, 1, nova.address);
 
         });
     });

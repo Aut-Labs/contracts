@@ -10,7 +10,7 @@ import "../plugins/registry/IPluginRegistry.sol";
 import "../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../daoUtils/interfaces/get/IDAOAdmin.sol";
 import "../daoUtils/interfaces/get/IDAOModules.sol";
-import "../autDAO/interfaces/IAutDAO.sol";
+import "../nova/interfaces/INova.sol";
 import "../IInteraction.sol";
 
 /// @title PluginRegistry
@@ -102,7 +102,7 @@ contract PluginRegistry is
         IInteraction(interactions).allowAccess(pluginAddress);
 
         if (IModule(pluginAddress).moduleId() == 1)
-            IAutDAO(dao).setOnboardingStrategy(pluginAddress);
+            INova(dao).setOnboardingStrategy(pluginAddress);
 
         emit PluginRegistered(tokenId, pluginAddress);
     }

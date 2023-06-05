@@ -15,7 +15,7 @@ import "../../daoUtils/interfaces/set/IDAOMetadataSet.sol";
 
 /// @title IDAOExpander
 /// @notice The interface for the extension of each DAO that integrates AutID
-interface IAutDAO is
+interface INova is
     IDAOURLSet,
     IDAOCommitmentSet,
     IDAOMetadataSet,

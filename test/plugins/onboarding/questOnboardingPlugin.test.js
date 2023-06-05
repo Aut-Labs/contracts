@@ -29,8 +29,8 @@ describe("QuestOnboardingPlugin", (accounts) => {
     });
     await autID.deployed();
 
-    const AutDAO = await ethers.getContractFactory("AutDAO");
-    dao = await AutDAO.deploy(
+    const Nova = await ethers.getContractFactory("Nova");
+    dao = await Nova.deploy(
       admin.address,
       autID.address,
       1,

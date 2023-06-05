@@ -24,60 +24,59 @@ async function main() {
 
   await autID.deployed();
 
-  const AutDAOFactory = await hre.ethers.getContractFactory(
-    "AutDAOFactory"
+  const NovaFactory = await hre.ethers.getContractFactory(
+    "NovaFactory"
   );
-  const autDAOFactory = await AutDAOFactory.deploy();
-  await autDAOFactory.deployed();
+  const novaFactory = await NovaFactory.deploy();
+  await novaFactory.deployed();
 
   const ModuleRegistry = await hre.ethers.getContractFactory("ModuleRegistry");
   const moduleRegistry = await ModuleRegistry.deploy();
   await moduleRegistry.deployed();
-
 
   const PluginRegistry = await hre.ethers.getContractFactory("PluginRegistry");
   const pluginRegistry = await PluginRegistry.deploy(moduleRegistry.address);
   await pluginRegistry.deployed();
 
 
-  const AutDAORegistry = await hre.ethers.getContractFactory(
-    "AutDAORegistry"
+  const NovaRegistry = await hre.ethers.getContractFactory(
+    "NovaRegistry"
   );
-  const autDAORegistry = await AutDAORegistry.deploy(
+  const novaRegistry = await NovaRegistry.deploy(
     trustedForwarder,
     autID.address,
-    autDAOFactory.address,
+    novaFactory.address,
     pluginRegistry.address
   );
-  await autDAORegistry.deployed();
+  await novaRegistry.deployed();
 
 
-  const DAOExpanderFactory = await hre.ethers.getContractFactory(
-    "DAOExpanderFactory"
-  );
-  const daoExpanderFactory = await DAOExpanderFactory.deploy();
-  await daoExpanderFactory.deployed();
+  // const DAOExpanderFactory = await hre.ethers.getContractFactory(
+  //   "DAOExpanderFactory"
+  // );
+  // const daoExpanderFactory = await DAOExpanderFactory.deploy();
+  // await daoExpanderFactory.deployed();
 
-  const daoTypesAddr = hre.network.name == 'mumbai' ? "0x814B36802359E0233f38B8A29A96EA9e4c261E37" : "0xD6D405673fF4D1563B9E2dDD3ff7C4B20Af755fc";
+  // const daoTypesAddr = hre.network.name == 'mumbai' ? "0x814B36802359E0233f38B8A29A96EA9e4c261E37" : "0xD6D405673fF4D1563B9E2dDD3ff7C4B20Af755fc";
   
-  const DAOExpanderRegistry = await hre.ethers.getContractFactory(
-    "DAOExpanderRegistry"
-  );
-  const daoExpanderRegistry = await DAOExpanderRegistry.deploy(
-    trustedForwarder,
-    autID.address,
-    daoTypesAddr,
-    daoExpanderFactory.address,
-    pluginRegistry.address
-  );
-  await daoExpanderRegistry.deployed();
+  // const DAOExpanderRegistry = await hre.ethers.getContractFactory(
+  //   "DAOExpanderRegistry"
+  // );
+  // const daoExpanderRegistry = await DAOExpanderRegistry.deploy(
+  //   trustedForwarder,
+  //   autID.address,
+  //   daoTypesAddr,
+  //   daoExpanderFactory.address,
+  //   pluginRegistry.address
+  // );
+  // await daoExpanderRegistry.deployed();
 
 
   console.log(`MUMBAI_AUT_ID_ADDRESS=${autID.address}`);
-  console.log(`MUMBAI_DAO_REGISTRY_ADDRESS=${daoExpanderRegistry.address}`);
-  console.log(`MUMBAI_DAO_FACTORY_ADDRESS=${daoExpanderFactory.address}`);
-  console.log(`MUMBAI_AUT_DAO_REGISTRY_ADDRESS=${autDAORegistry.address}`);
-  console.log(`MUMBAI_AUT_DAO_FACTORY_ADDRESS=${autDAOFactory.address}`);
+  // console.log(`MUMBAI_DAO_REGISTRY_ADDRESS=${daoExpanderRegistry.address}`);
+  // console.log(`MUMBAI_DAO_FACTORY_ADDRESS=${daoExpanderFactory.address}`);
+  console.log(`MUMBAI_AUT_DAO_REGISTRY_ADDRESS=${novaRegistry.address}`);
+  console.log(`MUMBAI_AUT_DAO_FACTORY_ADDRESS=${novaFactory.address}`);
   console.log(`MUMBAI_DAO_TYPES_ADDRESS=0x814B36802359E0233f38B8A29A96EA9e4c261E37`);
   console.log(`MUMBAI_HACKERS_DAO_ADDRESS=0x8eA20de15Db87Be1a8B20Da5ebD785a4a9BE9690`);
   console.log(`MUMBAI_PLUGIN_REGISTRY_ADDRESS=${pluginRegistry.address}`);

@@ -19,20 +19,20 @@ async function main() {
 
   const autIDAddr = hre.network.name == 'mumbai' ? "0x81dac60057246c44cd99Ec4f8dF058E2aBeF41A7" : "0xd376E6e323176C6495F9B6dBd6D92EDA8897Aed8";
   const pluginsRegistry = hre.network.name == 'mumbai' ? '0xa7b3E9fe13FC9A88E9654A51Bd242490c503128A' : "";
-  const autDAOFactoryAddr = hre.network.name == 'mumbai' ? "0xd165Edc0CacD481Ac2a87d488DF82FE01048605B" : "0x775F7DF7df61f7060ffC4060eBE363D60A951155";
+  const novaFactoryAddr = hre.network.name == 'mumbai' ? "0xd165Edc0CacD481Ac2a87d488DF82FE01048605B" : "0x775F7DF7df61f7060ffC4060eBE363D60A951155";
 
-  const AutDAORegistry = await hre.ethers.getContractFactory(
-    "AutDAORegistry"
+  const NovaRegistry = await hre.ethers.getContractFactory(
+    "NovaRegistry"
   );
-  const autDAORegistry = await AutDAORegistry.deploy(
+  const novaRegistry = await NovaRegistry.deploy(
     trustedForwarder,
     autIDAddr,
-    autDAOFactoryAddr,
+    novaFactoryAddr,
     pluginsRegistry
   );
-  await autDAORegistry.deployed();
+  await novaRegistry.deployed();
 
-  console.log('AutDAORegistry deployed to: ', autDAORegistry.address);
+  console.log('NovaRegistry deployed to: ', novaRegistry.address);
 
 }
 

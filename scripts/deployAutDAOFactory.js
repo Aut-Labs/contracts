@@ -7,13 +7,13 @@ const hre = require("hardhat");
 
 async function main() {
   
-  const AutDAOFactory = await hre.ethers.getContractFactory(
-    "AutDAOFactory"
+  const NovaFactory = await hre.ethers.getContractFactory(
+    "NovaFactory"
   );
-  const autDAOFactory = await AutDAOFactory.deploy();
-  await autDAOFactory.deployed();
+  const novaFactory = await NovaFactory.deploy();
+  await novaFactory.deployed();
 
-  console.log('AutDAOFactory', autDAOFactory.address);
+  console.log('NovaFactory', novaFactory.address);
 
 }
 

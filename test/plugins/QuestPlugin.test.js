@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 let questPlugin;
-let dao;
+let nova;
 let pluginRegistry;
 let moduleRegistry;
 const url = "https://something";
@@ -32,8 +32,8 @@ describe("QuestPlugin", (accounts) => {
     });
     await autID.deployed();
 
-    const AutDAO = await ethers.getContractFactory("AutDAO");
-    dao = await AutDAO.deploy(
+    const Nova = await ethers.getContractFactory("Nova");
+    nova = await Nova.deploy(
       admin.address,
       autID.address,
       1,
@@ -62,7 +62,7 @@ describe("QuestPlugin", (accounts) => {
       "OffchainVerifiedTaskPlugin"
     );
     offchainVerifiedTaskPlugin = await OffchainVerifiedTaskPlugin.deploy(
-      dao.address,
+      nova.address,
       verifier.address
     );
 
@@ -70,21 +70,21 @@ describe("QuestPlugin", (accounts) => {
       "OpenTaskPlugin"
     );
     openTaskPlugin = await OpenTaskPlugin.deploy(
-      dao.address,
+      nova.address,
       false
     );
-    let tx = await dao
+    let tx = await nova
       .connect(admin)
       .activateModule(1);
     await expect(tx)
-      .to.emit(dao, "ModuleActivated")
+      .to.emit(nova, "ModuleActivated")
       .withArgs(1);
       
-    tx = await dao
+    tx = await nova
       .connect(admin)
       .activateModule(2);
     await expect(tx)
-      .to.emit(dao, "ModuleActivated")
+      .to.emit(nova, "ModuleActivated")
       .withArgs(2);
     // Add plugins to the DAO
      tx = await pluginRegistry
@@ -92,14 +92,14 @@ describe("QuestPlugin", (accounts) => {
       .addPluginToDAO(offchainVerifiedTaskPlugin.address, offchainVerifiedTaskPluginType);
     await expect(tx)
       .to.emit(pluginRegistry, "PluginAddedToDAO")
-      .withArgs(1, offchainVerifiedTaskPluginType, dao.address);
+      .withArgs(1, offchainVerifiedTaskPluginType, nova.address);
 
     tx = await pluginRegistry
       .connect(admin)
       .addPluginToDAO(openTaskPlugin.address, openTaskPluginType);
     await expect(tx)
       .to.emit(pluginRegistry, "PluginAddedToDAO")
-      .withArgs(2, openTaskPluginType, dao.address);
+      .withArgs(2, openTaskPluginType, nova.address);
 
     const blockNumber = await ethers.provider.getBlockNumber();
     block = await ethers.provider.getBlock(blockNumber);
@@ -121,7 +121,7 @@ describe("QuestPlugin", (accounts) => {
   describe("Quests Plugin", async () => {
     it("Should deploy a QuestPlugin", async () => {
       const QuestPlugin = await ethers.getContractFactory("QuestPlugin");
-      questPlugin = await QuestPlugin.deploy(dao.address);
+      questPlugin = await QuestPlugin.deploy(nova.address);
       expect(questPlugin.address).not.null;
     });
     it("Should mint an NFT for it", async () => {
@@ -130,7 +130,7 @@ describe("QuestPlugin", (accounts) => {
         .addPluginToDAO(questPlugin.address, questPluginType);
       await expect(tx)
         .to.emit(pluginRegistry, "PluginAddedToDAO")
-        .withArgs(3, questPluginType, dao.address);
+        .withArgs(3, questPluginType, nova.address);
     });
     it("Should create a quest", async () => {
       const tx = await questPlugin.connect(admin).create(1, url, block.timestamp + 20, 3);
