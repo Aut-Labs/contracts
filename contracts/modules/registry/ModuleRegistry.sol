@@ -10,7 +10,7 @@ contract ModuleRegistry is IModuleRegistry, Ownable {
     constructor() {
         _transferOwnership(msg.sender);
         modules.push(ModuleDefinition("none", 0));
-        modules.push(ModuleDefinition("ipfs://bafkreiajwhzd36nkt44bqgtyh7upkgoiooxqzafp62qh4zagkfihcssgpu", 1));
+        modules.push(ModuleDefinition("ipfs://bafkreia2si4nhqjdxg543z7pp5kchvx4auwm7gn54wftfa2vykfkjc4ppe", 1));
         modules.push(ModuleDefinition("ipfs://bafkreihxcz6eytmf6lm5oyqee67jujxepuczl42lw2orlfsw6yds5gm46i", 2));
         modules.push(ModuleDefinition("ipfs://bafkreieg7dwphs4554g726kalv5ez22hd55k3bksepa6rrvon6gf4mupey", 3));
     }

@@ -19,7 +19,7 @@ async function main() {
     const pluginRegistryAddress = "0x15049B09d65F6f1b5A68684e6a765427a87f638c"; // mumbai
     const PluginRegistry = await hre.ethers.getContractFactory("PluginRegistry");
     const pluginRegistry = await PluginRegistry.attach(pluginRegistryAddress);
-    const onboardingIpfsUrl = "ipfs://bafkreia2si4nhqjdxg543z7pp5kchvx4auwm7gn54wftfa2vykfkjc4ppe";
+    const onboardingIpfsUrl = "ipfs://bafkreig3gwhmraeljunek6rw3vynsbxapmwdmtzaov6uwcsq4qz6t2kmny";
     const discordUrl = "ipfs://bafkreic6s52eavmst3w7vebsdzl76a55wbm3asq6qujubjh6xh3323u7f4";
     const openTaskUrl = "ipfs://bafkreie45ntwx6trhl4azaixj6st64rcghrnscf2mnlahihctri6ospgte";
     const quizUrl = "ipfs://bafkreign362uxbfxfmczqd73accyqvfllmf5p47lxyubmdxylhin5xdazi";
