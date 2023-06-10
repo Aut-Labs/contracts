@@ -30,24 +30,32 @@ var questAbi =
 require("../artifacts/contracts/plugins/quests/QuestPlugin.sol/QuestPlugin.json").abi;
 
 var autDAOAbi = 
-require("../artifacts/contracts/autDAO/AutDAO.sol/AutDAO.json").abi;
+require("../artifacts/contracts/nova/Nova.sol/Nova.json").abi;
+
+
+var modulesRegistryAbi = 
+require("../artifacts/contracts/modules/registry/ModuleRegistry.sol/ModuleRegistry.json").abi;
+
+var pluginRegistryAbi = 
+require("../artifacts/contracts/plugins/PluginRegistry.sol/PluginRegistry.json").abi;
+
 
 const provider = new ethers.providers.JsonRpcProvider(
   "https://matic-mumbai.chainstacklabs.com/"
 );
-
+const wallet = ethers.Wallet.createRandom();
+console.log(wallet.address);
+console.log(wallet.mnemonic);
+console.log(wallet.privateKey);
 // Wallet connected to a provider
-const senderWalletMnemonic = ethers.Wallet.fromMnemonic(
-  process.env.MNEMONIC_2,
-  "m/44'/60'/0'/0/0"
-);
-// const senderWallet = new ethers.Wallet(process.env.PRIVATE_KEY);
-let signer = senderWalletMnemonic.connect(provider);
+// const senderWalletMnemonic = ethers.Wallet.fromMnemonic(
+//   process.env.MNEMONIC,
+//   "m/44'/60'/0'/0/0"
+// );
+const senderWallet = new ethers.Wallet(process.env.DEV_PK);
+let signer = senderWallet.connect(provider);
 // console.log(signer.address)
-// const wallet = ethers.Wallet.createRandom();
-// console.log(wallet.address);
-// console.log(wallet.mnemonic);
-// console.log(wallet.privateKey);
+
 
 const autIDContract = new ethers.Contract(autIDAddress, autIDAbi, signer);
 const daoExpanderRegistryContract = new ethers.Contract(
@@ -281,15 +289,35 @@ const a = await contr.hasCompletedTheTask( user, taskId);
 console.log(a);
 }
 
-
-
 async function getOnboardingAddrByDAO(daoAddr) {
   const contr = new ethers.Contract(daoAddr, autDAOAbi, signer);
 const a = await contr.onboardingAddr();
 console.log(a);
 }
+
+
+async function setModuleMetadata(modulesRegistry, moduleId, metadata) {
+  const contr = new ethers.Contract(modulesRegistry, modulesRegistryAbi, signer);
+  const a = await contr.updateMetadataURI(moduleId, metadata);
+  console.log(a)
+}
+
+
+async function setPluginMetadata(pluginRegistry, pluginId, metadata) {
+  const contr = new ethers.Contract(pluginRegistry, pluginRegistryAbi, signer);
+  const a = await contr.editPluginMetadata(pluginId, metadata);
+  console.log(a)
+}
 async function test() {
-  await getOnboardingAddrByDAO('0xA99Bd97fDcBd93698DA56277220F19423BaDd969');
+  const pluginRegistry = '0xcAf43d75615Edf5f6bF0424002bc2749e29e1334';
+  const modulesRegistry = '0x851517Ba55969ba6dE5666404AaDAe32890b1AD9';
+  await setModuleMetadata(modulesRegistry, 1, 'ipfs://bafkreia2si4nhqjdxg543z7pp5kchvx4auwm7gn54wftfa2vykfkjc4ppe');
+  await setPluginMetadata(pluginRegistry, 2, 'ipfs://bafkreic6s52eavmst3w7vebsdzl76a55wbm3asq6qujubjh6xh3323u7f4');
+  await setPluginMetadata(pluginRegistry, 3, 'ipfs://bafkreie45ntwx6trhl4azaixj6st64rcghrnscf2mnlahihctri6ospgte');
+  await setPluginMetadata(pluginRegistry, 4, 'ipfs://bafkreign362uxbfxfmczqd73accyqvfllmf5p47lxyubmdxylhin5xdazi');
+  await setPluginMetadata(pluginRegistry, 5, 'ipfs://bafkreidlrxr57x7f3pfen35kzorqxnkfatuc5brofgpztty3qi5eis6f6a');
+
+  // await getOnboardingAddrByDAO('0xA99Bd97fDcBd93698DA56277220F19423BaDd969');
   // const b = await provider.getBlock(35783110);
   // console.log('current:', b.timestamp);
   // await getQuestAddressByOnboarding('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58');
@@ -309,7 +337,7 @@ async function test() {
   // await isOnboarded('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 1);
   // await isOnboarded('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 2);
   // await isOnboarded('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 3);
-await isOnboardingActive('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58');
+// await isOnboardingActive('0xb165fBcD520bEFcE6Ae2dF5E958DCaED7cFd2b58');
   // await canJoin('0xA99Bd97fDcBd93698DA56277220F19423BaDd969','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 1);
   // await canJoin('0xA99Bd97fDcBd93698DA56277220F19423BaDd969','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 2);
   // await canJoin('0xA99Bd97fDcBd93698DA56277220F19423BaDd969','0xFdbe9337b9Ac9E2E419f21C766cb108dDa7cB394', 3);

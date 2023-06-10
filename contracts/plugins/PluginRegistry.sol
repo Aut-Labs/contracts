@@ -135,12 +135,11 @@ contract PluginRegistry is
         return owner;
     }
 
-    function editPluginMetadata(
-        uint pluginId,
+    function editPluginDefinitionMetadata(
+        uint pluginDefinitionId,
         string memory url
-    ) external override {
-        require(msg.sender == ownerOf(pluginId), "only plugin owner");
-        _setTokenURI(pluginId, url);
+    ) external onlyOwner override {
+        pluginDefinitionsById[pluginDefinitionId].metadataURI = url;
     }
 
     // Plugin type management

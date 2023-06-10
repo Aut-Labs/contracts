@@ -6,14 +6,6 @@
 const hre = require("hardhat");
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
-
-  // We get the contract to deploy
 
   const goerliTrustedFrowarder = '0xE041608922d06a4F26C0d4c27d8bCD01daf1f792';
   const mumbaiTustedForwarder = '0x69015912AA33720b842dCD6aC059Ed623F28d9f7';
@@ -38,7 +30,6 @@ async function main() {
   const pluginRegistry = await PluginRegistry.deploy(moduleRegistry.address);
   await pluginRegistry.deployed();
 
-
   const NovaRegistry = await hre.ethers.getContractFactory(
     "NovaRegistry"
   );
@@ -49,28 +40,6 @@ async function main() {
     pluginRegistry.address
   );
   await novaRegistry.deployed();
-
-
-  // const DAOExpanderFactory = await hre.ethers.getContractFactory(
-  //   "DAOExpanderFactory"
-  // );
-  // const daoExpanderFactory = await DAOExpanderFactory.deploy();
-  // await daoExpanderFactory.deployed();
-
-  // const daoTypesAddr = hre.network.name == 'mumbai' ? "0x814B36802359E0233f38B8A29A96EA9e4c261E37" : "0xD6D405673fF4D1563B9E2dDD3ff7C4B20Af755fc";
-  
-  // const DAOExpanderRegistry = await hre.ethers.getContractFactory(
-  //   "DAOExpanderRegistry"
-  // );
-  // const daoExpanderRegistry = await DAOExpanderRegistry.deploy(
-  //   trustedForwarder,
-  //   autID.address,
-  //   daoTypesAddr,
-  //   daoExpanderFactory.address,
-  //   pluginRegistry.address
-  // );
-  // await daoExpanderRegistry.deployed();
-
 
   console.log(`MUMBAI_AUT_ID_ADDRESS=${autID.address}`);
   // console.log(`MUMBAI_DAO_REGISTRY_ADDRESS=${daoExpanderRegistry.address}`);

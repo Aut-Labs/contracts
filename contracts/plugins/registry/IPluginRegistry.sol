@@ -97,11 +97,11 @@ interface IPluginRegistry {
         returns (uint256[] memory);
     
     /**
-     * @dev Edits the metadata URI for a given plugin.
-     * @param pluginId The ID of the plugin for which to edit metadata.
+     * @dev Edits the metadata URI for a given plugin definition.
+     * @param pluginDefinitionId The ID of the plugin for which to edit metadata.
      * @param url The URL of the new metadata.
      */
-    function editPluginMetadata(uint pluginId, string memory url) external;
+    function editPluginDefinitionMetadata(uint pluginDefinitionId, string memory url) external;
 
     /**
      * @dev Returns the address of the Modules Registry contract.
