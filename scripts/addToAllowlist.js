@@ -20,11 +20,11 @@
     const devAllowlistAddress = "0x3Aa3c3cd9361a39C651314261156bc7cdB52B618"; // mumbai
     const prodAllowlistAddress = '0xc30B5B04DB59A91F8e2058Bf998C0A4F827A8C2A';
     const Allowlist = await hre.ethers.getContractFactory("Allowlist");
-    const allowlist = await Allowlist.attach(devAllowlistAddress);
+    const allowlist = await Allowlist.attach(prodAllowlistAddress);
 
     const a = await (
       await allowlist.addToAllowlist(
-        '0xE79A5fbc800ABA2074b0e54c68e51a5F6a38E07e' // tao
+        '0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3' // tao
       )
     ).wait();
     console.log("allowlistTx", a);

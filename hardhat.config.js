@@ -36,7 +36,7 @@ module.exports = {
   networks: {
     hardhat: {},
     mumbai: {
-      url: "https://matic-mumbai.chainstacklabs.com/",
+      url: "https://rpc-mumbai.maticvigil.com/",
       accounts: [process.env.DEV_PK],
     },
     goerli: {

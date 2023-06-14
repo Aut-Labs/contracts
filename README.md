@@ -35,12 +35,9 @@ You're ready to go! 🚀🚀🚀
 # Deployments (locally or not)
 
 1. Select your desired network in hardhat.config.json under default network
-2. Run `npm run deployAutID` and store the output address of AutID 
-2. Run `npm run deployDAOExpanderFactory` and store the output address of DAOExpanderFactory
-3. Run `npm run deployDAOTypes` and store the addresses DAO Types of all the Checkers and Types
-4. Deploy DAOExpanerRegistry:  
-    4.1. Replace autIDAddr, daoTypesAddr and daoExpanderFactoryAddr in deployDAOExpanderRegistry.js 
-    4.2. Run `npm run deployDAOExpanderRegistry`
+2. Run `npm run deployAll` and store the output addresses
+2. If you need to install the Plugin Definitions, copy the PluginRegistry address and put it in ./scripts/addPluginDefinitions.js script
+3. Run `npm run addPluginDefinitions` 
     
 > **_Tip:_** If you're expanding the DAO Types that the product supports, for testing purposes, you can add it to /scripts/deployDAOTypes.js
 
