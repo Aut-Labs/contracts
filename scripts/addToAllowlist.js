@@ -17,14 +17,14 @@
 
 
     // We get the contract to deploy
-    const devAllowlistAddress = "0x3Aa3c3cd9361a39C651314261156bc7cdB52B618"; // mumbai
+    const devAllowlistAddress = "0xF9041ff90Ab672064E31A92D5d847b98f2DdCCb8"; // mumbai
     const prodAllowlistAddress = '0xc30B5B04DB59A91F8e2058Bf998C0A4F827A8C2A';
     const Allowlist = await hre.ethers.getContractFactory("Allowlist");
-    const allowlist = await Allowlist.attach(prodAllowlistAddress);
+    const allowlist = await Allowlist.attach(devAllowlistAddress);
 
     const a = await (
       await allowlist.addToAllowlist(
-        '0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3' // tao
+        '0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43' // tao
       )
     ).wait();
     console.log("allowlistTx", a);
