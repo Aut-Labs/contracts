@@ -37,16 +37,16 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
         uint activeQuestRole3 = questsPlugin.activeQuestsPerRole(3);
         if (active) {
             require(
-                activeQuestRole1 > 0 &&
-                    activeQuestRole2 > 0 &&
+                activeQuestRole1 > 0 ||
+                    activeQuestRole2 > 0 ||
                     activeQuestRole3 > 0,
-                "not all quests are defined"
+                "at least one quest needs to be defined"
             );
             require(
-                questsPlugin.getById(activeQuestRole1).tasksCount > 0 &&
-                    questsPlugin.getById(activeQuestRole2).tasksCount > 0 &&
+                questsPlugin.getById(activeQuestRole1).tasksCount > 0 ||
+                    questsPlugin.getById(activeQuestRole2).tasksCount > 0 ||
                     questsPlugin.getById(activeQuestRole3).tasksCount > 0,
-                "not all quests have tasks"
+                "at least one quest must have tasks"
             );
         } else {
             require(
