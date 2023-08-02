@@ -23,7 +23,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  defaultNetwork: "sepolia",
+  defaultNetwork: "mumbai",
   solidity: {
     version: "0.8.18",
     settings: {
@@ -48,7 +48,7 @@ module.exports = {
       accounts: [process.env.DEV_PK],
     },
     goerli: {
-      url:"https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      url:`https://goerli.infura.io/v3/${process.env.GOERLI_RPCKEY}`,
       accounts: [process.env.DEV_PK]
     }
   },
