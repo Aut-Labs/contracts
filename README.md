@@ -10,7 +10,7 @@ Below, you'll find a simple walkthrough to get started using Āut's Smart Contra
 
 1. Create .env file and put your testing private key there
     ```
-    PRIVATE_KEY='your_private_key'
+    DEV_PK='your_private_key'
     ```
 
 2. Install dependencies

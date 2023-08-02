@@ -9,12 +9,30 @@ async function main() {
 
   const goerliTrustedFrowarder = '0xE041608922d06a4F26C0d4c27d8bCD01daf1f792';
   const mumbaiTustedForwarder = '0x69015912AA33720b842dCD6aC059Ed623F28d9f7';
-  const trustedForwarder = hre.network.name == 'mumbai' ? mumbaiTustedForwarder : goerliTrustedFrowarder;
+  let trustedForwarder;
+    switch (hre.network.name) {
+      case "mumbai":
+      trustedForwarder =  mumbaiTustedForwarder;
+      case "goerli": 
+      trustedForwarder =  goerliTrustedFrowarder;
+      case "sepolia": 
+      trustedForwarder =   '0x0000000000000000000000000000000000000100';
+      case "localhost": 
+      trustedForwarder =  '0x0000000000000000000000000000000000000100';
+    }
+
+    // const feeData = await hre.waffle.provider.getGasPrice();
+  //  const gasCost = String(hre.ethers.utils.formatUnits(feeData.maxFeePerGas, "gwei"));
+
+  console.log(hre.network, "----  name --- ");
 
   const AutID = await hre.ethers.getContractFactory("AutID");
-  const autID = await hre.upgrades.deployProxy(AutID, [trustedForwarder], { initializer: 'initialize' });
+  const autID = await hre.upgrades.deployProxy(AutID, [trustedForwarder], { initializer: 'initialize'  });
 
   await autID.deployed();
+
+  console.log(`${hre.network.name}_AUT_ID_ADDRESS=${autID.address}`);
+
 
   const NovaFactory = await hre.ethers.getContractFactory(
     "NovaFactory"
@@ -41,15 +59,15 @@ async function main() {
   );
   await novaRegistry.deployed();
 
-  console.log(`MUMBAI_AUT_ID_ADDRESS=${autID.address}`);
-  // console.log(`MUMBAI_DAO_REGISTRY_ADDRESS=${daoExpanderRegistry.address}`);
-  // console.log(`MUMBAI_DAO_FACTORY_ADDRESS=${daoExpanderFactory.address}`);
-  console.log(`MUMBAI_AUT_DAO_REGISTRY_ADDRESS=${novaRegistry.address}`);
-  console.log(`MUMBAI_AUT_DAO_FACTORY_ADDRESS=${novaFactory.address}`);
-  console.log(`MUMBAI_DAO_TYPES_ADDRESS=0x814B36802359E0233f38B8A29A96EA9e4c261E37`);
-  console.log(`MUMBAI_HACKERS_DAO_ADDRESS=0x8eA20de15Db87Be1a8B20Da5ebD785a4a9BE9690`);
-  console.log(`MUMBAI_PLUGIN_REGISTRY_ADDRESS=${pluginRegistry.address}`);
-  console.log(`MUMBAI_MODULE_REGISTRY_ADDRESS=${moduleRegistry.address}`);
+  console.log(`${hre.network.name}_AUT_ID_ADDRESS=${autID.address}`);
+  // console.log(`${hre.network.name}_DAO_REGISTRY_ADDRESS=${daoExpanderRegistry.address}`);
+  // console.log(`${hre.network.name}_DAO_FACTORY_ADDRESS=${daoExpanderFactory.address}`);
+  console.log(`${hre.network.name}_AUT_DAO_REGISTRY_ADDRESS=${novaRegistry.address}`);
+  console.log(`${hre.network.name}_AUT_DAO_FACTORY_ADDRESS=${novaFactory.address}`);
+  console.log(`${hre.network.name}_DAO_TYPES_ADDRESS=0x814B36802359E0233f38B8A29A96EA9e4c261E37`);
+  console.log(`${hre.network.name}_HACKERS_DAO_ADDRESS=0x8eA20de15Db87Be1a8B20Da5ebD785a4a9BE9690`);
+  console.log(`${hre.network.name}_PLUGIN_REGISTRY_ADDRESS=${pluginRegistry.address}`);
+  console.log(`${hre.network.name}_MODULE_REGISTRY_ADDRESS=${moduleRegistry.address}`);
 
 }
 

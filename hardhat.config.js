@@ -23,9 +23,9 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  defaultNetwork: "mumbai",
+  defaultNetwork: "sepolia",
   solidity: {
-    version: "0.8.4",
+    version: "0.8.18",
     settings: {
       optimizer: {
         enabled: true,
@@ -34,7 +34,15 @@ module.exports = {
     },
   },
   networks: {
+    localhost: {
+      url: "http://127.0.0.1:8545/",
+      accounts: [process.env.DEV_PK],
+    },
     hardhat: {},
+    sepolia: {
+      url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.SEPOLIA_RPCKEY}`,
+      accounts: [process.env.DEV_PK],
+    },
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com/",
       accounts: [process.env.DEV_PK],
