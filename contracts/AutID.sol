@@ -1,6 +1,6 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.18;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
 
@@ -308,7 +308,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         internal
         view
         override(ContextUpgradeable, ERC2771Recipient)
-        returns (bytes memory)
+        returns (bytes calldata)
     {
         return ERC2771Recipient._msgData();
     }

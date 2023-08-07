@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.18;
 import "../IModule.sol";
 /* 
 The OnboardingModule aims to give the most general structure for onboarding members.  

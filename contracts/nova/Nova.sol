@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.18;
 import "../daoUtils/abstracts/DAOUrls.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOMembers.sol";

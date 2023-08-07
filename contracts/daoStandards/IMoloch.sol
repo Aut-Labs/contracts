@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.18;
 
 /// @title IMoloch
 /// @notice The minimal interface of the Moloch contract needed for implementing IMembershipExtension
