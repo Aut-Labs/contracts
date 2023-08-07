@@ -9,5 +9,5 @@ interface ITribute {
         uint256 flags; // flags to track the state of the member: exists, etc
     }
 
-    function members(address member) external view returns(Member memory);
+    function members(address member) external view returns (Member memory);
 }

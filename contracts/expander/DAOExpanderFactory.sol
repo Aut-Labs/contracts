@@ -5,7 +5,6 @@ import "./interfaces/IDAOExpanderFactory.sol";
 import "./DAOExpander.sol";
 
 contract DAOExpanderFactory is IDAOExpanderFactory {
-
     function deployDAOExpander(
         address deployer,
         address autIDAddr,

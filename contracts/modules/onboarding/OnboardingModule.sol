@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.18;
+
 import "../IModule.sol";
 /* 
 The OnboardingModule aims to give the most general structure for onboarding members.  
@@ -18,8 +19,7 @@ interface OnboardingModule is IModule {
     /// @param member The address for whom the check is made
     /// @param role The role for which the member is checked
     /// @return Returns bool, true if the member is onboarded, false - otherwise
-    function isOnboarded(address member, uint role) external view returns (bool);
-
+    function isOnboarded(address member, uint256 role) external view returns (bool);
 
     /* 
         The onboard function, marks a member of the community as onboarded. 
@@ -30,6 +30,5 @@ interface OnboardingModule is IModule {
     /// @notice Onboards a new member if needed.
     /// @param member The member to be onboarded
     /// @param role The role for which the member is onboarded
-    function onboard(address member, uint role) external;
-
+    function onboard(address member, uint256 role) external;
 }

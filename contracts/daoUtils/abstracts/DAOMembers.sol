@@ -11,7 +11,6 @@ import "../interfaces/set/IDAOAdminSet.sol";
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, IDAOAdminSet, AutIDAddress {
-
     address[] public members;
 
     mapping(address => bool) public override isMember;
@@ -27,7 +26,7 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
         _;
     }
 
-    function join(address newMember, uint role) public virtual override onlyAutID {
+    function join(address newMember, uint256 role) public virtual override onlyAutID {
         require(!isMember[newMember], "Already a member");
         isMember[newMember] = true;
         members.push(newMember);

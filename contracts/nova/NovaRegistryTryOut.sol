@@ -9,7 +9,7 @@
 //     event NovaDeployed(address nova);
 
 //     mapping(address => address[]) novaDeployers;
-     
+
 //     address[] public novas;
 //     address public autIDAddr;
 //     INovaFactory private novaFactory;

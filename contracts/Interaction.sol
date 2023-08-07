@@ -28,27 +28,14 @@ contract Interaction is IInteraction {
     }
 
     function allowAccess(address addr) public override {
-        require(
-            dao.isAdmin(msg.sender) ||
-                IDAOModules(address(dao)).pluginRegistry() ==
-                msg.sender,
-            "Not allowed"
-        );
+        require(dao.isAdmin(msg.sender) || IDAOModules(address(dao)).pluginRegistry() == msg.sender, "Not allowed");
         isAllowed[addr] = true;
 
         emit AddressAllowed(addr);
     }
 
-    function addInteraction(uint256 activityID, address member)
-        public
-        override
-        onlyAllowed
-    {
-        InteractionModel memory model = InteractionModel(
-            member,
-            activityID,
-            msg.sender
-        );
+    function addInteraction(uint256 activityID, address member) public override onlyAllowed {
+        InteractionModel memory model = InteractionModel(member, activityID, msg.sender);
 
         idCounter.increment();
         interactions[idCounter.current()] = model;
@@ -58,21 +45,11 @@ contract Interaction is IInteraction {
     }
 
     // view
-    function getInteraction(uint256 interactionID)
-        public
-        view
-        override
-        returns (InteractionModel memory)
-    {
+    function getInteraction(uint256 interactionID) public view override returns (InteractionModel memory) {
         return interactions[interactionID];
     }
 
-    function getInteractionsIndexPerAddress(address user)
-        public
-        view
-        override
-        returns (uint256)
-    {
+    function getInteractionsIndexPerAddress(address user) public view override returns (uint256) {
         return interactionsIndex[user];
     }
 }

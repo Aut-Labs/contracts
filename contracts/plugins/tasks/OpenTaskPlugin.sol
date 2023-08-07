@@ -28,27 +28,22 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         TaskStatus status;
     }
 
-    mapping(uint => uint[]) public taskSubmissions;
-    mapping(uint => mapping(address => uint)) submitterToSubmissionId;
+    mapping(uint256 => uint256[]) public taskSubmissions;
+    mapping(uint256 => mapping(address => uint256)) submitterToSubmissionId;
 
     Submission[] public submissions;
 
-    modifier atStatus(
-        uint256 taskID,
-        address user,
-        TaskStatus status
-    ) {
-        if (status != submissions[submitterToSubmissionId[taskID][user]].status)
+    modifier atStatus(uint256 taskID, address user, TaskStatus status) {
+        if (status != submissions[submitterToSubmissionId[taskID][user]].status) {
             revert FunctionInvalidAtThisStage();
+        }
         _;
     }
 
     modifier onlyAllowedToSubmit() {
-        if (daoMembersOnly)
-            require(
-                IDAOMembership(_dao).isMember(msg.sender),
-                "Only DAO members"
-            );
+        if (daoMembersOnly) {
+            require(IDAOMembership(_dao).isMember(msg.sender), "Only DAO members");
+        }
         _;
     }
 
@@ -71,37 +66,29 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         daoMembersOnly = membersOnly;
     }
 
-    function createBy(
-        address creator,
-        uint256 role,
-        string memory uri,
-        uint256 startDate,
-        uint256 endDate
-    ) public override onlyDAOModule returns (uint256) {
+    function createBy(address creator, uint256 role, string memory uri, uint256 startDate, uint256 endDate)
+        public
+        override
+        onlyDAOModule
+        returns (uint256)
+    {
         require(endDate > block.timestamp, "Invalid endDate");
         require(bytes(uri).length > 0, "No URI");
         uint256 taskId = idCounter.current();
 
-        tasks.push(
-            Task(block.timestamp, creator, role, uri, startDate, endDate)
-        );
+        tasks.push(Task(block.timestamp, creator, role, uri, startDate, endDate));
 
         idCounter.increment();
         emit TaskCreated(taskId, uri);
         return taskId;
     }
 
-    function editTask(
-        uint256 taskId,
-        uint256 role,
-        string memory uri,
-        uint256 startDate,
-        uint256 endDate
-    ) public override onlyAdmin {
-        require(
-            tasks[taskId].startDate > block.timestamp,
-            "task already started"
-        );
+    function editTask(uint256 taskId, uint256 role, string memory uri, uint256 startDate, uint256 endDate)
+        public
+        override
+        onlyAdmin
+    {
+        require(tasks[taskId].startDate > block.timestamp, "task already started");
         require(bytes(uri).length > 0, "No URI");
         require(taskId < idCounter.current(), "invalid task");
 
@@ -113,10 +100,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         emit TaskEdited(taskId, uri);
     }
 
-    function submit(
-        uint256 taskId,
-        string calldata submitionUrl
-    )
+    function submit(uint256 taskId, string calldata submitionUrl)
         public
         override
         onlyAllowedToSubmit
@@ -125,19 +109,14 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         require(tasks[taskId].startDate < block.timestamp, "Not started yet");
         require(tasks[taskId].endDate > block.timestamp, "The task has ended");
         uint256 submissionId = submissionIds.current();
-        submissions.push(
-            Submission(msg.sender, submitionUrl, 0, TaskStatus.Submitted)
-        );
+        submissions.push(Submission(msg.sender, submitionUrl, 0, TaskStatus.Submitted));
         taskSubmissions[taskId].push(submissionId);
         submitterToSubmissionId[taskId][msg.sender] = submissionId;
         submissionIds.increment();
         emit TaskSubmitted(taskId, submissionId);
     }
 
-    function finalizeFor(
-        uint256 taskId,
-        address submitter
-    )
+    function finalizeFor(uint256 taskId, address submitter)
         public
         override
         atStatus(taskId, submitter, TaskStatus.Submitted)
@@ -146,73 +125,49 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         require(tasks[taskId].startDate < block.timestamp, "Not started yet");
         require(tasks[taskId].endDate > block.timestamp, "The task has ended");
 
-        submissions[submitterToSubmissionId[taskId][submitter]]
-            .status = TaskStatus.Finished;
-        submissions[submitterToSubmissionId[taskId][submitter]]
-            .completionTime = block.timestamp;
+        submissions[submitterToSubmissionId[taskId][submitter]].status = TaskStatus.Finished;
+        submissions[submitterToSubmissionId[taskId][submitter]].completionTime = block.timestamp;
 
-        IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr())
-            .addInteraction(taskId, submitter);
+        IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr()).addInteraction(taskId, submitter);
 
         emit TaskFinalized(taskId, submitter);
     }
 
-    function getById(
-        uint256 taskId
-    ) public view override returns (Task memory) {
+    function getById(uint256 taskId) public view override returns (Task memory) {
         return tasks[taskId];
     }
 
-    function getStatusPerSubmitter(
-        uint256 taskId,
-        address submitter
-    ) public view override returns (TaskStatus) {
+    function getStatusPerSubmitter(uint256 taskId, address submitter) public view override returns (TaskStatus) {
         return submissions[submitterToSubmissionId[taskId][submitter]].status;
     }
 
-    function getSubmissionIdsPerTask(
-        uint taskId
-    ) public view returns (uint[] memory) {
+    function getSubmissionIdsPerTask(uint256 taskId) public view returns (uint256[] memory) {
         return taskSubmissions[taskId];
     }
 
-    function getSubmissionIdPerTaskAndUser(
-        uint taskId,
-        address submitter
-    ) public view returns (uint) {
+    function getSubmissionIdPerTaskAndUser(uint256 taskId, address submitter) public view returns (uint256) {
         return submitterToSubmissionId[taskId][submitter];
     }
 
-    function getCompletionTime(
-        uint256 taskId,
-        address user
-    ) public view override returns (uint256) {
-        return
-            submissions[submitterToSubmissionId[taskId][user]].completionTime;
+    function getCompletionTime(uint256 taskId, address user) public view override returns (uint256) {
+        return submissions[submitterToSubmissionId[taskId][user]].completionTime;
     }
 
-    function hasCompletedTheTask(
-        address user,
-        uint256 taskId
-    ) public view override returns (bool) {
-        return
-            submissions[submitterToSubmissionId[taskId][user]].status ==
-            TaskStatus.Finished;
+    function hasCompletedTheTask(address user, uint256 taskId) public view override returns (bool) {
+        return submissions[submitterToSubmissionId[taskId][user]].status == TaskStatus.Finished;
     }
 
-    function create(
-        uint256 role,
-        string memory uri,
-        uint256 startDate,
-        uint256 endDate
-    ) public override onlyAdmin returns (uint256) {
+    function create(uint256 role, string memory uri, uint256 startDate, uint256 endDate)
+        public
+        override
+        onlyAdmin
+        returns (uint256)
+    {
         require(endDate > block.timestamp, "Invalid endDate");
         require(bytes(uri).length > 0, "No URI");
         uint256 taskId = idCounter.current();
 
-        tasks.push(
-            Task(block.timestamp, msg.sender, role, uri, startDate, endDate)
-        );
+        tasks.push(Task(block.timestamp, msg.sender, role, uri, startDate, endDate));
 
         idCounter.increment();
         emit TaskCreated(taskId, uri);

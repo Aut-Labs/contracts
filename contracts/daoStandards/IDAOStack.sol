@@ -3,7 +3,6 @@ pragma solidity 0.8.18;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-
 interface IDAOStack {
     /// @notice Function in the DAOStack contract for fetching its nativeToken
     /// @return The address of the nativeToken

@@ -24,7 +24,7 @@ interface TasksModule is IModule {
      */
     event TaskCreated(uint256 taskID, string uri);
 
-   /**
+    /**
      * @notice Emitted when a task is edited
      * @param taskID The id of the newly created task
      * @param uri IPFS CID with the off-chain data of the task
@@ -76,8 +76,8 @@ interface TasksModule is IModule {
         address creator;
         uint256 role;
         string metadata;
-        uint startDate;
-        uint endDate;
+        uint256 startDate;
+        uint256 endDate;
     }
 
     /**
@@ -86,12 +86,7 @@ interface TasksModule is IModule {
      * @param uri IPFS CID with the off-chain data of the task
      * @return The id of the newly created task
      */
-    function create(
-        uint256 role,
-        string memory uri,
-        uint startDate,
-        uint endDate
-    ) external returns (uint256);
+    function create(uint256 role, string memory uri, uint256 startDate, uint256 endDate) external returns (uint256);
 
     /**
      * @notice Creates a new task
@@ -100,14 +95,9 @@ interface TasksModule is IModule {
      * @param uri IPFS CID with the off-chain data of the task
      * @return The id of the newly created task
      */
-    function createBy(
-        address creator,
-        uint256 role,
-        string memory uri,
-        uint startDate,
-        uint endDate
-    ) external returns (uint256);
-
+    function createBy(address creator, uint256 role, string memory uri, uint256 startDate, uint256 endDate)
+        external
+        returns (uint256);
 
     /**
      * @notice Edits a task
@@ -117,13 +107,7 @@ interface TasksModule is IModule {
      * @param startDate The start date of the task
      * @param endDate The end date of the task
      */
-    function editTask(
-        uint256 taskId,
-        uint256 role,
-        string memory uri,
-        uint startDate,
-        uint endDate
-    ) external;
+    function editTask(uint256 taskId, uint256 role, string memory uri, uint256 startDate, uint256 endDate) external;
 
     /// @notice A function for taking a task. The signer is the taker.
     /// @param taskID the id of the task
@@ -153,26 +137,17 @@ interface TasksModule is IModule {
     /// @param user the address of the user
     /// @param taskID the id of the task
     /// @return bool
-    function hasCompletedTheTask(
-        address user,
-        uint taskID
-    ) external view returns (bool);
+    function hasCompletedTheTask(address user, uint256 taskID) external view returns (bool);
 
     /// @notice Gets the status of a task for a specific submitter.
     /// @param taskId the id of the task
     /// @param submitter the address of the submitter
     /// @return TaskStatus
-    function getStatusPerSubmitter(
-        uint256 taskId,
-        address submitter
-    ) external view returns (TaskStatus);
+    function getStatusPerSubmitter(uint256 taskId, address submitter) external view returns (TaskStatus);
 
     /// @notice Gets the completion time of a task for a specific user.
     /// @param taskId the id of the task
     /// @param user the address of the user
     /// @return uint
-    function getCompletionTime(
-        uint256 taskId,
-        address user
-    ) external view returns (uint);
+    function getCompletionTime(uint256 taskId, address user) external view returns (uint256);
 }

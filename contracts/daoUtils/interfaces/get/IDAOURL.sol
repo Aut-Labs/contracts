@@ -4,7 +4,6 @@ pragma solidity 0.8.18;
 /// @title IDAOURL
 /// @notice The interface for the extension of each DAO that integrates AutID
 interface IDAOURL {
-    
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev returns an array with all the listed urls
     /// @return returns all the urls listed for the DAO

@@ -3,7 +3,7 @@ pragma solidity 0.8.18;
 
 import "../daoStandards/ITribute.sol";
 
-/// @title Tribute 
+/// @title Tribute
 /// @notice Mock Tribute DAO for testing
 contract Tribute is ITribute {
     mapping(address => Member) private _members;
@@ -12,7 +12,7 @@ contract Tribute is ITribute {
         _members[newMember] = Member(5);
     }
 
-    function members(address addr) external view override returns(Member memory) {
+    function members(address addr) external view override returns (Member memory) {
         return _members[addr];
     }
 }

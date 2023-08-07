@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.18;
+
 import "../daoUtils/abstracts/DAOUrls.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOMembers.sol";
@@ -15,16 +16,7 @@ import "./interfaces/INova.sol";
 /// @title Nova
 /// @notice
 /// @dev
-contract Nova is
-    DAOMembers,
-    DAOInteractions,
-    DAOMetadata,
-    DAOUrls,
-    DAOMarket,
-    DAOModules,
-    DAOCommitment,
-    INova
-{
+contract Nova is DAOMembers, DAOInteractions, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCommitment, INova {
     address public deployer;
     address public onboardingAddr;
 
@@ -61,19 +53,18 @@ contract Nova is
     }
 
     function setOnboardingStrategy(address onboardingPlugin) public override {
-        require(
-            IModule(onboardingPlugin).moduleId() == 1,
-            "Only Onboarding Plugin"
-        );
+        require(IModule(onboardingPlugin).moduleId() == 1, "Only Onboarding Plugin");
 
-        if (onboardingAddr == address(0))
+        if (onboardingAddr == address(0)) {
             require(msg.sender == pluginRegistry, "Only Plugin Registry");
-        else require(DAOMembers(this).isAdmin(msg.sender), "Only Admin");
+        } else {
+            require(DAOMembers(this).isAdmin(msg.sender), "Only Admin");
+        }
 
         onboardingAddr = onboardingPlugin;
     }
 
-    function activateModule(uint moduleId) public override onlyAdmin {
+    function activateModule(uint256 moduleId) public override onlyAdmin {
         _activateModule(moduleId);
     }
 
@@ -93,15 +84,9 @@ contract Nova is
         _setCommitment(commitment);
     }
 
-    function canJoin(
-        address member,
-        uint256 role
-    ) external view override returns (bool) {
+    function canJoin(address member, uint256 role) external view override returns (bool) {
         if (onboardingAddr == address(0)) return true;
-        if (
-            onboardingAddr != address(0) &&
-            !OnboardingModule(onboardingAddr).isActive()
-        ) return false;
+        if (onboardingAddr != address(0) && !OnboardingModule(onboardingAddr).isActive()) return false;
         else return OnboardingModule(onboardingAddr).isOnboarded(member, role);
     }
 }

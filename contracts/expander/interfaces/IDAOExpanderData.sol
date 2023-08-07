@@ -12,5 +12,4 @@ interface IDAOExpanderData {
     }
 
     function getDAOData() external view returns (DAOExpanssionData memory data);
-
 }

@@ -2,13 +2,14 @@
 pragma solidity 0.8.18;
 
 import "./interfaces/INovaFactory.sol";
+import "./interfaces/INovaRegistry.sol";
 import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
-contract NovaRegistry is ERC2771Recipient {
+contract NovaRegistry is ERC2771Recipient, INovaRegistry {
     event NovaDeployed(address nova);
 
     mapping(address => address[]) novaDeployers;
-     
+
     address[] public novas;
     address public autIDAddr;
     INovaFactory private novaFactory;
@@ -28,23 +29,13 @@ contract NovaRegistry is ERC2771Recipient {
     /**
      * @dev Deploys a new Nova
      * @return _nova the newly created Nova address
-     **/
-    function deployNova(
-        uint256 market,
-        string calldata metadata,
-        uint256 commitment
-    ) public returns (address _nova) {
+     *
+     */
+    function deployNova(uint256 market, string calldata metadata, uint256 commitment) public returns (address _nova) {
         require(market > 0 && market < 4, "Market invalid");
         require(bytes(metadata).length > 0, "Missing Metadata URL");
         require(commitment > 0 && commitment < 11, "Invalid commitment");
-        address novaAddr = novaFactory.deployNova(
-            _msgSender(),
-            autIDAddr,
-            market,
-            metadata,
-            commitment,
-            pluginRegistry
-        );
+        address novaAddr = novaFactory.deployNova(_msgSender(), autIDAddr, market, metadata, commitment, pluginRegistry);
         novas.push(novaAddr);
         novaDeployers[_msgSender()].push(novaAddr);
 
@@ -57,7 +48,7 @@ contract NovaRegistry is ERC2771Recipient {
         return novas;
     }
 
-    function getNovaByDeployer(address deployer) public view returns(address[] memory) {
+    function getNovaByDeployer(address deployer) public view returns (address[] memory) {
         return novaDeployers[deployer];
     }
 }

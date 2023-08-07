@@ -12,10 +12,7 @@ abstract contract AutIDAddress is IAutIDAddress {
 
     /// @dev Modifier for check of access of the admin member functions
     modifier onlyAutID() {
-        require(
-            msg.sender == address(_autID),
-            "Only AutID"
-        );
+        require(msg.sender == address(_autID), "Only AutID");
         _;
     }
 

@@ -6,6 +6,5 @@ pragma solidity 0.8.18;
 interface IDAOMembershipSet {
     event MemberAdded();
 
-    function join(address newMember, uint role) external;
-
+    function join(address newMember, uint256 role) external;
 }

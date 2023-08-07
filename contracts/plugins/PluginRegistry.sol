@@ -15,12 +15,7 @@ import "../IInteraction.sol";
 
 /// @title PluginRegistry
 /// @notice Stores all plugins available and allows them to be added to a dao
-contract PluginRegistry is
-    ERC721URIStorage,
-    Ownable,
-    ReentrancyGuard,
-    IPluginRegistry
-{
+contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRegistry {
     uint256 public _numPluginDefinitions;
     uint256 public _numPluginsMinted;
 
@@ -34,17 +29,12 @@ contract PluginRegistry is
 
     mapping(address => uint256) public tokenIdByPluginAddress;
 
-    mapping(address => mapping(uint256 => bool))
-        public
-        override pluginDefinitionsInstalledByDAO;
+    mapping(address => mapping(uint256 => bool)) public override pluginDefinitionsInstalledByDAO;
 
     mapping(address => uint256[]) pluginIdsByDAO;
 
     modifier onlyOracle() {
-        require(
-            msg.sender == oracleAddress,
-            "AUT: Only oracle can call this function"
-        );
+        require(msg.sender == oracleAddress, "AUT: Only oracle can call this function");
         _;
     }
 
@@ -55,27 +45,16 @@ contract PluginRegistry is
     }
 
     // Plugin creation
-    function addPluginToDAO(
-        address pluginAddress,
-        uint256 pluginDefinitionId
-    ) external override payable nonReentrant {
+    function addPluginToDAO(address pluginAddress, uint256 pluginDefinitionId) external payable override nonReentrant {
         IModule plugin = IModule(pluginAddress);
         address dao = plugin.daoAddress();
 
         require(IDAOAdmin(dao).isAdmin(msg.sender) == true, "Not an admin");
 
-        PluginDefinition storage pluginDefinition = pluginDefinitionsById[
-            pluginDefinitionId
-        ];
+        PluginDefinition storage pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
         require(pluginDefinition.canBeStandalone, "can't be standalone");
-        require(
-            msg.value >= pluginDefinition.price,
-            "AUT: Insufficient price paid"
-        );
-        require(
-            !pluginDefinitionsInstalledByDAO[dao][pluginDefinitionId],
-            "AUT: Plugin already installed on dao"
-        );
+        require(msg.value >= pluginDefinition.price, "AUT: Insufficient price paid");
+        require(!pluginDefinitionsInstalledByDAO[dao][pluginDefinitionId], "AUT: Plugin already installed on dao");
 
         pluginDefinitionsInstalledByDAO[dao][pluginDefinitionId] = true;
 
@@ -86,9 +65,7 @@ contract PluginRegistry is
         uint256 fee = (pluginDefinition.price * feeBase1000) / 1000;
 
         feeReciever.transfer(fee);
-        pluginDefinitionsById[pluginDefinitionId].creator.transfer(
-            msg.value - fee
-        );
+        pluginDefinitionsById[pluginDefinitionId].creator.transfer(msg.value - fee);
 
         emit PluginAddedToDAO(tokenId, pluginDefinitionId, dao);
 
@@ -101,25 +78,20 @@ contract PluginRegistry is
         address interactions = IDAOInteractions(dao).getInteractionsAddr();
         IInteraction(interactions).allowAccess(pluginAddress);
 
-        if (IModule(pluginAddress).moduleId() == 1)
+        if (IModule(pluginAddress).moduleId() == 1) {
             INova(dao).setOnboardingStrategy(pluginAddress);
+        }
 
         emit PluginRegistered(tokenId, pluginAddress);
     }
 
-    function _mintPluginNFT(
-        uint256 pluginDefinitionId,
-        address to
-    ) internal returns (uint256 tokenId) {
-        PluginDefinition storage pluginDefinition = pluginDefinitionsById[
-            pluginDefinitionId
-        ];
+    function _mintPluginNFT(uint256 pluginDefinitionId, address to) internal returns (uint256 tokenId) {
+        PluginDefinition storage pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
 
         _numPluginsMinted++;
         tokenId = _numPluginsMinted;
 
-        pluginInstanceByTokenId[tokenId]
-            .pluginDefinitionId = pluginDefinitionId;
+        pluginInstanceByTokenId[tokenId].pluginDefinitionId = pluginDefinitionId;
 
         _mint(to, tokenId);
         _setTokenURI(tokenId, pluginDefinition.metadataURI);
@@ -127,18 +99,13 @@ contract PluginRegistry is
         return tokenId;
     }
 
-    function getOwnerOfPlugin(
-        address pluginAddress
-    ) external view override returns (address owner) {
+    function getOwnerOfPlugin(address pluginAddress) external view override returns (address owner) {
         uint256 tokenId = tokenIdByPluginAddress[pluginAddress];
         owner = ownerOf(tokenId);
         return owner;
     }
 
-    function editPluginDefinitionMetadata(
-        uint pluginDefinitionId,
-        string memory url
-    ) external onlyOwner override {
+    function editPluginDefinitionMetadata(uint256 pluginDefinitionId, string memory url) external override onlyOwner {
         pluginDefinitionsById[pluginDefinitionId].metadataURI = url;
     }
 
@@ -148,7 +115,7 @@ contract PluginRegistry is
         string memory metadataURI,
         uint256 price,
         bool canBeStandalone,
-        uint[] memory moduleDependencies
+        uint256[] memory moduleDependencies
     ) external onlyOwner {
         require(bytes(metadataURI).length > 0, "AUT: Metadata URI is empty");
         require(canBeStandalone || price == 0, "AUT: Should be free if not standalone");
@@ -156,37 +123,21 @@ contract PluginRegistry is
         _numPluginDefinitions++;
         uint256 pluginDefinitionId = _numPluginDefinitions;
 
-        pluginDefinitionsById[pluginDefinitionId] = PluginDefinition(
-            metadataURI,
-            price,
-            creator,
-            true,
-            canBeStandalone,
-            moduleDependencies
-        );
+        pluginDefinitionsById[pluginDefinitionId] =
+            PluginDefinition(metadataURI, price, creator, true, canBeStandalone, moduleDependencies);
 
         emit PluginDefinitionAdded(pluginDefinitionId);
     }
 
     function setPrice(uint256 pluginDefinitionId, uint256 newPrice) public {
-        PluginDefinition storage pluginDefinition = pluginDefinitionsById[
-            pluginDefinitionId
-        ];
-        require(
-            msg.sender == pluginDefinition.creator,
-            "AUT: Only creator can set price"
-        );
+        PluginDefinition storage pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
+        require(msg.sender == pluginDefinition.creator, "AUT: Only creator can set price");
         pluginDefinition.price = newPrice;
     }
 
     function setActive(uint256 pluginDefinitionId, bool newActive) public {
-        PluginDefinition storage pluginDefinition = pluginDefinitionsById[
-            pluginDefinitionId
-        ];
-        require(
-            msg.sender == pluginDefinition.creator,
-            "AUT: Only creator can set active"
-        );
+        PluginDefinition storage pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
+        require(msg.sender == pluginDefinition.creator, "AUT: Only creator can set active");
         pluginDefinition.active = newActive;
     }
 
@@ -203,19 +154,15 @@ contract PluginRegistry is
         oracleAddress = newOracleAddress;
     }
 
-    function getPluginInstanceByTokenId(
-        uint256 tokenId
-    ) public view override returns (PluginInstance memory) {
+    function getPluginInstanceByTokenId(uint256 tokenId) public view override returns (PluginInstance memory) {
         return pluginInstanceByTokenId[tokenId];
     }
 
-    function getPluginIdsByDAO(
-        address dao
-    ) public view override returns (uint256[] memory) {
+    function getPluginIdsByDAO(address dao) public view override returns (uint256[] memory) {
         return pluginIdsByDAO[dao];
     }
 
-    function getDependencyModulesForPlugin(uint pluginDefinitionId) public view returns(uint[] memory) {
+    function getDependencyModulesForPlugin(uint256 pluginDefinitionId) public view returns (uint256[] memory) {
         return pluginDefinitionsById[pluginDefinitionId].dependencyModules;
     }
 }

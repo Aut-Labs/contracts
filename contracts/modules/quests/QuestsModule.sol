@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.18;
+
 import "../IModule.sol";
 
 /// @title RewardingModule
@@ -34,24 +35,16 @@ interface QuestsModule is IModule {
     /// @param startDate startDate of the quest
     /// @param durationInHours Duration of the quest
     /// @return The id of the newly created quest.
-    function create(
-        uint256 role,
-        string memory uri,
-        uint startDate,
-        uint256 durationInHours
-    ) external returns (uint256);
+    function create(uint256 role, string memory uri, uint256 startDate, uint256 durationInHours)
+        external
+        returns (uint256);
 
     /// @notice Edits a Quest
     /// @param questId The id of the quest to edit
     /// @param role The role of the quest
     /// @param uri IPFS CID with the off-chain data of the quest
     /// @param durationInHours Duration of the quest
-    function editQuest(
-        uint256 questId,
-        uint256 role,
-        string memory uri,
-        uint256 durationInHours
-    ) external;
+    function editQuest(uint256 questId, uint256 role, string memory uri, uint256 durationInHours) external;
 
     /// @notice Fetches quest by ID
     /// @param questId the id of the quest
@@ -62,28 +55,18 @@ interface QuestsModule is IModule {
     /// @param user the address of the user
     /// @param questId the id of the quest
     /// @return bool
-    function hasCompletedAQuest(
-        address user,
-        uint256 questId
-    ) external view returns (bool);
+    function hasCompletedAQuest(address user, uint256 questId) external view returns (bool);
 
     /// @notice Creates a task in relation to a quest
     /// @param questId The id of the quest
     /// @param tasksPluginId The tasks to add
     /// @param uri metadata of the task
-    function createTask(
-        uint256 questId,
-        uint256 tasksPluginId,
-        string memory uri
-    ) external;
+    function createTask(uint256 questId, uint256 tasksPluginId, string memory uri) external;
 
     /// @notice Removes tasks to the quest
     /// @param questId The id of the quest
     /// @param tasksToRemove The tasks to add
-    function removeTasks(
-        uint256 questId,
-        PluginTasks[] calldata tasksToRemove
-    ) external;
+    function removeTasks(uint256 questId, PluginTasks[] calldata tasksToRemove) external;
 
     /// @notice Checks if a quest is ongoing
     /// @param questId The id of the quest
@@ -99,19 +82,13 @@ interface QuestsModule is IModule {
     /// @param user the address of the user
     /// @param role The role of the user
     /// @return bool.
-    function hasCompletedQuestForRole(
-        address user,
-        uint256 role
-    ) external view returns (bool);
+    function hasCompletedQuestForRole(address user, uint256 role) external view returns (bool);
 
     /// @notice gets timestamp of completion of the quest, if quest not completed - it returns 0
     /// @param user the address of the user
     /// @param questId The id of the quest
     /// @return uint256.
-    function getTimeOfCompletion(
-        address user,
-        uint256 questId
-    ) external view returns (uint256);
+    function getTimeOfCompletion(address user, uint256 questId) external view returns (uint256);
 
     /// @notice gets total amount of quests
     /// @return uint256.
@@ -120,8 +97,5 @@ interface QuestsModule is IModule {
     /// @notice sets the active quest per role
     /// @param role the id of the role
     /// @param questId The id of the quest
-    function setActiveQuestPerRole(
-        uint256 role,
-        uint256 questId
-    ) external;
+    function setActiveQuestPerRole(uint256 role, uint256 questId) external;
 }

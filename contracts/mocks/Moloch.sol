@@ -14,7 +14,7 @@ contract Moloch is IMoloch {
         mems[member] = Member(address(0), 5, 5, true, 1, 1);
     }
 
-    function members(address member) public override view returns(Member memory) {
+    function members(address member) public view override returns (Member memory) {
         return mems[member];
     }
 }
