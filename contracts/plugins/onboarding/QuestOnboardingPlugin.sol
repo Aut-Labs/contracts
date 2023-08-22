@@ -94,6 +94,6 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
      * @param role The member's role.
      */
     function onboard(address member, uint256 role) public override {
-        revert FunctionNotImplemented();
+        revert("FunctionNotImplemented");
     }
 }
