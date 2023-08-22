@@ -116,12 +116,12 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         uint256 price,
         bool canBeStandalone,
         uint256[] memory moduleDependencies
-    ) external onlyOwner {
+    ) external onlyOwner returns (uint256 pluginDefinitionId) {
         require(bytes(metadataURI).length > 0, "AUT: Metadata URI is empty");
         require(canBeStandalone || price == 0, "AUT: Should be free if not standalone");
 
         _numPluginDefinitions++;
-        uint256 pluginDefinitionId = _numPluginDefinitions;
+        pluginDefinitionId = _numPluginDefinitions;
 
         pluginDefinitionsById[pluginDefinitionId] =
             PluginDefinition(metadataURI, price, creator, true, canBeStandalone, moduleDependencies);

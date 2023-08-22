@@ -6,8 +6,6 @@ import "../quests/QuestPlugin.sol";
 import "../SimplePlugin.sol";
 import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
 
-import {QuestsModule} from "../../modules/quests/QuestsModule.sol";
-
 /**
  * @title QuestOnboardingPlugin
  * @dev A plugin contract that implements the `OnboardingModule` interface and uses a `QuestPlugin` to onboard members via quests.
@@ -30,27 +28,54 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
     }
 
     /**
-     * @dev Sets the active status of the plugin.
+     * @dev Sets the active status of the plugin. @todo: reduce external calls
      * @param active A boolean indicating whether the plugin should be set as active.
-     * @dev quest plugin struct  - id association  is role dependent. todo: refactor. reduce contract deployment and consolidate storage. collapse current.
+     *
+     *
      */
     function setActive(bool active) public onlyAdmin {
-        uint256 pluginId = pluginRegistry.tokenIdFromAddress(address(this));
+        uint256 activeQuestRole1 = questsPlugin.activeQuestsPerRole(1);
+        uint256 activeQuestRole2 = questsPlugin.activeQuestsPerRole(2);
+        uint256 activeQuestRole3 = questsPlugin.activeQuestsPerRole(3);
 
-        QuestsModule.QuestModel memory Q = questsPlugin.getById(pluginId);
-        if (Q.startDate > block.timestamp) revert("AlreadyStarted");
-        if (Q.startDate + (Q.durationInHours * 1 hours) > block.timestamp) revert("Ended");
-        if (Q.tasksCount == 0) revert("NoTasks");
+        if (active) {
+            require(
+                activeQuestRole1 > 0 || activeQuestRole2 > 0 || activeQuestRole3 > 0,
+                "at least one quest needs to be defined"
+            );
+            require(
+                questsPlugin.getById(activeQuestRole1).tasksCount > 0
+                    || questsPlugin.getById(activeQuestRole2).tasksCount > 0
+                    || questsPlugin.getById(activeQuestRole3).tasksCount > 0,
+                "at least one quest must have tasks"
+            );
+        } else {
+            require(
+                questsPlugin.getById(activeQuestRole1).startDate == 0
+                    || questsPlugin.getById(activeQuestRole1).startDate > block.timestamp,
+                "quest started"
+            );
+            require(
+                questsPlugin.getById(activeQuestRole2).startDate == 0
+                    || questsPlugin.getById(activeQuestRole2).startDate > block.timestamp,
+                "quest started"
+            );
+            require(
+                questsPlugin.getById(activeQuestRole3).startDate == 0
+                    || questsPlugin.getById(activeQuestRole3).startDate > block.timestamp,
+                "quest started"
+            );
+        }
 
         _setActive(active);
     }
+
     /**
      * @dev Checks whether a member has been onboarded.
      * @param member The member address.
      * @param role The member's role.
      * @return A boolean indicating whether the member has been onboarded.
      */
-
     function isOnboarded(address member, uint256 role) public view override returns (bool) {
         return questsPlugin.hasCompletedQuestForRole(member, role);
     }
@@ -69,6 +94,6 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
      * @param role The member's role.
      */
     function onboard(address member, uint256 role) public override {
-        revert("FunctionNotImplemented");
+        revert FunctionNotImplemented();
     }
 }

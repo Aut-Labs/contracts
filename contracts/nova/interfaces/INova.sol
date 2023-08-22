@@ -54,7 +54,7 @@ interface INova {
     function admins() external view returns (address[] memory);
     function isAdmin(address) external returns (bool);
     function join(address newMember, uint256 role) external;
-    function getAllMembers() external view  returns (address[] memory);
+    function getAllMembers() external view returns (address[] memory);
     function getAdmins() external view returns (address[] memory);
 
     //// IModule
@@ -66,7 +66,6 @@ interface INova {
     /// @return the address of the daoExpander contract that uses this module.
     function daoAddress() external view returns (address);
 
- 
     /////////////OnboardingModule /////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -96,5 +95,4 @@ interface INova {
     function market() external returns (uint256);
 
     function getURLs() external view returns (string[] memory);
-
 }

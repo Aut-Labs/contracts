@@ -38,7 +38,8 @@ contract DeployScript is Script {
         address ModuleRegistryAddr = address(new ModuleRegistry());
         address InteractionAddr = address(new Interaction());
         address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
-        address NovaRegistryAddr = address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr )  );
+        address NovaRegistryAddr =
+            address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr ));
 
         console.log("AUTid----------------------------------------- : ", AUTid);
         console.log("Nova Factory----------------------------------------- : ", NoveFactoryAddr);

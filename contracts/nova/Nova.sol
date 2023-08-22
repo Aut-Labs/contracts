@@ -47,13 +47,12 @@ contract Nova is DAOMembers, DAOInteractions, DAOMetadata, DAOUrls, DAOMarket, D
         _setPluginRegistry(_pluginRegistry);
     }
 
-
-    function join(address newMember, uint256 role) public override  onlyAutID {
+    function join(address newMember, uint256 role) public override onlyAutID {
         require(this.canJoin(newMember, role), "not allowed");
         super.join(newMember, role);
     }
 
-    function setOnboardingStrategy(address onboardingPlugin) public  {
+    function setOnboardingStrategy(address onboardingPlugin) public {
         require(IModule(onboardingPlugin).moduleId() == 1, "Only Onboarding Plugin");
 
         if (onboardingAddr == address(0)) {
@@ -65,27 +64,27 @@ contract Nova is DAOMembers, DAOInteractions, DAOMetadata, DAOUrls, DAOMarket, D
         onboardingAddr = onboardingPlugin;
     }
 
-    function activateModule(uint256 moduleId) public  onlyAdmin {
+    function activateModule(uint256 moduleId) public onlyAdmin {
         _activateModule(moduleId);
     }
 
-    function setMetadataUri(string memory metadata) public  onlyAdmin {
+    function setMetadataUri(string memory metadata) public onlyAdmin {
         _setMetadataUri(metadata);
     }
 
-    function addURL(string memory url) external  onlyAdmin {
+    function addURL(string memory url) external onlyAdmin {
         _addURL(url);
     }
 
-    function removeURL(string memory url) external  onlyAdmin {
+    function removeURL(string memory url) external onlyAdmin {
         _removeURL(url);
     }
 
-    function setCommitment(uint256 commitment) external  onlyAdmin {
+    function setCommitment(uint256 commitment) external onlyAdmin {
         _setCommitment(commitment);
     }
 
-    function canJoin(address member, uint256 role) external view  returns (bool) {
+    function canJoin(address member, uint256 role) external view returns (bool) {
         if (onboardingAddr == address(0)) return true;
         if (onboardingAddr != address(0) && !OnboardingModule(onboardingAddr).isActive()) return false;
         else return OnboardingModule(onboardingAddr).isOnboarded(member, role);

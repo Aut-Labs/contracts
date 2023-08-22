@@ -80,8 +80,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     function setQuestState(bool state, uint256 questId) external onlyAdmin {
         QuestModel memory Q = getById(questId);
         if (Q.tasksCount == 0) revert("NoTasks");
-        if (Q.startDate + (Q.durationInHours * 1 hours) > block.timestamp) revert("Ended");
-        if (Q.startDate > block.timestamp) revert("AlreadyStarted");
+        if (Q.startDate + (Q.durationInHours * 1 hours) < block.timestamp) revert("Ended");
 
         Q.active = state;
         quests[questId] = Q;
@@ -125,8 +124,6 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         _addTask(questId, PluginTasks(tasksPluginId, taskId));
         emit TasksAddedToQuest(questId, taskId);
     }
-
-
 
     function removeTasks(uint256 questId, PluginTasks[] calldata tasksToRemove)
         public
