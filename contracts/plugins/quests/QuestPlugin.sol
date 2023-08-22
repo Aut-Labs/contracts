@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -52,7 +52,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     modifier onlyActive(uint256 questId) {
         require(
-            OnboardingModule(onboardingPlugin).isActive() && activeQuestsPerRole[quests[questId].role] == questId,
+            OnboardingModule(onboardingPlugin).isActive() && (activeQuestsPerRole[quests[questId].role] == questId),
             "Only active quest"
         );
         _;
@@ -72,6 +72,19 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     function withdrawFromAQuest(uint256 questId) public onlyActive(questId) {
         hasApplied[questId][msg.sender] = false;
         emit Withdrawn(questId, msg.sender);
+    }
+
+    /// @notice sets the state of the quest
+    /// @param state wanted state
+    /// @param questId targeted id
+    function setQuestState(bool state, uint256 questId) external onlyAdmin {
+        QuestModel memory Q = getById(questId);
+        if (Q.tasksCount == 0) revert("NoTasks");
+        if (Q.startDate + (Q.durationInHours * 1 hours) > block.timestamp) revert("Ended");
+        if (Q.startDate > block.timestamp) revert("AlreadyStarted");
+
+        Q.active = state;
+        quests[questId] = Q;
     }
 
     function create(uint256 _role, string memory _uri, uint256 _startDate, uint256 _durationInHours)
@@ -112,6 +125,8 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         _addTask(questId, PluginTasks(tasksPluginId, taskId));
         emit TasksAddedToQuest(questId, taskId);
     }
+
+
 
     function removeTasks(uint256 questId, PluginTasks[] calldata tasksToRemove)
         public

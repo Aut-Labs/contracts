@@ -12,8 +12,8 @@ import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
 import "forge-std/Script.sol";
 
 contract DeployScript is Script {
-            address biconomyTrustedForward;
-            uint256 chainID;
+    address biconomyTrustedForward;
+    uint256 chainID;
 
     function setUp() public {
         chainID = block.chainid;
@@ -24,37 +24,31 @@ contract DeployScript is Script {
             console.log("ERROR: Only Mumbai and Goerli Testnets Supported");
             console.log("See scripts/DeployAll");
         }
-
-
-     
     }
 
     function run() public {
-
-           vm.startBroadcast(vm.envUint("DEV_PK"));
-
+        vm.startBroadcast(vm.envUint("DEV_PK"));
 
         console.log("---------------------------------------------------");
         console.log("Deploying to network ID:  ", block.chainid);
         console.log("______________________________________________");
 
         address AUTid = address(new AutID());
-        address NoveFactory = address(new NovaFactory());
-        address ModuleRegistry = address(new ModuleRegistry());
-        address Interaction = address(new Interaction());
-        address PluginRegistry = address(new PluginRegistry(ModuleRegistry));
-        address NovaRegistry = address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactory, PluginRegistry));
+        address NoveFactoryAddr = address(new NovaFactory());
+        address ModuleRegistryAddr = address(new ModuleRegistry());
+        address InteractionAddr = address(new Interaction());
+        address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
+        address NovaRegistryAddr = address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr )  );
 
         console.log("AUTid----------------------------------------- : ", AUTid);
-        console.log("Nova Factory----------------------------------------- : ", NoveFactory);
-        console.log("ModuleRegistry ----------------------------------------- : ", ModuleRegistry);
-        console.log("PluginRegistry ----------------------------------------- : ", PluginRegistry);
-        console.log("NovaRegistry ----------------------------------------- : ", NovaRegistry);
-        console.log("Interaction ----------------------------------------- : ", Interaction);
-                console.log("                                                                       ");
-                        console.log("______________________________________________");
+        console.log("Nova Factory----------------------------------------- : ", NoveFactoryAddr);
+        console.log("ModuleRegistry ----------------------------------------- : ", ModuleRegistryAddr);
+        console.log("PluginRegistry ----------------------------------------- : ", PluginRegistryAddr);
+        console.log("NovaRegistry ----------------------------------------- : ", NovaRegistryAddr);
+        console.log("Interaction ----------------------------------------- : ", InteractionAddr);
+        console.log("                                                                       ");
+        console.log("______________________________________________");
 
         vm.stopBroadcast();
-
     }
 }

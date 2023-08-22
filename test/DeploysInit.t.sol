@@ -9,6 +9,8 @@ import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegist
 import {AutID, IAutID} from "../contracts/AutID.sol";
 import {Interaction, IInteraction} from "../contracts/Interaction.sol";
 
+import {INova} from "../contracts/nova/interfaces/INova.sol";
+
 import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
 
 //// @notice Tests Basic Deployment attainable
@@ -20,6 +22,7 @@ contract DeploysInit is Test {
     IPluginRegistry IPR;
     IModuleRegistry IMR;
     SWLegacyDAO LegacyDAO;
+    INova Nova;
 
     address A0 = address(uint160(uint256(keccak256("Account0 Deployer"))));
 
@@ -36,6 +39,8 @@ contract DeploysInit is Test {
 
         address A3 = address(uint160(uint256(keccak256("Account1"))));
         vm.label(address(A3), "Account3");
+
+        vm.startPrank(A0);
 
         LegacyDAO = new SWLegacyDAO();
         vm.label(address(LegacyDAO), "LegacyDAOI");
@@ -61,6 +66,9 @@ contract DeploysInit is Test {
 
         INR = INovaRegistry(address(new NovaRegistry(address(12345),address(aID), address(NovaFactor), address(IPR))));
         vm.label(address(INR), "NovaRegistryI");
+        address NovaAddr = NovaFactor.deployNova(A0, address(aID), 1, "metadataCID", 1, address(IPR));
+        Nova = INova(NovaAddr);
+        vm.stopPrank();
     }
 
     function testAreDeployedContracts() public {
@@ -70,5 +78,6 @@ contract DeploysInit is Test {
         assertTrue(address(IMR).code.length > 4, "expected IMR contract");
         assertTrue(address(IPR).code.length > 5, "expected IPR contract");
         assertTrue(address(INR).code.length > 6, "expected INRcontract");
+        assertTrue(Nova.pluginRegistry() == address(IPR), "expected another plugin registry address");
     }
 }

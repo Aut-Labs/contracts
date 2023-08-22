@@ -165,4 +165,8 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
     function getDependencyModulesForPlugin(uint256 pluginDefinitionId) public view returns (uint256[] memory) {
         return pluginDefinitionsById[pluginDefinitionId].dependencyModules;
     }
+
+    function tokenIdFromAddress(address pluginAddress_) external view override returns (uint256) {
+        return tokenIdByPluginAddress[pluginAddress_];
+    }
 }

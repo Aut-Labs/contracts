@@ -95,4 +95,6 @@ interface IPluginRegistry {
      * @param pluginDefinitionId The ID of the plugin definition.
      */
     function addPluginToDAO(address pluginAddress, uint256 pluginDefinitionId) external payable;
+
+    function tokenIdFromAddress(address pluginAddress_) external view returns (uint256);
 }
