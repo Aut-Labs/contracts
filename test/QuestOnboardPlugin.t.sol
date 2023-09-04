@@ -3,7 +3,7 @@ pragma solidity 0.8.18;
 
 import {DeploysInit} from "./DeploysInit.t.sol";
 
-import {QuestOnboardingPlugin} from "../contracts/plugins/onboarding/QuestOnboardingPlugin.sol ";
+import {QuestOnboardingPlugin} from "../contracts/plugins/onboarding/QuestOnboardingPlugin.sol";
 import {QuestPlugin} from "../contracts/plugins/quests/QuestPlugin.sol";
 
 import {OffchainVerifiedTaskPlugin} from "../contracts/plugins/tasks/OffchainVerifiedTaskPlugin.sol";
@@ -11,9 +11,7 @@ import "forge-std/console.sol";
 //// @notice Tests Basic Deployment attainable
 
 contract TestQuestPlugin is DeploysInit {
-    // const { expect } = require("chai");
-    // const { BigNumber } = require("ethers");
-    // const { ethers } = require("hardhat");
+
     QuestOnboardingPlugin QOP;
     QuestPlugin QuestP;
     OffchainVerifiedTaskPlugin TaskPlugin;

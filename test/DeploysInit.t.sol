@@ -31,13 +31,13 @@ contract DeploysInit is Test {
     address A3;
 
     function setUp() public virtual {
-        address A1 = address(uint160(uint256(keccak256("Account1"))));
+         A1 = address(uint160(uint256(keccak256("Account1"))));
         vm.label(address(A1), "Account1");
 
-        address A2 = address(uint160(uint256(keccak256("Account2"))));
+         A2 = address(uint160(uint256(keccak256("Account2"))));
         vm.label(address(A2), "Account2");
 
-        address A3 = address(uint160(uint256(keccak256("Account1"))));
+         A3 = address(uint160(uint256(keccak256("Account1"))));
         vm.label(address(A3), "Account3");
 
         vm.startPrank(A0);

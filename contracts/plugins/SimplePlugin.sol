@@ -17,12 +17,13 @@ abstract contract SimplePlugin is IPlugin {
     uint256 public override moduleId;
 
     bool public override isActive;
-    IPluginRegistry public pluginRegistry;
+    address public pluginRegistry;
 
     /**
      * @notice A modifier that checks if the caller is a module installed in the DAO
      * @dev The function must use `_` before the require statement to execute the function body before checking the require condition
      */
+    //// @dev
     modifier onlyDAOModule() {
         uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry).getPluginIdsByDAO(_dao);
         bool pluginFound = false;
@@ -54,7 +55,7 @@ abstract contract SimplePlugin is IPlugin {
      * @notice A modifier that checks if the caller is the plugin registry contract
      */
     modifier onlyPluginRegistry() {
-        require(msg.sender == address(pluginRegistry), "Only plugin registry");
+        require(msg.sender == pluginRegistry, "Only plugin registry");
         _;
     }
 
@@ -65,7 +66,7 @@ abstract contract SimplePlugin is IPlugin {
      */
     constructor(address dao, uint256 modId) {
         _dao = dao;
-        pluginRegistry = IPluginRegistry(IDAOModules(dao).pluginRegistry());
+        pluginRegistry = IDAOModules(dao).pluginRegistry();
         _deployer = msg.sender;
         moduleId = modId;
     }
@@ -75,7 +76,7 @@ abstract contract SimplePlugin is IPlugin {
      * @return The address of the owner
      */
     function owner() public view returns (address) {
-        return pluginRegistry.getOwnerOfPlugin(address(this));
+        return IPluginRegistry(pluginRegistry).getOwnerOfPlugin(address(this));
     }
 
     /**

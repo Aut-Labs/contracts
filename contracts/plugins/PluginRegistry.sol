@@ -23,6 +23,7 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
     address payable public feeReciever;
     address public oracleAddress;
     address public override modulesRegistry;
+    address public LRaddress;
 
     mapping(uint256 => PluginDefinition) public pluginDefinitionsById;
     mapping(uint256 => PluginInstance) public pluginInstanceByTokenId;
@@ -139,6 +140,10 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         PluginDefinition storage pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
         require(msg.sender == pluginDefinition.creator, "AUT: Only creator can set active");
         pluginDefinition.active = newActive;
+    }
+
+    function setLocalReputationAddress(address LR_) external onlyOwner {
+        LRaddress = LR_;
     }
 
     // Admin

@@ -51,21 +51,18 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
             );
         } else {
             require(
-                questsPlugin.getById(activeQuestRole1).startDate == 0 ||
-                    questsPlugin.getById(activeQuestRole1).startDate >
-                    block.timestamp,
+                questsPlugin.getById(activeQuestRole1).startDate == 0
+                    || questsPlugin.getById(activeQuestRole1).startDate > block.timestamp,
                 "quest started"
             );
             require(
-                questsPlugin.getById(activeQuestRole2).startDate == 0 ||
-                    questsPlugin.getById(activeQuestRole2).startDate >
-                    block.timestamp,
+                questsPlugin.getById(activeQuestRole2).startDate == 0
+                    || questsPlugin.getById(activeQuestRole2).startDate > block.timestamp,
                 "quest started"
             );
             require(
-                questsPlugin.getById(activeQuestRole3).startDate == 0 ||
-                    questsPlugin.getById(activeQuestRole3).startDate >
-                    block.timestamp,
+                questsPlugin.getById(activeQuestRole3).startDate == 0
+                    || questsPlugin.getById(activeQuestRole3).startDate > block.timestamp,
                 "quest started"
             );
         }
@@ -79,10 +76,7 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
      * @param role The member's role.
      * @return A boolean indicating whether the member has been onboarded.
      */
-    function isOnboarded(
-        address member,
-        uint256 role
-    ) public view override returns (bool) {
+    function isOnboarded(address member, uint256 role) public view override returns (bool) {
         return questsPlugin.hasCompletedQuestForRole(member, role);
     }
 

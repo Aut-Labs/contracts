@@ -25,4 +25,14 @@ interface IPlugin is IModule {
      * @return The ID of the current plugin instance
      */
     function pluginId() external view returns (uint256);
+
+    function isActive() external view returns (bool);
+
+    function pluginRegistry() external view returns (address);
+
+    /**
+     * @notice Returns the address of the DAO the plugin is associated with
+     * @return The address of the DAO
+     */
+    function daoAddress() external view returns (address);
 }
