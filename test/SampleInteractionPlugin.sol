@@ -4,14 +4,10 @@ pragma solidity 0.8.18;
 import {DeploysInit} from "./DeploysInit.t.sol";
 
 import {LocalRep} from "../contracts/plugins/interactions/LocalReputation.sol";
-import {ILocalReputation } from "../contracts/plugins/interactions/ILocalReputation.sol";
-import {SampleInteractionPlugin}  from "../contracts/plugins/interactions/SampleInteractionPlugin.sol";
+import {ILocalReputation} from "../contracts/plugins/interactions/ILocalReputation.sol";
+import {SampleInteractionPlugin} from "../contracts/plugins/interactions/SampleInteractionPlugin.sol";
 
-
-contract TesSampleInteractionPlugin is DeploysInit {
-
-
-
+contract TestSampleInteractionPlugin is DeploysInit {
     LocalRep LocalRepAlgo;
     ILocalReputation iLR;
     SampleInteractionPlugin InteractionPlugin;
@@ -21,16 +17,18 @@ contract TesSampleInteractionPlugin is DeploysInit {
     function setUp() public override {
         super.setUp();
 
-
-
         LocalRepAlgo = new LocalRep();
-        vm.label(address(LocalRepAlgo),"LocalRep");
+        vm.label(address(LocalRepAlgo), "LocalRep");
 
         iLR = ILocalReputation(address(LocalRepAlgo));
 
-
         InteractionPlugin = new SampleInteractionPlugin(address(Nova), address(iLR) );
         vm.label(address(InteractionPlugin), "InteractionPlugin");
+
+        vm.prank(A1);
+        aID.mint("a Name","urlll",1,4,address(Nova));
+
+
 
         uint256[] memory depmodrek;
 
@@ -44,6 +42,8 @@ contract TesSampleInteractionPlugin is DeploysInit {
         taskPluginId = IPR.tokenIdFromAddress(address(InteractionPlugin));
     }
 
-
-
+    function testUnconfiguredInteraction() public {
+        uint256 number1 = InteractionPlugin.number();
+        InteractionPlugin.incrementNumber();
+    }
 }

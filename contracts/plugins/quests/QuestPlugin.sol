@@ -113,7 +113,8 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
         onlyAdmin
         onlyPending(questId)
     {
-        IPluginRegistry.PluginInstance memory pluginInstance = IPluginRegistry(pluginRegistry).getPluginInstanceByTokenId(tasksPluginId);
+        IPluginRegistry.PluginInstance memory pluginInstance =
+            IPluginRegistry(pluginRegistry).getPluginInstanceByTokenId(tasksPluginId);
         uint256 taskId = TasksModule(pluginInstance.pluginAddress).createBy(
             msg.sender,
             quests[questId].role,
@@ -226,10 +227,12 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
     function _addTask(uint256 questId, PluginTasks memory task) private {
         require(idCounter.current() >= questId, "invalid quest id");
-        IPluginRegistry.PluginInstance memory plugin = IPluginRegistry(pluginRegistry).getPluginInstanceByTokenId(task.pluginId);
+        IPluginRegistry.PluginInstance memory plugin =
+            IPluginRegistry(pluginRegistry).getPluginInstanceByTokenId(task.pluginId);
 
         require(plugin.pluginAddress != address(0), "Invalid plugin");
-        bool isInstalled = IPluginRegistry(pluginRegistry).pluginDefinitionsInstalledByDAO(daoAddress(), plugin.pluginDefinitionId);
+        bool isInstalled =
+            IPluginRegistry(pluginRegistry).pluginDefinitionsInstalledByDAO(daoAddress(), plugin.pluginDefinitionId);
         if (TasksModule(plugin.pluginAddress).daoAddress() == daoAddress() && isInstalled) {
             int256 index = findTask(questId, task);
             if (index == -1) {

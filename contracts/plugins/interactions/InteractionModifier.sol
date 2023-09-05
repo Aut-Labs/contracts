@@ -11,10 +11,7 @@ import {IPlugin} from "../IPlugin.sol";
 abstract contract InteractionModifier {
     ILocalReputation ILR;
 
-    constructor(
-        address dao_,
-        address localReputationAlgo_
-    ) {
+    constructor(address dao_, address localReputationAlgo_) {
         ILR = ILocalReputation(localReputationAlgo_);
         ILR.initialize(dao_);
     }

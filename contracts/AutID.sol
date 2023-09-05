@@ -184,14 +184,17 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         return totalCommitment;
     }
 
-
     /// @notice returns commitment levels for agents in a dao
     /// @param agents address of agents
     /// @param dao_ commitment target
-    function getCommitmentsOfFor(address[] memory agents, address dao_ ) external view returns (uint256[] memory commitments) {
+    function getCommitmentsOfFor(address[] memory agents, address dao_)
+        external
+        view
+        returns (uint256[] memory commitments)
+    {
         uint256 i;
         if (agents.length == 0) agents = IDAOMembership(dao_).getAllMembers();
-        for(i; i < agents.length;) {
+        for (i; i < agents.length;) {
             commitments[i] = holderToDAOMembershipData[agents[i]][dao_].commitment;
             unchecked {
                 ++i;

@@ -11,7 +11,6 @@ import "forge-std/console.sol";
 //// @notice Tests Basic Deployment attainable
 
 contract TestQuestPlugin is DeploysInit {
-
     QuestOnboardingPlugin QOP;
     QuestPlugin QuestP;
     OffchainVerifiedTaskPlugin TaskPlugin;
