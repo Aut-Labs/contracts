@@ -6,7 +6,8 @@ import {ILocalReputation} from "./ILocalReputation.sol";
 import {IPlugin} from "../IPlugin.sol";
 
 /// @title Local Reputation isInteraction Plugin Modifier
-/// @notice
+/// @notice Design to add local reputation capability to plugin
+/// @dev can only be used as a modifier within an instantiation of SimplePlugin
 /// @author parseb
 abstract contract InteractionModifier {
     ILocalReputation ILR;
@@ -18,7 +19,7 @@ abstract contract InteractionModifier {
 
     modifier isInteraction() {
         _;
-        ILR.interaction(msg.sig, msg.data, _msgSender());
+        ILR.interaction(msg.data, _msgSender());
     }
 
     /// @dev msg.sender might not be the intended target overriding assumed if the case

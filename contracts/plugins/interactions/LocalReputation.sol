@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
-import "forge-std/console.sol";
 
 import {INova} from "../../nova/interfaces/INova.sol";
 import {IAutID} from "../../IAutID.sol";
 import {IPlugin} from "../IPlugin.sol";
+import "./ILocalReputation.sol";
 
 /// @notice reputation
 contract LocalRep {
@@ -25,26 +25,10 @@ contract LocalRep {
 
     mapping(uint256 => uint256 points) public pointsPerInteraction;
 
-    struct groupState {
-        uint64 lastPeriod; //lastPeriod: Last period in which the LR was updated.
-        uint64 TCL; //TCL (Total Commitment Level in the Community): Sum of all members' Commitment Levels (between 1 and 10).
-        uint64 TCP; //TCP (Total Contributions Points in a Community): Sum of all contributions points, considering custom weights per interaction (between 1 and 10).
-        uint32 k; //  (Steepness Degree): Controls the slope of LR changes, initially fixed at 0.3, later customizable within 0.01 to 0.99: 0.01 ≤ k ≤ 0.99 | penalty
-        uint32 p;
-        /// period duration in days
-        bytes32 commitHash;
-    }
 
-    struct individualState {
-        uint32 iCL; //iCL (Commitment Level): Represents individual members' commitment, ranging from 1 to 10.
-        uint32 score; // Individual Local Reputation Score
-        uint64 GC; // GC (Given Contributions):Actual contributions made by a member. (points)
-            // uint64 EC; // EC (Expected Contributions): Calculated based on fCL and TCP.
-            // uint64 fCL; // fCL (Fractional Commitment Level per Individual): Fraction of total commitment attributed to each member.
-    }
 
     event UpdatedKP(address targetGroup);
-    event Interaction(bytes4 sig, bytes data, address agent);
+    event Interaction(uint256 InteractionID, address agent);
     event LocalRepInit(address Nova, address PluginAddr);
 
     /////////////////////  Errors
@@ -62,7 +46,7 @@ contract LocalRep {
     ///////////////////////////////////////////////////////////////
     modifier onlyPlugin() {
         //// @dev is this sufficient?
-        if (daoOfPlugin[msg.sender] != address(0)) revert Unauthorised();
+        if (daoOfPlugin[msg.sender] == address(0)) revert Unauthorised();
         _;
     }
 
@@ -83,7 +67,7 @@ contract LocalRep {
 
         _updateCommitmentLevels(nova_);
 
-        daoOfPlugin[nova_] = msg.sender;
+        daoOfPlugin[msg.sender] = nova_;
 
         emit LocalRepInit(nova_, msg.sender);
     }
@@ -113,43 +97,45 @@ contract LocalRep {
         getGS[context].TCL = uint64(totalCommitment);
     }
 
+
+    event SetWeightsFor(address plugin, uint256 interactionId);
+
     /// @notice sets number of points each function asigns
     /// @param plugin_ plugin target
     //
     function setInteractionWeights(
         address plugin_,
-        bytes4[] memory fxSigs,
         bytes[] memory datas,
         uint256[] memory points
     ) external {
         if (daoOfPlugin[plugin_] == address(0)) revert UninitializedPair();
         if (!INova(daoOfPlugin[plugin_]).isAdmin(msg.sender)) revert OnlyAdmin();
 
-        if (fxSigs.length != datas.length && points.length != fxSigs.length) revert ArgLenMismatch();
+        if (datas.length != points.length) revert ArgLenMismatch();
+        uint256 interact;
         uint256 i;
-        for (i; i < fxSigs.length;) {
-            uint256 interaction = interactionID(plugin_, fxSigs[i], datas[i]);
-            pointsPerInteraction[interaction] = points[i];
+        for (i; i < datas.length;) {
+            interact = interactionID(plugin_, datas[i]);
+            pointsPerInteraction[interact] = points[i];
             unchecked {
                 ++i;
             }
         }
+        emit SetWeightsFor(plugin_, interact);
     }
 
-    function interaction(bytes4 fxSig, bytes memory data, address callerAgent) external onlyPlugin {
-        uint256 repPoints = pointsPerInteraction[interactionID(msg.sender, fxSig, data)];
+    function interaction(bytes memory data, address callerAgent) external onlyPlugin {
+        uint256 interactID = interactionID(msg.sender, data);
+        uint256 repPoints = pointsPerInteraction[interactID];
         address dao = daoOfPlugin[msg.sender];
 
         getIS[getContextID(callerAgent, dao)].GC += uint64(repPoints);
         getGS[getContextID(dao, dao)].TCP += uint64(repPoints);
 
-        emit Interaction(fxSig, data, callerAgent);
+        emit Interaction( interactID, callerAgent);
     }
 
-    function interactionID(address plugin_, bytes4 fxsig_, bytes memory data_) public pure returns (uint256 id) {
-        id = uint256(uint160(plugin_) + uint160(uint32(fxsig_)));
-        if (data_.length > 0) id += uint256(keccak256(data_));
-    }
+
 
     function setKP(uint16 k, uint16 p, address target_) external {
         if (!INova(target_).isAdmin(msg.sender)) revert OnlyAdmin();
@@ -177,6 +163,10 @@ contract LocalRep {
     /// @param group_ address of the group
     function getContextID(address subject_, address group_) public pure returns (uint256) {
         return uint256(uint160(subject_)) + uint256(uint160(group_));
+    }
+
+    function interactionID(address plugin_, bytes memory data_) public pure returns (uint256 id) {
+        id = uint256( uint160(plugin_) + uint256(keccak256(data_)) );
     }
 
     /////////////////////  View
@@ -217,6 +207,15 @@ contract LocalRep {
     // function getP(address group_) external view returns (uint32) {
     //     return getLR[getContextID(group_,group_)][0].p;
     // }
+
+
+    function getGroupState(address nova_) external view returns (groupState memory ) {
+        return getGS[getContextID(nova_, nova_)];
+    }
+
+    function getIndividualState(address agent_, address nova_) external view returns (individualState memory ) {
+        return getIS[getContextID(agent_, nova_)];
+    }
 
     /////////////////////  Pereiphery
     ///////////////////////////////////////////////////////////////

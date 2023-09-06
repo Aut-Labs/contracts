@@ -11,10 +11,22 @@ contract SampleInteractionPlugin is SimplePlugin, InteractionModifier {
     constructor(address dao_, address localReputationAlgo_)
         SimplePlugin(dao_, 0)
         InteractionModifier(dao_, localReputationAlgo_)
-    {}
+    {
+        number = 1;
+    }
 
-    function incrementNumber() external isInteraction returns (uint256) {
-        number += 1;
+    function incrementNumber(string memory x) external isInteraction returns (uint256) {
+        number = number + 1;
         return number;
     }
+
+
+    function incrementNumberPlusOne() external isInteraction returns (uint256) {
+        number = number + 1;
+        return number;
+    }
+
+
+
+
 }
