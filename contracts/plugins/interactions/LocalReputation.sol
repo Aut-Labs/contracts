@@ -26,7 +26,8 @@ contract LocalRep is ILocalReputation {
     mapping(uint256 => uint256 points) public pointsPerInteraction;
 
     uint16 public immutable DEFAULT_K = 30;
-    uint16 public immutable DEFAULT_PENALTY = 10;
+    uint8 public immutable DEFAULT_PENALTY = 10;
+    uint8 public immutable DEFAULT_CAP_GROWTH = 40;
     uint32 public immutable DEFAULT_PERIOD = 30 days;
 
     /////////////////////  Modifiers
@@ -49,6 +50,9 @@ contract LocalRep is ILocalReputation {
 
         Group.k = DEFAULT_K;
         Group.p = DEFAULT_PERIOD;
+        Group.penalty = DEFAULT_PENALTY;
+        Group.c = DEFAULT_CAP_GROWTH;
+
         Group.lastPeriod = uint64(block.timestamp);
 
         getGS[context] = Group;
@@ -110,9 +114,9 @@ contract LocalRep is ILocalReputation {
         /// @dev invariant GSS update always before ISS
         ISS.lastUpdatedAt = uint64(block.timestamp);
         if (ISS.score == 0) ISS.score = 1;
-                console.log(ISS.GC, GSS.TCL, ISS.score, GSS.k);
+        console.log(ISS.GC, GSS.TCL, ISS.score, GSS.k);
 
-        if ( GSS.TCL * GSS.TCP * GSS.k * ISS.score == 0) revert ZeroUnallawed();
+        if (GSS.TCL * GSS.TCP * GSS.k * ISS.score == 0) revert ZeroUnallawed();
 
         ISS.score = calculateLocalReputation(ISS.GC, GSS.TCL, GSS.TCP, GSS.k, ISS.score);
 
@@ -124,11 +128,11 @@ contract LocalRep is ILocalReputation {
         public
         pure
         returns (uint32 score)
-    {   
-        //// @high risk of divison by 0 since 
+    {
+        //// @high risk of divison by 0 since
         uint256 EC = (((iGC * 100_00) / TCL) / TCP);
         EC = EC == 0 ? 1 : EC;
-        score = uint32((iGC / (((iGC * 100_00) / TCL) / TCP + 1)  ) * ((100 - k) + k) * prevScore);
+        score = uint32((iGC / (((iGC * 100_00) / TCL) / TCP + 1)) * ((100 - k) + k) * prevScore);
     }
 
     /// @dev consider dos vectors and changing return type
@@ -191,7 +195,6 @@ contract LocalRep is ILocalReputation {
     function setKP(uint16 k, uint32 p, uint16 penalty, address target_) external {
         if (!INova(target_).isAdmin(msg.sender)) revert OnlyAdmin();
 
-
         if (k * p == 0) revert ZeroUnallowed();
         if (((k / 100) + (p / 100)) > 0) revert Over100();
 
@@ -201,7 +204,6 @@ contract LocalRep is ILocalReputation {
 
         emit UpdatedKP(target_);
     }
-
 
     /////////////////////  Pure
     ///////////////////////////////////////////////////////////////

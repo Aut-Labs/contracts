@@ -11,7 +11,8 @@ struct groupState {
     uint64 TCL; //TCL (Total Commitment Level in the Community): Sum of all members' Commitment Levels (between 1 and 10).
     uint64 TCP; //TCP (Total Contributions Points in a Community): Sum of all contributions points, considering custom weights per interaction (between 1 and 10).
     uint16 k; //  (Steepness Degree): Controls the slope of LR changes, initially fixed at 0.3, later customizable within 0.01 to 0.99: 0.01 ≤ k ≤ 0.99 | penalty
-    uint16 penalty;
+    uint8 penalty;
+    uint8 c; // growth cap per period 1.4 40% default
     uint32 p;
     bytes32 commitHash;
 }

@@ -195,6 +195,8 @@ contract TestSampleInteractionPlugin is DeploysInit {
     }
 
     function testPeriodFlip() public {
+        console.log("ILR23r323r", address(iLR));
+
         testWithSameCommitmentPeriod();
 
         vm.expectRevert(ILocalReputation.PeriodUnelapsed.selector);
@@ -205,11 +207,15 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         uint256 i;
 
-        for (i; i< scores1.length;) {
-            console.log("agent " , vm.toString(i), " -- ", scores1[i]);
+        for (i; i < scores1.length;) {
+            console.log("agent ", vm.toString(i), " -- ", scores1[i]);
             unchecked {
-                ++ i;
+                ++i;
             }
         }
+
+        /// 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
     }
+
+    function testLRFormulae() public {}
 }
