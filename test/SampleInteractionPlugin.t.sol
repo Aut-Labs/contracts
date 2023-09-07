@@ -164,26 +164,26 @@ contract TestSampleInteractionPlugin is DeploysInit {
         groupState memory GSbefore = iLR.getGroupState(address(Nova));
 
         uint256 nextUpdateAt = iLR.periodicGroupStateUpdate(address(Nova));
+        iLR.bulkPeriodicUpdate(address(Nova));
 
         groupState memory GSafer = iLR.getGroupState(address(Nova));
 
-        assertTrue(nextUpdateAt > block.timestamp, "should be later");
+        nextUpdateAt = GSafer.lastPeriod + GSafer.p;
+
+        assertTrue(nextUpdateAt >= block.timestamp, "should be later");
         assertTrue(nextUpdateAt >= GSbefore.lastPeriod + GSbefore.p, "period increment fault");
     }
 
     function testIndividualLRUpdate() public {
         address A55 = address(5);
-
-        uint256 prevScore = iLR.updateIndividualLR(address(Nova), A55);
+        vm.expectRevert(ILocalReputation.ZeroUnallawed.selector);
+        uint256 prevScore = iLR.updateIndividualLR(A55, address(Nova));
         assertTrue(prevScore == 0, "No update score is blank");
         testWithSameCommitmentPeriod();
 
-        prevScore = iLR.updateIndividualLR(address(Nova), A55);
-        assertTrue(prevScore == 0, "still blank as no time passed");
-
         vm.warp(block.timestamp + 31 days);
-        uint256 newScore = iLR.updateIndividualLR(address(Nova), A55);
-        assertFalse(newScore > 1, "group update needed first");
+        uint256 newScore = iLR.updateIndividualLR(A55, address(Nova));
+        assertTrue(newScore > 1, "not updated");
 
         uint256 nextUpdateAt = iLR.periodicGroupStateUpdate(address(Nova));
 
@@ -213,9 +213,11 @@ contract TestSampleInteractionPlugin is DeploysInit {
                 ++i;
             }
         }
-
-        /// 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
     }
 
-    function testLRFormulae() public {}
+    function testLRFormula() public {
+        uint256 numberOfPeriods = 10;
+        uint256 numberOfMembers = 3;
+        // uint256[] memory TCMgrowth = []
+    }
 }

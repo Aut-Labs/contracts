@@ -13,8 +13,9 @@ struct groupState {
     uint16 k; //  (Steepness Degree): Controls the slope of LR changes, initially fixed at 0.3, later customizable within 0.01 to 0.99: 0.01 ≤ k ≤ 0.99 | penalty
     uint8 penalty;
     uint8 c; // growth cap per period 1.4 40% default
-    uint32 p;
+    uint32 p; // period length
     bytes32 commitHash;
+    uint256 lrUpdatesPerPeriod; // how many iS updates were executed // used to zero TCP // ensures LRs updated
 }
 
 struct individualState {
@@ -32,6 +33,7 @@ interface ILocalReputation {
     event UpdatedKP(address targetGroup);
     event Interaction(uint256 InteractionID, address agent);
     event LocalRepInit(address Nova, address PluginAddr);
+    event EndOfPeriod();
 
     /////////////////////  Errors
     ///////////////////////////////////////////////////////////////

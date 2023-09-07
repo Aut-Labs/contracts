@@ -95,4 +95,6 @@ interface INova {
     function market() external returns (uint256);
 
     function getURLs() external view returns (string[] memory);
+
+    function memberCount() external view returns (uint256);
 }

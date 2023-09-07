@@ -3,7 +3,7 @@ pragma solidity 0.8.18;
 
 import "../SimplePlugin.sol";
 import {ILocalReputation} from "./ILocalReputation.sol";
-import {IPlugin} from "../IPlugin.sol";
+// import {IPlugin} from "../IPlugin.sol";
 
 /// @title Local Reputation isInteraction Plugin Modifier
 /// @notice Design to add local reputation capability to plugin

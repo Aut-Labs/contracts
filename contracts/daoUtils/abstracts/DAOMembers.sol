@@ -61,4 +61,8 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
     function getAdmins() public view override returns (address[] memory) {
         return admins;
     }
+
+    function memberCount() public view returns (uint256) {
+        return members.length;
+    }
 }
