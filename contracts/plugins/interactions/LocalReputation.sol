@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
-
 import {INova} from "../../nova/interfaces/INova.sol";
 import {IAutID} from "../../IAutID.sol";
 import {IPlugin} from "../IPlugin.sol";
@@ -16,16 +15,14 @@ contract LocalRep {
     /// @dev prevents external call
     mapping(address plugin => address dao) public daoOfPlugin;
 
-    uint32 immutable DEFAULT_K = 30;
-    uint32 immutable DEFAULT_PERIOD = 30 days;
+    uint32 public immutable DEFAULT_K = 30;
+    uint32 public immutable DEFAULT_PERIOD = 30 days;
 
     mapping(uint256 contextID => groupState) getGS;
 
     mapping(uint256 contextID => individualState) getIS;
 
     mapping(uint256 => uint256 points) public pointsPerInteraction;
-
-
 
     event UpdatedKP(address targetGroup);
     event Interaction(uint256 InteractionID, address agent);
@@ -56,6 +53,7 @@ contract LocalRep {
 
         context = getContextID(nova_, nova_);
         groupState memory Group = getGS[context];
+
         if (Group.lastPeriod != 0) return;
         /// only first
 
@@ -65,14 +63,14 @@ contract LocalRep {
 
         getGS[context] = Group;
 
-        _updateCommitmentLevels(nova_);
+        updateCommitmentLevels(nova_);
 
         daoOfPlugin[msg.sender] = nova_;
 
         emit LocalRepInit(nova_, msg.sender);
     }
 
-    function _updateCommitmentLevels(address nova_) internal {
+    function updateCommitmentLevels(address nova_) public {
         INova Nova = INova(nova_);
         IAutID AutID = IAutID(Nova.getAutIDAddress());
 
@@ -97,17 +95,12 @@ contract LocalRep {
         getGS[context].TCL = uint64(totalCommitment);
     }
 
-
     event SetWeightsFor(address plugin, uint256 interactionId);
 
     /// @notice sets number of points each function asigns
     /// @param plugin_ plugin target
     //
-    function setInteractionWeights(
-        address plugin_,
-        bytes[] memory datas,
-        uint256[] memory points
-    ) external {
+    function setInteractionWeights(address plugin_, bytes[] memory datas, uint256[] memory points) external {
         if (daoOfPlugin[plugin_] == address(0)) revert UninitializedPair();
         if (!INova(daoOfPlugin[plugin_]).isAdmin(msg.sender)) revert OnlyAdmin();
 
@@ -132,12 +125,10 @@ contract LocalRep {
         getIS[getContextID(callerAgent, dao)].GC += uint64(repPoints);
         getGS[getContextID(dao, dao)].TCP += uint64(repPoints);
 
-        emit Interaction( interactID, callerAgent);
+        emit Interaction(interactID, callerAgent);
     }
 
-
-
-    function setKP(uint16 k, uint16 p, address target_) external {
+    function setKP(uint32 k, uint32 p, address target_) external {
         if (!INova(target_).isAdmin(msg.sender)) revert OnlyAdmin();
 
         if (k * p == 0) revert ZeroUnallowed();
@@ -158,26 +149,30 @@ contract LocalRep {
     /////////////////////  Pure
     ///////////////////////////////////////////////////////////////
 
-    /// @notice composed agent centered context ID
+    /// @notice context specific ID
     /// @param subject_ address of the subject
     /// @param group_ address of the group
     function getContextID(address subject_, address group_) public pure returns (uint256) {
         return uint256(uint160(subject_)) + uint256(uint160(group_));
     }
 
+    /// @notice context specific ID
+    /// @param plugin_ address of installed plugin
+    /// @param data_ function calldata definitory of interaction
+    /// @dev data_ is msg.data. encodeWithSignature for consistency
     function interactionID(address plugin_, bytes memory data_) public pure returns (uint256 id) {
-        id = uint256( uint160(plugin_) + uint256(keccak256(data_)) );
+        id = uint256(uint160(plugin_) + uint256(keccak256(data_)));
     }
 
     /////////////////////  View
     ///////////////////////////////////////////////////////////////
 
-    // /// @notice get the LR of a subject in a group
-    // /// @param subject address of the subject
-    // /// @param group address of the group
-    // function getLRByAddress(address subject, address group) public view returns (LR memory) {
-
-    // }
+    /// @notice get the LR of a subject in a group
+    /// @param subject_ address of the subject
+    /// @param group_ address of the group
+    function getLRof(address subject_, address group_) public view returns (individualState memory) {
+        return getIS[getContextID(subject_, group_)];
+    }
 
     // /// @notice get LR score
     // /// @param agentAddress_ address of subject
@@ -192,29 +187,58 @@ contract LocalRep {
     //     return calculateLR(agentLR, groupLR, prevLR);
     // }
 
-    // function calculateLR(LR memory agentLR_, LR memory groupLR, LR memory prevLR) internal view returns (uint32) {
-    //     if (agentLR_.GC + prevLR.score == 0) return 0;
-    //     if (agentLR_.GC == 0) {
-    //         return prevLR.score * groupLR.p / 100;
-    //     }
-    //     return uint32((agentLR_.GC / (agentLR_.fCL / agentLR_.TCP)) * ((100 - groupLR.k) + groupLR.k) * prevLR.score);
+    // struct groupState {
+    //     uint64 lastPeriod; //lastPeriod: Last period in which the LR was updated.
+    //     uint64 TCL; //TCL (Total Commitment Level in the Community): Sum of all members' Commitment Levels (between 1 and 10).
+    //     uint64 TCP; //TCP (Total Contributions Points in a Community): Sum of all contributions points, considering custom weights per interaction (between 1 and 10).
+    //     uint32 k; //  (Steepness Degree): Controls the slope of LR changes, initially fixed at 0.3, later customizable within 0.01 to 0.99: 0.01 ≤ k ≤ 0.99 | penalty
+    //     uint32 p;
+
+    //     bytes32 commitHash;
     // }
 
-    // function getK(address group_) external view returns (uint32) {
-    //     return getLR[getContextID(group_, group_)][0].k;
+    // struct individualState {
+    //     uint32 iCL; //iCL (Commitment Level): Represents individual members' commitment, ranging from 1 to 10.
+    //     uint32 score; // Individual Local Reputation Score
+    //     uint64 GC; // GC (Given Contributions):Actual contributions made by a member. (points)
+    //     uint64 lastUpdatedAt;
+
+    //         // uint64 EC; // EC (Expected Contributions): Calculated based on fCL and TCP.
+    //         // uint64 fCL; // fCL (Fractional Commitment Level per Individual): Fraction of total commitment attributed to each member.
     // }
 
-    // function getP(address group_) external view returns (uint32) {
-    //     return getLR[getContextID(group_,group_)][0].p;
-    // }
+    function periodicGroupStateUpdate(address group_) public returns (uint256 nextUpdateAt) {
+        uint256 context = getContextID(group_, group_);
+        updateCommitmentLevels(group_);
 
+        groupState memory gs = getGS[context];
+        nextUpdateAt = gs.p + gs.lastPeriod;
+        if (nextUpdateAt > block.timestamp) return nextUpdateAt;
+        nextUpdateAt = block.timestamp + gs.p;
+        gs.lastPeriod = uint64(block.timestamp);
+        getGS[context] = gs;
+    }
 
-    function getGroupState(address nova_) external view returns (groupState memory ) {
+    function updateIndividualLR(address who_, address group_) public returns (uint256 lr) {
+        uint256 Icontext = getContextID(who_, group_);
+        uint256 Gcontext = getContextID(group_, group_);
+        individualState memory ISS = getIS[Icontext];
+        groupState memory GSS = getGS[Gcontext];
+        if (ISS.lastUpdatedAt < GSS.lastPeriod) return ISS.score;
+
+        ISS.score = uint32((ISS.GC / (((ISS.GC * 100_00) / GSS.TCL) / GSS.TCP)) * ((100 - GSS.k) + GSS.k) * ISS.score);
+    }
+
+    function getGroupState(address nova_) external view returns (groupState memory) {
         return getGS[getContextID(nova_, nova_)];
     }
 
-    function getIndividualState(address agent_, address nova_) external view returns (individualState memory ) {
+    function getIndividualState(address agent_, address nova_) external view returns (individualState memory) {
         return getIS[getContextID(agent_, nova_)];
+    }
+
+    function isAuthorised(address who_, address onWhat_) external view returns (bool) {
+        return authorised[getContextID(who_, onWhat_)];
     }
 
     /////////////////////  Pereiphery

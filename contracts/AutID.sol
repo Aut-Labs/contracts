@@ -194,6 +194,9 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     {
         uint256 i;
         if (agents.length == 0) agents = IDAOMembership(dao_).getAllMembers();
+
+        commitments = new uint256[](agents.length);
+
         for (i; i < agents.length;) {
             commitments[i] = holderToDAOMembershipData[agents[i]][dao_].commitment;
             unchecked {

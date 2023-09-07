@@ -37,7 +37,7 @@ contract DeploysInit is Test {
         A2 = address(uint160(uint256(keccak256("Account2"))));
         vm.label(address(A2), "Account2");
 
-        A3 = address(uint160(uint256(keccak256("Account1"))));
+        A3 = address(uint160(uint256(keccak256("Account3"))));
         vm.label(address(A3), "Account3");
 
         vm.startPrank(A0);

@@ -20,13 +20,8 @@ contract SampleInteractionPlugin is SimplePlugin, InteractionModifier {
         return number;
     }
 
-
     function incrementNumberPlusOne() external isInteraction returns (uint256) {
         number = number + 1;
         return number;
     }
-
-
-
-
 }
