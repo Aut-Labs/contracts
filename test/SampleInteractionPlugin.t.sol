@@ -72,7 +72,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
         points[0] = 5;
         points[1] = 500;
 
-        vm.expectRevert(LocalRep.OnlyAdmin.selector);
+        vm.expectRevert(ILocalReputation.OnlyAdmin.selector);
         iLR.setInteractionWeights(address(InteractionPlugin), datas, points);
 
         vm.prank(Admin);
@@ -112,46 +112,6 @@ contract TestSampleInteractionPlugin is DeploysInit {
         assertTrue(members.length == 1, "not more than 1 member");
         assertTrue(GS0.TCL == 4, "1 member tcl in setup");
     }
-
-    // function testWithSameCommitmentPeriod(uint256 membersAmt, uint256 firsPoints, uint256 secondPoints) public {
-    //     vm.assume(membersAmt  < 99);
-
-    //     vm.assume(firsPoints < 100);
-    //     vm.assume(secondPoints < 100);
-
-    //     bytes[] memory datas = new bytes[](2);
-    //     uint256[] memory points = new uint256[](2);
-
-    //     datas[0] = abi.encodePacked(InteractionPlugin.incrementNumberPlusOne.selector);
-    //     datas[1] = abi.encodeWithSelector(InteractionPlugin.incrementNumber.selector, "averyrandomstring");
-
-    //     points[0] = firsPoints;
-    //     points[1] = secondPoints;
-
-    //     vm.prank(Admin);
-    //     iLR.setInteractionWeights(address(InteractionPlugin), datas, points);
-
-    //     uint256 i = 1;
-    //     for (i; i< membersAmt;) {
-
-    //     vm.prank(address(uint160(i)));
-    //     aID.mint(vm.toString(i), "urlll", 1, 4, address(Nova));
-
-    //     vm.warp(block.timestamp + 1);
-
-    //     vm.prank(address(uint160(i)));
-    //     ( i % 2 == 0) ? InteractionPlugin.incrementNumberPlusOne() : InteractionPlugin.incrementNumber("averyrandomstring");
-
-    //     vm.warp(block.timestamp + 1);
-
-    //         unchecked {
-    //             ++i;
-    //         }
-    //                         address[] memory members = Nova.getAllMembers();
-    //     groupState memory GSbefore = iLR.getGroupState(address(Nova));
-    //     console.log("Members nr - TCL - TCP", members.length, GSbefore.TCL,GSbefore.TCP);
-
-    //     }
 
     function testWithSameCommitmentPeriod() public {
         uint256 membersAmt = 3;
@@ -196,5 +156,60 @@ contract TestSampleInteractionPlugin is DeploysInit {
             console.log("Members nr - TCL - TCP", members.length, GSbefore.TCL, GSbefore.TCP);
         }
         assertTrue(iLR.getGroupState(address(Nova)).lastPeriod > 1, "lastPeriod not block.timestamp");
+    }
+
+    function testSimpleGroupPeriodicUpdate() public {
+        vm.warp(block.timestamp + 100 days);
+        testWithSameCommitmentPeriod();
+        groupState memory GSbefore = iLR.getGroupState(address(Nova));
+
+        uint256 nextUpdateAt = iLR.periodicGroupStateUpdate(address(Nova));
+
+        groupState memory GSafer = iLR.getGroupState(address(Nova));
+
+        assertTrue(nextUpdateAt > block.timestamp, "should be later");
+        assertTrue(nextUpdateAt >= GSbefore.lastPeriod + GSbefore.p, "period increment fault");
+    }
+
+    function testIndividualLRUpdate() public {
+        address A55 = address(5);
+
+        uint256 prevScore = iLR.updateIndividualLR(address(Nova), A55);
+        assertTrue(prevScore == 0, "No update score is blank");
+        testWithSameCommitmentPeriod();
+
+        prevScore = iLR.updateIndividualLR(address(Nova), A55);
+        assertTrue(prevScore == 0, "still blank as no time passed");
+
+        vm.warp(block.timestamp + 31 days);
+        uint256 newScore = iLR.updateIndividualLR(address(Nova), A55);
+        assertFalse(newScore > 1, "group update needed first");
+
+        uint256 nextUpdateAt = iLR.periodicGroupStateUpdate(address(Nova));
+
+        vm.warp(nextUpdateAt + 1);
+        iLR.periodicGroupStateUpdate(address(Nova));
+
+        newScore = iLR.updateIndividualLR(A55, address(Nova));
+        assertTrue(newScore > 1, "has actual score");
+    }
+
+    function testPeriodFlip() public {
+        testWithSameCommitmentPeriod();
+
+        vm.expectRevert(ILocalReputation.PeriodUnelapsed.selector);
+        uint256[] memory scores1 = iLR.bulkPeriodicUpdate(address(Nova));
+
+        vm.warp(block.timestamp + (30 * 1 days));
+        scores1 = iLR.bulkPeriodicUpdate(address(Nova));
+
+        uint256 i;
+
+        for (i; i< scores1.length;) {
+            console.log("agent " , vm.toString(i), " -- ", scores1[i]);
+            unchecked {
+                ++ i;
+            }
+        }
     }
 }

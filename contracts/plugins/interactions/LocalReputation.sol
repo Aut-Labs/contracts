@@ -6,38 +6,28 @@ import {IAutID} from "../../IAutID.sol";
 import {IPlugin} from "../IPlugin.sol";
 import "./ILocalReputation.sol";
 
-/// @notice reputation
-contract LocalRep {
+import "forge-std/console.sol";
+
+/// @title Local Reputation Framework for ĀutID holders
+contract LocalRep is ILocalReputation {
     /// @notice stores entity authorisation to operate on LR
     mapping(uint256 context => bool isAuthorised) public authorised;
 
     /// @notice stores plugin-dao relation on initialization
-    /// @dev prevents external call
     mapping(address plugin => address dao) public daoOfPlugin;
 
-    uint32 public immutable DEFAULT_K = 30;
-    uint32 public immutable DEFAULT_PERIOD = 30 days;
-
+    /// @notice  stores Group State
     mapping(uint256 contextID => groupState) getGS;
 
+    /// @notice  stores Individual State in Group
     mapping(uint256 contextID => individualState) getIS;
 
+    /// @notice stores amount of points awared per interaction
     mapping(uint256 => uint256 points) public pointsPerInteraction;
 
-    event UpdatedKP(address targetGroup);
-    event Interaction(uint256 InteractionID, address agent);
-    event LocalRepInit(address Nova, address PluginAddr);
-
-    /////////////////////  Errors
-    ///////////////////////////////////////////////////////////////
-    error Unauthorised();
-    error Uninitialized();
-    error OnlyOnce();
-    error Over100();
-    error ZeroUnallowed();
-    error OnlyAdmin();
-    error UninitializedPair();
-    error ArgLenMismatch();
+    uint16 public immutable DEFAULT_K = 30;
+    uint16 public immutable DEFAULT_PENALTY = 10;
+    uint32 public immutable DEFAULT_PERIOD = 30 days;
 
     /////////////////////  Modifiers
     ///////////////////////////////////////////////////////////////
@@ -47,6 +37,7 @@ contract LocalRep {
         _;
     }
 
+    //// @notice executed once when the plugin is installed per logic-nova pair
     function initialize(address nova_) external {
         uint256 context = getContextID(msg.sender, nova_);
         authorised[context] = true;
@@ -55,7 +46,6 @@ contract LocalRep {
         groupState memory Group = getGS[context];
 
         if (Group.lastPeriod != 0) return;
-        /// only first
 
         Group.k = DEFAULT_K;
         Group.p = DEFAULT_PERIOD;
@@ -70,6 +60,7 @@ contract LocalRep {
         emit LocalRepInit(nova_, msg.sender);
     }
 
+    //// @notice fetches commitment levels from AutID for a specific Nova and updates Total Commitment Level if needed
     function updateCommitmentLevels(address nova_) public {
         INova Nova = INova(nova_);
         IAutID AutID = IAutID(Nova.getAutIDAddress());
@@ -95,21 +86,84 @@ contract LocalRep {
         getGS[context].TCL = uint64(totalCommitment);
     }
 
-    event SetWeightsFor(address plugin, uint256 interactionId);
+    /// @notice updates group state to latest to account for latest interactions
+    function periodicGroupStateUpdate(address group_) public returns (uint256 nextUpdateAt) {
+        uint256 context = getContextID(group_, group_);
+        updateCommitmentLevels(group_);
 
-    /// @notice sets number of points each function asigns
+        groupState memory gs = getGS[context];
+        nextUpdateAt = gs.p + gs.lastPeriod;
+        if (nextUpdateAt > block.timestamp) return nextUpdateAt;
+        nextUpdateAt = block.timestamp + gs.p;
+        gs.lastPeriod = uint64(block.timestamp);
+        getGS[context] = gs;
+    }
+
+    /// @notice updates local reputation of a specific individual context
+    function updateIndividualLR(address who_, address group_) public returns (uint256) {
+        uint256 Icontext = getContextID(who_, group_);
+        uint256 Gcontext = getContextID(group_, group_);
+        individualState memory ISS = getIS[Icontext];
+        groupState memory GSS = getGS[Gcontext];
+
+        if (ISS.lastUpdatedAt >= GSS.lastPeriod) return ISS.score;
+        /// @dev invariant GSS update always before ISS
+        ISS.lastUpdatedAt = uint64(block.timestamp);
+        if (ISS.score == 0) ISS.score = 1;
+                console.log(ISS.GC, GSS.TCL, ISS.score, GSS.k);
+
+        if ( GSS.TCL * GSS.TCP * GSS.k * ISS.score == 0) revert ZeroUnallawed();
+
+        ISS.score = calculateLocalReputation(ISS.GC, GSS.TCL, GSS.TCP, GSS.k, ISS.score);
+
+        getIS[Icontext] = ISS;
+        return uint256(ISS.score);
+    }
+
+    function calculateLocalReputation(uint256 iGC, uint256 TCL, uint256 TCP, uint256 k, uint256 prevScore)
+        public
+        pure
+        returns (uint32 score)
+    {   
+        //// @high risk of divison by 0 since 
+        uint256 EC = (((iGC * 100_00) / TCL) / TCP);
+        EC = EC == 0 ? 1 : EC;
+        score = uint32((iGC / (((iGC * 100_00) / TCL) / TCP + 1)  ) * ((100 - k) + k) * prevScore);
+    }
+
+    /// @dev consider dos vectors and changing return type
+    function bulkPeriodicUpdate(address group_) external returns (uint256[] memory localReputationScores) {
+        uint256 context = getContextID(group_, group_);
+        groupState memory startGS = getGS[context];
+        if ((startGS.lastPeriod + startGS.p) > block.timestamp) revert PeriodUnelapsed();
+
+        periodicGroupStateUpdate(group_);
+
+        address[] memory members = INova(group_).getAllMembers();
+        localReputationScores = new uint256[](members.length);
+        uint256 i;
+        for (i; i < members.length;) {
+            localReputationScores[i] = updateIndividualLR(members[i], group_);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /// @notice sets number of points each function in contexts asigns to caller
     /// @param plugin_ plugin target
-    //
-    function setInteractionWeights(address plugin_, bytes[] memory datas, uint256[] memory points) external {
+    /// @param datas_, array of selector encoded (msg.data) bytes
+    /// @param points_, amount of points to be awared for each of datas_
+    function setInteractionWeights(address plugin_, bytes[] memory datas_, uint256[] memory points_) external {
         if (daoOfPlugin[plugin_] == address(0)) revert UninitializedPair();
         if (!INova(daoOfPlugin[plugin_]).isAdmin(msg.sender)) revert OnlyAdmin();
 
-        if (datas.length != points.length) revert ArgLenMismatch();
+        if (datas_.length != points_.length) revert ArgLenMismatch();
         uint256 interact;
         uint256 i;
-        for (i; i < datas.length;) {
-            interact = interactionID(plugin_, datas[i]);
-            pointsPerInteraction[interact] = points[i];
+        for (i; i < datas_.length;) {
+            interact = interactionID(plugin_, datas_[i]);
+            pointsPerInteraction[interact] = points_[i];
             unchecked {
                 ++i;
             }
@@ -117,19 +171,26 @@ contract LocalRep {
         emit SetWeightsFor(plugin_, interact);
     }
 
-    function interaction(bytes memory data, address callerAgent) external onlyPlugin {
-        uint256 interactID = interactionID(msg.sender, data);
+    /// @notice called only by plugin implementing interaction modifier to apply points for successfu execution
+    /// @param datas_ msg.data of called function
+    /// @param callerAgent_ address that called the function to be rewarded
+    function interaction(bytes memory datas_, address callerAgent_) external onlyPlugin {
+        uint256 interactID = interactionID(msg.sender, datas_);
         uint256 repPoints = pointsPerInteraction[interactID];
         address dao = daoOfPlugin[msg.sender];
 
-        getIS[getContextID(callerAgent, dao)].GC += uint64(repPoints);
+        getIS[getContextID(callerAgent_, dao)].GC += uint64(repPoints);
         getGS[getContextID(dao, dao)].TCP += uint64(repPoints);
 
-        emit Interaction(interactID, callerAgent);
+        emit Interaction(interactID, callerAgent_);
     }
 
-    function setKP(uint32 k, uint32 p, address target_) external {
+    /// @notice sets k and p for specific group
+    /// @param k steepness degree for slope of local reputations score changes
+    /// @param p min amount of time duration in seconds of period
+    function setKP(uint16 k, uint32 p, uint16 penalty, address target_) external {
         if (!INova(target_).isAdmin(msg.sender)) revert OnlyAdmin();
+
 
         if (k * p == 0) revert ZeroUnallowed();
         if (((k / 100) + (p / 100)) > 0) revert Over100();
@@ -141,10 +202,6 @@ contract LocalRep {
         emit UpdatedKP(target_);
     }
 
-    /////////////////////  Public (onlyAuthorised)
-    ///////////////////////////////////////////////////////////////
-
-    // function sealPeriod(address group) external onlyAuthorised(group) {}
 
     /////////////////////  Pure
     ///////////////////////////////////////////////////////////////
@@ -172,61 +229,6 @@ contract LocalRep {
     /// @param group_ address of the group
     function getLRof(address subject_, address group_) public view returns (individualState memory) {
         return getIS[getContextID(subject_, group_)];
-    }
-
-    // /// @notice get LR score
-    // /// @param agentAddress_ address of subject
-    // /// @param groupAddress_ address of group
-    // function getLRScore(address agentAddress_, address groupAddress_) public view returns (uint256) {
-    //     LR[2] memory agentLRS = getLR[getContextID(agentAddress_, groupAddress_)];
-    //     LR memory agentLR = agentLRS[0];
-    //     LR memory prevLR = agentLRS[1];
-
-    //     LR memory groupLR = getLR[getContextID(groupAddress_, groupAddress_)][0];
-
-    //     return calculateLR(agentLR, groupLR, prevLR);
-    // }
-
-    // struct groupState {
-    //     uint64 lastPeriod; //lastPeriod: Last period in which the LR was updated.
-    //     uint64 TCL; //TCL (Total Commitment Level in the Community): Sum of all members' Commitment Levels (between 1 and 10).
-    //     uint64 TCP; //TCP (Total Contributions Points in a Community): Sum of all contributions points, considering custom weights per interaction (between 1 and 10).
-    //     uint32 k; //  (Steepness Degree): Controls the slope of LR changes, initially fixed at 0.3, later customizable within 0.01 to 0.99: 0.01 ≤ k ≤ 0.99 | penalty
-    //     uint32 p;
-
-    //     bytes32 commitHash;
-    // }
-
-    // struct individualState {
-    //     uint32 iCL; //iCL (Commitment Level): Represents individual members' commitment, ranging from 1 to 10.
-    //     uint32 score; // Individual Local Reputation Score
-    //     uint64 GC; // GC (Given Contributions):Actual contributions made by a member. (points)
-    //     uint64 lastUpdatedAt;
-
-    //         // uint64 EC; // EC (Expected Contributions): Calculated based on fCL and TCP.
-    //         // uint64 fCL; // fCL (Fractional Commitment Level per Individual): Fraction of total commitment attributed to each member.
-    // }
-
-    function periodicGroupStateUpdate(address group_) public returns (uint256 nextUpdateAt) {
-        uint256 context = getContextID(group_, group_);
-        updateCommitmentLevels(group_);
-
-        groupState memory gs = getGS[context];
-        nextUpdateAt = gs.p + gs.lastPeriod;
-        if (nextUpdateAt > block.timestamp) return nextUpdateAt;
-        nextUpdateAt = block.timestamp + gs.p;
-        gs.lastPeriod = uint64(block.timestamp);
-        getGS[context] = gs;
-    }
-
-    function updateIndividualLR(address who_, address group_) public returns (uint256 lr) {
-        uint256 Icontext = getContextID(who_, group_);
-        uint256 Gcontext = getContextID(group_, group_);
-        individualState memory ISS = getIS[Icontext];
-        groupState memory GSS = getGS[Gcontext];
-        if (ISS.lastUpdatedAt < GSS.lastPeriod) return ISS.score;
-
-        ISS.score = uint32((ISS.GC / (((ISS.GC * 100_00) / GSS.TCL) / GSS.TCP)) * ((100 - GSS.k) + GSS.k) * ISS.score);
     }
 
     function getGroupState(address nova_) external view returns (groupState memory) {
