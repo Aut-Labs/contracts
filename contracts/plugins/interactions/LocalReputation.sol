@@ -132,6 +132,13 @@ contract LocalRep is ILocalReputation {
         return uint256(ISS.score);
     }
 
+    /// @dev todo penalty and edge cases
+    /// @notice pure function for calculating local reputation
+    /// @param iGC individual given contribution
+    /// @param TCL sum of all member commitment levels
+    /// @param TCP total contribution points for group
+    /// @param k steepness degree or pace of reputation changes
+    /// @param prevScore previous local reputation score
     function calculateLocalReputation(uint256 iGC, uint256 TCL, uint256 TCP, uint256 k, uint256 prevScore)
         public
         pure
@@ -141,7 +148,7 @@ contract LocalRep is ILocalReputation {
         uint256 EC = (((iGC * 100_00) / TCL) / TCP);
 
         EC = EC == 0 ? 1 : EC;
-        score = uint32((iGC / (((iGC * 100_00) / TCL) / TCP + 1)) * ((100 - k) + k) * prevScore);
+        score = uint32(EC * ((100 - k) + k) * prevScore);
     }
 
     /// @dev consider dos vectors and changing return type
