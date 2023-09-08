@@ -8,6 +8,7 @@ import "../daoUtils/abstracts/DAOMetadata.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
 import "../daoUtils/abstracts/DAOInteractions.sol";
+import "../daoUtils/abstracts/DAOTrifolds.sol";
 
 import "../modules/onboarding/OnboardingModule.sol";
 import "./interfaces/INova.sol";
@@ -23,6 +24,7 @@ contract Nova is
     DAOMarket,
     DAOModules,
     DAOCommitment,
+    DAOTrifolds,
     INova
 {
     address public deployer;

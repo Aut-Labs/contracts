@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Context.sol";
 
-contract DAOTrifolds is Context {
+abstract contract DAOTrifolds is Context {
     event NodeAdded(uint64 primaryKey, uint64 uplink, uint8 nodeType, bytes32 symbol, address operator);
 
     enum ENodeType {
@@ -29,13 +29,13 @@ contract DAOTrifolds is Context {
 
     bool private _initialized;
 
-    function _initializer() internal initialized {
+    function _initializer() internal {
         TNode memory node;
         _graph.push(node);
         _initialized = true;
     }
 
-    function _setOperator(uint64 authorization, uint64 to, address operator) internal initialized {
+    function _setOperator(uint64 authorization, uint64 to, address operator) internal {
         require(to < _graph.length);
         require(operator != address(0));
         require(_graph[authorization].operator == _msgSender());
@@ -43,7 +43,7 @@ contract DAOTrifolds is Context {
         _graph[to].operator = operator;
     }
 
-    function _setSymbol(uint64 authorization, uint64 to, bytes32 symbol) internal initialized {
+    function _setSymbol(uint64 authorization, uint64 to, bytes32 symbol) internal {
         require(to < _graph.length);
         require(symbol != bytes32(0));
         require(_graph[authorization].operator == _msgSender());
@@ -51,7 +51,8 @@ contract DAOTrifolds is Context {
         _graph[to].symbol = symbol;
     }
 
-    function _addTrifold(uint64 to, bytes32 symbol, bytes32[3] calldata roles) internal initialized {
+    /// @dev add Trifold node with its Cusps
+    function _addTrifold(uint64 to, bytes32 symbol, bytes32[3] calldata roles) internal {
         uint64 length = uint64(_graph.length);
         require(to < length);
         TNode memory toNode = _graph[to];
@@ -81,6 +82,7 @@ contract DAOTrifolds is Context {
         }
     }
 
+    /// @dev fill an array of ancestors at 2^i distances 
     function _fillUplinkExpJumps(uint64 to) internal {
         TNode memory node = _graph[to];
         uint64[64] memory jumps;
@@ -100,6 +102,7 @@ contract DAOTrifolds is Context {
         _nodeUplinkExpJumps[to] = jumpsCut;
     }
 
+    /// @dev checks if `to` node descends to `from` node
     function _checkUplink(uint64 from, uint64 to) internal view returns(bool) {
         TNode memory fromNode = _graph[from];
         TNode memory toNode = _graph[to];
@@ -119,7 +122,7 @@ contract DAOTrifolds is Context {
         return from == to;
     }
 
-    // --- slow version
+    // --- slow version for `_checkUplink` (without binary jumps)
 
     function _isOperator(uint64 node, address who) internal view returns(bool) {
         uint64 cur = node;
