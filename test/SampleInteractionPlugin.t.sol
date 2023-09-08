@@ -215,28 +215,28 @@ contract TestSampleInteractionPlugin is DeploysInit {
         }
     }
 
-    function skiptestLRSimulFormula() public {
-        return;
-        uint256 numberOfPeriods = 10;
-        uint256 numberOfMembers = 3;
-        uint256 TCMgrowth = 10;
-        uint256 TCMdecline = 5000;
+    // function skiptestLRSimulFormula() public {
+    //     return;
+    //     uint256 numberOfPeriods = 10;
+    //     uint256 numberOfMembers = 3;
+    //     uint256 TCMgrowth = 10;
+    //     uint256 TCMdecline = 5000;
 
-        uint256 iGC = 100;
-        uint256 TCL = 300;
-        uint256 TCP = 1000;
-        uint256 k = 30;
-        uint256 prevScore = 1;
+    //     uint256 iGC = 100;
+    //     uint256 TCL = 300;
+    //     uint256 TCP = 1000;
+    //     uint256 k = 30;
+    //     uint256 prevScore = 1;
 
-        uint256 i;
-        for (i; i < 10;) {
-            prevScore *= TCMgrowth;
-            if (i < 3) {} else {}
-            uint256 score = iLR.calculateLocalReputation(iGC, TCL, TCP, k, prevScore);
+    //     uint256 i;
+    //     for (i; i < 10;) {
+    //         prevScore *= TCMgrowth;
+    //         if (i < 3) {} else {}
+    //         uint256 score = iLR.calculateLocalReputation(iGC, 9999, TCL, TCP, k, prevScore);
 
-            console.log(vm.toString(i), "  -  ", vm.toString(score));
+    //         console.log(vm.toString(i), "  -  ", vm.toString(score));
 
-            ++i;
-        }
-    }
+    //         ++i;
+    //     }
+    // }
 }
