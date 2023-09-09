@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity 0.8.19;
 
 /// @title ITribute
 /// @notice The minimal interface of the TributeLabs DAORegistry contract needed for checking for a membership

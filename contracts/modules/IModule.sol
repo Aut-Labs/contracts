@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity 0.8.19;
 
 /// @title IModule
 /// @notice Every module interface should inherite this one. This interface is a standard configuration of a Plugin. Plugins can only be usable if they implement these functions
