@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity 0.8.19;
 
 /// @title IDAOTypes
 /// @notice IDAOTypes has a mapping between type and MembershipChecker deployed for all DAO standards that are supported by AutID

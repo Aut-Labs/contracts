@@ -1,4 +1,4 @@
-pragma solidity 0.8.18;
+pragma solidity 0.8.19;
 
 import "./TestERC20.sol";
 import {IMiniMeToken} from "../daoStandards/IAragon.sol";

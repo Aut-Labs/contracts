@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity 0.8.19;
 
 /// @title ICompound
 /// @notice The minimal interface of the Compound contract needed for implementing IMembershipExtension

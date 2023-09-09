@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: UNLICENCED
-pragma solidity 0.8.18;
+pragma solidity 0.8.19;
 
 import {SimplePlugin} from "../SimplePlugin.sol";
 import {InteractionModifier} from "./InteractionModifier.sol";
