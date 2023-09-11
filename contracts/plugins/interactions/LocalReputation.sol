@@ -127,7 +127,7 @@ contract LocalRep is ILocalReputation {
         getGS[Gcontext] = GSS;
         if (GSS.lrUpdatesPerPeriod >= INova(group_).memberCount()) periodicGroupStateUpdate(group_);
 
-        ISS.score = calculateLocalReputation(ISS.GC, ISS.iCL, GSS.TCL, GSS.TCP, GSS.k, ISS.score);
+        ISS.score = calculateLocalReputation(ISS.GC, ISS.iCL, GSS.TCL, GSS.TCP, GSS.k, ISS.score, GSS.penalty);
         ISS.GC = 0;
 
         getIS[Icontext] = ISS;
@@ -142,16 +142,22 @@ contract LocalRep is ILocalReputation {
     /// @param iCL individual commitment level
     /// @param k steepness degree or pace of reputation changes
     /// @param prevScore previous local reputation score
-    function calculateLocalReputation(uint256 iGC, uint256 iCL,uint256 TCL, uint256 TCP, uint256 k, uint256 prevScore)
+    /// @param penalty inactivity penalty as percentage (0-100). Default 10.
+    function calculateLocalReputation(uint256 iGC, uint256 iCL,uint256 TCL, uint256 TCP, uint256 k, uint256 prevScore, uint256 penalty)
         public
         pure
-        returns (uint32 score)
-    {
+        returns (uint64 score)
+    {   
+        if (iGC == 0) {
+            score =  uint64(prevScore - ((prevScore * penalty) / 100));
+        } else {
         uint256 fractionalCommitmentLevel =  (iCL * 10_000) / TCL;
         uint256 EC = fractionalCommitmentLevel / TCP; 
 
         EC = EC == 0 ? 1 : EC;
-        score = uint32(EC * ((100 - k) + k) * prevScore);
+        score = uint64(((iGC/EC) * (100 - k) + k) * prevScore);
+        }
+
     }
 
     /// @dev consider dos vectors and changing return type

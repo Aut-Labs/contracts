@@ -68,10 +68,10 @@ interface ILocalReputation {
     function updateIndividualLR(address who_, address group_) external returns (uint256);
     function periodicGroupStateUpdate(address group_) external returns (uint256 nextUpdateAt);
 
-    function calculateLocalReputation(uint256 iGC, uint256 iCL,uint256 TCL, uint256 TCP, uint256 k, uint256 prevScore)
+    function calculateLocalReputation(uint256 iGC, uint256 iCL,uint256 TCL, uint256 TCP, uint256 k, uint256 prevScore, uint256 penalty)
         external
         pure
-        returns (uint32 score);
+        returns (uint64 score);
 
     function bulkPeriodicUpdate(address group_) external returns (uint256[] memory localReputationScores);
 }
