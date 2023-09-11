@@ -134,7 +134,6 @@ contract LocalRep is ILocalReputation {
         return uint256(ISS.score);
     }
 
-    /// @dev todo penalty and edge cases
     /// @notice pure function for calculating local reputation
     /// @param iGC individual given contribution
     /// @param TCL sum of all member commitment levels
