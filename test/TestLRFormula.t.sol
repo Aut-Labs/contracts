@@ -9,7 +9,7 @@ import {SampleInteractionPlugin} from "../contracts/plugins/interactions/SampleI
 
 import "forge-std/console.sol";
 
-contract TestSampleInteractionPlugin is DeploysInit {
+contract TestLRFuzz is DeploysInit {
     LocalRep LocalRepAlgo;
     ILocalReputation iLR;
     SampleInteractionPlugin InteractionPlugin;
@@ -29,7 +29,6 @@ contract TestSampleInteractionPlugin is DeploysInit {
         iLR = ILocalReputation(address(LocalRepAlgo));
     }
 
-
     function testfuzzLRFormula(
         uint256 iGC,
         uint256 iCL,
@@ -41,21 +40,17 @@ contract TestSampleInteractionPlugin is DeploysInit {
     ) public returns (uint256 score) {
         iGC = bound(iGC, 1, 10234);
         iCL = bound(iCL, 2, 10);
-        TCL = bound(TCL, 10, 1 ether);
-        TCP = bound(TCP, 2, 1 ether);
+        TCL = bound(TCL, 10, 10_000);
+        TCP = bound(TCP, 2, 1_000_000);
 
         penalty = bound(penalty, 2, 99);
-        k = bound(k, 1000, 10_000);
+        k = bound(k, 1, 40);
 
-        prevscore = bound(prevscore, 100, 10_000);
+        prevscore = bound(prevscore, 0.01 ether, 9 ether);
+
         vm.assume(iCL < TCL);
         vm.assume(iGC < TCP);
 
         score = iLR.calculateLocalReputation(iGC, iCL, TCL, TCP, k, prevscore, penalty);
-        console.log(score);
     }
-
-
-
-
 }

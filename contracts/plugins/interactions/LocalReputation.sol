@@ -27,6 +27,7 @@ contract LocalRep is ILocalReputation {
     uint16 public immutable DEFAULT_K = 30;
     uint8 public immutable DEFAULT_PENALTY = 10;
     uint8 public immutable DEFAULT_CAP_GROWTH = 40;
+    /// @dev unimplemented
     uint32 public immutable DEFAULT_PERIOD = 30 days;
 
     /////////////////////  Modifiers
@@ -154,11 +155,11 @@ contract LocalRep is ILocalReputation {
         if (iGC == 0 && prevScore > 0) {
             score = uint64(prevScore - ((prevScore * penalty) / 100));
         } else {
-            uint256 fractionalCommitmentLevel = (iCL * 10_000) / TCL;
+            uint256 fractionalCommitmentLevel = (iCL * 1 ether) / TCL;
             uint256 EC = fractionalCommitmentLevel * TCP;
 
             EC = EC == 0 ? 1 : EC;
-            score = uint64((((iGC * 10_000) / EC) * (10_000 - k) + k) * prevScore);
+            score = uint64((((iGC * 1 ether) / EC) * (100 - k) + k) * prevScore);
         }
         score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score;
     }
