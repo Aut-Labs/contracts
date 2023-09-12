@@ -5,7 +5,6 @@ import {INova} from "../../nova/interfaces/INova.sol";
 import {IAutID} from "../../IAutID.sol";
 import {IPlugin} from "../IPlugin.sol";
 
-
 import "./ILocalReputation.sol";
 
 /// @title Local Reputation Framework for ĀutID holders
@@ -142,21 +141,26 @@ contract LocalRep is ILocalReputation {
     /// @param k steepness degree or pace of reputation changes
     /// @param prevScore previous local reputation score
     /// @param penalty inactivity penalty as percentage (0-100). Default 10.
-    function calculateLocalReputation(uint256 iGC, uint256 iCL,uint256 TCL, uint256 TCP, uint256 k, uint256 prevScore, uint256 penalty)
-        public
-        pure
-        returns (uint64 score)
-    {   
-        if (iGC == 0) {
-            score =  uint64(prevScore - ((prevScore * penalty) / 100));
+    function calculateLocalReputation(
+        uint256 iGC,
+        uint256 iCL,
+        uint256 TCL,
+        uint256 TCP,
+        uint256 k,
+        uint256 prevScore,
+        uint256 penalty
+    ) public pure returns (uint256 score) {
+        if (k > 10_000) revert MaxK();
+        if (iGC == 0 && prevScore > 0) {
+            score = uint64(prevScore - ((prevScore * penalty) / 100));
         } else {
-        uint256 fractionalCommitmentLevel =  (iCL * 10_000) / TCL;
-        uint256 EC = fractionalCommitmentLevel / TCP; 
+            uint256 fractionalCommitmentLevel = (iCL * 10_000) / TCL;
+            uint256 EC = fractionalCommitmentLevel * TCP;
 
-        EC = EC == 0 ? 1 : EC;
-        score = uint64(((iGC/EC) * (100 - k) + k) * prevScore);
+            EC = EC == 0 ? 1 : EC;
+            score = uint64((((iGC * 10_000) / EC) * (10_000 - k) + k) * prevScore);
         }
-
+        score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score;
     }
 
     /// @dev consider dos vectors and changing return type
