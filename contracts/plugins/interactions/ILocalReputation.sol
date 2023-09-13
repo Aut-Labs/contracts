@@ -60,8 +60,6 @@ interface ILocalReputation {
 
     function getIndividualState(address agent_, address nova_) external view returns (individualState memory);
 
-    function isAuthorised(address who_, address onWhat_) external view returns (bool);
-
     function setKP(uint16 k, uint32 p, uint16 penalty, address target_) external;
 
     function updateCommitmentLevels(address nova_) external;

@@ -9,9 +9,6 @@ import "./ILocalReputation.sol";
 
 /// @title Local Reputation Framework for ĀutID holders
 contract LocalRep is ILocalReputation {
-    /// @notice stores entity authorisation to operate on LR
-    mapping(uint256 context => bool isAuthorised) public authorised;
-
     /// @notice stores plugin-dao relation on initialization
     mapping(address plugin => address dao) public daoOfPlugin;
 
@@ -41,7 +38,6 @@ contract LocalRep is ILocalReputation {
     //// @notice executed once when the plugin is installed per logic-nova pair
     function initialize(address nova_) external {
         uint256 context = getContextID(_msgSender(), nova_);
-        authorised[context] = true;
 
         context = getContextID(nova_, nova_);
         groupState memory Group = getGS[context];
@@ -259,11 +255,15 @@ contract LocalRep is ILocalReputation {
     /////////////////////  View
     ///////////////////////////////////////////////////////////////
 
-    /// @notice get the LR of a subject in a group
+    /// @notice get the individual state of a subject in a group
     /// @param subject_ address of the subject
     /// @param group_ address of the group
     function getLRof(address subject_, address group_) public view returns (individualState memory) {
         return getIS[getContextID(subject_, group_)];
+    }
+
+    function getReputationScore(address subject_, address group_) public view returns (uint256 score) {
+        score = getLRof(subject_, group_).score;
     }
 
     /// @notice gets the agregated last updated state of reputation related nova data
@@ -277,13 +277,6 @@ contract LocalRep is ILocalReputation {
     /// @param nova_ address of nova
     function getIndividualState(address agent_, address nova_) external view returns (individualState memory) {
         return getIS[getContextID(agent_, nova_)];
-    }
-
-    /// @notice gets the agregated last updated state of reputation related nova data
-    /// @param who_ address of agent
-    /// @param onWhat_ address of nova to determine context
-    function isAuthorised(address who_, address onWhat_) external view returns (bool) {
-        return authorised[getContextID(who_, onWhat_)];
     }
 
     /////////////////////  Pereiphery
