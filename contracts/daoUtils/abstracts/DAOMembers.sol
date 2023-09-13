@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "./AutIDAddress.sol";
 import "../interfaces/get/IDAOAdmin.sol";
@@ -11,7 +11,6 @@ import "../interfaces/set/IDAOAdminSet.sol";
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, IDAOAdminSet, AutIDAddress {
-
     address[] public members;
 
     mapping(address => bool) public override isMember;
@@ -27,7 +26,7 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
         _;
     }
 
-    function join(address newMember, uint role) public virtual override onlyAutID {
+    function join(address newMember, uint256 role) public virtual override onlyAutID {
         require(!isMember[newMember], "Already a member");
         isMember[newMember] = true;
         members.push(newMember);
@@ -61,5 +60,9 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
 
     function getAdmins() public view override returns (address[] memory) {
         return admins;
+    }
+
+    function memberCount() public view returns (uint256) {
+        return members.length;
     }
 }

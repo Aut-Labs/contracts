@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
-import {IMiniMeToken, IAragonApp, IAragonKernel} from '../daoStandards/IAragon.sol';
+import {IMiniMeToken, IAragonApp, IAragonKernel} from "../daoStandards/IAragon.sol";
 
 contract AragonVotingApp is IAragonApp {
     // address private _token;
@@ -13,10 +13,9 @@ contract AragonVotingApp is IAragonApp {
 }
 
 contract AragonTokenManagerApp is AragonVotingApp {
-    constructor(address token_) AragonVotingApp(token_) {
-    }
+    constructor(address token_) AragonVotingApp(token_) {}
 
-    function mintRole() external pure returns(bytes32) {
-        return  keccak256("MINT_ROLE");
+    function mintRole() external pure returns (bytes32) {
+        return keccak256("MINT_ROLE");
     }
 }

@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "../interfaces/get/IAutIDAddress.sol";
 import "../../IAutID.sol";
@@ -12,10 +12,7 @@ abstract contract AutIDAddress is IAutIDAddress {
 
     /// @dev Modifier for check of access of the admin member functions
     modifier onlyAutID() {
-        require(
-            msg.sender == address(_autID),
-            "Only AutID"
-        );
+        require(msg.sender == address(_autID), "Only AutID");
         _;
     }
 

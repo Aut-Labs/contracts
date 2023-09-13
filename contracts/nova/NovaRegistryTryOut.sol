@@ -1,6 +1,5 @@
 // //SPDX-License-Identifier: MIT
-// pragma solidity ^0.8.0;
-
+// pragma solidity 0.8.18
 // import "./interfaces/INovaFactory.sol";
 // import "@opengsn/contracts/src/ERC2771Recipient.sol";
 // import "hardhat/console.sol";
@@ -9,7 +8,7 @@
 //     event NovaDeployed(address nova);
 
 //     mapping(address => address[]) novaDeployers;
-     
+
 //     address[] public novas;
 //     address public autIDAddr;
 //     INovaFactory private novaFactory;

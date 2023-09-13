@@ -1,8 +1,7 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
 
 interface IDAOStack {
     /// @notice Function in the DAOStack contract for fetching its nativeToken

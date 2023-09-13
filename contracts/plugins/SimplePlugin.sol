@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "./IPlugin.sol";
 import "./registry/IPluginRegistry.sol";
@@ -14,18 +14,18 @@ abstract contract SimplePlugin is IPlugin {
     address _dao;
 
     uint256 public override pluginId;
-    uint public override moduleId;
+    uint256 public override moduleId;
 
     bool public override isActive;
-    IPluginRegistry public pluginRegistry;
+    address public pluginRegistry;
 
     /**
      * @notice A modifier that checks if the caller is a module installed in the DAO
      * @dev The function must use `_` before the require statement to execute the function body before checking the require condition
      */
+    //// @dev
     modifier onlyDAOModule() {
-        uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry)
-            .getPluginIdsByDAO(_dao);
+        uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry).getPluginIdsByDAO(_dao);
         bool pluginFound = false;
         for (uint256 i = 0; i < installedPlugins.length; i++) {
             if (installedPlugins[i] == pluginId) pluginFound = true;
@@ -39,10 +39,7 @@ abstract contract SimplePlugin is IPlugin {
      * @notice A modifier that checks if the caller is the deployer of the plugin
      */
     modifier onlyDeployer() {
-        require(
-            msg.sender == _deployer,
-            "Only deployer can call this function"
-        );
+        require(msg.sender == _deployer, "Only deployer can call this function");
         _;
     }
 
@@ -58,7 +55,7 @@ abstract contract SimplePlugin is IPlugin {
      * @notice A modifier that checks if the caller is the plugin registry contract
      */
     modifier onlyPluginRegistry() {
-        require(msg.sender == address(pluginRegistry), "Only plugin registry");
+        require(msg.sender == pluginRegistry, "Only plugin registry");
         _;
     }
 
@@ -67,9 +64,9 @@ abstract contract SimplePlugin is IPlugin {
      * @param dao The address of the DAO
      * @param modId The module ID of the plugin
      */
-    constructor(address dao, uint modId) {
+    constructor(address dao, uint256 modId) {
         _dao = dao;
-        pluginRegistry = IPluginRegistry(IDAOModules(dao).pluginRegistry());
+        pluginRegistry = IDAOModules(dao).pluginRegistry();
         _deployer = msg.sender;
         moduleId = modId;
     }
@@ -79,7 +76,7 @@ abstract contract SimplePlugin is IPlugin {
      * @return The address of the owner
      */
     function owner() public view returns (address) {
-        return pluginRegistry.getOwnerOfPlugin(address(this));
+        return IPluginRegistry(pluginRegistry).getOwnerOfPlugin(address(this));
     }
 
     /**

@@ -1,11 +1,10 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "./interfaces/IDAOExpanderFactory.sol";
 import "./DAOExpander.sol";
 
 contract DAOExpanderFactory is IDAOExpanderFactory {
-
     function deployDAOExpander(
         address deployer,
         address autIDAddr,

@@ -10,7 +10,7 @@ Below, you'll find a simple walkthrough to get started using Āut's Smart Contra
 
 1. Create .env file and put your testing private key there
     ```
-    PRIVATE_KEY='your_private_key'
+    DEV_PK='your_private_key'
     ```
 
 2. Install dependencies
@@ -33,6 +33,11 @@ You're ready to go! 🚀🚀🚀
 🎩 🎩 🎩 Hardhat sources: https://hardhat.org/tutorial
 
 # Deployments (locally or not)
+### Deploy Using Forge Script
+
+`forge script  ./script/DeployAll.s.sol --rpc-url $MUMBAI_ALCHEMY   --etherscan-api-key $POLYGONSCAN_TOKEN --private-key $DEV_PVKEY --verify --broadcast`
+
+### Deploy Using Hardhat
 
 1. Select your desired network in hardhat.config.json under default network
 2. Run `npm run deployAll` and store the output addresses
@@ -40,6 +45,8 @@ You're ready to go! 🚀🚀🚀
 3. Run `npm run addPluginDefinitions` 
     
 > **_Tip:_** If you're expanding the DAO Types that the product supports, for testing purposes, you can add it to /scripts/deployDAOTypes.js
+
+
 
 ``` javascript
   const YourMembershipChecker = await hre.ethers.getContractFactory("YourMembershipChecker");

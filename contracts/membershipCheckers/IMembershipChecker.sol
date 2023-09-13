@@ -1,11 +1,11 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "./IMembershipChecker.sol";
- 
+
 /// @title IMembershipChecker
 /// @notice Each DAO standard supported by Aut should have an implementation of this interface for their DAO contract
-/// @dev Implement using the logic of the specific DAO contract 
+/// @dev Implement using the logic of the specific DAO contract
 interface IMembershipChecker {
     /// @notice Implements a check if an address is a member of a specific DAO standard
     /// @param daoAddress the address of the membership/DAO contract

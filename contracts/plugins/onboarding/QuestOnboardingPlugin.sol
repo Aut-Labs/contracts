@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "../../modules/onboarding/OnboardingModule.sol";
 import "../quests/QuestPlugin.sol";
@@ -28,43 +28,41 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
     }
 
     /**
-     * @dev Sets the active status of the plugin.
+     * @dev Sets the active status of the plugin. @todo: reduce external calls
      * @param active A boolean indicating whether the plugin should be set as active.
+     *
+     *
      */
     function setActive(bool active) public onlyAdmin {
-        uint activeQuestRole1 = questsPlugin.activeQuestsPerRole(1);
-        uint activeQuestRole2 = questsPlugin.activeQuestsPerRole(2);
-        uint activeQuestRole3 = questsPlugin.activeQuestsPerRole(3);
+        uint256 activeQuestRole1 = questsPlugin.activeQuestsPerRole(1);
+        uint256 activeQuestRole2 = questsPlugin.activeQuestsPerRole(2);
+        uint256 activeQuestRole3 = questsPlugin.activeQuestsPerRole(3);
+
         if (active) {
             require(
-                activeQuestRole1 > 0 ||
-                    activeQuestRole2 > 0 ||
-                    activeQuestRole3 > 0,
+                activeQuestRole1 > 0 || activeQuestRole2 > 0 || activeQuestRole3 > 0,
                 "at least one quest needs to be defined"
             );
             require(
-                questsPlugin.getById(activeQuestRole1).tasksCount > 0 ||
-                    questsPlugin.getById(activeQuestRole2).tasksCount > 0 ||
-                    questsPlugin.getById(activeQuestRole3).tasksCount > 0,
+                questsPlugin.getById(activeQuestRole1).tasksCount > 0
+                    || questsPlugin.getById(activeQuestRole2).tasksCount > 0
+                    || questsPlugin.getById(activeQuestRole3).tasksCount > 0,
                 "at least one quest must have tasks"
             );
         } else {
             require(
-                questsPlugin.getById(activeQuestRole1).startDate == 0 ||
-                    questsPlugin.getById(activeQuestRole1).startDate >
-                    block.timestamp,
+                questsPlugin.getById(activeQuestRole1).startDate == 0
+                    || questsPlugin.getById(activeQuestRole1).startDate > block.timestamp,
                 "quest started"
             );
             require(
-                questsPlugin.getById(activeQuestRole2).startDate == 0 ||
-                    questsPlugin.getById(activeQuestRole2).startDate >
-                    block.timestamp,
+                questsPlugin.getById(activeQuestRole2).startDate == 0
+                    || questsPlugin.getById(activeQuestRole2).startDate > block.timestamp,
                 "quest started"
             );
             require(
-                questsPlugin.getById(activeQuestRole3).startDate == 0 ||
-                    questsPlugin.getById(activeQuestRole3).startDate >
-                    block.timestamp,
+                questsPlugin.getById(activeQuestRole3).startDate == 0
+                    || questsPlugin.getById(activeQuestRole3).startDate > block.timestamp,
                 "quest started"
             );
         }
@@ -78,10 +76,7 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
      * @param role The member's role.
      * @return A boolean indicating whether the member has been onboarded.
      */
-    function isOnboarded(
-        address member,
-        uint256 role
-    ) public view override returns (bool) {
+    function isOnboarded(address member, uint256 role) public view override returns (bool) {
         return questsPlugin.hasCompletedQuestForRole(member, role);
     }
 
@@ -99,6 +94,6 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
      * @param role The member's role.
      */
     function onboard(address member, uint256 role) public override {
-        revert FunctionNotImplemented();
+        revert("FunctionNotImplemented");
     }
 }

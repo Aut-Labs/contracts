@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "../interfaces/get/IDAOMetadata.sol";
 
@@ -11,14 +11,10 @@ abstract contract DAOMetadata is IDAOMetadata {
 
     string public override metadataUrl;
 
-    function _setMetadataUri(string memory _metadata)
-        internal
-        virtual
-    {
+    function _setMetadataUri(string memory _metadata) internal virtual {
         require(bytes(_metadata).length > 0, "invalid url");
 
         metadataUrl = _metadata;
         emit MetadataUriUpdated();
     }
-
 }

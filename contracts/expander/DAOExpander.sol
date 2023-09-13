@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "./interfaces/IDAOExpander.sol";
 
@@ -61,15 +61,9 @@ contract DAOExpander is
     ) {
         require(_daoAddr != address(0), "Missing DAO Address");
         require(address(_daoTypes) != address(0), "Missing DAO Types address");
+        require(IDAOTypes(_daoTypes).getMembershipCheckerAddress(_daoType) != address(0), "Invalid membership type");
         require(
-            IDAOTypes(_daoTypes).getMembershipCheckerAddress(_daoType) !=
-                address(0),
-            "Invalid membership type"
-        );
-        require(
-            IMembershipChecker(
-                IDAOTypes(_daoTypes).getMembershipCheckerAddress(_daoType)
-            ).isMember(_daoAddr, _deployer),
+            IMembershipChecker(IDAOTypes(_daoTypes).getMembershipCheckerAddress(_daoType)).isMember(_daoAddr, _deployer),
             "AutID: Not a member of this DAO!"
         );
         daoData = DAOExpanssionData(_daoType, _daoAddr);
@@ -99,52 +93,34 @@ contract DAOExpander is
     /// @dev checks if the member is a part of a DAO
     /// @param member the address of the member that's checked
     /// @return true if they're a member, false otherwise
-    function isMemberOfOriginalDAO(
-        address member
-    ) public view override returns (bool) {
-        return
-            IMembershipChecker(
-                IDAOTypes(daoTypes).getMembershipCheckerAddress(
-                    daoData.contractType
-                )
-            ).isMember(daoData.daoAddress, member);
+    function isMemberOfOriginalDAO(address member) public view override returns (bool) {
+        return IMembershipChecker(IDAOTypes(daoTypes).getMembershipCheckerAddress(daoData.contractType)).isMember(
+            daoData.daoAddress, member
+        );
     }
 
     /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
     /// @dev checks if the member is a part of a DAO
     /// @param member the address of the member that's checked
     /// @return true if they're a member, false otherwise
-    function canJoin(
-        address member,
-        uint256 role
-    ) public view override(IDAOMembership) returns (bool) {
+    function canJoin(address member, uint256 role) public view override(IDAOMembership) returns (bool) {
         if (onboardingAddr == address(0)) {
-            return
-                isMemberOfOriginalDAO(member) ||
-                (onboardingAddr != address(0) &&
-                    OnboardingModule(onboardingAddr).isActive() &&
-                    OnboardingModule(onboardingAddr).isOnboarded(member, role));
+            return isMemberOfOriginalDAO(member)
+                || (
+                    onboardingAddr != address(0) && OnboardingModule(onboardingAddr).isActive()
+                        && OnboardingModule(onboardingAddr).isOnboarded(member, role)
+                );
         } else {
-            if (
-                onboardingAddr != address(0) &&
-                OnboardingModule(onboardingAddr).isActive()
-            ) return false;
-            else
-                return
-                    OnboardingModule(onboardingAddr).isOnboarded(member, role);
+            if (onboardingAddr != address(0) && OnboardingModule(onboardingAddr).isActive()) return false;
+            else return OnboardingModule(onboardingAddr).isOnboarded(member, role);
         }
     }
 
-    function activateModule(uint moduleId) public override onlyAdmin {
+    function activateModule(uint256 moduleId) public override onlyAdmin {
         _activateModule(moduleId);
     }
 
-    function getDAOData()
-        public
-        view
-        override
-        returns (DAOExpanssionData memory data)
-    {
+    function getDAOData() public view override returns (DAOExpanssionData memory data) {
         return daoData;
     }
 
@@ -160,9 +136,7 @@ contract DAOExpander is
         _setCommitment(commitment);
     }
 
-    function setMetadataUri(
-        string memory metadata
-    ) external override onlyAdmin {
+    function setMetadataUri(string memory metadata) external override onlyAdmin {
         _setMetadataUri(metadata);
     }
 }

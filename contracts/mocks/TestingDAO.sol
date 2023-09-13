@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "../daoStandards/ISWLegacyDAO.sol";
 
@@ -8,7 +8,7 @@ import "../daoStandards/ISWLegacyDAO.sol";
 contract TestingDAO is ISWLegacyDAO {
     /// @notice Adds member to the DAO
     /// @param member the address of the member
-    function isMember(address member) public override view returns (bool) {
+    function isMember(address member) public view override returns (bool) {
         require(member != address(0), "Zero address not a member");
         return true;
     }

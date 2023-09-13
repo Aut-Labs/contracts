@@ -107,6 +107,8 @@ describe("QuestOnboardingPlugin", (accounts) => {
       const tx = questOnboardingPlugin.onboard(addr1.address, 0);
       await expect(tx).to.be.revertedWith("FunctionNotImplemented");
     });
+
+
     it("isOnboarded should return false if there are no quests", async () => {
       const isOnboarded = await questOnboardingPlugin.isOnboarded(
         addr1.address,

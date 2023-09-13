@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "./IModuleRegistry.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -15,11 +15,9 @@ contract ModuleRegistry is IModuleRegistry, Ownable {
         modules.push(ModuleDefinition("ipfs://bafkreieg7dwphs4554g726kalv5ez22hd55k3bksepa6rrvon6gf4mupey", 3));
     }
 
-    function addModuleDefinition(
-        string calldata metadataURI
-    ) public onlyOwner override returns (uint) {
-        require(bytes(metadataURI).length > 0, 'invalid uri');
-        uint id = modules.length;
+    function addModuleDefinition(string calldata metadataURI) public override onlyOwner returns (uint256) {
+        require(bytes(metadataURI).length > 0, "invalid uri");
+        uint256 id = modules.length;
         modules.push(ModuleDefinition(metadataURI, id));
         emit ModuleDefinitionAdded(id);
         return id;
@@ -28,11 +26,12 @@ contract ModuleRegistry is IModuleRegistry, Ownable {
     function getAllModules() public view override returns (ModuleDefinition[] memory) {
         return modules;
     }
-    function getModuleById(uint moduleId) public view override returns (ModuleDefinition memory) {
+
+    function getModuleById(uint256 moduleId) public view override returns (ModuleDefinition memory) {
         return modules[moduleId];
     }
 
-    function updateMetadataURI(uint moduleId, string calldata uri) onlyOwner public override {
-         modules[moduleId].metadataURI = uri;
+    function updateMetadataURI(uint256 moduleId, string calldata uri) public override onlyOwner {
+        modules[moduleId].metadataURI = uri;
     }
 }

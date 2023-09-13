@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
+
 import "../daoUtils/abstracts/DAOUrls.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
 import "../daoUtils/abstracts/DAOMembers.sol";
@@ -15,16 +16,7 @@ import "./interfaces/INova.sol";
 /// @title Nova
 /// @notice
 /// @dev
-contract Nova is
-    DAOMembers,
-    DAOInteractions,
-    DAOMetadata,
-    DAOUrls,
-    DAOMarket,
-    DAOModules,
-    DAOCommitment,
-    INova
-{
+contract Nova is DAOMembers, DAOInteractions, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCommitment {
     address public deployer;
     address public onboardingAddr;
 
@@ -47,12 +39,12 @@ contract Nova is
         isAdmin[_deployer] = true;
         admins.push(_deployer);
 
-        super._setMarket(_market);
-        super._setAutIDAddress(_autAddr);
-        super._setCommitment(_commitment);
-        super._setMetadataUri(_metadata);
-        super._deployInteractions();
-        super._setPluginRegistry(_pluginRegistry);
+        _setMarket(_market);
+        _setAutIDAddress(_autAddr);
+        _setCommitment(_commitment);
+        _setMetadataUri(_metadata);
+        _deployInteractions();
+        _setPluginRegistry(_pluginRegistry);
     }
 
     function join(address newMember, uint256 role) public override onlyAutID {
@@ -60,48 +52,41 @@ contract Nova is
         super.join(newMember, role);
     }
 
-    function setOnboardingStrategy(address onboardingPlugin) public override {
-        require(
-            IModule(onboardingPlugin).moduleId() == 1,
-            "Only Onboarding Plugin"
-        );
+    function setOnboardingStrategy(address onboardingPlugin) public {
+        require(IModule(onboardingPlugin).moduleId() == 1, "Only Onboarding Plugin");
 
-        if (onboardingAddr == address(0))
+        if (onboardingAddr == address(0)) {
             require(msg.sender == pluginRegistry, "Only Plugin Registry");
-        else require(DAOMembers(this).isAdmin(msg.sender), "Only Admin");
+        } else {
+            require(DAOMembers(this).isAdmin(msg.sender), "Only Admin");
+        }
 
         onboardingAddr = onboardingPlugin;
     }
 
-    function activateModule(uint moduleId) public override onlyAdmin {
+    function activateModule(uint256 moduleId) public onlyAdmin {
         _activateModule(moduleId);
     }
 
-    function setMetadataUri(string memory metadata) public override onlyAdmin {
+    function setMetadataUri(string memory metadata) public onlyAdmin {
         _setMetadataUri(metadata);
     }
 
-    function addURL(string memory url) external override onlyAdmin {
+    function addURL(string memory url) external onlyAdmin {
         _addURL(url);
     }
 
-    function removeURL(string memory url) external override onlyAdmin {
+    function removeURL(string memory url) external onlyAdmin {
         _removeURL(url);
     }
 
-    function setCommitment(uint256 commitment) external override onlyAdmin {
+    function setCommitment(uint256 commitment) external onlyAdmin {
         _setCommitment(commitment);
     }
 
-    function canJoin(
-        address member,
-        uint256 role
-    ) external view override returns (bool) {
+    function canJoin(address member, uint256 role) external view returns (bool) {
         if (onboardingAddr == address(0)) return true;
-        if (
-            onboardingAddr != address(0) &&
-            !OnboardingModule(onboardingAddr).isActive()
-        ) return false;
+        if (onboardingAddr != address(0) && !OnboardingModule(onboardingAddr).isActive()) return false;
         else return OnboardingModule(onboardingAddr).isOnboarded(member, role);
     }
 }

@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "./interfaces/IDAOExpanderFactory.sol";
 import "../membershipCheckers/IDAOTypes.sol";
@@ -10,14 +10,20 @@ contract DAOExpanderRegistry is ERC2771Recipient {
     event DAOExpanderDeployed(address newDAOExpander);
 
     mapping(address => address[]) daoExpanderDeployers;
-     
+
     address[] public daoExpanders;
     address public autIDAddr;
     address public pluginRegistryAddr;
     IDAOTypes public daoTypes;
     IDAOExpanderFactory private daoExpanderFactory;
 
-    constructor(address trustedForwarder, address _autIDAddr, address _daoTypes, address _daoExpanderFactory, address _pluginRegistryAddr) {
+    constructor(
+        address trustedForwarder,
+        address _autIDAddr,
+        address _daoTypes,
+        address _daoExpanderFactory,
+        address _pluginRegistryAddr
+    ) {
         require(_autIDAddr != address(0), "AutID Address not passed");
         require(_daoTypes != address(0), "DAOTypes Address not passed");
         require(_daoExpanderFactory != address(0), "DAOExpanderFactory address not passed");
@@ -33,7 +39,8 @@ contract DAOExpanderRegistry is ERC2771Recipient {
     /**
      * @dev Deploys a DAO Expander
      * @return _daoExpanderAddress the newly created DAO Expander address
-     **/
+     *
+     */
     function deployDAOExpander(
         uint256 daoType,
         address daoAddr,
@@ -41,22 +48,13 @@ contract DAOExpanderRegistry is ERC2771Recipient {
         string calldata metadata,
         uint256 commitment
     ) public returns (address _daoExpanderAddress) {
-        require(
-            IDAOTypes(daoTypes).getMembershipCheckerAddress(
-                daoType
-            ) != address(0),
-            "DAO Type incorrect"
-        );
+        require(IDAOTypes(daoTypes).getMembershipCheckerAddress(daoType) != address(0), "DAO Type incorrect");
         require(daoAddr != address(0), "Missing DAO Address");
         require(market > 0 && market < 4, "Market invalid");
         require(bytes(metadata).length > 0, "Missing Metadata URL");
         require(commitment > 0 && commitment < 11, "Invalid commitment");
         require(
-            IMembershipChecker(
-                IDAOTypes(daoTypes).getMembershipCheckerAddress(
-                    daoType
-                )
-            ).isMember(daoAddr, _msgSender()),
+            IMembershipChecker(IDAOTypes(daoTypes).getMembershipCheckerAddress(daoType)).isMember(daoAddr, _msgSender()),
             "AutID: Not a member of this DAO!"
         );
         address newDAOExpanderAddress = daoExpanderFactory.deployDAOExpander(
@@ -82,7 +80,7 @@ contract DAOExpanderRegistry is ERC2771Recipient {
         return daoExpanders;
     }
 
-    function getDAOExpandersByDeployer(address deployer) public view returns(address[] memory) {
+    function getDAOExpandersByDeployer(address deployer) public view returns (address[] memory) {
         return daoExpanderDeployers[deployer];
     }
 }

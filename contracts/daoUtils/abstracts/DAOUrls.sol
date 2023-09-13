@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "../interfaces/get/IDAOURL.sol";
 
@@ -69,12 +69,7 @@ abstract contract DAOUrls is IDAOURL {
     /// @dev a checker if a url has been listed for this DAO
     /// @param _url the url that will be listed
     /// @return true if listed, false otherwise
-    function isURLListed(string memory _url)
-        public
-        view
-        override
-        returns (bool)
-    {
+    function isURLListed(string memory _url) public view override returns (bool) {
         if (urls.length == 0) return false;
 
         bytes32 urlHash = keccak256(bytes(_url));
