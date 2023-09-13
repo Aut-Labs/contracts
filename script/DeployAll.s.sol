@@ -8,6 +8,7 @@ import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegist
 import {AutID, IAutID} from "../contracts/AutID.sol";
 import {Interaction, IInteraction} from "../contracts/Interaction.sol";
 import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
+import {LocalRep} from "../contracts/plugins/interactions/LocalReputation.sol";
 
 import "forge-std/Script.sol";
 
@@ -40,6 +41,7 @@ contract DeployScript is Script {
         address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
         address NovaRegistryAddr =
             address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr ));
+        address LocalReputation = address(new LocalRep());
 
         console.log("AUTid----------------------------------------- : ", AUTid);
         console.log("Nova Factory----------------------------------------- : ", NoveFactoryAddr);
@@ -47,6 +49,7 @@ contract DeployScript is Script {
         console.log("PluginRegistry ----------------------------------------- : ", PluginRegistryAddr);
         console.log("NovaRegistry ----------------------------------------- : ", NovaRegistryAddr);
         console.log("Interaction ----------------------------------------- : ", InteractionAddr);
+        console.log("LocalReputation ----------------------------------------- : ", LocalReputation);
         console.log("                                                                       ");
         console.log("______________________________________________");
 
