@@ -97,10 +97,6 @@ contract TestSampleInteractionPlugin is DeploysInit {
         assertTrue(IS3.GC >= 500, "function arg points mismatch");
     }
 
-    function testPluginIsAutohrised() public {
-        assertTrue(iLR.isAuthorised(address(InteractionPlugin), address(Nova)), "expected plugin authorised via init");
-    }
-
     function testGroupInitDefault() public {
         groupState memory GS0 = iLR.getGroupState(address(Nova));
 

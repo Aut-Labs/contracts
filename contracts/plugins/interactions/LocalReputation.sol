@@ -23,8 +23,8 @@ contract LocalRep is ILocalReputation {
 
     uint16 public immutable DEFAULT_K = 30;
     uint8 public immutable DEFAULT_PENALTY = 10;
-    uint8 public immutable DEFAULT_CAP_GROWTH = 40;
     /// @dev unimplemented
+    uint8 public immutable DEFAULT_CAP_GROWTH = 40;
     uint32 public immutable DEFAULT_PERIOD = 30 days;
 
     /////////////////////  Modifiers
