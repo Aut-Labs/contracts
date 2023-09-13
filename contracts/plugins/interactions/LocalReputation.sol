@@ -262,8 +262,14 @@ contract LocalRep is ILocalReputation {
         return getIS[getContextID(subject_, group_)];
     }
 
-    function getReputationScore(address subject_, address group_) public view returns (uint256 score) {
+
+    /// @notice get the local reputation score of an agent withoin a specified group.
+    /// @dev defaut value is 1 ether. Score should be parsed as ether with two decimals in expected range (0.01 - 9.99)
+    /// @param subject_ address of target agent
+    /// @param group_ address of nova instance
+    function getLocalReputationScore(address subject_, address group_) public view returns (uint256 score) {
         score = getLRof(subject_, group_).score;
+        if (score == 0 ) score = 1 ether;
     }
 
     /// @notice gets the agregated last updated state of reputation related nova data
