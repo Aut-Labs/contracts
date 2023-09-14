@@ -16,6 +16,7 @@ struct groupState {
     uint32 p; // period length
     bytes32 commitHash;
     uint256 lrUpdatesPerPeriod; // how many iS updates were executed // used to zero TCP // ensures LRs updated
+    int64[4] archetypeData; // difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment
 }
 
 struct individualState {
@@ -66,6 +67,9 @@ interface ILocalReputation {
 
     function updateIndividualLR(address who_, address group_) external returns (uint256);
     function periodicGroupStateUpdate(address group_) external returns (uint256 nextUpdateAt);
+
+
+    function getAvReputationAndCommitment(address nova_) external view returns (uint256 sumCommit, uint256 sumRep);
 
     function calculateLocalReputation(
         uint256 iGC,

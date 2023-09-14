@@ -159,7 +159,9 @@ contract TestSampleInteractionPlugin is DeploysInit {
         testWithSameCommitmentPeriod();
         groupState memory GSbefore = iLR.getGroupState(address(Nova));
 
+        vm.prank(A0);
         uint256 nextUpdateAt = iLR.periodicGroupStateUpdate(address(Nova));
+        vm.prank(A0);
         iLR.bulkPeriodicUpdate(address(Nova));
 
         groupState memory GSafer = iLR.getGroupState(address(Nova));
@@ -172,12 +174,19 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
     function testIndividualLRUpdate() public {
         address A55 = address(5);
-        vm.expectRevert(ILocalReputation.ZeroUnallawed.selector);
+
+        vm.expectRevert(ILocalReputation.OnlyAdmin.selector);
         uint256 prevScore = iLR.updateIndividualLR(A55, address(Nova));
+
+        vm.expectRevert(ILocalReputation.ZeroUnallawed.selector);
+        vm.prank(A0);
+        prevScore = iLR.updateIndividualLR(A55, address(Nova));
+
         assertTrue(prevScore == 0, "No update score is blank");
         testWithSameCommitmentPeriod();
 
         vm.warp(block.timestamp + 31 days);
+        vm.startPrank(A0);
         uint256 newScore = iLR.updateIndividualLR(A55, address(Nova));
         assertTrue(newScore > 1, "not updated");
 
@@ -188,6 +197,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         newScore = iLR.updateIndividualLR(A55, address(Nova));
         assertTrue(newScore > 1, "has actual score");
+        vm.stopPrank();
     }
 
     function testPeriodFlip() public {
@@ -196,18 +206,20 @@ contract TestSampleInteractionPlugin is DeploysInit {
         testWithSameCommitmentPeriod();
 
         vm.expectRevert(ILocalReputation.PeriodUnelapsed.selector);
+        vm.prank(A0);
         uint256[] memory scores1 = iLR.bulkPeriodicUpdate(address(Nova));
 
         vm.warp(block.timestamp + (30 * 1 days));
+        vm.prank(A0);
         scores1 = iLR.bulkPeriodicUpdate(address(Nova));
 
-        uint256 i;
+        // uint256 i;
 
-        for (i; i < scores1.length;) {
-            console.log("agent ", vm.toString(i), " -- ", scores1[i]);
-            unchecked {
-                ++i;
-            }
-        }
+        // for (i; i < scores1.length;) {
+        //     console.log("agent ", vm.toString(i), " -- ", scores1[i]);
+        //     unchecked {
+        //         ++i;
+        //     }
+        // }
     }
 }
