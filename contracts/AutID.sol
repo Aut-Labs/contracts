@@ -169,8 +169,6 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         return holderToDAOMembershipData[autIDHolder][daoAddress];
     }
 
-
-
     /// @notice retieves all members with active status for provided nova address
     /// @param nova_ target nova address
     /// @return members array of addresses

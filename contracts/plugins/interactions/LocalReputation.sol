@@ -202,9 +202,11 @@ contract LocalRep is ILocalReputation {
             uint256 EC = fractionalCommitmentLevel * TCP;
 
             EC = EC == 0 ? 1 : EC;
+            prevScore = prevScore == 0 ? 1 ether : prevScore;
             score = uint64((((iGC * 1 ether) / EC) * (100 - k) + k) * prevScore);
+            score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score / 100;
+            if (score > 10 ether) score = 10 ether;
         }
-        score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score;
     }
 
     /// @dev consider dos vectors and changing return type

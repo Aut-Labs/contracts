@@ -52,5 +52,8 @@ contract TestLRFuzz is DeploysInit {
         vm.assume(iGC < TCP);
 
         score = iLR.calculateLocalReputation(iGC, iCL, TCL, TCP, k, prevscore, penalty);
+        console.log("prev score -- current", prevscore, score);
+        assertTrue(score <= 10 ether, "expected max 10");
+        assertTrue(score >= 0.01 ether, "expected min 0.01");
     }
 }

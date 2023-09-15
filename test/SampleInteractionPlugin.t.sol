@@ -223,6 +223,8 @@ contract TestSampleInteractionPlugin is DeploysInit {
         assertTrue(allCommitments[1] == allCommitments[2], "all have same commitment");
 
         assertTrue(avRep >= 0.01 ether, "1 members only ");
+        assertTrue(avRep < 10 ether, "1 members only ");
+
         assertTrue(avComm == 4, "all have 4, expeced 4");
 
         int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
