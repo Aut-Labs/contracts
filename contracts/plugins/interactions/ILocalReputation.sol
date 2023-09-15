@@ -68,6 +68,7 @@ interface ILocalReputation {
     function updateIndividualLR(address who_, address group_) external returns (uint256);
     function periodicGroupStateUpdate(address group_) external returns (uint256 nextUpdateAt);
 
+    function getArchetypeData(address nova_) external view returns (int64[4] memory);
 
     function getAvReputationAndCommitment(address nova_) external view returns (uint256 sumCommit, uint256 sumRep);
 

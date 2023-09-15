@@ -73,6 +73,8 @@ interface IAutID is IERC721Upgradeable {
     function getAutIDHolderByUsername(string memory username) external view returns (address);
     function getNextTokenID() external view returns (uint256);
 
+    function getAllActiveMembers(address nova_) external view returns (address[] memory);
+
     /// @notice returns commitment levels for agents in a dao
     /// @param agents address of agents
     /// @param dao_ commitment target

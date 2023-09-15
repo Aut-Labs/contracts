@@ -120,14 +120,14 @@ contract TestSampleInteractionPlugin is DeploysInit {
         datas[0] = abi.encodePacked(InteractionPlugin.incrementNumberPlusOne.selector);
         datas[1] = abi.encodeWithSelector(InteractionPlugin.incrementNumber.selector, "averyrandomstring");
 
+        points[0] = firsPoints;
+        points[1] = secondPoints;
+
+        vm.prank(Admin);
+        iLR.setInteractionWeights(address(InteractionPlugin), datas, points);
+
         uint256 i = 1;
         for (i; i < 100;) {
-            points[0] = firsPoints;
-            points[1] = secondPoints;
-
-            vm.prank(Admin);
-            iLR.setInteractionWeights(address(InteractionPlugin), datas, points);
-
             vm.prank(address(uint160(i)));
             aID.mint(vm.toString(i), "urlll", 1, 4, address(Nova));
 
@@ -148,8 +148,6 @@ contract TestSampleInteractionPlugin is DeploysInit {
             groupState memory GSbefore = iLR.getGroupState(address(Nova));
 
             iLR.updateCommitmentLevels(address(Nova));
-
-            console.log("Members nr - TCL - TCP", members.length, GSbefore.TCL, GSbefore.TCP);
         }
         assertTrue(iLR.getGroupState(address(Nova)).lastPeriod > 1, "lastPeriod not block.timestamp");
     }
@@ -201,8 +199,6 @@ contract TestSampleInteractionPlugin is DeploysInit {
     }
 
     function testPeriodFlip() public {
-        console.log("ILR23r323r", address(iLR));
-
         testWithSameCommitmentPeriod();
 
         vm.expectRevert(ILocalReputation.PeriodUnelapsed.selector);
@@ -212,14 +208,113 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.warp(block.timestamp + (30 * 1 days));
         vm.prank(A0);
         scores1 = iLR.bulkPeriodicUpdate(address(Nova));
+    }
 
-        // uint256 i;
+    function testArchetypeDataUpdates() public {
+        testPeriodFlip();
 
-        // for (i; i < scores1.length;) {
-        //     console.log("agent ", vm.toString(i), " -- ", scores1[i]);
-        //     unchecked {
-        //         ++i;
-        //     }
-        // }
+        vm.warp(block.timestamp + 1);
+
+        (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
+        address[] memory allMembers = Nova.getAllMembers();
+        uint256[] memory allCommitments = aID.getCommitmentsOfFor(allMembers, address(Nova));
+
+        assertTrue(allMembers.length == allCommitments.length, "member comm. len mismatch");
+        assertTrue(allCommitments[1] == allCommitments[2], "all have same commitment");
+
+        assertTrue(avRep >= 0.01 ether, "1 members only ");
+        assertTrue(avComm == 4, "all have 4, expeced 4");
+
+        int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
+
+        assertTrue(archetypeData[0] > 1, "exp members were added");
+
+        assertTrue(uint256(uint64(archetypeData[1])) == allMembers.length);
+        assertTrue(uint256(uint64(archetypeData[2])) == avRep, "should be same lifecycle");
+        assertTrue(uint256(uint64(archetypeData[3])) == avComm, "all were 4");
+
+        // console.logInt(archetypeData[0]);
+        // console.log(uint64(archetypeData[1]));
+        // console.log(uint64(archetypeData[2]));
+        // console.log(uint64(archetypeData[3]));
+    }
+
+    function testArchetypeUpd2() public {
+        testPeriodFlip();
+        int64[4] memory prevArchetypeData = iLR.getArchetypeData(address(Nova));
+
+        uint256 i = 8888888888888888;
+        for (i; i < 8888888888888948;) {
+            vm.prank(address(uint160(i)));
+            aID.mint(vm.toString(i), "https://", 1, 9, address(Nova));
+
+            vm.prank(address(uint160(i)));
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            unchecked {
+                ++i;
+            }
+        }
+
+        vm.warp(block.timestamp + 31 days);
+        vm.prank(Admin);
+        iLR.bulkPeriodicUpdate(address(Nova));
+        (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
+        int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
+
+        assertTrue(archetypeData[0] < 100, "diff still 100");
+        console.logInt(archetypeData[1]);
+        assertTrue(archetypeData[1] > 100, "members not added");
+        assertTrue(archetypeData[3] > 4, "same average commitment");
+        assertTrue(prevArchetypeData[2] != archetypeData[2], "average reputation unchanged");
+
+        // console.logInt(archetypeData[0]);
+        // console.log(uint64(archetypeData[1]));
+        // console.log(uint64(archetypeData[2]));
+        // console.log(uint64(archetypeData[3]));
+    }
+
+    function testMembershipDiff() public {
+        testArchetypeUpd2();
+
+        address[] memory members = aID.getAllActiveMembers(address(Nova));
+
+        uint256 i = 5;
+
+        for (i; i < members.length;) {
+            if (i % 2 == 0) {
+                vm.prank(members[i]);
+                InteractionPlugin.incrementNumber("averyrandomstring");
+                vm.prank(members[i]);
+                aID.withdraw(address(Nova));
+            }
+
+            unchecked {
+                ++i;
+            }
+        }
+
+        vm.warp(block.timestamp + 31 days);
+
+        vm.prank(Admin);
+        iLR.bulkPeriodicUpdate(address(Nova));
+
+        (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
+        int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
+
+        address[] memory allMembers2 = aID.getAllActiveMembers(address(Nova));
+
+        assertTrue(archetypeData[0] < 0, "expected negative on lost members");
+        assertTrue(members.length > allMembers2.length, "members left for negative diff");
+        assertTrue(
+            int64(int256(allMembers2.length)) - int64(int256(members.length)) == archetypeData[0], "expected diff"
+        );
+
+        // console.logInt(archetypeData[0]);
+        // console.log(uint64(archetypeData[1]));
+        // console.log(uint64(archetypeData[2]));
+        // console.log(uint64(archetypeData[3]));
     }
 }
