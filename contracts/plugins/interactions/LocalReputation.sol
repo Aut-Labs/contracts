@@ -90,12 +90,8 @@ contract LocalRep is ILocalReputation {
 
         gs.TCL = uint64(totalCommitment);
 
-        // gs.archetypeData[0] = int64(int256(members.length)) - gs.archetypeData[1];
         gs.archetypeData[0] = int64(int256(members.length) - int256(getGS[context].archetypeData[1]));
-
         gs.archetypeData[3] = int64(int256(totalCommitment / members.length));
-
-        /// difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment
 
         getGS[context] = gs;
     }
@@ -103,12 +99,14 @@ contract LocalRep is ILocalReputation {
     /// @notice gets nova dynamic descriptive data updated at last period
     /// @param nova_ address of target group
     /// @dev data is lifecycle dependent
+    /// @return array of integers: [difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment ]
     function getArchetypeData(address nova_) external view returns (int64[4] memory) {
         return getGS[getContextID(nova_, nova_)].archetypeData;
     }
 
     /// @notice returns average reputation and commitments
     /// @param nova_ address of group
+    /// @return sumCommit sumRep tuple (commitment sum, reputation sum)
     function getAvReputationAndCommitment(address nova_) external view returns (uint256 sumCommit, uint256 sumRep) {
         // address[] memory members = INova(nova_).getAllMembers();
         address[] memory members = IAutID(INova(nova_).getAutIDAddress()).getAllActiveMembers(nova_);
@@ -205,7 +203,7 @@ contract LocalRep is ILocalReputation {
             score = uint64((((iGC * 1 ether) / EC) * (100 - k) + k) * prevScore);
             score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score / 100;
             if (score > 10 ether) score = 10 ether;
-            if (prevScore + ((prevScore*DEFAULT_CAP_GROWTH)/100) < score && prevScore != 1 ether ) score = prevScore + ((prevScore*40)/100);
+            // if ((prevScore + ((prevScore*DEFAULT_CAP_GROWTH)/100)) < score && prevScore != 1 ether ) score = prevScore + ((prevScore*40)/100);
         }
     }
 
