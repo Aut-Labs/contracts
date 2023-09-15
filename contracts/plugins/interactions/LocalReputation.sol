@@ -24,7 +24,6 @@ contract LocalRep is ILocalReputation {
 
     uint16 public immutable DEFAULT_K = 30;
     uint8 public immutable DEFAULT_PENALTY = 10;
-    /// @dev unimplemented
     uint8 public immutable DEFAULT_CAP_GROWTH = 40;
     uint32 public immutable DEFAULT_PERIOD = 30 days;
 
@@ -206,6 +205,7 @@ contract LocalRep is ILocalReputation {
             score = uint64((((iGC * 1 ether) / EC) * (100 - k) + k) * prevScore);
             score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score / 100;
             if (score > 10 ether) score = 10 ether;
+            if (prevScore + ((prevScore*DEFAULT_CAP_GROWTH)/100) < score && prevScore != 1 ether ) score = prevScore + ((prevScore*40)/100);
         }
     }
 
