@@ -8,6 +8,7 @@ import {IPlugin} from "../IPlugin.sol";
 import "./ILocalReputation.sol";
 
 /// @title Local Reputation Framework for ĀutID holders
+
 contract LocalRep is ILocalReputation {
     /// @notice stores plugin-dao relation on initialization
     mapping(address plugin => address dao) public daoOfPlugin;
@@ -65,14 +66,18 @@ contract LocalRep is ILocalReputation {
         INova Nova = INova(nova_);
         IAutID AutID = IAutID(Nova.getAutIDAddress());
 
-        address[] memory members = Nova.getAllMembers();
+        // address[] memory members = Nova.getAllMembers();
+        address[] memory members = IAutID(INova(nova_).getAutIDAddress()).getAllActiveMembers(nova_);
+
         uint256[] memory commitments = AutID.getCommitmentsOfFor(members, nova_);
         bytes32 currentCommitment = keccak256(abi.encodePacked(commitments));
         uint256 context = getContextID(nova_, nova_);
 
         if (currentCommitment == getGS[context].commitHash) return;
 
-        getGS[context].commitHash = currentCommitment;
+        groupState memory gs = getGS[context];
+
+        gs.commitHash = currentCommitment;
         uint256 totalCommitment;
         uint256 i;
 
@@ -83,10 +88,49 @@ contract LocalRep is ILocalReputation {
                 ++i;
             }
         }
-        getGS[context].TCL = uint64(totalCommitment);
+
+        gs.TCL = uint64(totalCommitment);
+
+        // gs.archetypeData[0] = int64(int256(members.length)) - gs.archetypeData[1];
+        gs.archetypeData[0] = int64(int256(members.length) - int256(getGS[context].archetypeData[1]));
+
+        gs.archetypeData[3] = int64(int256(totalCommitment / members.length));
+
+        /// difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment
+
+        getGS[context] = gs;
+    }
+
+    /// @notice gets nova dynamic descriptive data updated at last period
+    /// @param nova_ address of target group
+    /// @dev data is lifecycle dependent
+    function getArchetypeData(address nova_) external view returns (int64[4] memory) {
+        return getGS[getContextID(nova_, nova_)].archetypeData;
+    }
+
+    /// @notice returns average reputation and commitments
+    /// @param nova_ address of group
+    function getAvReputationAndCommitment(address nova_) external view returns (uint256 sumCommit, uint256 sumRep) {
+        // address[] memory members = INova(nova_).getAllMembers();
+        address[] memory members = IAutID(INova(nova_).getAutIDAddress()).getAllActiveMembers(nova_);
+
+        uint256 i;
+
+        uint256[] memory commitments = IAutID(INova(nova_).getAutIDAddress()).getCommitmentsOfFor(members, nova_);
+
+        for (i; i < members.length;) {
+            sumRep += getIS[getContextID(members[i], nova_)].score;
+            sumCommit += commitments[i];
+            unchecked {
+                ++i;
+            }
+        }
+        sumCommit = sumCommit / members.length;
+        sumRep = sumRep / members.length;
     }
 
     /// @notice updates group state to latest to account for latest interactions
+    /// @param group_ target address to update group state for
     function periodicGroupStateUpdate(address group_) public returns (uint256 nextUpdateAt) {
         uint256 context = getContextID(group_, group_);
         updateCommitmentLevels(group_);
@@ -106,7 +150,10 @@ contract LocalRep is ILocalReputation {
     }
 
     /// @notice updates local reputation of a specific individual context
+    /// @param who_ agent address to update local reputation for
+    /// @param group_ target group context for local repuatation update
     function updateIndividualLR(address who_, address group_) public returns (uint256) {
+        if (!INova(group_).isAdmin(_msgSender())) revert OnlyAdmin();
         uint256 Icontext = getContextID(who_, group_);
         uint256 Gcontext = getContextID(group_, group_);
         individualState memory ISS = getIS[Icontext];
@@ -155,9 +202,11 @@ contract LocalRep is ILocalReputation {
             uint256 EC = fractionalCommitmentLevel * TCP;
 
             EC = EC == 0 ? 1 : EC;
+            prevScore = prevScore == 0 ? 1 ether : prevScore;
             score = uint64((((iGC * 1 ether) / EC) * (100 - k) + k) * prevScore);
+            score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score / 100;
+            if (score > 10 ether) score = 10 ether;
         }
-        score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score;
     }
 
     /// @dev consider dos vectors and changing return type
@@ -170,15 +219,21 @@ contract LocalRep is ILocalReputation {
 
         periodicGroupStateUpdate(group_);
 
-        address[] memory members = INova(group_).getAllMembers();
+        address[] memory members = IAutID(INova(group_).getAutIDAddress()).getAllActiveMembers(group_);
         localReputationScores = new uint256[](members.length);
+        uint256 sumLR;
         uint256 i;
         for (i; i < members.length;) {
             localReputationScores[i] = updateIndividualLR(members[i], group_);
+            sumLR += localReputationScores[i];
+
             unchecked {
                 ++i;
             }
         }
+        sumLR = sumLR / members.length;
+        getGS[context].archetypeData[2] = int64(uint64(sumLR));
+        getGS[context].archetypeData[1] = int64(uint64(members.length));
     }
 
     /// @notice sets number of points each function in contexts asigns to caller
@@ -262,18 +317,18 @@ contract LocalRep is ILocalReputation {
         return getIS[getContextID(subject_, group_)];
     }
 
-
     /// @notice get the local reputation score of an agent withoin a specified group.
     /// @dev defaut value is 1 ether. Score should be parsed as ether with two decimals in expected range (0.01 - 9.99)
     /// @param subject_ address of target agent
     /// @param group_ address of nova instance
     function getLocalReputationScore(address subject_, address group_) public view returns (uint256 score) {
         score = getLRof(subject_, group_).score;
-        if (score == 0 ) score = 1 ether;
+        if (score == 0) score = 1 ether;
     }
 
     /// @notice gets the agregated last updated state of reputation related nova data
     /// @param nova_ address of nova
+
     function getGroupState(address nova_) external view returns (groupState memory) {
         return getGS[getContextID(nova_, nova_)];
     }

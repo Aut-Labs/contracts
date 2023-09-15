@@ -13,6 +13,8 @@ import "./daoUtils/interfaces/set/IDAOMembershipSet.sol";
 import "./daoUtils/interfaces/get/IDAOMembership.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
 
+import "./nova/interfaces/INova.sol";
+
 /// @title AutID
 /// @notice
 /// @dev
@@ -165,6 +167,41 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         returns (DAOMember memory)
     {
         return holderToDAOMembershipData[autIDHolder][daoAddress];
+    }
+
+    /// @notice retieves all members with active status for provided nova address
+    /// @param nova_ target nova address
+    /// @return members array of addresses
+    function getAllActiveMembers(address nova_) public view returns (address[] memory members) {
+        uint256 i;
+        uint256 len;
+        members = INova(nova_).getAllMembers();
+        address[] memory actives = new address[](members.length);
+
+        for (i; i < members.length;) {
+            if (holderToDAOMembershipData[members[i]][nova_].isActive) {
+                actives[i] = members[i];
+            } else {
+                ++len;
+            }
+            unchecked {
+                ++i;
+            }
+        }
+        i = 0;
+        members = new address[](members.length - len);
+        len = 0;
+        for (i; i < actives.length;) {
+            if (actives[i] != address(0)) {
+                members[len] = actives[i];
+                unchecked {
+                    ++len;
+                }
+            }
+            unchecked {
+                ++i;
+            }
+        }
     }
 
     /// @notice returns NFT ID of the holder
