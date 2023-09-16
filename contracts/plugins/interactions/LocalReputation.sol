@@ -65,7 +65,6 @@ contract LocalRep is ILocalReputation {
         INova Nova = INova(nova_);
         IAutID AutID = IAutID(Nova.getAutIDAddress());
 
-        // address[] memory members = Nova.getAllMembers();
         address[] memory members = IAutID(INova(nova_).getAutIDAddress()).getAllActiveMembers(nova_);
 
         uint256[] memory commitments = AutID.getCommitmentsOfFor(members, nova_);
@@ -94,36 +93,6 @@ contract LocalRep is ILocalReputation {
         gs.archetypeData[3] = int64(int256(totalCommitment / members.length));
 
         getGS[context] = gs;
-    }
-
-    /// @notice gets nova dynamic descriptive data updated at last period
-    /// @param nova_ address of target group
-    /// @dev data is lifecycle dependent
-    /// @return array of integers: [difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment ]
-    function getArchetypeData(address nova_) external view returns (int64[4] memory) {
-        return getGS[getContextID(nova_, nova_)].archetypeData;
-    }
-
-    /// @notice returns average reputation and commitments
-    /// @param nova_ address of group
-    /// @return sumCommit sumRep tuple (commitment sum, reputation sum)
-    function getAvReputationAndCommitment(address nova_) external view returns (uint256 sumCommit, uint256 sumRep) {
-        // address[] memory members = INova(nova_).getAllMembers();
-        address[] memory members = IAutID(INova(nova_).getAutIDAddress()).getAllActiveMembers(nova_);
-
-        uint256 i;
-
-        uint256[] memory commitments = IAutID(INova(nova_).getAutIDAddress()).getCommitmentsOfFor(members, nova_);
-
-        for (i; i < members.length;) {
-            sumRep += getIS[getContextID(members[i], nova_)].score;
-            sumCommit += commitments[i];
-            unchecked {
-                ++i;
-            }
-        }
-        sumCommit = sumCommit / members.length;
-        sumRep = sumRep / members.length;
     }
 
     /// @notice updates group state to latest to account for latest interactions
@@ -157,7 +126,6 @@ contract LocalRep is ILocalReputation {
         groupState memory GSS = getGS[Gcontext];
 
         if (ISS.lastUpdatedAt > GSS.lastPeriod) return ISS.score;
-        /// @dev invariant GSS update always before ISS
 
         ISS.lastUpdatedAt = uint64(block.timestamp);
         if (ISS.score == 0) ISS.score = 1;
@@ -329,6 +297,36 @@ contract LocalRep is ILocalReputation {
 
     function getGroupState(address nova_) external view returns (groupState memory) {
         return getGS[getContextID(nova_, nova_)];
+    }
+
+    /// @notice gets nova dynamic descriptive data updated at last period
+    /// @param nova_ address of target group
+    /// @dev data is lifecycle dependent
+    /// @return array of integers: [difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment ]
+    function getArchetypeData(address nova_) external view returns (int64[4] memory) {
+        return getGS[getContextID(nova_, nova_)].archetypeData;
+    }
+
+    /// @notice returns average reputation and commitments
+    /// @param nova_ address of group
+    /// @return sumCommit sumRep tuple (commitment sum, reputation sum)
+    function getAvReputationAndCommitment(address nova_) external view returns (uint256 sumCommit, uint256 sumRep) {
+        // address[] memory members = INova(nova_).getAllMembers();
+        address[] memory members = IAutID(INova(nova_).getAutIDAddress()).getAllActiveMembers(nova_);
+
+        uint256 i;
+
+        uint256[] memory commitments = IAutID(INova(nova_).getAutIDAddress()).getCommitmentsOfFor(members, nova_);
+
+        for (i; i < members.length;) {
+            sumRep += getIS[getContextID(members[i], nova_)].score;
+            sumCommit += commitments[i];
+            unchecked {
+                ++i;
+            }
+        }
+        sumCommit = sumCommit / members.length;
+        sumRep = sumRep / members.length;
     }
 
     /// @notice gets the last updated state of reputation for individual agent in a nova
