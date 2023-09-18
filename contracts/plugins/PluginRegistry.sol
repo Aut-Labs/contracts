@@ -23,7 +23,7 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
     address payable public feeReciever;
     address public oracleAddress;
     address public override modulesRegistry;
-    address public LRaddress;
+    address public defaultLRAddr;
 
     mapping(uint256 => PluginDefinition) public pluginDefinitionsById;
     mapping(uint256 => PluginInstance) public pluginInstanceByTokenId;
@@ -110,6 +110,11 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         pluginDefinitionsById[pluginDefinitionId].metadataURI = url;
     }
 
+    function setDefaulLRAddress(address LR) external onlyOwner {
+        emit DefaultLRAlgoChanged(LR, defaultLRAddr);
+        defaultLRAddr = LR;
+    }
+
     // Plugin type management
     function addPluginDefinition(
         address payable creator,
@@ -130,6 +135,10 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         emit PluginDefinitionAdded(pluginDefinitionId);
     }
 
+    function setDefaultReputationAlgo(address newRepAlgoAddr_) external onlyOwner returns (address) {
+        return defaultLRAddr = newRepAlgoAddr_;
+    }
+
     function setPrice(uint256 pluginDefinitionId, uint256 newPrice) public {
         PluginDefinition storage pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
         require(msg.sender == pluginDefinition.creator, "AUT: Only creator can set price");
@@ -140,10 +149,6 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         PluginDefinition storage pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
         require(msg.sender == pluginDefinition.creator, "AUT: Only creator can set active");
         pluginDefinition.active = newActive;
-    }
-
-    function setLocalReputationAddress(address LR_) external onlyOwner {
-        LRaddress = LR_;
     }
 
     // Admin
@@ -173,5 +178,9 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
 
     function tokenIdFromAddress(address pluginAddress_) external view override returns (uint256) {
         return tokenIdByPluginAddress[pluginAddress_];
+    }
+
+    function owner() public view override(Ownable, IPluginRegistry) returns (address) {
+        return super.owner();
     }
 }

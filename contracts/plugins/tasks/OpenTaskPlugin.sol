@@ -102,6 +102,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
 
     function submit(uint256 taskId, string calldata submitionUrl)
         public
+        virtual
         override
         onlyAllowedToSubmit
         atStatus(taskId, msg.sender, TaskStatus.Created)

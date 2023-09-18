@@ -26,6 +26,8 @@ interface IPluginRegistry {
         uint256 pluginDefinitionId;
     }
 
+    event DefaultLRAlgoChanged(address newReputationAlgo, address previousAddress);
+
     /**
      * @dev Emitted when a new plugin is registered with the plugin registry.
      * @param tokenId The ID of the token associated with the registered plugin.
@@ -105,4 +107,14 @@ interface IPluginRegistry {
         bool canBeStandalone,
         uint256[] memory moduleDependencies
     ) external returns (uint256 pluginDefinitionId);
+
+    //// @notice returns the address of the in-used default local reputation logic
+    function defaultLRAddr() external view returns (address);
+
+    /// @notice changes the default local reputation globally
+    /// @param LR address of new default local reputation state and logic
+    function setDefaulLRAddress(address LR) external;
+
+    /// @notice current owner in ownable
+    function owner() external view virtual returns (address);
 }

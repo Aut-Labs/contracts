@@ -26,12 +26,15 @@ contract TestSampleInteractionPlugin is DeploysInit {
         LocalRepAlgo = new LocalRep();
         vm.label(address(LocalRepAlgo), "LocalRep");
 
-        iLR = ILocalReputation(address(LocalRepAlgo));
+        vm.prank(IPR.owner());
+        IPR.setDefaulLRAddress(address(LocalRepAlgo));
+
+        iLR = ILocalReputation(IPR.defaultLRAddr());
 
         vm.prank(A1);
         aID.mint("a Name", "urlll", 1, 4, address(Nova));
 
-        InteractionPlugin = new SampleInteractionPlugin(address(Nova), address(iLR) );
+        InteractionPlugin = new SampleInteractionPlugin(address(Nova) );
         vm.label(address(InteractionPlugin), "InteractionPlugin");
 
         uint256[] memory depmodrek;

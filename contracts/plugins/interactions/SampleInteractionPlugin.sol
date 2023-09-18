@@ -8,10 +8,7 @@ import {ILocalReputation} from "./ILocalReputation.sol";
 contract SampleInteractionPlugin is SimplePlugin, InteractionModifier {
     uint256 public number;
 
-    constructor(address dao_, address localReputationAlgo_)
-        SimplePlugin(dao_, 0)
-        InteractionModifier(dao_, localReputationAlgo_)
-    {
+    constructor(address dao_) SimplePlugin(dao_, 0) InteractionModifier(dao_) {
         number = 1;
     }
 
