@@ -2,8 +2,15 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-abstract contract DAOTrifolds is Context {
+
+/// two levels of token access
+// 1 -- admin (can manage the token id)
+// 2 -- operator (can act on behalf of token id)
+// 
+
+contract Trifolds is ERC721 {
     event NodeAdded(uint64 primaryKey, uint64 uplink, uint8 nodeType, bytes32 symbol, address operator);
 
     enum ENodeType {
@@ -15,70 +22,60 @@ abstract contract DAOTrifolds is Context {
         uint64 uplink;
         uint64 depth;
         uint8 nodeType;
-        address operator;
-        bytes32 symbol;
-    }
-
-    modifier initialized {
-        require(_initialized);
-        _;
+        bytes32 ipfsHash;
     }
 
     TNode[] internal _graph;
     mapping(uint64 => uint64[]) internal _nodeUplinkExpJumps;
 
-    bool private _initialized;
+    address immutable public nova;
 
-    function _initializer() internal {
+    constructor(address nova_, string memory name_, string memory symbol_) ERC721(name_, symbol_) {
         TNode memory node;
         _graph.push(node);
-        _initialized = true;
+        nova = nova_;
+        _mint(_msgSender(), 0);
     }
 
-    function _setOperator(uint64 authorization, uint64 to, address operator) internal {
+    /// @dev set associated hash 
+    function _setIpfsHash(uint64 authorization, uint64 to, bytes32 ipfsHash) internal {
         require(to < _graph.length);
-        require(operator != address(0));
-        require(_graph[authorization].operator == _msgSender());
+        require(ipfsHash != bytes32(0));
+        require(ERC721.isApprovedForAll(ERC721.ownerOf(authorization), _msgSender()));
         require(_checkUplink(to, authorization));
-        _graph[to].operator = operator;
-    }
-
-    function _setSymbol(uint64 authorization, uint64 to, bytes32 symbol) internal {
-        require(to < _graph.length);
-        require(symbol != bytes32(0));
-        require(_graph[authorization].operator == _msgSender());
-        require(_checkUplink(to, authorization));
-        _graph[to].symbol = symbol;
+        _graph[to].ipfsHash = ipfsHash;
     }
 
     /// @dev add Trifold node with its Cusps
-    function _addTrifold(uint64 to, bytes32 symbol, bytes32[3] calldata roles) internal {
+    function _addTrifold(uint64 authorization, uint64 to, bytes32 ipfsHash, bytes32[3] calldata roles) internal {
+        address sender = _msgSender();
         uint64 length = uint64(_graph.length);
         require(to < length);
         TNode memory toNode = _graph[to];
         require(toNode.nodeType == uint8(ENodeType.Cusp));
-        address sender = _msgSender();
-        require(_isOperator(to, sender));
+        require(ERC721.isApprovedForAll(ERC721.ownerOf(authorization), _msgSender()));
+        require(_checkUplink(to, authorization));
 
         TNode memory trifoldNode;
         TNode[3] memory cuspNodes;
         trifoldNode.depth = toNode.depth + 1;
         trifoldNode.uplink = to;
         trifoldNode.nodeType = uint8(ENodeType.Trifold);
-        trifoldNode.operator = sender;
-        trifoldNode.symbol = symbol;
+        trifoldNode.ipfsHash = ipfsHash;
         _graph.push(trifoldNode);
+        _mint(sender, length);
         _fillUplinkExpJumps(length);
-        emit NodeAdded(length, to, uint8(ENodeType.Trifold), symbol, sender);
+        emit NodeAdded(length, to, uint8(ENodeType.Trifold), ipfsHash, sender);
 
         for (uint i; i != 3; ++i) {
             cuspNodes[i].depth = trifoldNode.depth + 1;
             cuspNodes[i].uplink = length;
             cuspNodes[i].nodeType = uint8(ENodeType.Cusp);
-            cuspNodes[i].operator = sender;
-            cuspNodes[i].symbol = roles[i];
+            cuspNodes[i].ipfsHash = roles[i];
             _graph.push(cuspNodes[i]);
-            emit NodeAdded(length + uint64(i) + 1, length, uint8(ENodeType.Cusp), symbol, sender);
+            ERC721._mint(sender, length + i + 1);
+            
+            emit NodeAdded(length + uint64(i) + 1, length, uint8(ENodeType.Cusp), ipfsHash, sender);
         }
     }
 
@@ -121,19 +118,4 @@ abstract contract DAOTrifolds is Context {
         }
         return from == to;
     }
-
-    // --- slow version for `_checkUplink` (without binary jumps)
-
-    function _isOperator(uint64 node, address who) internal view returns(bool) {
-        uint64 cur = node;
-        while (cur != 0) {
-            if (who == _graph[cur].operator) {
-                return true;
-            }
-            cur = _graph[cur].uplink;
-        }
-        return false;
-    }
-
-    // ---
 }

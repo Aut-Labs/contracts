@@ -8,14 +8,13 @@ import "../daoUtils/abstracts/DAOMetadata.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
 import "../daoUtils/abstracts/DAOInteractions.sol";
-import "../daoUtils/abstracts/DAOTrifolds.sol";
 
 import "../modules/onboarding/OnboardingModule.sol";
 import "./interfaces/INova.sol";
 
 /// @title Nova
-/// @notice
-/// @dev
+/// @notice 
+/// @dev 
 contract Nova is
     DAOMembers,
     DAOInteractions,
@@ -24,11 +23,11 @@ contract Nova is
     DAOMarket,
     DAOModules,
     DAOCommitment,
-    DAOTrifolds,
     INova
 {
     address public deployer;
     address public onboardingAddr;
+    address public trifolds;
 
     /// @notice Sets the initial details of the DAO
     /// @dev all parameters are required.
@@ -55,6 +54,12 @@ contract Nova is
         super._setMetadataUri(_metadata);
         super._deployInteractions();
         super._setPluginRegistry(_pluginRegistry);
+    }
+
+    function setTrifolds(address trifolds_) external {
+        require(trifolds_ != address(0));
+        trifolds = trifolds_;
+        emit TrifoldsSet(trifolds_);
     }
 
     function join(address newMember, uint256 role) public override onlyAutID {

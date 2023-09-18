@@ -25,6 +25,7 @@ interface INova is
     IDAOCommitment,
     IAutIDAddress
 {
-    function setOnboardingStrategy(address onboardingPlugin) external;
+    event TrifoldsSet(address trifolds);
 
+    function setOnboardingStrategy(address onboardingPlugin) external;
 }
