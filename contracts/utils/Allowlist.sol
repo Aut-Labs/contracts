@@ -5,6 +5,10 @@ contract Allowlist {
     mapping(address => bool) public isOwner;
     mapping(address => bool) allowlist;
 
+    /// @dev @todo
+    /// nested - RSPV + 1 limit
+    /// admins can
+
     constructor() {
         isOwner[msg.sender] = true;
         isOwner[0x64385e93DD9E55e7b6b4e83f900c142F1b237ce7] = true;
@@ -27,7 +31,7 @@ contract Allowlist {
     }
 
     modifier isSenderOwner() {
-        if (!(isAllowed(msg.sender))) revert Unallowed();
+        if (!isOwner[msg.sender]) revert Unallowed();
         _;
     }
 

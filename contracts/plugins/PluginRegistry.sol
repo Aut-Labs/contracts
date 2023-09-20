@@ -47,28 +47,38 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
 
     // Plugin creation
     function addPluginToDAO(address pluginAddress, uint256 pluginDefinitionId) external payable override nonReentrant {
-        IModule plugin = IModule(pluginAddress);
-        address dao = plugin.daoAddress();
+        address nova = IPlugin(pluginAddress).daoAddress();
 
-        require(IDAOAdmin(dao).isAdmin(msg.sender) == true, "Not an admin");
+        require(IDAOAdmin(nova).isAdmin(msg.sender) == true, "Not an admin");
+        PluginDefinition memory pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
+        uint256[] memory depModules = pluginDefinition.dependencyModules;
+        uint256 i;
 
-        PluginDefinition storage pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
+        for (i; i < depModules.length;) {
+            if (!IDAOModules(modulesRegistry).isModuleActivated(depModules[i])) {
+                IDAOModules(modulesRegistry).activateModule(depModules[i]);
+            }
+            unchecked {
+                ++i;
+            }
+        }
+
         require(pluginDefinition.canBeStandalone, "can't be standalone");
         require(msg.value >= pluginDefinition.price, "AUT: Insufficient price paid");
-        require(!pluginDefinitionsInstalledByDAO[dao][pluginDefinitionId], "AUT: Plugin already installed on dao");
+        require(!pluginDefinitionsInstalledByDAO[nova][pluginDefinitionId], "AUT: Plugin already installed on nova");
 
-        pluginDefinitionsInstalledByDAO[dao][pluginDefinitionId] = true;
+        pluginDefinitionsInstalledByDAO[nova][pluginDefinitionId] = true;
 
         uint256 tokenId = _mintPluginNFT(pluginDefinitionId, msg.sender);
 
-        pluginIdsByDAO[dao].push(tokenId);
+        pluginIdsByDAO[nova].push(tokenId);
 
         uint256 fee = (pluginDefinition.price * feeBase1000) / 1000;
 
         feeReciever.transfer(fee);
         pluginDefinitionsById[pluginDefinitionId].creator.transfer(msg.value - fee);
 
-        emit PluginAddedToDAO(tokenId, pluginDefinitionId, dao);
+        emit PluginAddedToDAO(tokenId, pluginDefinitionId, nova);
 
         pluginInstanceByTokenId[tokenId].pluginAddress = pluginAddress;
 
@@ -76,11 +86,11 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
 
         IPlugin(pluginAddress).setPluginId(tokenId);
         // allow interactions to be used from plugin
-        address interactions = IDAOInteractions(dao).getInteractionsAddr();
+        address interactions = IDAOInteractions(nova).getInteractionsAddr();
         IInteraction(interactions).allowAccess(pluginAddress);
 
         if (IModule(pluginAddress).moduleId() == 1) {
-            INova(dao).setOnboardingStrategy(pluginAddress);
+            INova(nova).setOnboardingStrategy(pluginAddress);
         }
 
         emit PluginRegistered(tokenId, pluginAddress);

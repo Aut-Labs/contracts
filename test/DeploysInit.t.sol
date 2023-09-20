@@ -29,6 +29,7 @@ contract DeploysInit is Test {
     address A1;
     address A2;
     address A3;
+    address A4_outsider;
 
     function setUp() public virtual {
         A1 = address(uint160(uint256(keccak256("Account1"))));
@@ -39,6 +40,9 @@ contract DeploysInit is Test {
 
         A3 = address(uint160(uint256(keccak256("Account3"))));
         vm.label(address(A3), "Account3");
+
+        A4_outsider = address(uint160(uint256(keccak256("Account4_out"))));
+        vm.label(address(A3), "Account4_out");
 
         vm.startPrank(A0);
 

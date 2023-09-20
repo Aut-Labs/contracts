@@ -25,7 +25,7 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
         require(isAdmin[msg.sender], "Not an admin!");
         _;
     }
-
+    /// @dev role not used
     function join(address newMember, uint256 role) public virtual override onlyAutID {
         require(!isMember[newMember], "Already a member");
         isMember[newMember] = true;
@@ -48,6 +48,34 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
         emit AdminMemberAdded(member);
     }
 
+    //// @notice adds admins provided a batch of addresses that are already members
+    //// @param adminAddr list of addresses to make admin
+    //// @dev skips if any of addresses is not already a member.
+    //// @return retruns addresses that were successfully added as admins
+    function addAdmins(address[] memory adminAddr) public override onlyAdmin returns (address[] memory) {
+        uint256 i;
+        for (i; i < adminAddr.length;) {
+            if (!isMember[adminAddr[i]]) {
+                delete adminAddr[i];
+                unchecked {
+                    ++i;
+                }
+                continue;
+            }
+            if (! isAdmin[adminAddr[i]]) {
+                admins.push(adminAddr[i]); /// @dev
+                isAdmin[adminAddr[i]] = true;
+
+                emit AdminMemberAdded(adminAddr[i]);
+            }
+
+            unchecked {
+                ++i;
+            }
+        }
+        return adminAddr;
+    }
+
     function removeAdmin(address member) public override onlyAdmin {
         for (uint256 i = 0; i < admins.length; i++) {
             if (admins[i] == member) {
@@ -65,4 +93,5 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
     function memberCount() public view returns (uint256) {
         return members.length;
     }
+
 }

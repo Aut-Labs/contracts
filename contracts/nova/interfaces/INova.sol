@@ -26,6 +26,7 @@ interface INova {
     function getCommitment() external view returns (uint256 commitment);
 
     function addAdmin(address member) external;
+    function addAdmins(address[] memory adminAddr) external returns (address[] memory);
 
     function removeAdmin(address member) external;
     function setCommitment(uint256 commitment) external;
