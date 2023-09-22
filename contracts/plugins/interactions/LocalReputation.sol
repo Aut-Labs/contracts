@@ -20,7 +20,7 @@ contract LocalRep is ILocalReputation {
     mapping(uint256 contextID => individualState) getIS;
 
     /// @notice stores amount of points awared per interaction
-    mapping(uint256 => uint256 points) public pointsPerInteraction;
+    mapping(uint256 => uint8 points) public pointsPerInteraction;
 
     uint16 public immutable DEFAULT_K = 30;
     uint8 public immutable DEFAULT_PENALTY = 10;
@@ -89,8 +89,8 @@ contract LocalRep is ILocalReputation {
 
         gs.TCL = uint64(totalCommitment);
 
-        gs.archetypeData[0] = int64(int256(members.length) - int256(getGS[context].archetypeData[1]));
-        gs.archetypeData[3] = int64(int256(totalCommitment / members.length));
+        gs.archetypeData.aDiffMembersLP = int64(int256(members.length) - int64(getGS[context].archetypeData.bMembersLastLP));
+        gs.archetypeData.dAverageCommitmentLP = uint64(totalCommitment / members.length);
 
         getGS[context] = gs;
     }
@@ -171,7 +171,7 @@ contract LocalRep is ILocalReputation {
             score = uint64((((iGC * 1 ether) / EC) * (100 - k) + k) * prevScore);
             score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score / 100;
             if (score > 10 ether) score = 10 ether;
-            // if ((prevScore + ((prevScore*DEFAULT_CAP_GROWTH)/100)) < score && prevScore != 1 ether ) score = prevScore + ((prevScore*40)/100);
+            if ( ( (prevScore + (prevScore / 100 * 40)) < score ) && (prevScore != 1  ) ) score = prevScore + ((prevScore / 100) * 40);
         }
     }
 
@@ -198,15 +198,15 @@ contract LocalRep is ILocalReputation {
             }
         }
         sumLR = sumLR / members.length;
-        getGS[context].archetypeData[2] = int64(uint64(sumLR));
-        getGS[context].archetypeData[1] = int64(uint64(members.length));
+        getGS[context].archetypeData.cAverageRepLP = uint64(sumLR);
+        getGS[context].archetypeData.bMembersLastLP = int64(uint64(members.length));
     }
 
     /// @notice sets number of points each function in contexts asigns to caller
     /// @param plugin_ plugin target
     /// @param datas_, array of selector encoded (msg.data) bytes
     /// @param points_, amount of points to be awared for each of datas_
-    function setInteractionWeights(address plugin_, bytes[] memory datas_, uint256[] memory points_) external {
+    function setInteractionWeights(address plugin_, bytes[] memory datas_, uint8[] memory points_) external {
         if (daoOfPlugin[plugin_] == address(0)) revert UninitializedPair();
         if (!INova(daoOfPlugin[plugin_]).isAdmin(_msgSender())) revert OnlyAdmin();
 
@@ -254,6 +254,13 @@ contract LocalRep is ILocalReputation {
 
         emit UpdatedKP(target_);
     }
+
+    /// @notice updates total 
+    /// @param k steepness degree for slope of local reputations score changes
+    /// @param p min amount of time duration in seconds of period
+
+
+
 
     /////////////////////  Pure
     ///////////////////////////////////////////////////////////////
@@ -303,9 +310,19 @@ contract LocalRep is ILocalReputation {
     /// @param nova_ address of target group
     /// @dev data is lifecycle dependent
     /// @return array of integers: [difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment ]
-    function getArchetypeData(address nova_) external view returns (int64[4] memory) {
+    function getArchetypeData(address nova_) external view returns ( archetypeD memory) {
         return getGS[getContextID(nova_, nova_)].archetypeData;
     }
+
+//     struct archetypeD {
+//     int64 diffMembersLP;
+//     uint64 membersLastLP;
+//     uint64 averageRepLP;
+//     uint64 averageCommitmentLP;
+//     uint64 performanceLP;
+//     uint64 allPoints;
+//     uint64 pointsUsed;
+// }
 
     /// @notice returns average reputation and commitments
     /// @param nova_ address of group

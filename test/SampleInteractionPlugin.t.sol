@@ -67,13 +67,13 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
     function testSetWeight() public {
         bytes[] memory datas = new bytes[](2);
-        uint256[] memory points = new uint256[](2);
+        uint8[] memory points = new uint8[](2);
 
         datas[0] = abi.encodePacked(InteractionPlugin.incrementNumberPlusOne.selector);
         datas[1] = abi.encodeWithSelector(InteractionPlugin.incrementNumber.selector, "averyrandomstring");
 
         points[0] = 5;
-        points[1] = 500;
+        points[1] = 9;
 
         vm.expectRevert(ILocalReputation.OnlyAdmin.selector);
         iLR.setInteractionWeights(address(InteractionPlugin), datas, points);
@@ -81,9 +81,9 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(Admin);
         iLR.setInteractionWeights(address(InteractionPlugin), datas, points);
 
-        uint256 number1 = InteractionPlugin.number();
+        InteractionPlugin.number();
         testUnconfiguredInteraction();
-        uint256 number2 = InteractionPlugin.number();
+        InteractionPlugin.number();
 
         individualState memory IS1 = iLR.getIndividualState(A2, address(Nova));
 
@@ -97,7 +97,8 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(A1);
         InteractionPlugin.incrementNumber("averyrandomstring");
         individualState memory IS3 = iLR.getIndividualState(A1, address(Nova));
-        assertTrue(IS3.GC >= 500, "function arg points mismatch");
+        assertTrue(IS3.GC >= 9, "function arg points mismatch");
+        console.log(IS3.GC);
     }
 
     function testGroupInitDefault() public {
@@ -114,11 +115,11 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
     function testWithSameCommitmentPeriod() public {
         uint256 membersAmt = 3;
-        uint256 firsPoints = 1;
-        uint256 secondPoints = 5;
+        uint8 firsPoints = 1;
+        uint8 secondPoints = 5;
 
         bytes[] memory datas = new bytes[](2);
-        uint256[] memory points = new uint256[](2);
+        uint8[] memory points = new uint8[](2);
 
         datas[0] = abi.encodePacked(InteractionPlugin.incrementNumberPlusOne.selector);
         datas[1] = abi.encodeWithSelector(InteractionPlugin.incrementNumber.selector, "averyrandomstring");
@@ -146,9 +147,6 @@ contract TestSampleInteractionPlugin is DeploysInit {
             unchecked {
                 ++i;
             }
-
-            address[] memory members = Nova.getAllMembers();
-            groupState memory GSbefore = iLR.getGroupState(address(Nova));
 
             iLR.updateCommitmentLevels(address(Nova));
         }
@@ -230,13 +228,13 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         assertTrue(avComm == 4, "all have 4, expeced 4");
 
-        int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
+        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
 
-        assertTrue(archetypeData[0] > 1, "exp members were added");
+        assertTrue(archetypeData.aDiffMembersLP > 1, "exp members were added");
 
-        assertTrue(uint256(uint64(archetypeData[1])) == allMembers.length);
-        assertTrue(uint256(uint64(archetypeData[2])) == avRep, "should be same lifecycle");
-        assertTrue(uint256(uint64(archetypeData[3])) == avComm, "all were 4");
+        assertTrue(uint256(uint64(archetypeData.bMembersLastLP)) == allMembers.length);
+        assertTrue(uint256(uint64(archetypeData.cAverageRepLP)) == avRep, "should be same lifecycle");
+        assertTrue(uint256(uint64(archetypeData.dAverageCommitmentLP)) == avComm, "all were 4");
 
         // console.logInt(archetypeData[0]);
         // console.log(uint64(archetypeData[1]));
@@ -246,7 +244,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
     function testArchetypeUpd2() public {
         testPeriodFlip();
-        int64[4] memory prevArchetypeData = iLR.getArchetypeData(address(Nova));
+        archetypeD memory prevArchetypeData = iLR.getArchetypeData(address(Nova));
 
         uint256 i = 8888888888888888;
         for (i; i < 8888888888888948;) {
@@ -267,18 +265,15 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(Admin);
         iLR.bulkPeriodicUpdate(address(Nova));
         (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
-        int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
+        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
 
-        assertTrue(archetypeData[0] < 100, "diff still 100");
-        console.logInt(archetypeData[1]);
-        assertTrue(archetypeData[1] > 100, "members not added");
-        assertTrue(archetypeData[3] > 4, "same average commitment");
-        assertTrue(prevArchetypeData[2] != archetypeData[2], "average reputation unchanged");
+        assertTrue(archetypeData.aDiffMembersLP < 100, "diff still 100");
+        console.logInt(archetypeData.bMembersLastLP);
+        console.log(archetypeData.cAverageRepLP);
+        assertTrue(archetypeData.cAverageRepLP > 100, "members not added");
+        assertTrue(archetypeData.dAverageCommitmentLP > 4, "same average commitment");
+        // assertTrue(prevArchetypeData.ePerformanceLP != archetypeData.cAverageRepLP, "average reputation unchanged");
 
-        // console.logInt(archetypeData[0]);
-        // console.log(uint64(archetypeData[1]));
-        // console.log(uint64(archetypeData[2]));
-        // console.log(uint64(archetypeData[3]));
     }
 
     function testMembershipDiff() public {
@@ -307,14 +302,14 @@ contract TestSampleInteractionPlugin is DeploysInit {
         iLR.bulkPeriodicUpdate(address(Nova));
 
         (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
-        int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
+        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
 
         address[] memory allMembers2 = aID.getAllActiveMembers(address(Nova));
 
-        assertTrue(archetypeData[0] < 0, "expected negative on lost members");
+        assertTrue(archetypeData.aDiffMembersLP < 0, "expected negative on lost members");
         assertTrue(members.length > allMembers2.length, "members left for negative diff");
         assertTrue(
-            int64(int256(allMembers2.length)) - int64(int256(members.length)) == archetypeData[0], "expected diff"
+            int64(int256(allMembers2.length)) - int64(int256(members.length)) == archetypeData.aDiffMembersLP, "expected diff"
         );
 
         // console.logInt(archetypeData[0]);

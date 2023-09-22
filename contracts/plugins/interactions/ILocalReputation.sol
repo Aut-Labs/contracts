@@ -6,6 +6,16 @@ pragma solidity 0.8.19;
  * @dev Interface for local reputation algorythm
  */
 
+struct archetypeD {
+    int64 aDiffMembersLP; // difference in member nr. between periods
+    int64 bMembersLastLP; // how many members last period 
+    uint64 cAverageRepLP; // avg. reputation
+    uint64 dAverageCommitmentLP; // avg. commitment
+    uint64 ePerformanceLP;
+    uint64 fAllPoints;
+    uint64 gPointsUsed;
+}
+
 struct groupState {
     uint64 lastPeriod; //lastPeriod: Last period in which the LR was updated.
     uint64 TCL; //TCL (Total Commitment Level in the Community): Sum of all members' Commitment Levels (between 1 and 10).
@@ -16,8 +26,10 @@ struct groupState {
     uint32 p; // period length
     bytes32 commitHash;
     uint256 lrUpdatesPerPeriod; // how many iS updates were executed // used to zero TCP // ensures LRs updated
-    int64[4] archetypeData; // difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment
+    archetypeD archetypeData;
 }
+
+
 
 struct individualState {
     uint64 iCL; //iCL (Commitment Level): Represents individual members' commitment, ranging from 1 to 10.
@@ -55,7 +67,7 @@ interface ILocalReputation {
 
     function interaction(bytes calldata msgData, address agent) external;
 
-    function setInteractionWeights(address plugin_, bytes[] memory datas, uint256[] memory points) external;
+    function setInteractionWeights(address plugin_, bytes[] memory datas, uint8[] memory points) external;
 
     function getGroupState(address nova_) external view returns (groupState memory);
 
@@ -68,7 +80,7 @@ interface ILocalReputation {
     function updateIndividualLR(address who_, address group_) external returns (uint256);
     function periodicGroupStateUpdate(address group_) external returns (uint256 nextUpdateAt);
 
-    function getArchetypeData(address nova_) external view returns (int64[4] memory);
+    function getArchetypeData(address nova_) external view returns (archetypeD memory);
 
     function getAvReputationAndCommitment(address nova_) external view returns (uint256 sumCommit, uint256 sumRep);
 

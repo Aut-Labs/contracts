@@ -110,10 +110,8 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         return tokenId;
     }
 
-    function getOwnerOfPlugin(address pluginAddress) external view override returns (address owner) {
-        uint256 tokenId = tokenIdByPluginAddress[pluginAddress];
-        owner = ownerOf(tokenId);
-        return owner;
+    function getOwnerOfPlugin(address pluginAddress) external view override returns (address) {
+        return ownerOf(tokenIdByPluginAddress[pluginAddress]);
     }
 
     function editPluginDefinitionMetadata(uint256 pluginDefinitionId, string memory url) external override onlyOwner {

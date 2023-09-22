@@ -116,5 +116,5 @@ interface IPluginRegistry {
     function setDefaulLRAddress(address LR) external;
 
     /// @notice current owner in ownable
-    function owner() external view virtual returns (address);
+    function owner() external view returns (address);
 }
