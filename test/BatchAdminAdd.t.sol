@@ -14,12 +14,11 @@ contract MembershipSets is DeploysInit {
     function setUp() public override {
         super.setUp();
 
-
         vm.prank(A2);
-        aID.mint("AnnaWannabein","urlll",1, 9, address(Nova));
+        aID.mint("AnnaWannabein", "urlll", 1, 9, address(Nova));
 
         vm.prank(A3);
-        aID.mint("AnnaWannabein","urlll",1, 9, address(Nova));
+        aID.mint("AnnaWannabein", "urlll", 1, 9, address(Nova));
     }
 
     function testSetupAdminAdd() public {
@@ -30,18 +29,17 @@ contract MembershipSets is DeploysInit {
         vm.expectRevert("Not an admin!");
         Nova.addAdmin(A4_outsider);
 
-
         vm.prank(A0);
         vm.expectRevert("Not a member");
         Nova.addAdmin(A4_outsider);
         assertFalse(Nova.isAdmin(A4_outsider), "admin somehow");
 
         vm.prank(A4_outsider);
-        aID.mint("AnnaWannabein","urlll",1, 9, address(Nova));
+        aID.mint("AnnaWannabein", "urlll", 1, 9, address(Nova));
 
         assertTrue(Nova.isMember(A4_outsider), "made member");
         assertFalse(Nova.isAdmin(A4_outsider), "admin somehow2");
-        
+
         uint256 snapid = vm.snapshot();
 
         address agentNotMember = address(256000000000256);
@@ -76,8 +74,6 @@ contract MembershipSets is DeploysInit {
         assertTrue(adminListReturned[2] == A2, "a2 not added as admin");
         assertTrue(adminListReturned[3] == A3, "a2 not added as admin");
 
-
         // vm.revertTo(snapid);
-
     }
 }

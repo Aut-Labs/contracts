@@ -98,7 +98,8 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     /// @param commitment the commitment value that the user has selected for this DAO
     /// @param daoAddress the address of the daoAddress contract
     function joinDAO(uint256 role, uint256 commitment, address daoAddress) external override {
-        require(role > 0 && role < 4, "Role must be between 1 and 3"); ///@dev @todo consider if role commitment dependent as initial.
+        require(role > 0 && role < 4, "Role must be between 1 and 3");
+        ///@dev @todo consider if role commitment dependent as initial.
         require(commitment > 0 && commitment < 11, "AutID: Commitment should be between 1 and 10");
         require(daoAddress != address(0), "AutID: Missing DAO");
         require(balanceOf(_msgSender()) == 1, "AutID: There is no AutID registered for this address.");

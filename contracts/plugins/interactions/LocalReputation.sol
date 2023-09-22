@@ -61,17 +61,17 @@ contract LocalRep is ILocalReputation {
     }
 
     //// @notice fetches commitment levels from AutID for a specific Nova and updates Total Commitment Level if needed
-    function updateCommitmentLevels(address nova_) public {
+    function updateCommitmentLevels(address nova_) public returns (uint256[] memory commitments) {
         INova Nova = INova(nova_);
         IAutID AutID = IAutID(Nova.getAutIDAddress());
 
         address[] memory members = IAutID(INova(nova_).getAutIDAddress()).getAllActiveMembers(nova_);
 
-        uint256[] memory commitments = AutID.getCommitmentsOfFor(members, nova_);
+        commitments = AutID.getCommitmentsOfFor(members, nova_);
         bytes32 currentCommitment = keccak256(abi.encodePacked(commitments));
         uint256 context = getContextID(nova_, nova_);
 
-        if (currentCommitment == getGS[context].commitHash) return;
+        if (currentCommitment == getGS[context].commitHash) return commitments;
 
         groupState memory gs = getGS[context];
 
@@ -89,8 +89,9 @@ contract LocalRep is ILocalReputation {
 
         gs.TCL = uint64(totalCommitment);
 
-        gs.archetypeData.aDiffMembersLP = int64(int256(members.length) - int64(getGS[context].archetypeData.bMembersLastLP));
-        gs.archetypeData.dAverageCommitmentLP = uint64(totalCommitment / members.length);
+        gs.archetypeData.aDiffMembersLP =
+            int32(int256(members.length) - int256(getGS[context].archetypeData.bMembersLastLP));
+        gs.archetypeData.dAverageCommitmentLP = uint32(totalCommitment / members.length);
 
         getGS[context] = gs;
     }
@@ -99,15 +100,18 @@ contract LocalRep is ILocalReputation {
     /// @param group_ target address to update group state for
     function periodicGroupStateUpdate(address group_) public returns (uint256 nextUpdateAt) {
         uint256 context = getContextID(group_, group_);
-        updateCommitmentLevels(group_);
+        uint256 membersLen = updateCommitmentLevels(group_).length;
 
         groupState memory gs = getGS[context];
         nextUpdateAt = gs.p + gs.lastPeriod;
 
         if (gs.lrUpdatesPerPeriod >= INova(group_).memberCount()) {
             gs.lastPeriod = uint64(block.timestamp);
-            gs.TCP = 0;
             gs.lrUpdatesPerPeriod = 0;
+            gs.archetypeData.ePerformanceLP = gs.TCP > 0
+                ? uint64(pointsPerInteraction[getContextID(group_, group_)] * membersLen * 1 ether / gs.TCP)
+                : 1 ether;
+            gs.TCP = 0;
             getGS[context] = gs;
             nextUpdateAt = block.timestamp + gs.p;
 
@@ -171,7 +175,9 @@ contract LocalRep is ILocalReputation {
             score = uint64((((iGC * 1 ether) / EC) * (100 - k) + k) * prevScore);
             score = score / 1 ether == 0 ? score * (10 * (1 ether / score)) : score / 100;
             if (score > 10 ether) score = 10 ether;
-            if ( ( (prevScore + (prevScore / 100 * 40)) < score ) && (prevScore != 1  ) ) score = prevScore + ((prevScore / 100) * 40);
+            if (((prevScore + (prevScore / 100 * 40)) < score) && (prevScore != 1)) {
+                score = prevScore + ((prevScore / 100) * 40);
+            }
         }
     }
 
@@ -199,16 +205,17 @@ contract LocalRep is ILocalReputation {
         }
         sumLR = sumLR / members.length;
         getGS[context].archetypeData.cAverageRepLP = uint64(sumLR);
-        getGS[context].archetypeData.bMembersLastLP = int64(uint64(members.length));
+        getGS[context].archetypeData.bMembersLastLP = int32(int64(int256(members.length)));
     }
 
     /// @notice sets number of points each function in contexts asigns to caller
     /// @param plugin_ plugin target
     /// @param datas_, array of selector encoded (msg.data) bytes
-    /// @param points_, amount of points to be awared for each of datas_
+    /// @param points_, amount of points to be awared for each of datas_, 0 to remove and readjust for archetype performance
     function setInteractionWeights(address plugin_, bytes[] memory datas_, uint8[] memory points_) external {
         if (daoOfPlugin[plugin_] == address(0)) revert UninitializedPair();
-        if (!INova(daoOfPlugin[plugin_]).isAdmin(_msgSender())) revert OnlyAdmin();
+        address nova = daoOfPlugin[plugin_];
+        if (!INova(nova).isAdmin(_msgSender())) revert OnlyAdmin();
 
         if (datas_.length != points_.length) revert ArgLenMismatch();
         uint256 interact;
@@ -216,6 +223,9 @@ contract LocalRep is ILocalReputation {
         for (i; i < datas_.length;) {
             interact = interactionID(plugin_, datas_[i]);
             pointsPerInteraction[interact] = points_[i];
+            (pointsPerInteraction[interact] > 0 && points_[i] == 0)
+                ? pointsPerInteraction[getContextID(nova, nova)] -= pointsPerInteraction[interact]
+                : pointsPerInteraction[getContextID(nova, nova)] += points_[i];
             unchecked {
                 ++i;
             }
@@ -240,27 +250,21 @@ contract LocalRep is ILocalReputation {
     /// @notice sets k and p for specific group
     /// @param k steepness degree for slope of local reputations score changes
     /// @param p min amount of time duration in seconds of period
-    function setKP(uint16 k, uint32 p, uint16 penalty, address target_) external {
+    /// @param penalty penalty rate for
+    function setKP(uint16 k, uint32 p, uint8 penalty, address target_) external {
         if (!INova(target_).isAdmin(_msgSender())) revert OnlyAdmin();
 
         if (k * p == 0) revert ZeroUnallowed();
-        if (((k / 100) + (p / 100)) > 0) revert Over100();
+        if (((k / 100) + (p / 100) + (penalty / 100)) > 0) revert Over100();
         ///@dev substitute with penalty not p
 
         uint256 context = getContextID(target_, target_);
         getGS[context].k = k;
         getGS[context].p = p;
-        getGS[context].p = penalty;
+        getGS[context].penalty = penalty;
 
         emit UpdatedKP(target_);
     }
-
-    /// @notice updates total 
-    /// @param k steepness degree for slope of local reputations score changes
-    /// @param p min amount of time duration in seconds of period
-
-
-
 
     /////////////////////  Pure
     ///////////////////////////////////////////////////////////////
@@ -301,7 +305,6 @@ contract LocalRep is ILocalReputation {
 
     /// @notice gets the agregated last updated state of reputation related nova data
     /// @param nova_ address of nova
-
     function getGroupState(address nova_) external view returns (groupState memory) {
         return getGS[getContextID(nova_, nova_)];
     }
@@ -310,19 +313,9 @@ contract LocalRep is ILocalReputation {
     /// @param nova_ address of target group
     /// @dev data is lifecycle dependent
     /// @return array of integers: [difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment ]
-    function getArchetypeData(address nova_) external view returns ( archetypeD memory) {
+    function getArchetypeData(address nova_) external view returns (archetypeD memory) {
         return getGS[getContextID(nova_, nova_)].archetypeData;
     }
-
-//     struct archetypeD {
-//     int64 diffMembersLP;
-//     uint64 membersLastLP;
-//     uint64 averageRepLP;
-//     uint64 averageCommitmentLP;
-//     uint64 performanceLP;
-//     uint64 allPoints;
-//     uint64 pointsUsed;
-// }
 
     /// @notice returns average reputation and commitments
     /// @param nova_ address of group

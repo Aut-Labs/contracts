@@ -232,14 +232,9 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         assertTrue(archetypeData.aDiffMembersLP > 1, "exp members were added");
 
-        assertTrue(uint256(uint64(archetypeData.bMembersLastLP)) == allMembers.length);
+        assertTrue(uint256(uint32(archetypeData.bMembersLastLP)) == allMembers.length);
         assertTrue(uint256(uint64(archetypeData.cAverageRepLP)) == avRep, "should be same lifecycle");
         assertTrue(uint256(uint64(archetypeData.dAverageCommitmentLP)) == avComm, "all were 4");
-
-        // console.logInt(archetypeData[0]);
-        // console.log(uint64(archetypeData[1]));
-        // console.log(uint64(archetypeData[2]));
-        // console.log(uint64(archetypeData[3]));
     }
 
     function testArchetypeUpd2() public {
@@ -272,8 +267,6 @@ contract TestSampleInteractionPlugin is DeploysInit {
         console.log(archetypeData.cAverageRepLP);
         assertTrue(archetypeData.cAverageRepLP > 100, "members not added");
         assertTrue(archetypeData.dAverageCommitmentLP > 4, "same average commitment");
-        // assertTrue(prevArchetypeData.ePerformanceLP != archetypeData.cAverageRepLP, "average reputation unchanged");
-
     }
 
     function testMembershipDiff() public {
@@ -309,12 +302,86 @@ contract TestSampleInteractionPlugin is DeploysInit {
         assertTrue(archetypeData.aDiffMembersLP < 0, "expected negative on lost members");
         assertTrue(members.length > allMembers2.length, "members left for negative diff");
         assertTrue(
-            int64(int256(allMembers2.length)) - int64(int256(members.length)) == archetypeData.aDiffMembersLP, "expected diff"
+            int64(int256(allMembers2.length)) - int64(int256(members.length)) == archetypeData.aDiffMembersLP,
+            "expected diff"
         );
 
-        // console.logInt(archetypeData[0]);
-        // console.log(uint64(archetypeData[1]));
-        // console.log(uint64(archetypeData[2]));
-        // console.log(uint64(archetypeData[3]));
+        assertTrue(archetypeData.ePerformanceLP > 0, "expected performance score");
+    }
+
+    function testPerformanceChanges() public {
+        testArchetypeDataUpdates();
+
+        uint256 i = 1;
+
+        for (i; i < 100;) {
+            vm.prank(address(uint160(i)));
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            vm.warp(block.timestamp + 1);
+
+            unchecked {
+                ++i;
+            }
+        }
+        vm.warp(block.timestamp + 31 days);
+
+        vm.prank(A0);
+        iLR.bulkPeriodicUpdate(address(Nova));
+
+        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
+        console.log(archetypeData.ePerformanceLP);
+        uint64 performance1 = archetypeData.ePerformanceLP;
+
+        i = 1;
+
+        for (i; i < 100;) {
+            vm.prank(address(uint160(i)));
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (!(i % 2 == 0))
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            vm.warp(block.timestamp + 1);
+
+            unchecked {
+                ++i;
+            }
+        }
+        vm.warp(block.timestamp + 31 days);
+
+        vm.prank(A0);
+        iLR.bulkPeriodicUpdate(address(Nova));
+
+        archetypeData = iLR.getArchetypeData(address(Nova));
+        console.log(archetypeData.ePerformanceLP);
+        uint64 performance2 = archetypeData.ePerformanceLP;
+
+        assertTrue(performance2 != performance1, "equally performant");
     }
 }

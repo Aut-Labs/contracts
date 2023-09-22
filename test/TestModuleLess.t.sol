@@ -18,7 +18,4 @@ contract ModuleSkip is DeploysInit {
     function testPluginInstallModule() public {
         vm.skip(true);
     }
-
-
-
 }

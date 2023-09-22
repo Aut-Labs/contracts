@@ -26,6 +26,7 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
         _;
     }
     /// @dev role not used
+
     function join(address newMember, uint256 role) public virtual override onlyAutID {
         require(!isMember[newMember], "Already a member");
         isMember[newMember] = true;
@@ -62,8 +63,9 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
                 }
                 continue;
             }
-            if (! isAdmin[adminAddr[i]]) {
-                admins.push(adminAddr[i]); /// @dev
+            if (!isAdmin[adminAddr[i]]) {
+                admins.push(adminAddr[i]);
+                /// @dev
                 isAdmin[adminAddr[i]] = true;
 
                 emit AdminMemberAdded(adminAddr[i]);
@@ -93,5 +95,4 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
     function memberCount() public view returns (uint256) {
         return members.length;
     }
-
 }

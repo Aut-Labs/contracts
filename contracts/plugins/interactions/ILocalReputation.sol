@@ -7,13 +7,11 @@ pragma solidity 0.8.19;
  */
 
 struct archetypeD {
-    int64 aDiffMembersLP; // difference in member nr. between periods
-    int64 bMembersLastLP; // how many members last period 
+    int32 aDiffMembersLP; // difference in member nr. between periods
+    int32 bMembersLastLP; // how many members last period
     uint64 cAverageRepLP; // avg. reputation
     uint64 dAverageCommitmentLP; // avg. commitment
-    uint64 ePerformanceLP;
-    uint64 fAllPoints;
-    uint64 gPointsUsed;
+    uint64 ePerformanceLP; // points performace score
 }
 
 struct groupState {
@@ -28,8 +26,6 @@ struct groupState {
     uint256 lrUpdatesPerPeriod; // how many iS updates were executed // used to zero TCP // ensures LRs updated
     archetypeD archetypeData;
 }
-
-
 
 struct individualState {
     uint64 iCL; //iCL (Commitment Level): Represents individual members' commitment, ranging from 1 to 10.
@@ -73,9 +69,9 @@ interface ILocalReputation {
 
     function getIndividualState(address agent_, address nova_) external view returns (individualState memory);
 
-    function setKP(uint16 k, uint32 p, uint16 penalty, address target_) external;
+    function setKP(uint16 k, uint32 p, uint8 penalty, address target_) external;
 
-    function updateCommitmentLevels(address nova_) external;
+    function updateCommitmentLevels(address nova_) external returns (uint256[] memory);
 
     function updateIndividualLR(address who_, address group_) external returns (uint256);
     function periodicGroupStateUpdate(address group_) external returns (uint256 nextUpdateAt);
