@@ -10,12 +10,12 @@ import {OffchainVerifiedTaskPlugin} from "../contracts/plugins/tasks/OffchainVer
 import "forge-std/console.sol";
 //// @notice Tests Basic Deployment attainable
 
-contract ModuleSkip is DeploysInit {
+contract AllowListT is DeploysInit {
     function setUp() public override {
         super.setUp();
     }
 
-    function testPluginInstallModule() public {
+    function testAllowListBase() public {
         vm.skip(true);
     }
 }

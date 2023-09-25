@@ -1,9 +1,10 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
 contract Allowlist {
     mapping(address => bool) public isOwner;
     mapping(address => bool) allowlist;
+    mapping(address => address) plusOne;
 
     /// @dev @todo
     /// nested - RSPV + 1 limit
@@ -14,14 +15,10 @@ contract Allowlist {
         isOwner[0x64385e93DD9E55e7b6b4e83f900c142F1b237ce7] = true;
         isOwner[0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3] = true;
         isOwner[0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43] = true;
-
-        allowlist[msg.sender] = true;
-        allowlist[0x64385e93DD9E55e7b6b4e83f900c142F1b237ce7] = true;
-        allowlist[0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3] = true;
-        allowlist[0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43] = true;
     }
 
     error Unallowed();
+    error AlreadyPlusOne();
 
     event AddedToAllowList(address who);
     event RemovedFromAllowList(address who);
@@ -30,33 +27,46 @@ contract Allowlist {
         return allowlist[_addr];
     }
 
+    /////////// Modifiers
+    //////////////////////////////////////
     modifier isSenderOwner() {
-        if (!isOwner[msg.sender]) revert Unallowed();
-        _;
-    }
-
-    function addToAllowlist(address _addr) public isSenderOwner {
-        allowlist[_addr] = true;
-        emit AddedToAllowList(_addr);
-    }
-
-    function removeFromAllowlist(address _addr) public isSenderOwner {
-        allowlist[_addr] = false;
-        emit RemovedFromAllowList(_addr);
-    }
-
-    function addBatchToAllowlist(address[] memory _addrs) public isSenderOwner {
-        uint256 i;
-        for (i; i < _addrs.length;) {
-            allowlist[_addrs[i]] = true;
-            unchecked {
-                ++i;
-            }
-            emit AddedToAllowList(_addrs[i]);
+        if (allowlist[msg.sender] && msg.sig == this.addToAllowlist.selector) {
+            if (plusOne[msg.sender] != address(0)) revert AlreadyPlusOne();
+            _;
+        } else {
+            if (!isOwner[msg.sender]) revert Unallowed();
+            _;
         }
     }
 
-    function removeBatchFromAllowlist(address[] memory _addrs) public isSenderOwner {
+    /////////// External
+    //////////////////////////////////////
+
+    function addToAllowlist(address addrToAdd_) external isSenderOwner {
+        allowlist[addrToAdd_] = true;
+        plusOne[msg.sender] = addrToAdd_;
+        plusOne[addrToAdd_] = msg.sender;
+
+        emit AddedToAllowList(addrToAdd_);
+    }
+
+    function removeFromAllowlist(address addrToAdd_) external isSenderOwner {
+        allowlist[addrToAdd_] = false;
+        emit RemovedFromAllowList(addrToAdd_);
+    }
+
+    function addBatchToAllowlist(address[] memory addrsToAdd_) external isSenderOwner {
+        uint256 i;
+        for (i; i < addrsToAdd_.length;) {
+            allowlist[addrsToAdd_[i]] = true;
+            unchecked {
+                ++i;
+            }
+            emit AddedToAllowList(addrsToAdd_[i]);
+        }
+    }
+
+    function removeBatchFromAllowlist(address[] memory _addrs) external isSenderOwner {
         uint256 i;
         for (i; i < _addrs.length;) {
             allowlist[_addrs[i]] = false;
