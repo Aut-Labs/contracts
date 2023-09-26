@@ -6,12 +6,12 @@ pragma solidity 0.8.19;
  * @dev Interface for local reputation algorythm
  */
 
-struct archetypeD {
+struct periodData {
     int32 aDiffMembersLP; // difference in member nr. between periods
     int32 bMembersLastLP; // how many members last period
     uint64 cAverageRepLP; // avg. reputation
     uint64 dAverageCommitmentLP; // avg. commitment
-    uint64 ePerformanceLP; // points performace score
+    uint64 ePerformanceLP; // points performance score
 }
 
 struct groupState {
@@ -24,7 +24,7 @@ struct groupState {
     uint32 p; // period length
     bytes32 commitHash;
     uint256 lrUpdatesPerPeriod; // how many iS updates were executed // used to zero TCP // ensures LRs updated
-    archetypeD archetypeData;
+    periodData periodNovaParameters;
 }
 
 struct individualState {
@@ -76,7 +76,7 @@ interface ILocalReputation {
     function updateIndividualLR(address who_, address group_) external returns (uint256);
     function periodicGroupStateUpdate(address group_) external returns (uint256 nextUpdateAt);
 
-    function getArchetypeData(address nova_) external view returns (archetypeD memory);
+    function getPeriodNovaParameters(address nova_) external view returns (periodData memory);
 
     function getAvReputationAndCommitment(address nova_) external view returns (uint256 sumCommit, uint256 sumRep);
 

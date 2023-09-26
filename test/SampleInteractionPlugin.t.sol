@@ -211,7 +211,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
         scores1 = iLR.bulkPeriodicUpdate(address(Nova));
     }
 
-    function testArchetypeDataUpdates() public {
+    function testperiodTypeDataUpdates() public {
         testPeriodFlip();
 
         vm.warp(block.timestamp + 1);
@@ -228,18 +228,18 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         assertTrue(avComm == 4, "all have 4, expeced 4");
 
-        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
 
-        assertTrue(archetypeData.aDiffMembersLP > 1, "exp members were added");
+        assertTrue(periodTypeData.aDiffMembersLP > 1, "exp members were added");
 
-        assertTrue(uint256(uint32(archetypeData.bMembersLastLP)) == allMembers.length);
-        assertTrue(uint256(uint64(archetypeData.cAverageRepLP)) == avRep, "should be same lifecycle");
-        assertTrue(uint256(uint64(archetypeData.dAverageCommitmentLP)) == avComm, "all were 4");
+        assertTrue(uint256(uint32(periodTypeData.bMembersLastLP)) == allMembers.length);
+        assertTrue(uint256(uint64(periodTypeData.cAverageRepLP)) == avRep, "should be same lifecycle");
+        assertTrue(uint256(uint64(periodTypeData.dAverageCommitmentLP)) == avComm, "all were 4");
     }
 
-    function testArchetypeUpd2() public {
+    function testperiodTypeUpd2() public {
         testPeriodFlip();
-        archetypeD memory prevArchetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory prevperiodTypeData = iLR.getPeriodNovaParameters(address(Nova));
 
         uint256 i = 8888888888888888;
         for (i; i < 8888888888888948;) {
@@ -260,17 +260,17 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(Admin);
         iLR.bulkPeriodicUpdate(address(Nova));
         (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
-        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
 
-        assertTrue(archetypeData.aDiffMembersLP < 100, "diff still 100");
-        console.logInt(archetypeData.bMembersLastLP);
-        console.log(archetypeData.cAverageRepLP);
-        assertTrue(archetypeData.cAverageRepLP > 100, "members not added");
-        assertTrue(archetypeData.dAverageCommitmentLP > 4, "same average commitment");
+        assertTrue(periodTypeData.aDiffMembersLP < 100, "diff still 100");
+        console.logInt(periodTypeData.bMembersLastLP);
+        console.log(periodTypeData.cAverageRepLP);
+        assertTrue(periodTypeData.cAverageRepLP > 100, "members not added");
+        assertTrue(periodTypeData.dAverageCommitmentLP > 4, "same average commitment");
     }
 
     function testMembershipDiff() public {
-        testArchetypeUpd2();
+        testperiodTypeUpd2();
 
         address[] memory members = aID.getAllActiveMembers(address(Nova));
 
@@ -295,22 +295,22 @@ contract TestSampleInteractionPlugin is DeploysInit {
         iLR.bulkPeriodicUpdate(address(Nova));
 
         (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
-        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
 
         address[] memory allMembers2 = aID.getAllActiveMembers(address(Nova));
 
-        assertTrue(archetypeData.aDiffMembersLP < 0, "expected negative on lost members");
+        assertTrue(periodTypeData.aDiffMembersLP < 0, "expected negative on lost members");
         assertTrue(members.length > allMembers2.length, "members left for negative diff");
         assertTrue(
-            int64(int256(allMembers2.length)) - int64(int256(members.length)) == archetypeData.aDiffMembersLP,
+            int64(int256(allMembers2.length)) - int64(int256(members.length)) == periodTypeData.aDiffMembersLP,
             "expected diff"
         );
 
-        assertTrue(archetypeData.ePerformanceLP > 0, "expected performance score");
+        assertTrue(periodTypeData.ePerformanceLP > 0, "expected performance score");
     }
 
     function testPerformanceChanges() public {
-        testArchetypeDataUpdates();
+        testperiodTypeDataUpdates();
 
         uint256 i = 1;
 
@@ -343,9 +343,9 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(A0);
         iLR.bulkPeriodicUpdate(address(Nova));
 
-        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
-        console.log(archetypeData.ePerformanceLP);
-        uint64 performance1 = archetypeData.ePerformanceLP;
+        periodData memory periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
+        console.log(periodTypeData.ePerformanceLP);
+        uint64 performance1 = periodTypeData.ePerformanceLP;
 
         i = 1;
 
@@ -378,9 +378,9 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(A0);
         iLR.bulkPeriodicUpdate(address(Nova));
 
-        archetypeData = iLR.getArchetypeData(address(Nova));
-        console.log(archetypeData.ePerformanceLP);
-        uint64 performance2 = archetypeData.ePerformanceLP;
+        periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
+        console.log(periodTypeData.ePerformanceLP);
+        uint64 performance2 = periodTypeData.ePerformanceLP;
 
         assertTrue(performance2 != performance1, "equally performant");
     }
