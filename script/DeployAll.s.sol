@@ -10,6 +10,9 @@ import {Interaction, IInteraction} from "../contracts/Interaction.sol";
 import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
 import {LocalRep} from "../contracts/plugins/interactions/LocalReputation.sol";
 
+import {Allowlist} from "../contracts/utils/Allowlist.sol";
+import {IAllowlist} from "../contracts/utils/IAllowlist.sol";
+
 import "forge-std/Script.sol";
 
 contract DeployScript is Script {
@@ -25,6 +28,15 @@ contract DeployScript is Script {
             console.log("ERROR: Only Mumbai and Goerli Testnets Supported");
             console.log("See scripts/DeployAll");
         }
+        vm.writeLine(
+            "deployments.txt",
+            string.concat(" \n", " \n", "#################################################################### \n")
+        );
+
+        vm.writeLine(
+            "deployments.txt",
+            " ####################################################################### \n ####################### DEPLOYMENT ADDRESSES ########################## \n ####################################################################### \n"
+        );
     }
 
     function run() public {
@@ -42,6 +54,11 @@ contract DeployScript is Script {
         address NovaRegistryAddr =
             address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr ));
         address LocalReputation = address(new LocalRep());
+        address AllowlistAddr = address(new Allowlist());
+
+        IAllowlist(AllowlistAddr).addOwner(0x64385e93DD9E55e7b6b4e83f900c142F1b237ce7);
+        IAllowlist(AllowlistAddr).addOwner(0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3);
+        IAllowlist(AllowlistAddr).addOwner(0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43);
 
         console.log("AUTid----------------------------------------- : ", AUTid);
         console.log("Nova Factory----------------------------------------- : ", NoveFactoryAddr);
@@ -50,8 +67,55 @@ contract DeployScript is Script {
         console.log("NovaRegistry ----------------------------------------- : ", NovaRegistryAddr);
         console.log("Interaction ----------------------------------------- : ", InteractionAddr);
         console.log("LocalReputation ----------------------------------------- : ", LocalReputation);
+        console.log("Allowlist ----------------------------------------- : ", AllowlistAddr);
         console.log("                                                                       ");
         console.log("______________________________________________");
+
+
+        vm.writeLine(
+            "deployments.txt",
+            string.concat(
+                "Deployed to network ID:  ",
+                vm.toString(block.chainid),
+                " \n",
+                "At timestamp:  ",
+                vm.toString(block.timestamp),
+                " \n",
+                "#################################################################### \n"
+            )
+        );
+        vm.writeLine(
+            "deployments.txt",
+            string.concat(
+                string.concat("AUTid----------------------------------------- : ", vm.toString(AUTid), " \n"),
+                string.concat(
+                    "Nova Factory----------------------------------------- : ", vm.toString(NoveFactoryAddr), " \n"
+                ),
+                string.concat(
+                    "ModuleRegistry----------------------------------------- : ", vm.toString(ModuleRegistryAddr), " \n"
+                ),
+                string.concat(
+                    "PluginRegistry----------------------------------------- : ", vm.toString(PluginRegistryAddr), " \n"
+                ),
+                string.concat(
+                    "NovaRegistry----------------------------------------- : ", vm.toString(NovaRegistryAddr), " \n"
+                ),
+                string.concat(
+                    "NovaRegistry----------------------------------------- : ", vm.toString(NovaRegistryAddr), " \n"
+                ),
+                string.concat(
+                    "Interaction----------------------------------------- : ",
+                    vm.toString(InteractionAddr),
+                    " \n",
+                    "LocalReputation----------------------------------------- : ",
+                    vm.toString(LocalReputation),
+                    " \n",
+                    "AllowlistAddr----------------------------------------- : ",
+                    vm.toString(AllowlistAddr),
+                    " \n"
+                )
+            )
+        );
 
         vm.stopBroadcast();
     }

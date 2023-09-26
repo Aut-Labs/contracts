@@ -2,6 +2,8 @@
 pragma solidity 0.8.19;
 
 interface INovaRegistry {
+    error OnlyDeployer();
+
     function deployNova(uint256 market, string calldata metadata, uint256 commitment)
         external
         returns (address _nova);

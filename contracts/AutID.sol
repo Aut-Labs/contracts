@@ -128,6 +128,8 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         holderToDAOMembershipData[_msgSender()][daoAddress].isActive = false;
         holderToDAOMembershipData[_msgSender()][daoAddress].commitment = 0;
 
+        /// @dev @todo this does not change Nova storage isMember[_msgSender] will still return true (has dos implications on admin check allowlist spec)
+
         emit DAOWithdrown(daoAddress, _msgSender());
     }
 
