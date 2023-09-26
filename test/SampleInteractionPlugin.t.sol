@@ -228,7 +228,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         assertTrue(avComm == 4, "all have 4, expeced 4");
 
-        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory archetypeData = iLR.getPeriodNovaParameters(address(Nova));
 
         assertTrue(archetypeData.aDiffMembersLP > 1, "exp members were added");
 
@@ -239,7 +239,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
     function testArchetypeUpd2() public {
         testPeriodFlip();
-        archetypeD memory prevArchetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory prevArchetypeData = iLR.getPeriodNovaParameters(address(Nova));
 
         uint256 i = 8888888888888888;
         for (i; i < 8888888888888948;) {
@@ -260,7 +260,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(Admin);
         iLR.bulkPeriodicUpdate(address(Nova));
         (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
-        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory archetypeData = iLR.getPeriodNovaParameters(address(Nova));
 
         assertTrue(archetypeData.aDiffMembersLP < 100, "diff still 100");
         console.logInt(archetypeData.bMembersLastLP);
@@ -295,7 +295,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
         iLR.bulkPeriodicUpdate(address(Nova));
 
         (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
-        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory archetypeData = iLR.getPeriodNovaParameters(address(Nova));
 
         address[] memory allMembers2 = aID.getAllActiveMembers(address(Nova));
 
@@ -343,7 +343,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(A0);
         iLR.bulkPeriodicUpdate(address(Nova));
 
-        archetypeD memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory archetypeData = iLR.getPeriodNovaParameters(address(Nova));
         console.log(archetypeData.ePerformanceLP);
         uint64 performance1 = archetypeData.ePerformanceLP;
 
@@ -378,7 +378,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(A0);
         iLR.bulkPeriodicUpdate(address(Nova));
 
-        archetypeData = iLR.getArchetypeData(address(Nova));
+        archetypeData = iLR.getPeriodNovaParameters(address(Nova));
         console.log(archetypeData.ePerformanceLP);
         uint64 performance2 = archetypeData.ePerformanceLP;
 

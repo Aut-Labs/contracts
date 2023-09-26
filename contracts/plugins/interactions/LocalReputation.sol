@@ -10,7 +10,7 @@ import "./ILocalReputation.sol";
 /// @title Local Reputation Framework for ĀutID holders
 
 contract LocalRep is ILocalReputation {
-    /// @notice stores plugin-dao relation on initialization
+    /// @notice stores plugin(or authorised address)-dao relation on initialization
     mapping(address plugin => address dao) public daoOfPlugin;
 
     /// @notice  stores Group State
@@ -20,10 +20,10 @@ contract LocalRep is ILocalReputation {
     mapping(uint256 contextID => individualState) getIS;
 
     /// @notice stores amount of points awared per interaction
-    mapping(uint256 => uint8 points) public pointsPerInteraction;
+    mapping(uint256 => uint16 points) public pointsPerInteraction;
 
     uint16 public immutable DEFAULT_K = 30;
-    uint8 public immutable DEFAULT_PENALTY = 10;
+    uint8 public immutable DEFAULT_PENALTY = 40;
     uint8 public immutable DEFAULT_CAP_GROWTH = 40;
     uint32 public immutable DEFAULT_PERIOD = 30 days;
 
@@ -35,7 +35,7 @@ contract LocalRep is ILocalReputation {
         _;
     }
 
-    //// @notice executed once when the plugin is installed per logic-nova pair
+    //// @notice executed once
     function initialize(address nova_) external {
         uint256 context = getContextID(_msgSender(), nova_);
 
@@ -89,9 +89,9 @@ contract LocalRep is ILocalReputation {
 
         gs.TCL = uint64(totalCommitment);
 
-        gs.archetypeData.aDiffMembersLP =
-            int32(int256(members.length) - int256(getGS[context].archetypeData.bMembersLastLP));
-        gs.archetypeData.dAverageCommitmentLP = uint32(totalCommitment / members.length);
+        gs.periodNovaParameters.aDiffMembersLP =
+            int32(int256(members.length) - int256(getGS[context].periodNovaParameters.bMembersLastLP));
+        gs.periodNovaParameters.dAverageCommitmentLP = uint32(totalCommitment / members.length);
 
         getGS[context] = gs;
     }
@@ -108,7 +108,7 @@ contract LocalRep is ILocalReputation {
         if (gs.lrUpdatesPerPeriod >= INova(group_).memberCount()) {
             gs.lastPeriod = uint64(block.timestamp);
             gs.lrUpdatesPerPeriod = 0;
-            gs.archetypeData.ePerformanceLP = gs.TCP > 0
+            gs.periodNovaParameters.ePerformanceLP = gs.TCP > 0
                 ? uint64(pointsPerInteraction[getContextID(group_, group_)] * membersLen * 1 ether / gs.TCP)
                 : 1 ether;
             gs.TCP = 0;
@@ -204,14 +204,14 @@ contract LocalRep is ILocalReputation {
             }
         }
         sumLR = sumLR / members.length;
-        getGS[context].archetypeData.cAverageRepLP = uint64(sumLR);
-        getGS[context].archetypeData.bMembersLastLP = int32(int64(int256(members.length)));
+        getGS[context].periodNovaParameters.cAverageRepLP = uint64(sumLR);
+        getGS[context].periodNovaParameters.bMembersLastLP = int32(int64(int256(members.length)));
     }
 
     /// @notice sets number of points each function in contexts asigns to caller
     /// @param plugin_ plugin target
     /// @param datas_, array of selector encoded (msg.data) bytes
-    /// @param points_, amount of points to be awared for each of datas_, 0 to remove and readjust for archetype performance
+    /// @param points_, amount of points to be awared for each of datas_, 0 to remove and readjust for performance
     function setInteractionWeights(address plugin_, bytes[] memory datas_, uint8[] memory points_) external {
         if (daoOfPlugin[plugin_] == address(0)) revert UninitializedPair();
         address nova = daoOfPlugin[plugin_];
@@ -313,15 +313,14 @@ contract LocalRep is ILocalReputation {
     /// @param nova_ address of target group
     /// @dev data is lifecycle dependent
     /// @return array of integers: [difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment ]
-    function getArchetypeData(address nova_) external view returns (archetypeD memory) {
-        return getGS[getContextID(nova_, nova_)].archetypeData;
+    function getPeriodNovaParameters(address nova_) external view returns (periodData memory) {
+        return getGS[getContextID(nova_, nova_)].periodNovaParameters;
     }
 
     /// @notice returns average reputation and commitments
     /// @param nova_ address of group
     /// @return sumCommit sumRep tuple (commitment sum, reputation sum)
     function getAvReputationAndCommitment(address nova_) external view returns (uint256 sumCommit, uint256 sumRep) {
-        // address[] memory members = INova(nova_).getAllMembers();
         address[] memory members = IAutID(INova(nova_).getAutIDAddress()).getAllActiveMembers(nova_);
 
         uint256 i;
