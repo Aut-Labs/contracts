@@ -312,7 +312,6 @@ contract LocalRep is ILocalReputation {
     /// @notice gets nova dynamic descriptive data updated at last period
     /// @param nova_ address of target group
     /// @dev data is lifecycle dependent
-    /// @return array of integers: [difference in member nr. between periods | how many members last period | avg. reputation | avg. commitment ]
     function getArchetypeData(address nova_) external view returns (archetypeD memory) {
         return getGS[getContextID(nova_, nova_)].archetypeData;
     }
