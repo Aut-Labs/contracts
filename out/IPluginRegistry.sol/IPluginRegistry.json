@@ -1,0 +1,2519 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newReputationAlgo",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "previousAddress",
+          "type": "address"
+        }
+      ],
+      "name": "DefaultLRAlgoChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "pluginTypeId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "dao",
+          "type": "address"
+        }
+      ],
+      "name": "PluginAddedToDAO",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "pluginTypeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "PluginDefinitionAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pluginAddress",
+          "type": "address"
+        }
+      ],
+      "name": "PluginRegistered",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "metadataURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "canBeStandalone",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "moduleDependencies",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "addPluginDefinition",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "pluginDefinitionId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pluginAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pluginDefinitionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "addPluginToDAO",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "defaultLRAddr",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "pluginDefinitionId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "url",
+          "type": "string"
+        }
+      ],
+      "name": "editPluginDefinitionMetadata",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pluginAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getOwnerOfPlugin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "dao",
+          "type": "address"
+        }
+      ],
+      "name": "getPluginIdsByDAO",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPluginInstanceByTokenId",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "pluginAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pluginDefinitionId",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IPluginRegistry.PluginInstance",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "modulesRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "dao",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pluginTypeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "pluginDefinitionsInstalledByDAO",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "LR",
+          "type": "address"
+        }
+      ],
+      "name": "setDefaulLRAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pluginAddress_",
+          "type": "address"
+        }
+      ],
+      "name": "tokenIdFromAddress",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "addPluginDefinition(address,string,uint256,bool,uint256[])": "342094ba",
+    "addPluginToDAO(address,uint256)": "4d4547c9",
+    "defaultLRAddr()": "f0b7832a",
+    "editPluginDefinitionMetadata(uint256,string)": "26b6ee9e",
+    "getOwnerOfPlugin(address)": "235883e3",
+    "getPluginIdsByDAO(address)": "2b948c39",
+    "getPluginInstanceByTokenId(uint256)": "e832df91",
+    "modulesRegistry()": "82accae8",
+    "owner()": "8da5cb5b",
+    "pluginDefinitionsInstalledByDAO(address,uint256)": "28077c1a",
+    "setDefaulLRAddress(address)": "a9810f45",
+    "tokenIdFromAddress(address)": "51c4d95e"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newReputationAlgo\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"previousAddress\",\"type\":\"address\"}],\"name\":\"DefaultLRAlgoChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"pluginTypeId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"dao\",\"type\":\"address\"}],\"name\":\"PluginAddedToDAO\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"pluginTypeId\",\"type\":\"uint256\"}],\"name\":\"PluginDefinitionAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"pluginAddress\",\"type\":\"address\"}],\"name\":\"PluginRegistered\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"metadataURI\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"canBeStandalone\",\"type\":\"bool\"},{\"internalType\":\"uint256[]\",\"name\":\"moduleDependencies\",\"type\":\"uint256[]\"}],\"name\":\"addPluginDefinition\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"pluginDefinitionId\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pluginAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"pluginDefinitionId\",\"type\":\"uint256\"}],\"name\":\"addPluginToDAO\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"defaultLRAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"pluginDefinitionId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"url\",\"type\":\"string\"}],\"name\":\"editPluginDefinitionMetadata\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pluginAddress\",\"type\":\"address\"}],\"name\":\"getOwnerOfPlugin\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"dao\",\"type\":\"address\"}],\"name\":\"getPluginIdsByDAO\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getPluginInstanceByTokenId\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"pluginAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"pluginDefinitionId\",\"type\":\"uint256\"}],\"internalType\":\"struct IPluginRegistry.PluginInstance\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"modulesRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"dao\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"pluginTypeId\",\"type\":\"uint256\"}],\"name\":\"pluginDefinitionsInstalledByDAO\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"LR\",\"type\":\"address\"}],\"name\":\"setDefaulLRAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pluginAddress_\",\"type\":\"address\"}],\"name\":\"tokenIdFromAddress\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for the plugin registry contract, which manages the registration and installation of plugins.\",\"events\":{\"PluginAddedToDAO(uint256,uint256,address)\":{\"details\":\"Emitted when a plugin is added to a DAO.\",\"params\":{\"dao\":\"The address of the DAO to which the plugin was added.\",\"pluginTypeId\":\"The ID of the plugin definition associated with the added plugin.\",\"tokenId\":\"The ID of the token associated with the added plugin.\"}},\"PluginDefinitionAdded(uint256)\":{\"details\":\"Emitted when a new plugin definition is added to the plugin registry.\",\"params\":{\"pluginTypeId\":\"The ID of the newly added plugin definition.\"}},\"PluginRegistered(uint256,address)\":{\"details\":\"Emitted when a new plugin is registered with the plugin registry.\",\"params\":{\"pluginAddress\":\"The address of the registered plugin.\",\"tokenId\":\"The ID of the token associated with the registered plugin.\"}}},\"kind\":\"dev\",\"methods\":{\"addPluginToDAO(address,uint256)\":{\"details\":\"Adds a plugin to a DAO.\",\"params\":{\"pluginAddress\":\"The address of the plugin contract.\",\"pluginDefinitionId\":\"The ID of the plugin definition.\"}},\"editPluginDefinitionMetadata(uint256,string)\":{\"details\":\"Edits the metadata URI for a given plugin definition.\",\"params\":{\"pluginDefinitionId\":\"The ID of the plugin for which to edit metadata.\",\"url\":\"The URL of the new metadata.\"}},\"getOwnerOfPlugin(address)\":{\"details\":\"Returns the owner of a given plugin.\",\"params\":{\"pluginAddress\":\"The address of the plugin for which to get the owner.\"},\"returns\":{\"_0\":\"The address of the owner of the specified plugin.\"}},\"getPluginIdsByDAO(address)\":{\"details\":\"Returns an array of token IDs representing the plugins installed for a given DAO.\",\"params\":{\"dao\":\"The address of the DAO for which to get installed plugins.\"},\"returns\":{\"_0\":\"An array of token IDs representing the plugins installed for the specified DAO.\"}},\"getPluginInstanceByTokenId(uint256)\":{\"details\":\"Returns the plugin instance associated with a given token ID.\",\"params\":{\"tokenId\":\"The token ID for which to get the plugin instance.\"},\"returns\":{\"_0\":\"A `PluginInstance` struct containing the plugin address and plugin definition ID associated with the specified token ID.\"}},\"modulesRegistry()\":{\"details\":\"Returns the address of the Modules Registry contract.\",\"returns\":{\"_0\":\"The address of the Modules Registry contract.\"}},\"pluginDefinitionsInstalledByDAO(address,uint256)\":{\"details\":\"Returns a boolean indicating whether a given plugin definition is installed for a given DAO.\",\"params\":{\"dao\":\"The address of the DAO for which to check plugin definition installation.\",\"pluginTypeId\":\"The ID of the plugin definition for which to check installation.\"},\"returns\":{\"_0\":\"A boolean indicating whether the specified plugin definition is installed for the specified DAO.\"}},\"setDefaulLRAddress(address)\":{\"params\":{\"LR\":\"address of new default local reputation state and logic\"}}},\"title\":\"IPluginRegistry\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"owner()\":{\"notice\":\"current owner in ownable\"},\"setDefaulLRAddress(address)\":{\"notice\":\"changes the default local reputation globally\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/plugins/registry/IPluginRegistry.sol\":\"IPluginRegistry\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/plugins/registry/IPluginRegistry.sol\":{\"keccak256\":\"0xff5b893ce647becae6630557caccd170661e91aeeceddafb4028824838ed999e\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://92e23734937eebb585633017374b30613a672a15e73f6cc97391f66190e7f636\",\"dweb:/ipfs/QmWPbAoLaXsuTGSw7T5tGvkCSpAQLk8TZWZLoSkqKY8kx9\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newReputationAlgo",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "previousAddress",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "DefaultLRAlgoChanged",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "pluginTypeId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "dao",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "PluginAddedToDAO",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "pluginTypeId",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "PluginDefinitionAdded",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "pluginAddress",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "PluginRegistered",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address payable",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "metadataURI",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "canBeStandalone",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "moduleDependencies",
+              "type": "uint256[]"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addPluginDefinition",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "pluginDefinitionId",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "pluginAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pluginDefinitionId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "payable",
+          "type": "function",
+          "name": "addPluginToDAO"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "defaultLRAddr",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "pluginDefinitionId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "url",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "editPluginDefinitionMetadata"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "pluginAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getOwnerOfPlugin",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "dao",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getPluginIdsByDAO",
+          "outputs": [
+            {
+              "internalType": "uint256[]",
+              "name": "",
+              "type": "uint256[]"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getPluginInstanceByTokenId",
+          "outputs": [
+            {
+              "internalType": "struct IPluginRegistry.PluginInstance",
+              "name": "",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "pluginAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "pluginDefinitionId",
+                  "type": "uint256"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "modulesRegistry",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "owner",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "dao",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pluginTypeId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "pluginDefinitionsInstalledByDAO",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "LR",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "setDefaulLRAddress"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "pluginAddress_",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "tokenIdFromAddress",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "addPluginToDAO(address,uint256)": {
+            "details": "Adds a plugin to a DAO.",
+            "params": {
+              "pluginAddress": "The address of the plugin contract.",
+              "pluginDefinitionId": "The ID of the plugin definition."
+            }
+          },
+          "editPluginDefinitionMetadata(uint256,string)": {
+            "details": "Edits the metadata URI for a given plugin definition.",
+            "params": {
+              "pluginDefinitionId": "The ID of the plugin for which to edit metadata.",
+              "url": "The URL of the new metadata."
+            }
+          },
+          "getOwnerOfPlugin(address)": {
+            "details": "Returns the owner of a given plugin.",
+            "params": {
+              "pluginAddress": "The address of the plugin for which to get the owner."
+            },
+            "returns": {
+              "_0": "The address of the owner of the specified plugin."
+            }
+          },
+          "getPluginIdsByDAO(address)": {
+            "details": "Returns an array of token IDs representing the plugins installed for a given DAO.",
+            "params": {
+              "dao": "The address of the DAO for which to get installed plugins."
+            },
+            "returns": {
+              "_0": "An array of token IDs representing the plugins installed for the specified DAO."
+            }
+          },
+          "getPluginInstanceByTokenId(uint256)": {
+            "details": "Returns the plugin instance associated with a given token ID.",
+            "params": {
+              "tokenId": "The token ID for which to get the plugin instance."
+            },
+            "returns": {
+              "_0": "A `PluginInstance` struct containing the plugin address and plugin definition ID associated with the specified token ID."
+            }
+          },
+          "modulesRegistry()": {
+            "details": "Returns the address of the Modules Registry contract.",
+            "returns": {
+              "_0": "The address of the Modules Registry contract."
+            }
+          },
+          "pluginDefinitionsInstalledByDAO(address,uint256)": {
+            "details": "Returns a boolean indicating whether a given plugin definition is installed for a given DAO.",
+            "params": {
+              "dao": "The address of the DAO for which to check plugin definition installation.",
+              "pluginTypeId": "The ID of the plugin definition for which to check installation."
+            },
+            "returns": {
+              "_0": "A boolean indicating whether the specified plugin definition is installed for the specified DAO."
+            }
+          },
+          "setDefaulLRAddress(address)": {
+            "params": {
+              "LR": "address of new default local reputation state and logic"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "owner()": {
+            "notice": "current owner in ownable"
+          },
+          "setDefaulLRAddress(address)": {
+            "notice": "changes the default local reputation globally"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/plugins/registry/IPluginRegistry.sol": "IPluginRegistry"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/plugins/registry/IPluginRegistry.sol": {
+        "keccak256": "0xff5b893ce647becae6630557caccd170661e91aeeceddafb4028824838ed999e",
+        "urls": [
+          "bzz-raw://92e23734937eebb585633017374b30613a672a15e73f6cc97391f66190e7f636",
+          "dweb:/ipfs/QmWPbAoLaXsuTGSw7T5tGvkCSpAQLk8TZWZLoSkqKY8kx9"
+        ],
+        "license": "UNLICENSED"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/plugins/registry/IPluginRegistry.sol",
+    "id": 10192,
+    "exportedSymbols": {
+      "IPluginRegistry": [
+        10191
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "39:5050:90",
+    "nodes": [
+      {
+        "id": 10045,
+        "nodeType": "PragmaDirective",
+        "src": "39:23:90",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 10191,
+        "nodeType": "ContractDefinition",
+        "src": "210:4878:90",
+        "nodes": [
+          {
+            "id": 10060,
+            "nodeType": "StructDefinition",
+            "src": "393:203:90",
+            "nodes": [],
+            "canonicalName": "IPluginRegistry.PluginDefinition",
+            "members": [
+              {
+                "constant": false,
+                "id": 10048,
+                "mutability": "mutable",
+                "name": "metadataURI",
+                "nameLocation": "434:11:90",
+                "nodeType": "VariableDeclaration",
+                "scope": 10060,
+                "src": "427:18:90",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 10047,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "427:6:90",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 10050,
+                "mutability": "mutable",
+                "name": "price",
+                "nameLocation": "463:5:90",
+                "nodeType": "VariableDeclaration",
+                "scope": 10060,
+                "src": "455:13:90",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 10049,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "455:7:90",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 10052,
+                "mutability": "mutable",
+                "name": "creator",
+                "nameLocation": "494:7:90",
+                "nodeType": "VariableDeclaration",
+                "scope": 10060,
+                "src": "478:23:90",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address_payable",
+                  "typeString": "address payable"
+                },
+                "typeName": {
+                  "id": 10051,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "478:15:90",
+                  "stateMutability": "payable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 10054,
+                "mutability": "mutable",
+                "name": "active",
+                "nameLocation": "516:6:90",
+                "nodeType": "VariableDeclaration",
+                "scope": 10060,
+                "src": "511:11:90",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 10053,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "511:4:90",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 10056,
+                "mutability": "mutable",
+                "name": "canBeStandalone",
+                "nameLocation": "537:15:90",
+                "nodeType": "VariableDeclaration",
+                "scope": 10060,
+                "src": "532:20:90",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 10055,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "532:4:90",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 10059,
+                "mutability": "mutable",
+                "name": "dependencyModules",
+                "nameLocation": "572:17:90",
+                "nodeType": "VariableDeclaration",
+                "scope": 10060,
+                "src": "562:27:90",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                  "typeString": "uint256[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 10057,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "562:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 10058,
+                  "nodeType": "ArrayTypeName",
+                  "src": "562:9:90",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                    "typeString": "uint256[]"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "PluginDefinition",
+            "nameLocation": "400:16:90",
+            "scope": 10191,
+            "visibility": "public"
+          },
+          {
+            "id": 10065,
+            "nodeType": "StructDefinition",
+            "src": "755:96:90",
+            "nodes": [],
+            "canonicalName": "IPluginRegistry.PluginInstance",
+            "members": [
+              {
+                "constant": false,
+                "id": 10062,
+                "mutability": "mutable",
+                "name": "pluginAddress",
+                "nameLocation": "795:13:90",
+                "nodeType": "VariableDeclaration",
+                "scope": 10065,
+                "src": "787:21:90",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 10061,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "787:7:90",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 10064,
+                "mutability": "mutable",
+                "name": "pluginDefinitionId",
+                "nameLocation": "826:18:90",
+                "nodeType": "VariableDeclaration",
+                "scope": 10065,
+                "src": "818:26:90",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 10063,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "818:7:90",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "PluginInstance",
+            "nameLocation": "762:14:90",
+            "scope": 10191,
+            "visibility": "public"
+          },
+          {
+            "id": 10071,
+            "nodeType": "EventDefinition",
+            "src": "857:79:90",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "5306ce2f8e36872437fa0825af321e9ff5ac117d48c602f520dace01c1ac1324",
+            "name": "DefaultLRAlgoChanged",
+            "nameLocation": "863:20:90",
+            "parameters": {
+              "id": 10070,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10067,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "newReputationAlgo",
+                  "nameLocation": "892:17:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10071,
+                  "src": "884:25:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10066,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "884:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10069,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "previousAddress",
+                  "nameLocation": "919:15:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10071,
+                  "src": "911:23:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10068,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "911:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "883:52:90"
+            }
+          },
+          {
+            "id": 10078,
+            "nodeType": "EventDefinition",
+            "src": "1183:79:90",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 10072,
+              "nodeType": "StructuredDocumentation",
+              "src": "942:236:90",
+              "text": " @dev Emitted when a new plugin is registered with the plugin registry.\n @param tokenId The ID of the token associated with the registered plugin.\n @param pluginAddress The address of the registered plugin."
+            },
+            "eventSelector": "91a697a20a7603d919a673d889a6263bca15841c5b84791bea2091bcefff95a8",
+            "name": "PluginRegistered",
+            "nameLocation": "1189:16:90",
+            "parameters": {
+              "id": 10077,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10074,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "1222:7:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10078,
+                  "src": "1206:23:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10073,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1206:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10076,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "pluginAddress",
+                  "nameLocation": "1247:13:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10078,
+                  "src": "1231:29:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10075,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1231:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1205:56:90"
+            }
+          },
+          {
+            "id": 10083,
+            "nodeType": "EventDefinition",
+            "src": "1438:58:90",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 10079,
+              "nodeType": "StructuredDocumentation",
+              "src": "1268:165:90",
+              "text": " @dev Emitted when a new plugin definition is added to the plugin registry.\n @param pluginTypeId The ID of the newly added plugin definition."
+            },
+            "eventSelector": "cbbaf67d68fba51d618db755cf99150d3acd7bad449961ed3118fc81a21e23eb",
+            "name": "PluginDefinitionAdded",
+            "nameLocation": "1444:21:90",
+            "parameters": {
+              "id": 10082,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10081,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "pluginTypeId",
+                  "nameLocation": "1482:12:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10083,
+                  "src": "1466:28:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10080,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1466:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1465:30:90"
+            }
+          },
+          {
+            "id": 10092,
+            "nodeType": "EventDefinition",
+            "src": "1812:99:90",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 10084,
+              "nodeType": "StructuredDocumentation",
+              "src": "1502:305:90",
+              "text": " @dev Emitted when a plugin is added to a DAO.\n @param tokenId The ID of the token associated with the added plugin.\n @param pluginTypeId The ID of the plugin definition associated with the added plugin.\n @param dao The address of the DAO to which the plugin was added."
+            },
+            "eventSelector": "561de58a0a6386fe4dc1556ab9cc4034ba90dfea72337f203d0f0a774aff142c",
+            "name": "PluginAddedToDAO",
+            "nameLocation": "1818:16:90",
+            "parameters": {
+              "id": 10091,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10086,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "1851:7:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10092,
+                  "src": "1835:23:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10085,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1835:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10088,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "pluginTypeId",
+                  "nameLocation": "1876:12:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10092,
+                  "src": "1860:28:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10087,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1860:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10090,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "dao",
+                  "nameLocation": "1906:3:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10092,
+                  "src": "1890:19:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10089,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1890:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1834:76:90"
+            }
+          },
+          {
+            "id": 10100,
+            "nodeType": "FunctionDefinition",
+            "src": "2129:81:90",
+            "nodes": [],
+            "documentation": {
+              "id": 10093,
+              "nodeType": "StructuredDocumentation",
+              "src": "1917:207:90",
+              "text": " @dev Returns the owner of a given plugin.\n @param pluginAddress The address of the plugin for which to get the owner.\n @return The address of the owner of the specified plugin."
+            },
+            "functionSelector": "235883e3",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getOwnerOfPlugin",
+            "nameLocation": "2138:16:90",
+            "parameters": {
+              "id": 10096,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10095,
+                  "mutability": "mutable",
+                  "name": "pluginAddress",
+                  "nameLocation": "2163:13:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10100,
+                  "src": "2155:21:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10094,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2155:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2154:23:90"
+            },
+            "returnParameters": {
+              "id": 10099,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10098,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10100,
+                  "src": "2201:7:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10097,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2201:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2200:9:90"
+            },
+            "scope": 10191,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10109,
+            "nodeType": "FunctionDefinition",
+            "src": "2515:99:90",
+            "nodes": [],
+            "documentation": {
+              "id": 10101,
+              "nodeType": "StructuredDocumentation",
+              "src": "2216:294:90",
+              "text": " @dev Returns the plugin instance associated with a given token ID.\n @param tokenId The token ID for which to get the plugin instance.\n @return A `PluginInstance` struct containing the plugin address and plugin definition ID associated with the specified token ID."
+            },
+            "functionSelector": "e832df91",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPluginInstanceByTokenId",
+            "nameLocation": "2524:26:90",
+            "parameters": {
+              "id": 10104,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10103,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "2559:7:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10109,
+                  "src": "2551:15:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10102,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2551:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2550:17:90"
+            },
+            "returnParameters": {
+              "id": 10108,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10107,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10109,
+                  "src": "2591:21:90",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_PluginInstance_$10065_memory_ptr",
+                    "typeString": "struct IPluginRegistry.PluginInstance"
+                  },
+                  "typeName": {
+                    "id": 10106,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 10105,
+                      "name": "PluginInstance",
+                      "nameLocations": [
+                        "2591:14:90"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 10065,
+                      "src": "2591:14:90"
+                    },
+                    "referencedDeclaration": 10065,
+                    "src": "2591:14:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_PluginInstance_$10065_storage_ptr",
+                      "typeString": "struct IPluginRegistry.PluginInstance"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2590:23:90"
+            },
+            "scope": 10191,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10119,
+            "nodeType": "FunctionDefinition",
+            "src": "3037:105:90",
+            "nodes": [],
+            "documentation": {
+              "id": 10110,
+              "nodeType": "StructuredDocumentation",
+              "src": "2620:412:90",
+              "text": " @dev Returns a boolean indicating whether a given plugin definition is installed for a given DAO.\n @param dao The address of the DAO for which to check plugin definition installation.\n @param pluginTypeId The ID of the plugin definition for which to check installation.\n @return A boolean indicating whether the specified plugin definition is installed for the specified DAO."
+            },
+            "functionSelector": "28077c1a",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "pluginDefinitionsInstalledByDAO",
+            "nameLocation": "3046:31:90",
+            "parameters": {
+              "id": 10115,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10112,
+                  "mutability": "mutable",
+                  "name": "dao",
+                  "nameLocation": "3086:3:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10119,
+                  "src": "3078:11:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10111,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3078:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10114,
+                  "mutability": "mutable",
+                  "name": "pluginTypeId",
+                  "nameLocation": "3099:12:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10119,
+                  "src": "3091:20:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10113,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3091:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3077:35:90"
+            },
+            "returnParameters": {
+              "id": 10118,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10117,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10119,
+                  "src": "3136:4:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 10116,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3136:4:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3135:6:90"
+            },
+            "scope": 10191,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10128,
+            "nodeType": "FunctionDefinition",
+            "src": "3430:81:90",
+            "nodes": [],
+            "documentation": {
+              "id": 10120,
+              "nodeType": "StructuredDocumentation",
+              "src": "3148:277:90",
+              "text": " @dev Returns an array of token IDs representing the plugins installed for a given DAO.\n @param dao The address of the DAO for which to get installed plugins.\n @return An array of token IDs representing the plugins installed for the specified DAO."
+            },
+            "functionSelector": "2b948c39",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPluginIdsByDAO",
+            "nameLocation": "3439:17:90",
+            "parameters": {
+              "id": 10123,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10122,
+                  "mutability": "mutable",
+                  "name": "dao",
+                  "nameLocation": "3465:3:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10128,
+                  "src": "3457:11:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10121,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3457:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3456:13:90"
+            },
+            "returnParameters": {
+              "id": 10127,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10126,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10128,
+                  "src": "3493:16:90",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 10124,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "3493:7:90",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 10125,
+                    "nodeType": "ArrayTypeName",
+                    "src": "3493:9:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3492:18:90"
+            },
+            "scope": 10191,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10136,
+            "nodeType": "FunctionDefinition",
+            "src": "3728:94:90",
+            "nodes": [],
+            "documentation": {
+              "id": 10129,
+              "nodeType": "StructuredDocumentation",
+              "src": "3517:206:90",
+              "text": " @dev Edits the metadata URI for a given plugin definition.\n @param pluginDefinitionId The ID of the plugin for which to edit metadata.\n @param url The URL of the new metadata."
+            },
+            "functionSelector": "26b6ee9e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "editPluginDefinitionMetadata",
+            "nameLocation": "3737:28:90",
+            "parameters": {
+              "id": 10134,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10131,
+                  "mutability": "mutable",
+                  "name": "pluginDefinitionId",
+                  "nameLocation": "3774:18:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10136,
+                  "src": "3766:26:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10130,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3766:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10133,
+                  "mutability": "mutable",
+                  "name": "url",
+                  "nameLocation": "3808:3:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10136,
+                  "src": "3794:17:90",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 10132,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3794:6:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3765:47:90"
+            },
+            "returnParameters": {
+              "id": 10135,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3821:0:90"
+            },
+            "scope": 10191,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10142,
+            "nodeType": "FunctionDefinition",
+            "src": "3971:59:90",
+            "nodes": [],
+            "documentation": {
+              "id": 10137,
+              "nodeType": "StructuredDocumentation",
+              "src": "3828:138:90",
+              "text": " @dev Returns the address of the Modules Registry contract.\n @return The address of the Modules Registry contract."
+            },
+            "functionSelector": "82accae8",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "modulesRegistry",
+            "nameLocation": "3980:15:90",
+            "parameters": {
+              "id": 10138,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3995:2:90"
+            },
+            "returnParameters": {
+              "id": 10141,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10140,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10142,
+                  "src": "4021:7:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10139,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4021:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4020:9:90"
+            },
+            "scope": 10191,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10150,
+            "nodeType": "FunctionDefinition",
+            "src": "4218:92:90",
+            "nodes": [],
+            "documentation": {
+              "id": 10143,
+              "nodeType": "StructuredDocumentation",
+              "src": "4036:177:90",
+              "text": " @dev Adds a plugin to a DAO.\n @param pluginAddress The address of the plugin contract.\n @param pluginDefinitionId The ID of the plugin definition."
+            },
+            "functionSelector": "4d4547c9",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addPluginToDAO",
+            "nameLocation": "4227:14:90",
+            "parameters": {
+              "id": 10148,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10145,
+                  "mutability": "mutable",
+                  "name": "pluginAddress",
+                  "nameLocation": "4250:13:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10150,
+                  "src": "4242:21:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10144,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4242:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10147,
+                  "mutability": "mutable",
+                  "name": "pluginDefinitionId",
+                  "nameLocation": "4273:18:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10150,
+                  "src": "4265:26:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10146,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4265:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4241:51:90"
+            },
+            "returnParameters": {
+              "id": 10149,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4309:0:90"
+            },
+            "scope": 10191,
+            "stateMutability": "payable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10157,
+            "nodeType": "FunctionDefinition",
+            "src": "4316:84:90",
+            "nodes": [],
+            "functionSelector": "51c4d95e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "tokenIdFromAddress",
+            "nameLocation": "4325:18:90",
+            "parameters": {
+              "id": 10153,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10152,
+                  "mutability": "mutable",
+                  "name": "pluginAddress_",
+                  "nameLocation": "4352:14:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10157,
+                  "src": "4344:22:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10151,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4344:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4343:24:90"
+            },
+            "returnParameters": {
+              "id": 10156,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10155,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10157,
+                  "src": "4391:7:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10154,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4391:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4390:9:90"
+            },
+            "scope": 10191,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10173,
+            "nodeType": "FunctionDefinition",
+            "src": "4406:247:90",
+            "nodes": [],
+            "functionSelector": "342094ba",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addPluginDefinition",
+            "nameLocation": "4415:19:90",
+            "parameters": {
+              "id": 10169,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10159,
+                  "mutability": "mutable",
+                  "name": "creator",
+                  "nameLocation": "4460:7:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10173,
+                  "src": "4444:23:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  },
+                  "typeName": {
+                    "id": 10158,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4444:15:90",
+                    "stateMutability": "payable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address_payable",
+                      "typeString": "address payable"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10161,
+                  "mutability": "mutable",
+                  "name": "metadataURI",
+                  "nameLocation": "4491:11:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10173,
+                  "src": "4477:25:90",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 10160,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4477:6:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10163,
+                  "mutability": "mutable",
+                  "name": "price",
+                  "nameLocation": "4520:5:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10173,
+                  "src": "4512:13:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10162,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4512:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10165,
+                  "mutability": "mutable",
+                  "name": "canBeStandalone",
+                  "nameLocation": "4540:15:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10173,
+                  "src": "4535:20:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 10164,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4535:4:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 10168,
+                  "mutability": "mutable",
+                  "name": "moduleDependencies",
+                  "nameLocation": "4582:18:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10173,
+                  "src": "4565:35:90",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 10166,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "4565:7:90",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 10167,
+                    "nodeType": "ArrayTypeName",
+                    "src": "4565:9:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4434:172:90"
+            },
+            "returnParameters": {
+              "id": 10172,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10171,
+                  "mutability": "mutable",
+                  "name": "pluginDefinitionId",
+                  "nameLocation": "4633:18:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10173,
+                  "src": "4625:26:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 10170,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4625:7:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4624:28:90"
+            },
+            "scope": 10191,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10178,
+            "nodeType": "FunctionDefinition",
+            "src": "4742:57:90",
+            "nodes": [],
+            "functionSelector": "f0b7832a",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "defaultLRAddr",
+            "nameLocation": "4751:13:90",
+            "parameters": {
+              "id": 10174,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4764:2:90"
+            },
+            "returnParameters": {
+              "id": 10177,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10176,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10178,
+                  "src": "4790:7:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10175,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4790:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4789:9:90"
+            },
+            "scope": 10191,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10184,
+            "nodeType": "FunctionDefinition",
+            "src": "4941:49:90",
+            "nodes": [],
+            "documentation": {
+              "id": 10179,
+              "nodeType": "StructuredDocumentation",
+              "src": "4805:131:90",
+              "text": "@notice changes the default local reputation globally\n @param LR address of new default local reputation state and logic"
+            },
+            "functionSelector": "a9810f45",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setDefaulLRAddress",
+            "nameLocation": "4950:18:90",
+            "parameters": {
+              "id": 10182,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10181,
+                  "mutability": "mutable",
+                  "name": "LR",
+                  "nameLocation": "4977:2:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10184,
+                  "src": "4969:10:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10180,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4969:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4968:12:90"
+            },
+            "returnParameters": {
+              "id": 10183,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4989:0:90"
+            },
+            "scope": 10191,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 10190,
+            "nodeType": "FunctionDefinition",
+            "src": "5037:49:90",
+            "nodes": [],
+            "documentation": {
+              "id": 10185,
+              "nodeType": "StructuredDocumentation",
+              "src": "4996:36:90",
+              "text": "@notice current owner in ownable"
+            },
+            "functionSelector": "8da5cb5b",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "owner",
+            "nameLocation": "5046:5:90",
+            "parameters": {
+              "id": 10186,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "5051:2:90"
+            },
+            "returnParameters": {
+              "id": 10189,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 10188,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 10190,
+                  "src": "5077:7:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 10187,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5077:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5076:9:90"
+            },
+            "scope": 10191,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IPluginRegistry",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 10046,
+          "nodeType": "StructuredDocumentation",
+          "src": "64:145:90",
+          "text": " @title IPluginRegistry\n @dev Interface for the plugin registry contract, which manages the registration and installation of plugins."
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          10191
+        ],
+        "name": "IPluginRegistry",
+        "nameLocation": "220:15:90",
+        "scope": 10192,
+        "usedErrors": []
+      }
+    ],
+    "license": "UNLICENSED"
+  },
+  "id": 90
+}

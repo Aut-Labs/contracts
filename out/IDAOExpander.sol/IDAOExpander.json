@@ -1,0 +1,1207 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "DiscordServerSet",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_url",
+          "type": "string"
+        }
+      ],
+      "name": "addURL",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "role",
+          "type": "uint256"
+        }
+      ],
+      "name": "canJoin",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAdmins",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllMembers",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAutIDAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCommitment",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "commitment",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getDAOData",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "contractType",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "daoAddress",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct IDAOExpanderData.DAOExpanssionData",
+          "name": "data",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getInteractionsAddr",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        }
+      ],
+      "name": "getInteractionsPerUser",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getURLs",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        }
+      ],
+      "name": "isAdmin",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        }
+      ],
+      "name": "isMember",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        }
+      ],
+      "name": "isMemberOfOriginalDAO",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_url",
+          "type": "string"
+        }
+      ],
+      "name": "isURLListed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_url",
+          "type": "string"
+        }
+      ],
+      "name": "removeURL",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "commitment",
+          "type": "uint256"
+        }
+      ],
+      "name": "setCommitment",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "metadata",
+          "type": "string"
+        }
+      ],
+      "name": "setMetadataUri",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "addURL(string)": "d103449c",
+    "canJoin(address,uint256)": "03ffe330",
+    "getAdmins()": "31ae450b",
+    "getAllMembers()": "7c0f6b35",
+    "getAutIDAddress()": "88098e3a",
+    "getCommitment()": "2a79c611",
+    "getDAOData()": "db83814e",
+    "getInteractionsAddr()": "48394873",
+    "getInteractionsPerUser(address)": "be739311",
+    "getURLs()": "206110db",
+    "isAdmin(address)": "24d7806c",
+    "isMember(address)": "a230c524",
+    "isMemberOfOriginalDAO(address)": "8e99076a",
+    "isURLListed(string)": "68839d28",
+    "removeURL(string)": "810e8c04",
+    "setCommitment(uint256)": "be9cd052",
+    "setMetadataUri(string)": "1130630c"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[],\"name\":\"DiscordServerSet\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"addURL\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"}],\"name\":\"canJoin\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAdmins\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllMembers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAutIDAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getCommitment\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getDAOData\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"contractType\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"daoAddress\",\"type\":\"address\"}],\"internalType\":\"struct IDAOExpanderData.DAOExpanssionData\",\"name\":\"data\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getInteractionsAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"getInteractionsPerUser\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getURLs\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isAdmin\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isMember\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isMemberOfOriginalDAO\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"isURLListed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"removeURL\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"name\":\"setCommitment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"setMetadataUri\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"addURL(string)\":{\"details\":\"adds a URL in the listed ones\",\"params\":{\"_url\":\"the URL that's going to be added\"}},\"getURLs()\":{\"details\":\"returns an array with all the listed urls\",\"returns\":{\"_0\":\"returns all the urls listed for the DAO\"}},\"isMemberOfOriginalDAO(address)\":{\"details\":\"checks if the member is a part of a DAO\",\"params\":{\"member\":\"the address of the member that's checked\"},\"returns\":{\"_0\":\"true if they're a member, false otherwise\"}},\"isURLListed(string)\":{\"details\":\"a checker if a url has been listed for this DAO\",\"params\":{\"_url\":\"the url that will be listed\"},\"returns\":{\"_0\":\"true if listed, false otherwise\"}},\"removeURL(string)\":{\"details\":\"removes URL from the listed ones\",\"params\":{\"_url\":\"the URL that's going to be removed\"}}},\"title\":\"IDAOExpander\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addURL(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"getURLs()\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"isMemberOfOriginalDAO(address)\":{\"notice\":\"Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership\"},\"isURLListed(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"removeURL(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"}},\"notice\":\"The interface for the extension of each DAO that integrates AutID\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/expander/interfaces/IDAOExpander.sol\":\"IDAOExpander\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/daoUtils/interfaces/get/IAutIDAddress.sol\":{\"keccak256\":\"0x6dfc95712c40c27f351443eaa7f5c27387159199563615a2803c301c6897addf\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0341e3439c86a3c9c3fed517019154d37099e701a3a4227b82677f5e941e4fad\",\"dweb:/ipfs/QmYeh4HDXusjV3er1ESqq5HawDPWUxh1osBhp8L5vkwvU5\"]},\"contracts/daoUtils/interfaces/get/IDAOAdmin.sol\":{\"keccak256\":\"0x7680c97e151a63123ae5a52583da2827788c658f357ca9fb779156884726d03b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://73ef5aabb5fe4f6209f01d79e559682aacca6e431a426495e2431e197b0539af\",\"dweb:/ipfs/QmRnF9F7GfDzJmM8KaUfgBq4pc6MyDXRE5rsnGK3AYWewQ\"]},\"contracts/daoUtils/interfaces/get/IDAOCommitment.sol\":{\"keccak256\":\"0x1c9e906dedb23192dcdff249aedcd73b848bd4a4683845e330abcaf0938a4941\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a117128d625a57e68178c10201d1eda4a71ce4c705ec696483ce2b210ef9d8fc\",\"dweb:/ipfs/QmbL2625npzeYmbRLcqNdc4NXcwrve2H3kS8MPpttDabMk\"]},\"contracts/daoUtils/interfaces/get/IDAOInteractions.sol\":{\"keccak256\":\"0xc53523adeb326932cbb484278cbd33c317377969912053ba8eef3c8c5cc2264b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://04b5923b44f1033f5ea79bf37d1f9ec90e9630f9b0bf584f2f8ea3af1033b019\",\"dweb:/ipfs/Qme1FUqtFA1xMCGcwYTFPahbWG4WHmsQGYdsNeDTBaba4U\"]},\"contracts/daoUtils/interfaces/get/IDAOMembership.sol\":{\"keccak256\":\"0xc625932bfd5354c243a7ccdf6eea9dfc5617bbc3ddf20d16494b7511b4417650\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://adad87d5c01fb8c1f70dc397779fa9265757d0e7da769b82e68106aabe15d974\",\"dweb:/ipfs/QmcrihxLEL44HigLE1XWz3wwuQgSScH5XCeYxKxb79cEmu\"]},\"contracts/daoUtils/interfaces/get/IDAOURL.sol\":{\"keccak256\":\"0x77cccb2c6d00f69cd48e79543543d49c1b3c66590adf1277fcb1899462750d02\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8d424a4786bd0981894196d8a97036055a2b20bfdb3f486a20b901c56543dbcf\",\"dweb:/ipfs/QmY7GUm9LS56Fd8Cie2MmKmbcM2SrCTEBdfTueiZd1n2Z9\"]},\"contracts/daoUtils/interfaces/set/IAutIDAddressSet.sol\":{\"keccak256\":\"0xf364d7435ffca076ef58a22e80ff77f8bc9ffe36ec5b70942ef94c690188b51e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1150ca6ec01420171057fe579fd2f1b00d2b9d0b517e332bc7ea095c8d7e4bfe\",\"dweb:/ipfs/QmR5gJxdZZPutEW9iDi8uRqsbCAtVYEak5tBuMKMXqhDgR\"]},\"contracts/daoUtils/interfaces/set/IDAOAdminSet.sol\":{\"keccak256\":\"0xd9d1ecfc26c565c634bec899f79091a342bc9a2fccc7683a559b20134ab03763\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7f022be607b3f66a76556a876bb3a442f583cea1bec46d15b9ca832f7c857fce\",\"dweb:/ipfs/QmRatDf4bFDc5dhGLvEWnePrFEiRMHksrMfgnLHxfJtWU9\"]},\"contracts/daoUtils/interfaces/set/IDAOCommitmentSet.sol\":{\"keccak256\":\"0xc9ccac48b2cba276e3a67803f22e8a9b95630c3b4297d86b2629bc5f7f0a3295\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://748d7bc71f3cc298a7f61816ab3f8339561c7d92ad7239127e3b90a20654117a\",\"dweb:/ipfs/QmZQ4wyEZ9rxnqppMbtaU3zKCTFmZjhh8eqruLbk6enKLj\"]},\"contracts/daoUtils/interfaces/set/IDAOMetadataSet.sol\":{\"keccak256\":\"0xf60d2104b6ab57166c2e6b448b5b9ced493b990553e695efa108143b04414581\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3298ba38d4996679476c68a57df4db0e5f05aff92504e78b0033fd306671f92a\",\"dweb:/ipfs/QmS9W9rJECjPN2gGHxnQ8oEAN2ooGE7cTiHCAp247std27\"]},\"contracts/daoUtils/interfaces/set/IDAOURLSet.sol\":{\"keccak256\":\"0x5447e520d01b64cd21cfd8dca901bc937ecf2893f7fc440c836518b638fcf080\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1c622b9d7f742e9e368b5ae3d6a81256e1e2bb90c8d1a39b5e3180194da548c8\",\"dweb:/ipfs/QmbhWDiKiZJGcTJ5jSaH1TNonSZY5nC4SwUNM76Xyy9fpj\"]},\"contracts/expander/interfaces/IDAOExpander.sol\":{\"keccak256\":\"0x90db14e563321ead7fab376537b7b29569f1ccae0fda67e9790697bb5da57f8f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4520aef2d964773d806484944c209e12d6cc88a2da486a65e7b43a0fda481b9d\",\"dweb:/ipfs/QmYBDsxSb9REWU8Yig1EBuvywDvNTgonUyGeqArHs9d9gS\"]},\"contracts/expander/interfaces/IDAOExpanderData.sol\":{\"keccak256\":\"0xcd71dc5fca8bfa27576bc76c3ec1dba9ab2cd6a486219b78d426aaa88f677a3e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://51365fb7d6d36f405d6e48d24ff25ef423c96c3dec89b9b0b3b56a4bc43395d6\",\"dweb:/ipfs/QmXDgHiu6UTgu19ZmjiHXndoX3x6nVTXgGzXnPzYkga3w2\"]},\"contracts/expander/interfaces/IDAOExpanderMembership.sol\":{\"keccak256\":\"0x96a68276293ca237f4165230c4d4083fda12102d4681d37ea502a2b91adba590\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d4ecd6c4e5d1de886630be26fd306a9a82ddb5d1e9454df5b80b96984db648de\",\"dweb:/ipfs/QmUdCbxvHY5r4i8pyjCiSW7bycKavoc4K35FDRDmX42zfy\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "event",
+          "name": "DiscordServerSet",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "_url",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addURL"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "role",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "canJoin",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getAdmins",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getAllMembers",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getAutIDAddress",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getCommitment",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "commitment",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getDAOData",
+          "outputs": [
+            {
+              "internalType": "struct IDAOExpanderData.DAOExpanssionData",
+              "name": "data",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "contractType",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "daoAddress",
+                  "type": "address"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getInteractionsAddr",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getInteractionsPerUser",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getURLs",
+          "outputs": [
+            {
+              "internalType": "string[]",
+              "name": "",
+              "type": "string[]"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isAdmin",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isMember",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isMemberOfOriginalDAO",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "_url",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isURLListed",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "_url",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "removeURL"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "commitment",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "setCommitment"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "metadata",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "setMetadataUri"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "addURL(string)": {
+            "details": "adds a URL in the listed ones",
+            "params": {
+              "_url": "the URL that's going to be added"
+            }
+          },
+          "getURLs()": {
+            "details": "returns an array with all the listed urls",
+            "returns": {
+              "_0": "returns all the urls listed for the DAO"
+            }
+          },
+          "isMemberOfOriginalDAO(address)": {
+            "details": "checks if the member is a part of a DAO",
+            "params": {
+              "member": "the address of the member that's checked"
+            },
+            "returns": {
+              "_0": "true if they're a member, false otherwise"
+            }
+          },
+          "isURLListed(string)": {
+            "details": "a checker if a url has been listed for this DAO",
+            "params": {
+              "_url": "the url that will be listed"
+            },
+            "returns": {
+              "_0": "true if listed, false otherwise"
+            }
+          },
+          "removeURL(string)": {
+            "details": "removes URL from the listed ones",
+            "params": {
+              "_url": "the URL that's going to be removed"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "addURL(string)": {
+            "notice": "The listed URLs are the only ones that can be used for the DAuth"
+          },
+          "getURLs()": {
+            "notice": "The listed URLs are the only ones that can be used for the DAuth"
+          },
+          "isMemberOfOriginalDAO(address)": {
+            "notice": "Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership"
+          },
+          "isURLListed(string)": {
+            "notice": "The listed URLs are the only ones that can be used for the DAuth"
+          },
+          "removeURL(string)": {
+            "notice": "The listed URLs are the only ones that can be used for the DAuth"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/expander/interfaces/IDAOExpander.sol": "IDAOExpander"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/daoUtils/interfaces/get/IAutIDAddress.sol": {
+        "keccak256": "0x6dfc95712c40c27f351443eaa7f5c27387159199563615a2803c301c6897addf",
+        "urls": [
+          "bzz-raw://0341e3439c86a3c9c3fed517019154d37099e701a3a4227b82677f5e941e4fad",
+          "dweb:/ipfs/QmYeh4HDXusjV3er1ESqq5HawDPWUxh1osBhp8L5vkwvU5"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/get/IDAOAdmin.sol": {
+        "keccak256": "0x7680c97e151a63123ae5a52583da2827788c658f357ca9fb779156884726d03b",
+        "urls": [
+          "bzz-raw://73ef5aabb5fe4f6209f01d79e559682aacca6e431a426495e2431e197b0539af",
+          "dweb:/ipfs/QmRnF9F7GfDzJmM8KaUfgBq4pc6MyDXRE5rsnGK3AYWewQ"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/get/IDAOCommitment.sol": {
+        "keccak256": "0x1c9e906dedb23192dcdff249aedcd73b848bd4a4683845e330abcaf0938a4941",
+        "urls": [
+          "bzz-raw://a117128d625a57e68178c10201d1eda4a71ce4c705ec696483ce2b210ef9d8fc",
+          "dweb:/ipfs/QmbL2625npzeYmbRLcqNdc4NXcwrve2H3kS8MPpttDabMk"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/get/IDAOInteractions.sol": {
+        "keccak256": "0xc53523adeb326932cbb484278cbd33c317377969912053ba8eef3c8c5cc2264b",
+        "urls": [
+          "bzz-raw://04b5923b44f1033f5ea79bf37d1f9ec90e9630f9b0bf584f2f8ea3af1033b019",
+          "dweb:/ipfs/Qme1FUqtFA1xMCGcwYTFPahbWG4WHmsQGYdsNeDTBaba4U"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/get/IDAOMembership.sol": {
+        "keccak256": "0xc625932bfd5354c243a7ccdf6eea9dfc5617bbc3ddf20d16494b7511b4417650",
+        "urls": [
+          "bzz-raw://adad87d5c01fb8c1f70dc397779fa9265757d0e7da769b82e68106aabe15d974",
+          "dweb:/ipfs/QmcrihxLEL44HigLE1XWz3wwuQgSScH5XCeYxKxb79cEmu"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/get/IDAOURL.sol": {
+        "keccak256": "0x77cccb2c6d00f69cd48e79543543d49c1b3c66590adf1277fcb1899462750d02",
+        "urls": [
+          "bzz-raw://8d424a4786bd0981894196d8a97036055a2b20bfdb3f486a20b901c56543dbcf",
+          "dweb:/ipfs/QmY7GUm9LS56Fd8Cie2MmKmbcM2SrCTEBdfTueiZd1n2Z9"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/set/IAutIDAddressSet.sol": {
+        "keccak256": "0xf364d7435ffca076ef58a22e80ff77f8bc9ffe36ec5b70942ef94c690188b51e",
+        "urls": [
+          "bzz-raw://1150ca6ec01420171057fe579fd2f1b00d2b9d0b517e332bc7ea095c8d7e4bfe",
+          "dweb:/ipfs/QmR5gJxdZZPutEW9iDi8uRqsbCAtVYEak5tBuMKMXqhDgR"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/set/IDAOAdminSet.sol": {
+        "keccak256": "0xd9d1ecfc26c565c634bec899f79091a342bc9a2fccc7683a559b20134ab03763",
+        "urls": [
+          "bzz-raw://7f022be607b3f66a76556a876bb3a442f583cea1bec46d15b9ca832f7c857fce",
+          "dweb:/ipfs/QmRatDf4bFDc5dhGLvEWnePrFEiRMHksrMfgnLHxfJtWU9"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/set/IDAOCommitmentSet.sol": {
+        "keccak256": "0xc9ccac48b2cba276e3a67803f22e8a9b95630c3b4297d86b2629bc5f7f0a3295",
+        "urls": [
+          "bzz-raw://748d7bc71f3cc298a7f61816ab3f8339561c7d92ad7239127e3b90a20654117a",
+          "dweb:/ipfs/QmZQ4wyEZ9rxnqppMbtaU3zKCTFmZjhh8eqruLbk6enKLj"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/set/IDAOMetadataSet.sol": {
+        "keccak256": "0xf60d2104b6ab57166c2e6b448b5b9ced493b990553e695efa108143b04414581",
+        "urls": [
+          "bzz-raw://3298ba38d4996679476c68a57df4db0e5f05aff92504e78b0033fd306671f92a",
+          "dweb:/ipfs/QmS9W9rJECjPN2gGHxnQ8oEAN2ooGE7cTiHCAp247std27"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/set/IDAOURLSet.sol": {
+        "keccak256": "0x5447e520d01b64cd21cfd8dca901bc937ecf2893f7fc440c836518b638fcf080",
+        "urls": [
+          "bzz-raw://1c622b9d7f742e9e368b5ae3d6a81256e1e2bb90c8d1a39b5e3180194da548c8",
+          "dweb:/ipfs/QmbhWDiKiZJGcTJ5jSaH1TNonSZY5nC4SwUNM76Xyy9fpj"
+        ],
+        "license": "MIT"
+      },
+      "contracts/expander/interfaces/IDAOExpander.sol": {
+        "keccak256": "0x90db14e563321ead7fab376537b7b29569f1ccae0fda67e9790697bb5da57f8f",
+        "urls": [
+          "bzz-raw://4520aef2d964773d806484944c209e12d6cc88a2da486a65e7b43a0fda481b9d",
+          "dweb:/ipfs/QmYBDsxSb9REWU8Yig1EBuvywDvNTgonUyGeqArHs9d9gS"
+        ],
+        "license": "MIT"
+      },
+      "contracts/expander/interfaces/IDAOExpanderData.sol": {
+        "keccak256": "0xcd71dc5fca8bfa27576bc76c3ec1dba9ab2cd6a486219b78d426aaa88f677a3e",
+        "urls": [
+          "bzz-raw://51365fb7d6d36f405d6e48d24ff25ef423c96c3dec89b9b0b3b56a4bc43395d6",
+          "dweb:/ipfs/QmXDgHiu6UTgu19ZmjiHXndoX3x6nVTXgGzXnPzYkga3w2"
+        ],
+        "license": "MIT"
+      },
+      "contracts/expander/interfaces/IDAOExpanderMembership.sol": {
+        "keccak256": "0x96a68276293ca237f4165230c4d4083fda12102d4681d37ea502a2b91adba590",
+        "urls": [
+          "bzz-raw://d4ecd6c4e5d1de886630be26fd306a9a82ddb5d1e9454df5b80b96984db648de",
+          "dweb:/ipfs/QmUdCbxvHY5r4i8pyjCiSW7bycKavoc4K35FDRDmX42zfy"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/expander/interfaces/IDAOExpander.sol",
+    "id": 3527,
+    "exportedSymbols": {
+      "IAutIDAddress": [
+        2555
+      ],
+      "IAutIDAddressSet": [
+        2694
+      ],
+      "IDAOAdmin": [
+        2572
+      ],
+      "IDAOAdminSet": [
+        2725
+      ],
+      "IDAOCommitment": [
+        2581
+      ],
+      "IDAOCommitmentSet": [
+        2734
+      ],
+      "IDAOExpander": [
+        3526
+      ],
+      "IDAOExpanderData": [
+        3543
+      ],
+      "IDAOExpanderMembership": [
+        3584
+      ],
+      "IDAOInteractions": [
+        2597
+      ],
+      "IDAOMembership": [
+        2632
+      ],
+      "IDAOMetadataSet": [
+        2765
+      ],
+      "IDAOURL": [
+        2685
+      ],
+      "IDAOURLSet": [
+        2781
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:1008:42",
+    "nodes": [
+      {
+        "id": 3492,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:42",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 3493,
+        "nodeType": "ImportDirective",
+        "src": "56:53:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/get/IDAOAdmin.sol",
+        "file": "../../daoUtils/interfaces/get/IDAOAdmin.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2573,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3494,
+        "nodeType": "ImportDirective",
+        "src": "110:51:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/get/IDAOURL.sol",
+        "file": "../../daoUtils/interfaces/get/IDAOURL.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2686,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3495,
+        "nodeType": "ImportDirective",
+        "src": "162:57:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/get/IAutIDAddress.sol",
+        "file": "../../daoUtils/interfaces/get/IAutIDAddress.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2556,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3496,
+        "nodeType": "ImportDirective",
+        "src": "220:60:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/get/IDAOInteractions.sol",
+        "file": "../../daoUtils/interfaces/get/IDAOInteractions.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2598,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3497,
+        "nodeType": "ImportDirective",
+        "src": "281:58:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/get/IDAOCommitment.sol",
+        "file": "../../daoUtils/interfaces/get/IDAOCommitment.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2582,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3498,
+        "nodeType": "ImportDirective",
+        "src": "341:56:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/set/IDAOAdminSet.sol",
+        "file": "../../daoUtils/interfaces/set/IDAOAdminSet.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2726,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3499,
+        "nodeType": "ImportDirective",
+        "src": "398:54:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/set/IDAOURLSet.sol",
+        "file": "../../daoUtils/interfaces/set/IDAOURLSet.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2782,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3500,
+        "nodeType": "ImportDirective",
+        "src": "453:60:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/set/IAutIDAddressSet.sol",
+        "file": "../../daoUtils/interfaces/set/IAutIDAddressSet.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2695,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3501,
+        "nodeType": "ImportDirective",
+        "src": "514:61:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/set/IDAOCommitmentSet.sol",
+        "file": "../../daoUtils/interfaces/set/IDAOCommitmentSet.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2735,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3502,
+        "nodeType": "ImportDirective",
+        "src": "576:59:42",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/set/IDAOMetadataSet.sol",
+        "file": "../../daoUtils/interfaces/set/IDAOMetadataSet.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 2766,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3503,
+        "nodeType": "ImportDirective",
+        "src": "637:38:42",
+        "nodes": [],
+        "absolutePath": "contracts/expander/interfaces/IDAOExpanderMembership.sol",
+        "file": "./IDAOExpanderMembership.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 3585,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3504,
+        "nodeType": "ImportDirective",
+        "src": "676:32:42",
+        "nodes": [],
+        "absolutePath": "contracts/expander/interfaces/IDAOExpanderData.sol",
+        "file": "./IDAOExpanderData.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3527,
+        "sourceUnit": 3544,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3526,
+        "nodeType": "ContractDefinition",
+        "src": "812:226:42",
+        "nodes": [],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 3506,
+              "name": "IDAOURLSet",
+              "nameLocations": [
+                "842:10:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2781,
+              "src": "842:10:42"
+            },
+            "id": 3507,
+            "nodeType": "InheritanceSpecifier",
+            "src": "842:10:42"
+          },
+          {
+            "baseName": {
+              "id": 3508,
+              "name": "IDAOCommitmentSet",
+              "nameLocations": [
+                "858:17:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2734,
+              "src": "858:17:42"
+            },
+            "id": 3509,
+            "nodeType": "InheritanceSpecifier",
+            "src": "858:17:42"
+          },
+          {
+            "baseName": {
+              "id": 3510,
+              "name": "IDAOMetadataSet",
+              "nameLocations": [
+                "881:15:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2765,
+              "src": "881:15:42"
+            },
+            "id": 3511,
+            "nodeType": "InheritanceSpecifier",
+            "src": "881:15:42"
+          },
+          {
+            "baseName": {
+              "id": 3512,
+              "name": "IDAOAdmin",
+              "nameLocations": [
+                "902:9:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2572,
+              "src": "902:9:42"
+            },
+            "id": 3513,
+            "nodeType": "InheritanceSpecifier",
+            "src": "902:9:42"
+          },
+          {
+            "baseName": {
+              "id": 3514,
+              "name": "IDAOExpanderData",
+              "nameLocations": [
+                "917:16:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 3543,
+              "src": "917:16:42"
+            },
+            "id": 3515,
+            "nodeType": "InheritanceSpecifier",
+            "src": "917:16:42"
+          },
+          {
+            "baseName": {
+              "id": 3516,
+              "name": "IDAOInteractions",
+              "nameLocations": [
+                "939:16:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2597,
+              "src": "939:16:42"
+            },
+            "id": 3517,
+            "nodeType": "InheritanceSpecifier",
+            "src": "939:16:42"
+          },
+          {
+            "baseName": {
+              "id": 3518,
+              "name": "IDAOExpanderMembership",
+              "nameLocations": [
+                "961:22:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 3584,
+              "src": "961:22:42"
+            },
+            "id": 3519,
+            "nodeType": "InheritanceSpecifier",
+            "src": "961:22:42"
+          },
+          {
+            "baseName": {
+              "id": 3520,
+              "name": "IDAOURL",
+              "nameLocations": [
+                "989:7:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2685,
+              "src": "989:7:42"
+            },
+            "id": 3521,
+            "nodeType": "InheritanceSpecifier",
+            "src": "989:7:42"
+          },
+          {
+            "baseName": {
+              "id": 3522,
+              "name": "IDAOCommitment",
+              "nameLocations": [
+                "1002:14:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2581,
+              "src": "1002:14:42"
+            },
+            "id": 3523,
+            "nodeType": "InheritanceSpecifier",
+            "src": "1002:14:42"
+          },
+          {
+            "baseName": {
+              "id": 3524,
+              "name": "IAutIDAddress",
+              "nameLocations": [
+                "1022:13:42"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2555,
+              "src": "1022:13:42"
+            },
+            "id": 3525,
+            "nodeType": "InheritanceSpecifier",
+            "src": "1022:13:42"
+          }
+        ],
+        "canonicalName": "IDAOExpander",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 3505,
+          "nodeType": "StructuredDocumentation",
+          "src": "710:102:42",
+          "text": "@title IDAOExpander\n @notice The interface for the extension of each DAO that integrates AutID"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          3526,
+          2555,
+          2581,
+          2685,
+          3584,
+          2632,
+          2597,
+          3543,
+          2572,
+          2765,
+          2734,
+          2781
+        ],
+        "name": "IDAOExpander",
+        "nameLocation": "822:12:42",
+        "scope": 3527,
+        "usedErrors": []
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 42
+}

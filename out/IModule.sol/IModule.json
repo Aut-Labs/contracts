@@ -1,0 +1,414 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "FunctionNotImplemented",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "daoAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "isActive",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "moduleId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "daoAddress()": "2131c68c",
+    "isActive()": "22f3e2d4",
+    "moduleId()": "a1308f27"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"FunctionNotImplemented\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"daoAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isActive\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"moduleId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"daoAddress()\":{\"returns\":{\"_0\":\"the address of the daoExpander contract that uses this module.\"}}},\"title\":\"IModule\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"daoAddress()\":{\"notice\":\"A plugin contract is deployed for each daoExpander that uses it. When a plugin is associated to a daoExpander, the address is set by the DAOExpander.\"}},\"notice\":\"Every module interface should inherite this one. This interface is a standard configuration of a Plugin. Plugins can only be usable if they implement these functions\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/modules/IModule.sol\":\"IModule\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/modules/IModule.sol\":{\"keccak256\":\"0xea0f6006823fe0307541e786683ce1b44dc3e2cf8fdfa62a7674805509f0444d\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3aa95b7468bf8a45a2252456ad8dcd55cd243ff1ce9f648cfec39f370d11d2d0\",\"dweb:/ipfs/QmStwTvvFg6MtjAkcg1Gpweg4urwgPFZKKViBKapEwxkDP\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "FunctionNotImplemented"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "daoAddress",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isActive",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "moduleId",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "daoAddress()": {
+            "returns": {
+              "_0": "the address of the daoExpander contract that uses this module."
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "daoAddress()": {
+            "notice": "A plugin contract is deployed for each daoExpander that uses it. When a plugin is associated to a daoExpander, the address is set by the DAOExpander."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/modules/IModule.sol": "IModule"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/modules/IModule.sol": {
+        "keccak256": "0xea0f6006823fe0307541e786683ce1b44dc3e2cf8fdfa62a7674805509f0444d",
+        "urls": [
+          "bzz-raw://3aa95b7468bf8a45a2252456ad8dcd55cd243ff1ce9f648cfec39f370d11d2d0",
+          "dweb:/ipfs/QmStwTvvFg6MtjAkcg1Gpweg4urwgPFZKKViBKapEwxkDP"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/modules/IModule.sol",
+    "id": 4515,
+    "exportedSymbols": {
+      "IModule": [
+        4514
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:781:66",
+    "nodes": [
+      {
+        "id": 4494,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:66",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 4514,
+        "nodeType": "ContractDefinition",
+        "src": "253:558:66",
+        "nodes": [
+          {
+            "id": 4497,
+            "nodeType": "ErrorDefinition",
+            "src": "360:31:66",
+            "nodes": [],
+            "errorSelector": "ced4f633",
+            "name": "FunctionNotImplemented",
+            "nameLocation": "366:22:66",
+            "parameters": {
+              "id": 4496,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "388:2:66"
+            }
+          },
+          {
+            "id": 4502,
+            "nodeType": "FunctionDefinition",
+            "src": "397:52:66",
+            "nodes": [],
+            "functionSelector": "a1308f27",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "moduleId",
+            "nameLocation": "406:8:66",
+            "parameters": {
+              "id": 4498,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "414:2:66"
+            },
+            "returnParameters": {
+              "id": 4501,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4500,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4502,
+                  "src": "440:7:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 4499,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "440:7:66",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "439:9:66"
+            },
+            "scope": 4514,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 4507,
+            "nodeType": "FunctionDefinition",
+            "src": "455:49:66",
+            "nodes": [],
+            "functionSelector": "22f3e2d4",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isActive",
+            "nameLocation": "464:8:66",
+            "parameters": {
+              "id": 4503,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "472:2:66"
+            },
+            "returnParameters": {
+              "id": 4506,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4505,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4507,
+                  "src": "498:4:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 4504,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "498:4:66",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "497:6:66"
+            },
+            "scope": 4514,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 4513,
+            "nodeType": "FunctionDefinition",
+            "src": "755:54:66",
+            "nodes": [],
+            "documentation": {
+              "id": 4508,
+              "nodeType": "StructuredDocumentation",
+              "src": "510:240:66",
+              "text": "@notice A plugin contract is deployed for each daoExpander that uses it. When a plugin is associated to a daoExpander, the address is set by the DAOExpander.\n @return the address of the daoExpander contract that uses this module."
+            },
+            "functionSelector": "2131c68c",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "daoAddress",
+            "nameLocation": "764:10:66",
+            "parameters": {
+              "id": 4509,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "774:2:66"
+            },
+            "returnParameters": {
+              "id": 4512,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4511,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4513,
+                  "src": "800:7:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4510,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "800:7:66",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "799:9:66"
+            },
+            "scope": 4514,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IModule",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 4495,
+          "nodeType": "StructuredDocumentation",
+          "src": "56:197:66",
+          "text": "@title IModule\n @notice Every module interface should inherite this one. This interface is a standard configuration of a Plugin. Plugins can only be usable if they implement these functions"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          4514
+        ],
+        "name": "IModule",
+        "nameLocation": "263:7:66",
+        "scope": 4515,
+        "usedErrors": [
+          4497
+        ]
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 66
+}

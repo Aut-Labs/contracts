@@ -1,0 +1,540 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "deployer",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "autIDAddr",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "daoTypesAddr",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "daoType",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "daoAddr",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "market",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "metadata",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "commitment",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "pluginRegistry",
+          "type": "address"
+        }
+      ],
+      "name": "deployDAOExpander",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "_daoExpanderAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "deployDAOExpander(address,address,address,uint256,address,uint256,string,uint256,address)": "3270bdc2"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"deployer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"autIDAddr\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"daoTypesAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"daoType\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"daoAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"market\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"pluginRegistry\",\"type\":\"address\"}],\"name\":\"deployDAOExpander\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"_daoExpanderAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/expander/interfaces/IDAOExpanderFactory.sol\":\"IDAOExpanderFactory\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/expander/interfaces/IDAOExpanderFactory.sol\":{\"keccak256\":\"0x19054866eb428eedf09686d0a6c1a68ed1766d3a7f0640157a23532ed0486a5a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9fe874c536dd912129e196afc69d50c6a3adf2199e7a4d202d4487a9943ca5a8\",\"dweb:/ipfs/QmTvq88kCgZJM3BXMUDqK3sdHSP1zMwpGHhXwH5yPMHSec\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "deployer",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "autIDAddr",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "daoTypesAddr",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "daoType",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "daoAddr",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "market",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "metadata",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "pluginRegistry",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "deployDAOExpander",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "_daoExpanderAddress",
+              "type": "address"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/expander/interfaces/IDAOExpanderFactory.sol": "IDAOExpanderFactory"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/expander/interfaces/IDAOExpanderFactory.sol": {
+        "keccak256": "0x19054866eb428eedf09686d0a6c1a68ed1766d3a7f0640157a23532ed0486a5a",
+        "urls": [
+          "bzz-raw://9fe874c536dd912129e196afc69d50c6a3adf2199e7a4d202d4487a9943ca5a8",
+          "dweb:/ipfs/QmTvq88kCgZJM3BXMUDqK3sdHSP1zMwpGHhXwH5yPMHSec"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/expander/interfaces/IDAOExpanderFactory.sol",
+    "id": 3570,
+    "exportedSymbols": {
+      "IDAOExpanderFactory": [
+        3569
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:395:44",
+    "nodes": [
+      {
+        "id": 3545,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:44",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 3569,
+        "nodeType": "ContractDefinition",
+        "src": "56:369:44",
+        "nodes": [
+          {
+            "id": 3568,
+            "nodeType": "FunctionDefinition",
+            "src": "92:331:44",
+            "nodes": [],
+            "functionSelector": "3270bdc2",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deployDAOExpander",
+            "nameLocation": "101:17:44",
+            "parameters": {
+              "id": 3564,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3547,
+                  "mutability": "mutable",
+                  "name": "deployer",
+                  "nameLocation": "136:8:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "128:16:44",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3546,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "128:7:44",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3549,
+                  "mutability": "mutable",
+                  "name": "autIDAddr",
+                  "nameLocation": "162:9:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "154:17:44",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3548,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "154:7:44",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3551,
+                  "mutability": "mutable",
+                  "name": "daoTypesAddr",
+                  "nameLocation": "189:12:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "181:20:44",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3550,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "181:7:44",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3553,
+                  "mutability": "mutable",
+                  "name": "daoType",
+                  "nameLocation": "219:7:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "211:15:44",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3552,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "211:7:44",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3555,
+                  "mutability": "mutable",
+                  "name": "daoAddr",
+                  "nameLocation": "244:7:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "236:15:44",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3554,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "236:7:44",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3557,
+                  "mutability": "mutable",
+                  "name": "market",
+                  "nameLocation": "269:6:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "261:14:44",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3556,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "261:7:44",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3559,
+                  "mutability": "mutable",
+                  "name": "metadata",
+                  "nameLocation": "301:8:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "285:24:44",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 3558,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "285:6:44",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3561,
+                  "mutability": "mutable",
+                  "name": "commitment",
+                  "nameLocation": "327:10:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "319:18:44",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3560,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "319:7:44",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3563,
+                  "mutability": "mutable",
+                  "name": "pluginRegistry",
+                  "nameLocation": "355:14:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "347:22:44",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3562,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "347:7:44",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "118:257:44"
+            },
+            "returnParameters": {
+              "id": 3567,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3566,
+                  "mutability": "mutable",
+                  "name": "_daoExpanderAddress",
+                  "nameLocation": "402:19:44",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3568,
+                  "src": "394:27:44",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3565,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "394:7:44",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "393:29:44"
+            },
+            "scope": 3569,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IDAOExpanderFactory",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          3569
+        ],
+        "name": "IDAOExpanderFactory",
+        "nameLocation": "66:19:44",
+        "scope": 3570,
+        "usedErrors": []
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 44
+}
