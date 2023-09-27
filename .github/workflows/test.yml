@@ -23,8 +23,7 @@ jobs:
 
       - name: Install Foundry
         run: |
-          curl -L https://foundry.paradigm.xyz | bash
-          foundryup
+          curl -L https://foundry.paradigm.xyz | bash && foundryup
 
       - name: Run Forge tests
         run: forge t
