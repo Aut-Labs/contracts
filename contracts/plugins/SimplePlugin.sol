@@ -10,8 +10,8 @@ import "../daoUtils/interfaces/get/IDAOModules.sol";
  * @notice An abstract contract that implements the IPlugin interface and provides common functionality to all plugins
  */
 abstract contract SimplePlugin is IPlugin {
-    address _deployer;
-    address _dao;
+    address internal _deployer;
+    address internal _dao;
 
     uint256 public override pluginId;
     uint256 public override moduleId;
