@@ -21,12 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Foundry
-        run: |
-          curl -L https://foundry.paradigm.xyz | bash
-          source /home/runner/.bashrc
-          foundryup
-        shell: bash
+      - name: "Install Foundry"
+        uses: "foundry-rs/foundry-toolchain@v1"
+
 
       - name: Run Forge tests
         run: forge t
@@ -45,5 +42,5 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
-          git commit -m "chore:gh CI test"
+          git commit -m "ci:gh test&abi gen"
           git push

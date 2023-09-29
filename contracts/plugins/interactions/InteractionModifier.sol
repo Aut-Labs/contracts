@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 import "../SimplePlugin.sol";
-import {ILocalReputation} from "./ILocalReputation.sol";
+import {ILocalReputation} from "../../ILocalReputation.sol";
 import {INova} from "../../nova/interfaces/INova.sol";
 import {IPluginRegistry} from "../registry/IPluginRegistry.sol";
 import {IPlugin} from "../../plugins/IPlugin.sol";
@@ -18,23 +18,30 @@ abstract contract InteractionModifier {
 
     error AuthorityExpected();
 
-    constructor(address dao_) {
-        ILR = ILocalReputation(IPluginRegistry(INova(dao_).pluginRegistry()).defaultLRAddr());
-        ILR.initialize(dao_);
+    constructor(address nova_) {
+        ILR = ILocalReputation(IPluginRegistry(INova(nova_).pluginRegistry()).defaultLRAddr());
+        ILR.initialize(nova_);
     }
 
     event LocalRepALogChangedFor(address nova, address repAlgo);
 
+    //// @dev when the arguments passed are known in advance
     modifier isInteraction() {
         _;
         ILR.interaction(msg.data, _msgSender());
+    }
+
+    //// @dev circumvent arbitrary data (e.g."submisssion url")
+    modifier isAsInteraction(bytes memory data_, address recongitionFor_) {
+        _;
+        ILR.interaction(data_, recongitionFor_);
     }
 
     function changeInUseLocalRep(address NewLocalRepAlgo_) public virtual {
         if (_msgSender() != _deployer_) revert AuthorityExpected();
         ILR = ILocalReputation(NewLocalRepAlgo_);
 
-        emit LocalRepALogChangedFor(IPlugin(address(this)).daoAddress(), NewLocalRepAlgo_);
+        emit LocalRepALogChangedFor(IPlugin(address(this)).novaAddress(), NewLocalRepAlgo_);
     }
 
     function lastReputationAddr() external view returns (address) {

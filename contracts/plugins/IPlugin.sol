@@ -34,5 +34,5 @@ interface IPlugin is IModule {
      * @notice Returns the address of the DAO the plugin is associated with
      * @return The address of the DAO
      */
-    function daoAddress() external view returns (address);
+    function novaAddress() external view returns (address);
 }

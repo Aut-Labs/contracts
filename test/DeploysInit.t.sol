@@ -7,22 +7,26 @@ import {NovaRegistry, INovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {ModuleRegistry, IModuleRegistry} from "../contracts/modules/registry/ModuleRegistry.sol";
 import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegistry.sol";
 import {AutID, IAutID} from "../contracts/AutID.sol";
-import {Interaction, IInteraction} from "../contracts/Interaction.sol";
+// import {Interaction, IInteraction} from "../contracts/Interaction.sol";
 
 import {INova} from "../contracts/nova/interfaces/INova.sol";
 
 import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
+
+import {LocalReputation} from "../contracts/LocalReputation.sol";
+import "../contracts/ILocalReputation.sol";
 
 //// @notice Tests Basic Deployment attainable
 contract DeploysInit is Test {
     IAutID aID;
     INovaRegistry INR;
     INovaFactory NovaFactor;
-    IInteraction Interact;
+    // IInteraction Interact;
     IPluginRegistry IPR;
     IModuleRegistry IMR;
     SWLegacyDAO LegacyDAO;
     INova Nova;
+    ILocalReputation iLR;
 
     address A0 = address(uint160(uint256(keccak256("Account0 Deployer"))));
 
@@ -54,8 +58,8 @@ contract DeploysInit is Test {
         NovaFactor = INovaFactory(address(new NovaFactory()));
         vm.label(address(NovaFactor), "NovaFactoryI");
 
-        Interact = IInteraction(address(new Interaction()));
-        vm.label(address(Interact), "InteractionI");
+        // Interact = IInteraction(address(new Interaction()));
+        // vm.label(address(Interact), "InteractionI");
 
         IMR = IModuleRegistry(address(new ModuleRegistry()));
         vm.label(address(IMR), "ModuleRegistryI");
@@ -68,6 +72,10 @@ contract DeploysInit is Test {
         );
         vm.label(address(IPR), "PluginRegistryI");
 
+        iLR = ILocalReputation(address(new LocalReputation()));
+
+        IPR.setDefaulLRAddress(address(iLR));
+
         INR = INovaRegistry(address(new NovaRegistry(address(12345),address(aID), address(NovaFactor), address(IPR))));
         vm.label(address(INR), "NovaRegistryI");
         address NovaAddr = NovaFactor.deployNova(A0, address(aID), 1, "metadataCID", 1, address(IPR));
@@ -78,7 +86,6 @@ contract DeploysInit is Test {
     function testAreDeployedContracts() public {
         assertTrue(address(aID).code.length > 1, "expected aID contract");
         assertTrue(address(NovaFactor).code.length > 2, "expected NovaFactor contract");
-        assertTrue(address(Interact).code.length > 3, "expected Interact contract");
         assertTrue(address(IMR).code.length > 4, "expected IMR contract");
         assertTrue(address(IPR).code.length > 5, "expected IPR contract");
         assertTrue(address(INR).code.length > 6, "expected INRcontract");

@@ -3,15 +3,14 @@ pragma solidity 0.8.19;
 
 import {DeploysInit} from "./DeploysInit.t.sol";
 
-import {LocalRep} from "../contracts/plugins/interactions/LocalReputation.sol";
-import "../contracts/plugins/interactions/ILocalReputation.sol";
+import {LocalReputation} from "../contracts/LocalReputation.sol";
+import "../contracts/ILocalReputation.sol";
 import {SampleInteractionPlugin} from "../contracts/plugins/interactions/SampleInteractionPlugin.sol";
 
 import "forge-std/console.sol";
 
 contract TestSampleInteractionPlugin is DeploysInit {
-    LocalRep LocalRepAlgo;
-    ILocalReputation iLR;
+    LocalReputation LocalRepAlgo;
     SampleInteractionPlugin InteractionPlugin;
 
     uint256 taskPluginId;
@@ -23,13 +22,14 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         super.setUp();
 
-        LocalRepAlgo = new LocalRep();
+        LocalRepAlgo = new LocalReputation();
         vm.label(address(LocalRepAlgo), "LocalRep");
 
         vm.prank(IPR.owner());
         IPR.setDefaulLRAddress(address(LocalRepAlgo));
 
         iLR = ILocalReputation(IPR.defaultLRAddr());
+        vm.label(address(iLR), "LocalReputation");
 
         vm.prank(A1);
         aID.mint("a Name", "urlll", 1, 4, address(Nova));
@@ -50,7 +50,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         Admin = A0;
         assertTrue(Nova.isAdmin(Admin), "expected deployer admin");
-        assertFalse(Nova.isMember(Admin), "admin is member - maybe should be the case");
+        assertFalse(Nova.isMember(Admin), "deployer admin is member");
     }
 
     function testUnconfiguredInteraction() public {
@@ -67,7 +67,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
     function testSetWeight() public {
         bytes[] memory datas = new bytes[](2);
-        uint8[] memory points = new uint8[](2);
+        uint16[] memory points = new uint16[](2);
 
         datas[0] = abi.encodePacked(InteractionPlugin.incrementNumberPlusOne.selector);
         datas[1] = abi.encodeWithSelector(InteractionPlugin.incrementNumber.selector, "averyrandomstring");
@@ -115,11 +115,11 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
     function testWithSameCommitmentPeriod() public {
         uint256 membersAmt = 3;
-        uint8 firsPoints = 1;
-        uint8 secondPoints = 5;
+        uint16 firsPoints = 1;
+        uint16 secondPoints = 5;
 
         bytes[] memory datas = new bytes[](2);
-        uint8[] memory points = new uint8[](2);
+        uint16[] memory points = new uint16[](2);
 
         datas[0] = abi.encodePacked(InteractionPlugin.incrementNumberPlusOne.selector);
         datas[1] = abi.encodeWithSelector(InteractionPlugin.incrementNumber.selector, "averyrandomstring");
@@ -174,7 +174,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
     function testIndividualLRUpdate() public {
         address A55 = address(5);
 
-        vm.expectRevert(ILocalReputation.OnlyAdmin.selector);
+        vm.expectRevert(ILocalReputation.Unauthorised.selector);
         uint256 prevScore = iLR.updateIndividualLR(A55, address(Nova));
 
         vm.expectRevert(ILocalReputation.ZeroUnallawed.selector);
