@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
-interface IArchetypesPlugin {
+import "../IModule.sol";
+
+interface ArchetypesModule is IModule {
     error ArchetypeAlreadySet();
     error WrongArchetype();
 
