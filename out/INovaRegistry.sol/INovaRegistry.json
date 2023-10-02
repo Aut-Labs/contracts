@@ -1,0 +1,735 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "OnlyDeployer",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "autIDAddr",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "market",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "metadata",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "commitment",
+          "type": "uint256"
+        }
+      ],
+      "name": "deployNova",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "_nova",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "deployer",
+          "type": "address"
+        }
+      ],
+      "name": "getNovaByDeployer",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getNovas",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pluginRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "autIDAddr()": "de90ccca",
+    "deployNova(uint256,string,uint256)": "bcae17c2",
+    "getNovaByDeployer(address)": "cf349d89",
+    "getNovas()": "28e63153",
+    "pluginRegistry()": "41dcea91"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"OnlyDeployer\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"autIDAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"market\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"name\":\"deployNova\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"_nova\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"deployer\",\"type\":\"address\"}],\"name\":\"getNovaByDeployer\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNovas\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pluginRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/nova/interfaces/INovaRegistry.sol\":\"INovaRegistry\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/nova/interfaces/INovaRegistry.sol\":{\"keccak256\":\"0xcf01c5eb2dd5e116ece0d7d3bbba88f3e78d989c1546abd3ca438987553d4acd\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c4c18bde19e442058b1aaba5aea506c315537d5f495171ccd3de0fa0322b9957\",\"dweb:/ipfs/QmYag3TDhWEqVV2WPEfRo3NCxL569VVbJN92shPc73Qorp\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "OnlyDeployer"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "autIDAddr",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "market",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "metadata",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitment",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "deployNova",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "_nova",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "deployer",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getNovaByDeployer",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getNovas",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "pluginRegistry",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/nova/interfaces/INovaRegistry.sol": "INovaRegistry"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/nova/interfaces/INovaRegistry.sol": {
+        "keccak256": "0xcf01c5eb2dd5e116ece0d7d3bbba88f3e78d989c1546abd3ca438987553d4acd",
+        "urls": [
+          "bzz-raw://c4c18bde19e442058b1aaba5aea506c315537d5f495171ccd3de0fa0322b9957",
+          "dweb:/ipfs/QmYag3TDhWEqVV2WPEfRo3NCxL569VVbJN92shPc73Qorp"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/nova/interfaces/INovaRegistry.sol",
+    "id": 7370,
+    "exportedSymbols": {
+      "INovaRegistry": [
+        7369
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:510:80",
+    "nodes": [
+      {
+        "id": 7331,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:80",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 7369,
+        "nodeType": "ContractDefinition",
+        "src": "56:484:80",
+        "nodes": [
+          {
+            "id": 7333,
+            "nodeType": "ErrorDefinition",
+            "src": "86:21:80",
+            "nodes": [],
+            "errorSelector": "618bbdd5",
+            "name": "OnlyDeployer",
+            "nameLocation": "92:12:80",
+            "parameters": {
+              "id": 7332,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "104:2:80"
+            }
+          },
+          {
+            "id": 7344,
+            "nodeType": "FunctionDefinition",
+            "src": "113:131:80",
+            "nodes": [],
+            "functionSelector": "bcae17c2",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deployNova",
+            "nameLocation": "122:10:80",
+            "parameters": {
+              "id": 7340,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7335,
+                  "mutability": "mutable",
+                  "name": "market",
+                  "nameLocation": "141:6:80",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7344,
+                  "src": "133:14:80",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 7334,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "133:7:80",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7337,
+                  "mutability": "mutable",
+                  "name": "metadata",
+                  "nameLocation": "165:8:80",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7344,
+                  "src": "149:24:80",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7336,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "149:6:80",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7339,
+                  "mutability": "mutable",
+                  "name": "commitment",
+                  "nameLocation": "183:10:80",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7344,
+                  "src": "175:18:80",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 7338,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "175:7:80",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "132:62:80"
+            },
+            "returnParameters": {
+              "id": 7343,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7342,
+                  "mutability": "mutable",
+                  "name": "_nova",
+                  "nameLocation": "237:5:80",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7344,
+                  "src": "229:13:80",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 7341,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "229:7:80",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "228:15:80"
+            },
+            "scope": 7369,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 7350,
+            "nodeType": "FunctionDefinition",
+            "src": "265:61:80",
+            "nodes": [],
+            "functionSelector": "28e63153",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getNovas",
+            "nameLocation": "274:8:80",
+            "parameters": {
+              "id": 7345,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "282:2:80"
+            },
+            "returnParameters": {
+              "id": 7349,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7348,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7350,
+                  "src": "308:16:80",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 7346,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "308:7:80",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 7347,
+                    "nodeType": "ArrayTypeName",
+                    "src": "308:9:80",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "307:18:80"
+            },
+            "scope": 7369,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 7358,
+            "nodeType": "FunctionDefinition",
+            "src": "331:86:80",
+            "nodes": [],
+            "functionSelector": "cf349d89",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getNovaByDeployer",
+            "nameLocation": "340:17:80",
+            "parameters": {
+              "id": 7353,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7352,
+                  "mutability": "mutable",
+                  "name": "deployer",
+                  "nameLocation": "366:8:80",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7358,
+                  "src": "358:16:80",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 7351,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "358:7:80",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "357:18:80"
+            },
+            "returnParameters": {
+              "id": 7357,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7356,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7358,
+                  "src": "399:16:80",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 7354,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "399:7:80",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 7355,
+                    "nodeType": "ArrayTypeName",
+                    "src": "399:9:80",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "398:18:80"
+            },
+            "scope": 7369,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 7363,
+            "nodeType": "FunctionDefinition",
+            "src": "422:53:80",
+            "nodes": [],
+            "functionSelector": "de90ccca",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "autIDAddr",
+            "nameLocation": "431:9:80",
+            "parameters": {
+              "id": 7359,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "440:2:80"
+            },
+            "returnParameters": {
+              "id": 7362,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7361,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7363,
+                  "src": "466:7:80",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 7360,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "466:7:80",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "465:9:80"
+            },
+            "scope": 7369,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 7368,
+            "nodeType": "FunctionDefinition",
+            "src": "480:58:80",
+            "nodes": [],
+            "functionSelector": "41dcea91",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "pluginRegistry",
+            "nameLocation": "489:14:80",
+            "parameters": {
+              "id": 7364,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "503:2:80"
+            },
+            "returnParameters": {
+              "id": 7367,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7366,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7368,
+                  "src": "529:7:80",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 7365,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "529:7:80",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "528:9:80"
+            },
+            "scope": 7369,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "INovaRegistry",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          7369
+        ],
+        "name": "INovaRegistry",
+        "nameLocation": "66:13:80",
+        "scope": 7370,
+        "usedErrors": [
+          7333
+        ]
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 80
+}

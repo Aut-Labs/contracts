@@ -34,6 +34,12 @@ contract TestSocialBotPlugin is DeploysInit {
         vm.prank(A1);
         aID.mint("a Name", "urlll", 1, 4, address(Nova));
 
+        vm.prank(A2);
+        aID.mint("a Name", "urlll", 1, 6, address(Nova));
+
+        vm.prank(A3);
+        aID.mint("a Name", "urlll", 1, 9, address(Nova));
+
         vm.prank(A0);
         BotPlugin = new SocialBotPlugin(address(Nova) );
         vm.label(address(BotPlugin), "InteractionPlugin");
@@ -61,11 +67,67 @@ contract TestSocialBotPlugin is DeploysInit {
         string memory categoryOrDescription = "Community Meeting 7";
 
         vm.expectRevert(SocialBotPlugin.NotAdmin.selector);
-        BotPlugin.applyEventConsequences(participants, participationPoints, maxPossiblePointsPerUser, categoryOrDescription);
+        BotPlugin.applyEventConsequences(
+            participants, participationPoints, maxPossiblePointsPerUser, categoryOrDescription
+        );
 
         vm.prank(A0);
-        BotPlugin.applyEventConsequences(participants, participationPoints, maxPossiblePointsPerUser, categoryOrDescription);
+        BotPlugin.applyEventConsequences(
+            participants, participationPoints, maxPossiblePointsPerUser, categoryOrDescription
+        );
 
-        assertTrue(BotPlugin.getAllBotInteractions().length  == 1, "not one interaction");
+        assertTrue(BotPlugin.getAllBotInteractions().length == 1, "not one interaction");
+    }
+
+    function testBotAltersLR() public {
+        address[] memory participants = new address[](2);
+        uint16[] memory participationPoints = new uint16[](2);
+        uint16 maxPossiblePointsPerUser = 640;
+        string memory categoryOrDescription = "Community Meeting 7";
+        address novaAddr = address(Nova);
+
+        participants[0] = A2;
+        participants[1] = A3;
+        participationPoints[0] = 80;
+        participationPoints[1] = 240;
+
+        assertTrue(Nova.isMember(A2), "A1 not member");
+        assertTrue(Nova.isMember(A3), "A2 not member");
+
+        vm.expectRevert(SocialBotPlugin.NotAdmin.selector);
+        BotPlugin.applyEventConsequences(
+            participants, participationPoints, maxPossiblePointsPerUser, categoryOrDescription
+        );
+
+        periodData memory P0 = iLR.getPeriodNovaParameters(address(novaAddr));
+        groupState memory GS0 = iLR.getGroupState(novaAddr);
+        individualState memory IS0 = iLR.getIndividualState(A1, novaAddr);
+
+        console.log("Average rep. | Average perf. | A1 givenC ", P0.cAverageRepLP, P0.ePerformanceLP, IS0.GC);
+
+        vm.prank(A0);
+        BotPlugin.applyEventConsequences(
+            participants, participationPoints, maxPossiblePointsPerUser, categoryOrDescription
+        );
+
+        periodData memory P1 = iLR.getPeriodNovaParameters(address(novaAddr));
+        groupState memory GS1 = iLR.getGroupState(novaAddr);
+        individualState memory IS1 = iLR.getIndividualState(A1, novaAddr);
+
+        console.log("Average rep. | Average perf. | A1 givenC ", P1.cAverageRepLP, P1.ePerformanceLP, IS1.GC);
+
+        vm.expectRevert();
+        iLR.bulkPeriodicUpdate(novaAddr);
+        individualState memory IS2 = iLR.getIndividualState(A1, novaAddr);
+
+        skip(block.timestamp + 32 days);
+
+        vm.prank(A0);
+        iLR.bulkPeriodicUpdate(novaAddr);
+
+        periodData memory P2 = iLR.getPeriodNovaParameters(address(novaAddr));
+        groupState memory GS2 = iLR.getGroupState(novaAddr);
+
+        console.log("Average rep. | Average perf. | A1 givenC ", P2.cAverageRepLP, P2.ePerformanceLP, IS2.GC);
     }
 }

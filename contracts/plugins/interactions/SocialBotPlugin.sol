@@ -45,15 +45,14 @@ contract SocialBotPlugin is SimplePlugin, InteractionModifier {
     ) external returns (uint256 indexId) {
         if (!INova(novaAddress()).isAdmin(msg.sender)) revert NotAdmin();
         if (participants.length != participationPoints.length) revert LenMismatch();
-    
+
         for (indexId; indexId < participants.length;) {
             if (participationPoints[indexId] > 1_000) revert OverMaxPoints();
-            ILR.interaction(abi.encode(participationPoints[indexId]), participants[indexId]);
+            ILR.interaction(abi.encodePacked(participationPoints[indexId]), participants[indexId]);
             unchecked {
                 ++indexId;
             }
         }
-
 
         SocialBotEvent memory SBE;
         SBE.participants = participants;
@@ -67,10 +66,7 @@ contract SocialBotPlugin is SimplePlugin, InteractionModifier {
         uint16[] memory points = new uint16[](1);
         bytes[] memory datas = new bytes[](1);
         datas[0] = abi.encode(indexId, address(this));
-
         points[0] = maxPossiblePointsPerUser;
-
-
 
         ILR.setInteractionWeights(address(this), datas, points);
 

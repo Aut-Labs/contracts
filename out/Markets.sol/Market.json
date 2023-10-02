@@ -1,0 +1,1228 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "market",
+          "type": "string"
+        }
+      ],
+      "name": "AddedMarket",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "marketName",
+          "type": "string"
+        }
+      ],
+      "name": "addMarket",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_marketId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getMarket",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "metadata",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct IMarket.MarketModel",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getMarket",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "addMarket(string)": "42fe6695",
+    "getMarket()": "f1be1679",
+    "getMarket(uint256)": "eb44fdd3",
+    "owner()": "8da5cb5b",
+    "renounceOwnership()": "715018a6",
+    "transferOwnership(address)": "f2fde38b"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"market\",\"type\":\"string\"}],\"name\":\"AddedMarket\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"marketName\",\"type\":\"string\"}],\"name\":\"addMarket\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_marketId\",\"type\":\"uint256\"}],\"name\":\"getMarket\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"internalType\":\"struct IMarket.MarketModel\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getMarket\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"The extension of each DAO that integrates Aut\",\"kind\":\"dev\",\"methods\":{\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"title\":\"DAOExpander\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"The extension of each DAO that integrates Aut\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/daoUtils/abstracts/Markets.sol\":\"Market\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/daoUtils/abstracts/Markets.sol\":{\"keccak256\":\"0x07f7be0c29920adc7abf1c1b7f0e8761b73413205cc152b1d1a1fe4c3086c1f4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fd58ba934261f34c176b6bf5152678c049ca0eeb7fea45192b6f873c29138365\",\"dweb:/ipfs/QmdBHF1kqvhgYGAWuKP62Hi8HH4L4jUTjNhmaA9bNp2bpL\"]},\"contracts/daoUtils/interfaces/IMarket.sol\":{\"keccak256\":\"0x22d9c57edf4fd7bbf14a7e968639fb5c5223e905370387a238017f860fc21f82\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d31d1705c4da13e9f604b3f873a07085b6f9c364f910fd75106d89e5039ca36f\",\"dweb:/ipfs/QmdTZLMx49SpUokV7XNQmpvXdCdF252r5ybCJ73NGwjdsh\"]},\"node_modules/@openzeppelin/contracts/access/Ownable.sol\":{\"keccak256\":\"0xa94b34880e3c1b0b931662cb1c09e5dfa6662f31cba80e07c5ee71cd135c9673\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://40fb1b5102468f783961d0af743f91b9980cf66b50d1d12009f6bb1869cea4d2\",\"dweb:/ipfs/QmYqEbJML4jB1GHbzD4cUZDtJg5wVwNm3vDJq1GbyDus8y\"]},\"node_modules/@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"node_modules/@openzeppelin/contracts/utils/Counters.sol\":{\"keccak256\":\"0xf0018c2440fbe238dd3a8732fa8e17a0f9dce84d31451dc8a32f6d62b349c9f1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://59e1c62884d55b70f3ae5432b44bb3166ad71ae3acd19c57ab6ddc3c87c325ee\",\"dweb:/ipfs/QmezuXg5GK5oeA4F91EZhozBFekhq5TD966bHPH18cCqhu\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "string",
+              "name": "market",
+              "type": "string",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "AddedMarket",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "OwnershipTransferred",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "marketName",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addMarket"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_marketId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getMarket",
+          "outputs": [
+            {
+              "internalType": "struct IMarket.MarketModel",
+              "name": "",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "id",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "metadata",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getMarket",
+          "outputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "owner",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "renounceOwnership"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "transferOwnership"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "owner()": {
+            "details": "Returns the address of the current owner."
+          },
+          "renounceOwnership()": {
+            "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner."
+          },
+          "transferOwnership(address)": {
+            "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/daoUtils/abstracts/Markets.sol": "Market"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/daoUtils/abstracts/Markets.sol": {
+        "keccak256": "0x07f7be0c29920adc7abf1c1b7f0e8761b73413205cc152b1d1a1fe4c3086c1f4",
+        "urls": [
+          "bzz-raw://fd58ba934261f34c176b6bf5152678c049ca0eeb7fea45192b6f873c29138365",
+          "dweb:/ipfs/QmdBHF1kqvhgYGAWuKP62Hi8HH4L4jUTjNhmaA9bNp2bpL"
+        ],
+        "license": "MIT"
+      },
+      "contracts/daoUtils/interfaces/IMarket.sol": {
+        "keccak256": "0x22d9c57edf4fd7bbf14a7e968639fb5c5223e905370387a238017f860fc21f82",
+        "urls": [
+          "bzz-raw://d31d1705c4da13e9f604b3f873a07085b6f9c364f910fd75106d89e5039ca36f",
+          "dweb:/ipfs/QmdTZLMx49SpUokV7XNQmpvXdCdF252r5ybCJ73NGwjdsh"
+        ],
+        "license": "MIT"
+      },
+      "node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+        "keccak256": "0xa94b34880e3c1b0b931662cb1c09e5dfa6662f31cba80e07c5ee71cd135c9673",
+        "urls": [
+          "bzz-raw://40fb1b5102468f783961d0af743f91b9980cf66b50d1d12009f6bb1869cea4d2",
+          "dweb:/ipfs/QmYqEbJML4jB1GHbzD4cUZDtJg5wVwNm3vDJq1GbyDus8y"
+        ],
+        "license": "MIT"
+      },
+      "node_modules/@openzeppelin/contracts/utils/Context.sol": {
+        "keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
+        "urls": [
+          "bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
+          "dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
+        ],
+        "license": "MIT"
+      },
+      "node_modules/@openzeppelin/contracts/utils/Counters.sol": {
+        "keccak256": "0xf0018c2440fbe238dd3a8732fa8e17a0f9dce84d31451dc8a32f6d62b349c9f1",
+        "urls": [
+          "bzz-raw://59e1c62884d55b70f3ae5432b44bb3166ad71ae3acd19c57ab6ddc3c87c325ee",
+          "dweb:/ipfs/QmezuXg5GK5oeA4F91EZhozBFekhq5TD966bHPH18cCqhu"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/daoUtils/abstracts/Markets.sol",
+    "id": 3954,
+    "exportedSymbols": {
+      "Context": [
+        59423
+      ],
+      "Counters": [
+        59497
+      ],
+      "IMarket": [
+        3978
+      ],
+      "Market": [
+        3953
+      ],
+      "Ownable": [
+        57224
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:887:23",
+    "nodes": [
+      {
+        "id": 3885,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:23",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 3886,
+        "nodeType": "ImportDirective",
+        "src": "56:35:23",
+        "nodes": [],
+        "absolutePath": "contracts/daoUtils/interfaces/IMarket.sol",
+        "file": "../interfaces/IMarket.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3954,
+        "sourceUnit": 3979,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3887,
+        "nodeType": "ImportDirective",
+        "src": "92:52:23",
+        "nodes": [],
+        "absolutePath": "node_modules/@openzeppelin/contracts/utils/Counters.sol",
+        "file": "@openzeppelin/contracts/utils/Counters.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3954,
+        "sourceUnit": 59498,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3888,
+        "nodeType": "ImportDirective",
+        "src": "145:52:23",
+        "nodes": [],
+        "absolutePath": "node_modules/@openzeppelin/contracts/access/Ownable.sol",
+        "file": "@openzeppelin/contracts/access/Ownable.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3954,
+        "sourceUnit": 57225,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 3953,
+        "nodeType": "ContractDefinition",
+        "src": "335:582:23",
+        "nodes": [
+          {
+            "id": 3897,
+            "nodeType": "UsingForDirective",
+            "src": "386:36:23",
+            "nodes": [],
+            "global": false,
+            "libraryName": {
+              "id": 3894,
+              "name": "Counters",
+              "nameLocations": [
+                "392:8:23"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 59497,
+              "src": "392:8:23"
+            },
+            "typeName": {
+              "id": 3896,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 3895,
+                "name": "Counters.Counter",
+                "nameLocations": [
+                  "405:8:23",
+                  "414:7:23"
+                ],
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 59429,
+                "src": "405:16:23"
+              },
+              "referencedDeclaration": 59429,
+              "src": "405:16:23",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_Counter_$59429_storage_ptr",
+                "typeString": "struct Counters.Counter"
+              }
+            }
+          },
+          {
+            "id": 3900,
+            "nodeType": "VariableDeclaration",
+            "src": "428:35:23",
+            "nodes": [],
+            "constant": false,
+            "mutability": "mutable",
+            "name": "_marketIds",
+            "nameLocation": "453:10:23",
+            "scope": 3953,
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_struct$_Counter_$59429_storage",
+              "typeString": "struct Counters.Counter"
+            },
+            "typeName": {
+              "id": 3899,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 3898,
+                "name": "Counters.Counter",
+                "nameLocations": [
+                  "428:8:23",
+                  "437:7:23"
+                ],
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 59429,
+                "src": "428:16:23"
+              },
+              "referencedDeclaration": 59429,
+              "src": "428:16:23",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_Counter_$59429_storage_ptr",
+                "typeString": "struct Counters.Counter"
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "id": 3905,
+            "nodeType": "VariableDeclaration",
+            "src": "470:40:23",
+            "nodes": [],
+            "constant": false,
+            "mutability": "mutable",
+            "name": "_markets",
+            "nameLocation": "502:8:23",
+            "scope": 3953,
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_MarketModel_$3967_storage_$",
+              "typeString": "mapping(uint256 => struct IMarket.MarketModel)"
+            },
+            "typeName": {
+              "id": 3904,
+              "keyName": "",
+              "keyNameLocation": "-1:-1:-1",
+              "keyType": {
+                "id": 3901,
+                "name": "uint256",
+                "nodeType": "ElementaryTypeName",
+                "src": "478:7:23",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "470:31:23",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_MarketModel_$3967_storage_$",
+                "typeString": "mapping(uint256 => struct IMarket.MarketModel)"
+              },
+              "valueName": "",
+              "valueNameLocation": "-1:-1:-1",
+              "valueType": {
+                "id": 3903,
+                "nodeType": "UserDefinedTypeName",
+                "pathNode": {
+                  "id": 3902,
+                  "name": "MarketModel",
+                  "nameLocations": [
+                    "489:11:23"
+                  ],
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 3967,
+                  "src": "489:11:23"
+                },
+                "referencedDeclaration": 3967,
+                "src": "489:11:23",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_MarketModel_$3967_storage_ptr",
+                  "typeString": "struct IMarket.MarketModel"
+                }
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "id": 3939,
+            "nodeType": "FunctionDefinition",
+            "src": "517:268:23",
+            "nodes": [],
+            "body": {
+              "id": 3938,
+              "nodeType": "Block",
+              "src": "598:187:23",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "expression": {
+                        "id": 3913,
+                        "name": "_marketIds",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3900,
+                        "src": "608:10:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Counter_$59429_storage",
+                          "typeString": "struct Counters.Counter storage ref"
+                        }
+                      },
+                      "id": 3915,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "619:9:23",
+                      "memberName": "increment",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 59455,
+                      "src": "608:20:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_Counter_$59429_storage_ptr_$returns$__$attached_to$_t_struct$_Counter_$59429_storage_ptr_$",
+                        "typeString": "function (struct Counters.Counter storage pointer)"
+                      }
+                    },
+                    "id": 3916,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "608:22:23",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3917,
+                  "nodeType": "ExpressionStatement",
+                  "src": "608:22:23"
+                },
+                {
+                  "expression": {
+                    "id": 3929,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "baseExpression": {
+                        "id": 3918,
+                        "name": "_markets",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3905,
+                        "src": "640:8:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_MarketModel_$3967_storage_$",
+                          "typeString": "mapping(uint256 => struct IMarket.MarketModel storage ref)"
+                        }
+                      },
+                      "id": 3922,
+                      "indexExpression": {
+                        "arguments": [],
+                        "expression": {
+                          "argumentTypes": [],
+                          "expression": {
+                            "id": 3919,
+                            "name": "_marketIds",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3900,
+                            "src": "649:10:23",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Counter_$59429_storage",
+                              "typeString": "struct Counters.Counter storage ref"
+                            }
+                          },
+                          "id": 3920,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberLocation": "660:7:23",
+                          "memberName": "current",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 59441,
+                          "src": "649:18:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_function_internal_view$_t_struct$_Counter_$59429_storage_ptr_$returns$_t_uint256_$attached_to$_t_struct$_Counter_$59429_storage_ptr_$",
+                            "typeString": "function (struct Counters.Counter storage pointer) view returns (uint256)"
+                          }
+                        },
+                        "id": 3921,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "functionCall",
+                        "lValueRequested": false,
+                        "nameLocations": [],
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "649:20:23",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "640:30:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_MarketModel_$3967_storage",
+                        "typeString": "struct IMarket.MarketModel storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "arguments": [
+                        {
+                          "arguments": [],
+                          "expression": {
+                            "argumentTypes": [],
+                            "expression": {
+                              "id": 3924,
+                              "name": "_marketIds",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 3900,
+                              "src": "685:10:23",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_Counter_$59429_storage",
+                                "typeString": "struct Counters.Counter storage ref"
+                              }
+                            },
+                            "id": 3925,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberLocation": "696:7:23",
+                            "memberName": "current",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 59441,
+                            "src": "685:18:23",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_internal_view$_t_struct$_Counter_$59429_storage_ptr_$returns$_t_uint256_$attached_to$_t_struct$_Counter_$59429_storage_ptr_$",
+                              "typeString": "function (struct Counters.Counter storage pointer) view returns (uint256)"
+                            }
+                          },
+                          "id": 3926,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "nameLocations": [],
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "685:20:23",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        {
+                          "id": 3927,
+                          "name": "marketName",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3907,
+                          "src": "707:10:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_string_calldata_ptr",
+                            "typeString": "string calldata"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          },
+                          {
+                            "typeIdentifier": "t_string_calldata_ptr",
+                            "typeString": "string calldata"
+                          }
+                        ],
+                        "id": 3923,
+                        "name": "MarketModel",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3967,
+                        "src": "673:11:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_struct$_MarketModel_$3967_storage_ptr_$",
+                          "typeString": "type(struct IMarket.MarketModel storage pointer)"
+                        }
+                      },
+                      "id": 3928,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "structConstructorCall",
+                      "lValueRequested": false,
+                      "nameLocations": [],
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "673:45:23",
+                      "tryCall": false,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_MarketModel_$3967_memory_ptr",
+                        "typeString": "struct IMarket.MarketModel memory"
+                      }
+                    },
+                    "src": "640:78:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_MarketModel_$3967_storage",
+                      "typeString": "struct IMarket.MarketModel storage ref"
+                    }
+                  },
+                  "id": 3930,
+                  "nodeType": "ExpressionStatement",
+                  "src": "640:78:23"
+                },
+                {
+                  "eventCall": {
+                    "arguments": [
+                      {
+                        "arguments": [],
+                        "expression": {
+                          "argumentTypes": [],
+                          "expression": {
+                            "id": 3932,
+                            "name": "_marketIds",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3900,
+                            "src": "745:10:23",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Counter_$59429_storage",
+                              "typeString": "struct Counters.Counter storage ref"
+                            }
+                          },
+                          "id": 3933,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberLocation": "756:7:23",
+                          "memberName": "current",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 59441,
+                          "src": "745:18:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_function_internal_view$_t_struct$_Counter_$59429_storage_ptr_$returns$_t_uint256_$attached_to$_t_struct$_Counter_$59429_storage_ptr_$",
+                            "typeString": "function (struct Counters.Counter storage pointer) view returns (uint256)"
+                          }
+                        },
+                        "id": 3934,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "functionCall",
+                        "lValueRequested": false,
+                        "nameLocations": [],
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "745:20:23",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "id": 3935,
+                        "name": "marketName",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3907,
+                        "src": "767:10:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_calldata_ptr",
+                          "typeString": "string calldata"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_string_calldata_ptr",
+                          "typeString": "string calldata"
+                        }
+                      ],
+                      "id": 3931,
+                      "name": "AddedMarket",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3962,
+                      "src": "733:11:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_uint256_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (uint256,string memory)"
+                      }
+                    },
+                    "id": 3936,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "733:45:23",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3937,
+                  "nodeType": "EmitStatement",
+                  "src": "728:50:23"
+                }
+              ]
+            },
+            "baseFunctions": [
+              3972
+            ],
+            "functionSelector": "42fe6695",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 3911,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 3910,
+                  "name": "onlyOwner",
+                  "nameLocations": [
+                    "588:9:23"
+                  ],
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 57143,
+                  "src": "588:9:23"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "588:9:23"
+              }
+            ],
+            "name": "addMarket",
+            "nameLocation": "526:9:23",
+            "overrides": {
+              "id": 3909,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "579:8:23"
+            },
+            "parameters": {
+              "id": 3908,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3907,
+                  "mutability": "mutable",
+                  "name": "marketName",
+                  "nameLocation": "552:10:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3939,
+                  "src": "536:26:23",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 3906,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "536:6:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "535:28:23"
+            },
+            "returnParameters": {
+              "id": 3912,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "598:0:23"
+            },
+            "scope": 3953,
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "id": 3952,
+            "nodeType": "FunctionDefinition",
+            "src": "791:124:23",
+            "nodes": [],
+            "body": {
+              "id": 3951,
+              "nodeType": "Block",
+              "src": "872:43:23",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "baseExpression": {
+                      "id": 3947,
+                      "name": "_markets",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3905,
+                      "src": "889:8:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_MarketModel_$3967_storage_$",
+                        "typeString": "mapping(uint256 => struct IMarket.MarketModel storage ref)"
+                      }
+                    },
+                    "id": 3949,
+                    "indexExpression": {
+                      "id": 3948,
+                      "name": "_marketId",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3941,
+                      "src": "898:9:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "889:19:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_MarketModel_$3967_storage",
+                      "typeString": "struct IMarket.MarketModel storage ref"
+                    }
+                  },
+                  "functionReturnParameters": 3946,
+                  "id": 3950,
+                  "nodeType": "Return",
+                  "src": "882:26:23"
+                }
+              ]
+            },
+            "functionSelector": "eb44fdd3",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getMarket",
+            "nameLocation": "800:9:23",
+            "parameters": {
+              "id": 3942,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3941,
+                  "mutability": "mutable",
+                  "name": "_marketId",
+                  "nameLocation": "818:9:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3952,
+                  "src": "810:17:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3940,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "810:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "809:19:23"
+            },
+            "returnParameters": {
+              "id": 3946,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3945,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3952,
+                  "src": "852:18:23",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_MarketModel_$3967_memory_ptr",
+                    "typeString": "struct IMarket.MarketModel"
+                  },
+                  "typeName": {
+                    "id": 3944,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 3943,
+                      "name": "MarketModel",
+                      "nameLocations": [
+                        "852:11:23"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 3967,
+                      "src": "852:11:23"
+                    },
+                    "referencedDeclaration": 3967,
+                    "src": "852:11:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_MarketModel_$3967_storage_ptr",
+                      "typeString": "struct IMarket.MarketModel"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "851:20:23"
+            },
+            "scope": 3953,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 3890,
+              "name": "IMarket",
+              "nameLocations": [
+                "363:7:23"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 3978,
+              "src": "363:7:23"
+            },
+            "id": 3891,
+            "nodeType": "InheritanceSpecifier",
+            "src": "363:7:23"
+          },
+          {
+            "baseName": {
+              "id": 3892,
+              "name": "Ownable",
+              "nameLocations": [
+                "372:7:23"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 57224,
+              "src": "372:7:23"
+            },
+            "id": 3893,
+            "nodeType": "InheritanceSpecifier",
+            "src": "372:7:23"
+          }
+        ],
+        "canonicalName": "Market",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 3889,
+          "nodeType": "StructuredDocumentation",
+          "src": "199:136:23",
+          "text": "@title DAOExpander\n @notice The extension of each DAO that integrates Aut\n @dev The extension of each DAO that integrates Aut"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          3953,
+          57224,
+          59423,
+          3978
+        ],
+        "name": "Market",
+        "nameLocation": "353:6:23",
+        "scope": 3954,
+        "usedErrors": []
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 23
+}

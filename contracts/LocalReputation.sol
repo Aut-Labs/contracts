@@ -6,7 +6,6 @@ import {IAutID} from "./IAutID.sol";
 import {IPlugin} from "./plugins/IPlugin.sol";
 
 import "./ILocalReputation.sol";
-
 /// @title Local Reputation Framework for ĀutID holders
 
 contract LocalReputation is ILocalReputation {
@@ -242,7 +241,7 @@ contract LocalReputation is ILocalReputation {
         uint256 interactID = interactionID(_msgSender(), datas_);
         uint256 repPoints = pointsPerInteraction[interactID];
 
-        if (datas_.length == 2) repPoints = uint256(bytes32(datas_[:32]));
+        if (datas_.length == 2) repPoints = uint16(bytes2(datas_[:2]));
 
         if (repPoints == 0) return;
         address dao = daoOfPlugin[_msgSender()];

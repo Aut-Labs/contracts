@@ -1,0 +1,464 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "market",
+          "type": "string"
+        }
+      ],
+      "name": "AddedMarket",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "metadata",
+          "type": "string"
+        }
+      ],
+      "name": "addMarket",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getMarket",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "addMarket(string)": "42fe6695",
+    "getMarket()": "f1be1679"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"market\",\"type\":\"string\"}],\"name\":\"AddedMarket\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"addMarket\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getMarket\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"The extension of each DAO that integrates Aut\",\"kind\":\"dev\",\"methods\":{},\"title\":\"IMarket\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"The extension of each DAO that integrates Aut\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/daoUtils/interfaces/IMarket.sol\":\"IMarket\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/daoUtils/interfaces/IMarket.sol\":{\"keccak256\":\"0x22d9c57edf4fd7bbf14a7e968639fb5c5223e905370387a238017f860fc21f82\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d31d1705c4da13e9f604b3f873a07085b6f9c364f910fd75106d89e5039ca36f\",\"dweb:/ipfs/QmdTZLMx49SpUokV7XNQmpvXdCdF252r5ybCJ73NGwjdsh\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "string",
+              "name": "market",
+              "type": "string",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "AddedMarket",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "metadata",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addMarket"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getMarket",
+          "outputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/daoUtils/interfaces/IMarket.sol": "IMarket"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/daoUtils/interfaces/IMarket.sol": {
+        "keccak256": "0x22d9c57edf4fd7bbf14a7e968639fb5c5223e905370387a238017f860fc21f82",
+        "urls": [
+          "bzz-raw://d31d1705c4da13e9f604b3f873a07085b6f9c364f910fd75106d89e5039ca36f",
+          "dweb:/ipfs/QmdTZLMx49SpUokV7XNQmpvXdCdF252r5ybCJ73NGwjdsh"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/daoUtils/interfaces/IMarket.sol",
+    "id": 3979,
+    "exportedSymbols": {
+      "IMarket": [
+        3978
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:431:24",
+    "nodes": [
+      {
+        "id": 3955,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:24",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 3978,
+        "nodeType": "ContractDefinition",
+        "src": "188:273:24",
+        "nodes": [
+          {
+            "id": 3962,
+            "nodeType": "EventDefinition",
+            "src": "212:45:24",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "8f2f97aa82623c5377d6f50de7da3ea93b7b960de35b2a85fc96697847fa81a4",
+            "name": "AddedMarket",
+            "nameLocation": "218:11:24",
+            "parameters": {
+              "id": 3961,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3958,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "238:2:24",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3962,
+                  "src": "230:10:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3957,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "230:7:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3960,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "market",
+                  "nameLocation": "249:6:24",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3962,
+                  "src": "242:13:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 3959,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "242:6:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "229:27:24"
+            }
+          },
+          {
+            "id": 3967,
+            "nodeType": "StructDefinition",
+            "src": "263:71:24",
+            "nodes": [],
+            "canonicalName": "IMarket.MarketModel",
+            "members": [
+              {
+                "constant": false,
+                "id": 3964,
+                "mutability": "mutable",
+                "name": "id",
+                "nameLocation": "300:2:24",
+                "nodeType": "VariableDeclaration",
+                "scope": 3967,
+                "src": "292:10:24",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 3963,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "292:7:24",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 3966,
+                "mutability": "mutable",
+                "name": "metadata",
+                "nameLocation": "319:8:24",
+                "nodeType": "VariableDeclaration",
+                "scope": 3967,
+                "src": "312:15:24",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 3965,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "312:6:24",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "MarketModel",
+            "nameLocation": "270:11:24",
+            "scope": 3978,
+            "visibility": "public"
+          },
+          {
+            "id": 3972,
+            "nodeType": "FunctionDefinition",
+            "src": "340:54:24",
+            "nodes": [],
+            "functionSelector": "42fe6695",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addMarket",
+            "nameLocation": "349:9:24",
+            "parameters": {
+              "id": 3970,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3969,
+                  "mutability": "mutable",
+                  "name": "metadata",
+                  "nameLocation": "375:8:24",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3972,
+                  "src": "359:24:24",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 3968,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "359:6:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "358:26:24"
+            },
+            "returnParameters": {
+              "id": 3971,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "393:0:24"
+            },
+            "scope": 3978,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 3977,
+            "nodeType": "FunctionDefinition",
+            "src": "400:59:24",
+            "nodes": [],
+            "functionSelector": "f1be1679",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getMarket",
+            "nameLocation": "409:9:24",
+            "parameters": {
+              "id": 3973,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "418:2:24"
+            },
+            "returnParameters": {
+              "id": 3976,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3975,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3977,
+                  "src": "444:13:24",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 3974,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "444:6:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "443:15:24"
+            },
+            "scope": 3978,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IMarket",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 3956,
+          "nodeType": "StructuredDocumentation",
+          "src": "56:132:24",
+          "text": "@title IMarket\n @notice The extension of each DAO that integrates Aut\n @dev The extension of each DAO that integrates Aut"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          3978
+        ],
+        "name": "IMarket",
+        "nameLocation": "198:7:24",
+        "scope": 3979,
+        "usedErrors": []
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 24
+}
