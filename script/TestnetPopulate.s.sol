@@ -7,7 +7,6 @@
 // import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegistry.sol";
 // import {AutID, IAutID} from "../contracts/AutID.sol";
 // import {INova} from "../contracts/nova/interfaces/INova.sol";
-// // import {Interaction, IInteraction} from "../contracts/Interaction.sol";
 // // import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
 // import {LocalReputation} from "../contracts/LocalReputation.sol";
 

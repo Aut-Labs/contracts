@@ -7,7 +7,6 @@ import {NovaRegistry, INovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {ModuleRegistry, IModuleRegistry} from "../contracts/modules/registry/ModuleRegistry.sol";
 import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegistry.sol";
 import {AutID, IAutID} from "../contracts/AutID.sol";
-// import {Interaction, IInteraction} from "../contracts/Interaction.sol";
 
 import {INova} from "../contracts/nova/interfaces/INova.sol";
 

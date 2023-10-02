@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
-import "../../daoUtils/interfaces/get/IDAOInteractions.sol";
 
 import "../../modules/tasks/TasksModule.sol";
 import "../../modules/quests/QuestsModule.sol";

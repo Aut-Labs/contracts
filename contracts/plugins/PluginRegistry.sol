@@ -11,7 +11,6 @@ import "../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../daoUtils/interfaces/get/IDAOAdmin.sol";
 import "../daoUtils/interfaces/get/IDAOModules.sol";
 import "../nova/interfaces/INova.sol";
-import "../IInteraction.sol";
 
 /// @title PluginRegistry
 /// @notice Stores all plugins available and allows them to be added to a dao

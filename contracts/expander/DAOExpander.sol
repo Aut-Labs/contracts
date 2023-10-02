@@ -12,7 +12,6 @@ import "../daoUtils/abstracts/DAOModules.sol";
 import "../daoUtils/abstracts/DAOMetadata.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
-// import "../daoUtils/abstracts/DAOInteractions.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../expander/interfaces/IDAOExpander.sol";
 import "../modules/onboarding/OnboardingModule.sol";

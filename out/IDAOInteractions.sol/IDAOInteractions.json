@@ -134,19 +134,19 @@
   },
   "ast": {
     "absolutePath": "contracts/daoUtils/interfaces/get/IDAOInteractions.sol",
-    "id": 4030,
+    "id": 4027,
     "exportedSymbols": {
       "IDAOInteractions": [
-        4029
+        4026
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "31:316:28",
+    "src": "31:316:25",
     "nodes": [
       {
-        "id": 4015,
+        "id": 4012,
         "nodeType": "PragmaDirective",
-        "src": "31:23:28",
+        "src": "31:23:25",
         "nodes": [],
         "literals": [
           "solidity",
@@ -155,40 +155,40 @@
         ]
       },
       {
-        "id": 4029,
+        "id": 4026,
         "nodeType": "ContractDefinition",
-        "src": "162:184:28",
+        "src": "162:184:25",
         "nodes": [
           {
-            "id": 4021,
+            "id": 4018,
             "nodeType": "FunctionDefinition",
-            "src": "195:63:28",
+            "src": "195:63:25",
             "nodes": [],
             "functionSelector": "48394873",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getInteractionsAddr",
-            "nameLocation": "204:19:28",
+            "nameLocation": "204:19:25",
             "parameters": {
-              "id": 4017,
+              "id": 4014,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "223:2:28"
+              "src": "223:2:25"
             },
             "returnParameters": {
-              "id": 4020,
+              "id": 4017,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4019,
+                  "id": 4016,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4021,
-                  "src": "249:7:28",
+                  "scope": 4018,
+                  "src": "249:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -196,10 +196,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4018,
+                    "id": 4015,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "249:7:28",
+                    "src": "249:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -209,25 +209,60 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "248:9:28"
+              "src": "248:9:25"
             },
-            "scope": 4029,
+            "scope": 4026,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 4028,
+            "id": 4025,
             "nodeType": "FunctionDefinition",
-            "src": "264:80:28",
+            "src": "264:80:25",
             "nodes": [],
             "functionSelector": "be739311",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getInteractionsPerUser",
-            "nameLocation": "273:22:28",
+            "nameLocation": "273:22:25",
             "parameters": {
+              "id": 4021,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4020,
+                  "mutability": "mutable",
+                  "name": "member",
+                  "nameLocation": "304:6:25",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4025,
+                  "src": "296:14:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4019,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "296:7:25",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "295:16:25"
+            },
+            "returnParameters": {
               "id": 4024,
               "nodeType": "ParameterList",
               "parameters": [
@@ -235,46 +270,11 @@
                   "constant": false,
                   "id": 4023,
                   "mutability": "mutable",
-                  "name": "member",
-                  "nameLocation": "304:6:28",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 4028,
-                  "src": "296:14:28",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 4022,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "296:7:28",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "295:16:28"
-            },
-            "returnParameters": {
-              "id": 4027,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 4026,
-                  "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4028,
-                  "src": "335:7:28",
+                  "scope": 4025,
+                  "src": "335:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -282,10 +282,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 4025,
+                    "id": 4022,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "335:7:28",
+                    "src": "335:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -294,9 +294,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "334:9:28"
+              "src": "334:9:25"
             },
-            "scope": 4029,
+            "scope": 4026,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -308,22 +308,22 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 4016,
+          "id": 4013,
           "nodeType": "StructuredDocumentation",
-          "src": "56:106:28",
+          "src": "56:106:25",
           "text": "@title IDAOInteractions\n @notice The interface for the extension of each DAO that integrates AutID"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          4029
+          4026
         ],
         "name": "IDAOInteractions",
-        "nameLocation": "172:16:28",
-        "scope": 4030,
+        "nameLocation": "172:16:25",
+        "scope": 4027,
         "usedErrors": []
       }
     ],
     "license": "MIT"
   },
-  "id": 28
+  "id": 25
 }

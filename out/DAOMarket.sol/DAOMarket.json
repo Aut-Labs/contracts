@@ -115,22 +115,22 @@
   },
   "ast": {
     "absolutePath": "contracts/daoUtils/abstracts/DAOMarket.sol",
-    "id": 3215,
+    "id": 3212,
     "exportedSymbols": {
       "DAOMarket": [
-        3214
+        3211
       ],
       "IDAOMarket": [
-        4038
+        4035
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "31:486:18",
+    "src": "31:486:15",
     "nodes": [
       {
-        "id": 3180,
+        "id": 3177,
         "nodeType": "PragmaDirective",
-        "src": "31:23:18",
+        "src": "31:23:15",
         "nodes": [],
         "literals": [
           "solidity",
@@ -139,59 +139,59 @@
         ]
       },
       {
-        "id": 3181,
+        "id": 3178,
         "nodeType": "ImportDirective",
-        "src": "56:42:18",
+        "src": "56:42:15",
         "nodes": [],
         "absolutePath": "contracts/daoUtils/interfaces/get/IDAOMarket.sol",
         "file": "../interfaces/get/IDAOMarket.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 3215,
-        "sourceUnit": 4039,
+        "scope": 3212,
+        "sourceUnit": 4036,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 3214,
+        "id": 3211,
         "nodeType": "ContractDefinition",
-        "src": "236:280:18",
+        "src": "236:280:15",
         "nodes": [
           {
-            "id": 3186,
+            "id": 3183,
             "nodeType": "EventDefinition",
-            "src": "284:18:18",
+            "src": "284:18:15",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "4086cd87c923de65497ff5918262360a3284451fdc7ee5597eaa90abaf2345f4",
             "name": "MarketSet",
-            "nameLocation": "290:9:18",
+            "nameLocation": "290:9:15",
             "parameters": {
-              "id": 3185,
+              "id": 3182,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "299:2:18"
+              "src": "299:2:15"
             }
           },
           {
-            "id": 3189,
+            "id": 3186,
             "nodeType": "VariableDeclaration",
-            "src": "308:30:18",
+            "src": "308:30:15",
             "nodes": [],
             "baseFunctions": [
-              4037
+              4034
             ],
             "constant": false,
             "functionSelector": "80f55605",
             "mutability": "mutable",
             "name": "market",
-            "nameLocation": "332:6:18",
+            "nameLocation": "332:6:15",
             "overrides": {
-              "id": 3188,
+              "id": 3185,
               "nodeType": "OverrideSpecifier",
               "overrides": [],
-              "src": "323:8:18"
+              "src": "323:8:15"
             },
-            "scope": 3214,
+            "scope": 3211,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -199,10 +199,10 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 3187,
+              "id": 3184,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
-              "src": "308:7:18",
+              "src": "308:7:15",
               "typeDescriptions": {
                 "typeIdentifier": "t_uint256",
                 "typeString": "uint256"
@@ -211,14 +211,14 @@
             "visibility": "public"
           },
           {
-            "id": 3213,
+            "id": 3210,
             "nodeType": "FunctionDefinition",
-            "src": "345:169:18",
+            "src": "345:169:15",
             "nodes": [],
             "body": {
-              "id": 3212,
+              "id": 3209,
               "nodeType": "Block",
-              "src": "391:123:18",
+              "src": "391:123:15",
               "nodes": [],
               "statements": [
                 {
@@ -229,12 +229,60 @@
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         },
-                        "id": 3201,
+                        "id": 3198,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
+                          "commonType": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          },
+                          "id": 3194,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftExpression": {
+                            "id": 3192,
+                            "name": "_market",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3188,
+                            "src": "409:7:15",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "nodeType": "BinaryOperation",
+                          "operator": ">",
+                          "rightExpression": {
+                            "hexValue": "30",
+                            "id": 3193,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "number",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "419:1:15",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_rational_0_by_1",
+                              "typeString": "int_const 0"
+                            },
+                            "value": "0"
+                          },
+                          "src": "409:11:15",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "&&",
+                        "rightExpression": {
                           "commonType": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -249,56 +297,8 @@
                             "name": "_market",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3191,
-                            "src": "409:7:18",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_uint256",
-                              "typeString": "uint256"
-                            }
-                          },
-                          "nodeType": "BinaryOperation",
-                          "operator": ">",
-                          "rightExpression": {
-                            "hexValue": "30",
-                            "id": 3196,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": true,
-                            "kind": "number",
-                            "lValueRequested": false,
-                            "nodeType": "Literal",
-                            "src": "419:1:18",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_rational_0_by_1",
-                              "typeString": "int_const 0"
-                            },
-                            "value": "0"
-                          },
-                          "src": "409:11:18",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_bool",
-                            "typeString": "bool"
-                          }
-                        },
-                        "nodeType": "BinaryOperation",
-                        "operator": "&&",
-                        "rightExpression": {
-                          "commonType": {
-                            "typeIdentifier": "t_uint256",
-                            "typeString": "uint256"
-                          },
-                          "id": 3200,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "lValueRequested": false,
-                          "leftExpression": {
-                            "id": 3198,
-                            "name": "_market",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 3191,
-                            "src": "424:7:18",
+                            "referencedDeclaration": 3188,
+                            "src": "424:7:15",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
@@ -308,27 +308,27 @@
                           "operator": "<",
                           "rightExpression": {
                             "hexValue": "34",
-                            "id": 3199,
+                            "id": 3196,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
                             "kind": "number",
                             "lValueRequested": false,
                             "nodeType": "Literal",
-                            "src": "434:1:18",
+                            "src": "434:1:15",
                             "typeDescriptions": {
                               "typeIdentifier": "t_rational_4_by_1",
                               "typeString": "int_const 4"
                             },
                             "value": "4"
                           },
-                          "src": "424:11:18",
+                          "src": "424:11:15",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bool",
                             "typeString": "bool"
                           }
                         },
-                        "src": "409:26:18",
+                        "src": "409:26:15",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -336,14 +336,14 @@
                       },
                       {
                         "hexValue": "696e76616c6964206d61726b6574",
-                        "id": 3202,
+                        "id": 3199,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "437:16:18",
+                        "src": "437:16:15",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_1612cc86328f522e0281ce1bc1b5df086ac2db46862d0532d1eaa6cd2f6bd11f",
                           "typeString": "literal_string \"invalid market\""
@@ -362,7 +362,7 @@
                           "typeString": "literal_string \"invalid market\""
                         }
                       ],
-                      "id": 3194,
+                      "id": 3191,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -370,13 +370,13 @@
                         -18
                       ],
                       "referencedDeclaration": -18,
-                      "src": "401:7:18",
+                      "src": "401:7:15",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 3203,
+                    "id": 3200,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -385,31 +385,31 @@
                     "nameLocations": [],
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "401:53:18",
+                    "src": "401:53:15",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 3204,
+                  "id": 3201,
                   "nodeType": "ExpressionStatement",
-                  "src": "401:53:18"
+                  "src": "401:53:15"
                 },
                 {
                   "expression": {
-                    "id": 3207,
+                    "id": 3204,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 3205,
+                      "id": 3202,
                       "name": "market",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3189,
-                      "src": "465:6:18",
+                      "referencedDeclaration": 3186,
+                      "src": "465:6:15",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -418,44 +418,44 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3206,
+                      "id": 3203,
                       "name": "_market",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3191,
-                      "src": "474:7:18",
+                      "referencedDeclaration": 3188,
+                      "src": "474:7:15",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "src": "465:16:18",
+                    "src": "465:16:15",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "id": 3208,
+                  "id": 3205,
                   "nodeType": "ExpressionStatement",
-                  "src": "465:16:18"
+                  "src": "465:16:15"
                 },
                 {
                   "eventCall": {
                     "arguments": [],
                     "expression": {
                       "argumentTypes": [],
-                      "id": 3209,
+                      "id": 3206,
                       "name": "MarketSet",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3186,
-                      "src": "496:9:18",
+                      "referencedDeclaration": 3183,
+                      "src": "496:9:15",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$__$returns$__$",
                         "typeString": "function ()"
                       }
                     },
-                    "id": 3210,
+                    "id": 3207,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -464,16 +464,16 @@
                     "nameLocations": [],
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "496:11:18",
+                    "src": "496:11:15",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 3211,
+                  "id": 3208,
                   "nodeType": "EmitStatement",
-                  "src": "491:16:18"
+                  "src": "491:16:15"
                 }
               ]
             },
@@ -481,20 +481,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "_setMarket",
-            "nameLocation": "354:10:18",
+            "nameLocation": "354:10:15",
             "parameters": {
-              "id": 3192,
+              "id": 3189,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3191,
+                  "id": 3188,
                   "mutability": "mutable",
                   "name": "_market",
-                  "nameLocation": "373:7:18",
+                  "nameLocation": "373:7:15",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3213,
-                  "src": "365:15:18",
+                  "scope": 3210,
+                  "src": "365:15:15",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -502,10 +502,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3190,
+                    "id": 3187,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "365:7:18",
+                    "src": "365:7:15",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -514,15 +514,15 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "364:17:18"
+              "src": "364:17:15"
             },
             "returnParameters": {
-              "id": 3193,
+              "id": 3190,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "391:0:18"
+              "src": "391:0:15"
             },
-            "scope": 3214,
+            "scope": 3211,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "internal"
@@ -532,41 +532,41 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 3183,
+              "id": 3180,
               "name": "IDAOMarket",
               "nameLocations": [
-                "267:10:18"
+                "267:10:15"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4038,
-              "src": "267:10:18"
+              "referencedDeclaration": 4035,
+              "src": "267:10:15"
             },
-            "id": 3184,
+            "id": 3181,
             "nodeType": "InheritanceSpecifier",
-            "src": "267:10:18"
+            "src": "267:10:15"
           }
         ],
         "canonicalName": "DAOMarket",
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 3182,
+          "id": 3179,
           "nodeType": "StructuredDocumentation",
-          "src": "100:136:18",
+          "src": "100:136:15",
           "text": "@title DAOExpander\n @notice The extension of each DAO that integrates Aut\n @dev The extension of each DAO that integrates Aut"
         },
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          3214,
-          4038
+          3211,
+          4035
         ],
         "name": "DAOMarket",
-        "nameLocation": "254:9:18",
-        "scope": 3215,
+        "nameLocation": "254:9:15",
+        "scope": 3212,
         "usedErrors": []
       }
     ],
     "license": "MIT"
   },
-  "id": 18
+  "id": 15
 }

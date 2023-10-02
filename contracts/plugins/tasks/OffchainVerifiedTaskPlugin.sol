@@ -2,7 +2,6 @@
 pragma solidity 0.8.19;
 
 import "../SimplePlugin.sol";
-import "../../IInteraction.sol";
 
 import "../../modules/tasks/TasksModule.sol";
 import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
