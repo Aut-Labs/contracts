@@ -6,6 +6,12 @@ import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
 import "../SimplePlugin.sol";
 
 contract ArchetypesPlugin is ArchetypesModule, SimplePlugin {
+    uint8 public constant SIZE = 1;
+    uint8 public constant REPUTATION = 2;
+    uint8 public constant CONVICTION = 3;
+    uint8 public constant PERFORMANCE = 4;
+    uint8 public constant GROWTH = 5;
+
     uint8 public mainArchetype;
     mapping(uint8 => uint256) public archetypeWeightFor;
 
@@ -19,7 +25,9 @@ contract ArchetypesPlugin is ArchetypesModule, SimplePlugin {
     }
 
     function setMainArchetype(uint8 archetype) external onlyAdmin {
-        require(mainArchetype == 0, ArchetypeAlreadySet());
+        if (mainArchetype != 0) {
+            revert ArchetypeAlreadySet();
+        }
         _validateArchetype(archetype);
         mainArchetype = archetype;   
         _setActive(true);
@@ -36,7 +44,9 @@ contract ArchetypesPlugin is ArchetypesModule, SimplePlugin {
         archetypeWeightFor[archetype] = value;
     }
 
-    function _validateArchetype(uint8 archetype) internal {
-        require(archetype <= 5 && archetype != 0, WrongArchetype());
+    function _validateArchetype(uint8 archetype) internal pure {
+        if (archetype > 5 || archetype == 0) {
+            revert WrongArchetype();
+        }
     }
 }
