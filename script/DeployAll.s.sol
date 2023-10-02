@@ -6,7 +6,6 @@ import {NovaRegistry, INovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {ModuleRegistry, IModuleRegistry} from "../contracts/modules/registry/ModuleRegistry.sol";
 import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegistry.sol";
 import {AutID, IAutID} from "../contracts/AutID.sol";
-// import {Interaction, IInteraction} from "../contracts/Interaction.sol";
 import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
 import {LocalReputation} from "../contracts/LocalReputation.sol";
 
@@ -38,26 +37,26 @@ contract DeployScript is Script {
             " ####################################################################### \n ####################### DEPLOYMENT ADDRESSES ########################## \n ####################################################################### \n"
         );
 
-        vm.writeFile(
-            "script/DeploymentAddresses.sol",
-            string.concat("// SPDX-License-Identifier: UNLICENSED\n", "pragma solidity 0.8.19;\n \n \n")
-        );
+        // vm.writeFile(
+        //     "script/DeploymentAddresses.sol",
+        //     string.concat("// SPDX-License-Identifier: UNLICENSED\n", "pragma solidity 0.8.19;\n \n \n")
+        // );
 
-        vm.writeLine(
-            "script/DeploymentAddresses.sol",
-            string.concat(
-                "library DeploymentAddresses {\n",
-                "struct DeployedAtAddresses {address AUTidAddr; address NoveFactoryAddr; address ModuleRegistryAddr; address InteractionAddr; address PluginRegistryAddr; address NovaRegistryAddr; address LocalReputationAddr; address AllowlistAddr;}\n"
-            )
-        );
+        // vm.writeLine(
+        //     "script/DeploymentAddresses.sol",
+        //     string.concat(
+        //         "library DeploymentAddresses {\n",
+        //         "struct DeployedAtAddresses {address AUTidAddr; address NoveFactoryAddr; address ModuleRegistryAddr; address InteractionAddr; address PluginRegistryAddr; address NovaRegistryAddr; address LocalReputationAddr; address AllowlistAddr;}\n"
+        //     )
+        // );
 
         /// {
-        vm.writeLine(
-            "script/DeploymentAddresses.sol",
-            "function getAddressesForChainID(uint256 chainID) external pure returns (DeployedAtAddresses memory A) { /n"
-        );
+        // vm.writeLine(
+        //     "script/DeploymentAddresses.sol",
+        //     "function getAddressesForChainID(uint256 chainID) external pure returns (DeployedAtAddresses memory A) { /n"
+        // );
 
-        vm.writeLine("script/DeploymentAddresses.sol", "A = new DeployedAtAddresses(");
+        // vm.writeLine("script/DeploymentAddresses.sol", "A = new DeployedAtAddresses(");
     }
 
     function run() public {
@@ -70,31 +69,28 @@ contract DeployScript is Script {
         address AUTid = address(new AutID());
         address NoveFactoryAddr = address(new NovaFactory());
         address ModuleRegistryAddr = address(new ModuleRegistry());
-        // address InteractionAddr = address(new Interaction());
         address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
         address NovaRegistryAddr =
             address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr ));
         address LocalReputationAddr = address(new LocalReputation());
         address AllowlistAddr = address(new Allowlist());
 
-        vm.writeLine("script/DeploymentAddresses.sol", vm.toString(AUTid));
+        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(AUTid));
 
-        vm.writeLine("script/DeploymentAddresses.sol", vm.toString(NoveFactoryAddr));
-        vm.writeLine("script/DeploymentAddresses.sol", vm.toString(ModuleRegistryAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(InteractionAddr));
-        vm.writeLine("script/DeploymentAddresses.sol", vm.toString(PluginRegistryAddr));
-        vm.writeLine("script/DeploymentAddresses.sol", vm.toString(NovaRegistryAddr));
-        vm.writeLine("script/DeploymentAddresses.sol", vm.toString(LocalReputationAddr));
-        vm.writeLine("script/DeploymentAddresses.sol", vm.toString(AllowlistAddr));
+        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(NoveFactoryAddr));
+        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(ModuleRegistryAddr));
+        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(PluginRegistryAddr));
+        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(NovaRegistryAddr));
+        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(LocalReputationAddr));
+        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(AllowlistAddr));
 
-        vm.writeLine("script/DeploymentAddresses.sol", "); /n");
+        // vm.writeLine("script/DeploymentAddresses.sol", "); /n");
 
         /// }
-        vm.writeLine("script/DeploymentAddresses.sol", "} /n");
+        // vm.writeLine("script/DeploymentAddresses.sol", "} /n");
 
-        vm.writeLine("script/DeploymentAddresses.sol", "}\n");
+        // vm.writeLine("script/DeploymentAddresses.sol", "}\n");
 
-        IAllowlist(AllowlistAddr).addOwner(0x64385e93DD9E55e7b6b4e83f900c142F1b237ce7);
         IAllowlist(AllowlistAddr).addOwner(0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3);
         IAllowlist(AllowlistAddr).addOwner(0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43);
 
@@ -103,7 +99,6 @@ contract DeployScript is Script {
         console.log("ModuleRegistry ----------------------------------------- : ", ModuleRegistryAddr);
         console.log("PluginRegistry ----------------------------------------- : ", PluginRegistryAddr);
         console.log("NovaRegistry ----------------------------------------- : ", NovaRegistryAddr);
-        // console.log("Interaction ----------------------------------------- : ", InteractionAddr);
         console.log("LocalReputation ----------------------------------------- : ", LocalReputationAddr);
         console.log("Allowlist ----------------------------------------- : ", AllowlistAddr);
         console.log("                                                                       ");
