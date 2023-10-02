@@ -1,0 +1,3112 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "FunctionInvalidAtThisStage",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FunctionNotImplemented",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "TaskCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "TaskEdited",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "taker",
+          "type": "address"
+        }
+      ],
+      "name": "TaskFinalized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "submissionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "TaskSubmitted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "taker",
+          "type": "address"
+        }
+      ],
+      "name": "TaskTaken",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "role",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "endDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "create",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "role",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "endDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "createBy",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "role",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "endDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "editTask",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        }
+      ],
+      "name": "finalize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "submitter",
+          "type": "address"
+        }
+      ],
+      "name": "finalizeFor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        }
+      ],
+      "name": "getById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "createdOn",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "role",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "metadata",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "startDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "endDate",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct TasksModule.Task",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "getCompletionTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "submitter",
+          "type": "address"
+        }
+      ],
+      "name": "getStatusPerSubmitter",
+      "outputs": [
+        {
+          "internalType": "enum TasksModule.TaskStatus",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        }
+      ],
+      "name": "hasCompletedTheTask",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "isActive",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "moduleId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "novaAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "submitionUrl",
+          "type": "string"
+        }
+      ],
+      "name": "submit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskID",
+          "type": "uint256"
+        }
+      ],
+      "name": "take",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "create(uint256,string,uint256,uint256)": "bd45a0a9",
+    "createBy(address,uint256,string,uint256,uint256)": "0bb75b45",
+    "editTask(uint256,uint256,string,uint256,uint256)": "2b086648",
+    "finalize(uint256)": "05261aea",
+    "finalizeFor(uint256,address)": "daf91137",
+    "getById(uint256)": "f4f4d237",
+    "getCompletionTime(uint256,address)": "e31c007f",
+    "getStatusPerSubmitter(uint256,address)": "b206b569",
+    "hasCompletedTheTask(address,uint256)": "973cdc78",
+    "isActive()": "22f3e2d4",
+    "moduleId()": "a1308f27",
+    "novaAddress()": "89f12ed9",
+    "submit(uint256,string)": "5d63f6c6",
+    "take(uint256)": "4fd9efc4"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"FunctionInvalidAtThisStage\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FunctionNotImplemented\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"uri\",\"type\":\"string\"}],\"name\":\"TaskCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"uri\",\"type\":\"string\"}],\"name\":\"TaskEdited\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"taker\",\"type\":\"address\"}],\"name\":\"TaskFinalized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"submissionId\",\"type\":\"uint256\"}],\"name\":\"TaskSubmitted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"taker\",\"type\":\"address\"}],\"name\":\"TaskTaken\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"uri\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"startDate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"endDate\",\"type\":\"uint256\"}],\"name\":\"create\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"uri\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"startDate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"endDate\",\"type\":\"uint256\"}],\"name\":\"createBy\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"uri\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"startDate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"endDate\",\"type\":\"uint256\"}],\"name\":\"editTask\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"}],\"name\":\"finalize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"submitter\",\"type\":\"address\"}],\"name\":\"finalizeFor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"}],\"name\":\"getById\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"createdOn\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"startDate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"endDate\",\"type\":\"uint256\"}],\"internalType\":\"struct TasksModule.Task\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getCompletionTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"submitter\",\"type\":\"address\"}],\"name\":\"getStatusPerSubmitter\",\"outputs\":[{\"internalType\":\"enum TasksModule.TaskStatus\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"}],\"name\":\"hasCompletedTheTask\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isActive\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"moduleId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"novaAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"submitionUrl\",\"type\":\"string\"}],\"name\":\"submit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskID\",\"type\":\"uint256\"}],\"name\":\"take\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"events\":{\"TaskCreated(uint256,string)\":{\"params\":{\"taskID\":\"The id of the newly created task\",\"uri\":\"IPFS CID with the off-chain data of the task\"}},\"TaskEdited(uint256,string)\":{\"params\":{\"taskID\":\"The id of the newly created task\",\"uri\":\"IPFS CID with the off-chain data of the task\"}},\"TaskFinalized(uint256,address)\":{\"params\":{\"taker\":\"The address of the taker\",\"taskID\":\"The id of the task\"}},\"TaskSubmitted(uint256,uint256)\":{\"params\":{\"submissionId\":\"The id of the submission\",\"taskID\":\"The id of the task\"}},\"TaskTaken(uint256,address)\":{\"params\":{\"taker\":\"The address of the taker\",\"taskID\":\"The id of the task\"}}},\"kind\":\"dev\",\"methods\":{\"create(uint256,string,uint256,uint256)\":{\"params\":{\"role\":\"The role with which the task is associated\",\"uri\":\"IPFS CID with the off-chain data of the task\"},\"returns\":{\"_0\":\"The id of the newly created task\"}},\"createBy(address,uint256,string,uint256,uint256)\":{\"params\":{\"creator\":\"The creator of the task\",\"role\":\"The role with which the task is associated\",\"uri\":\"IPFS CID with the off-chain data of the task\"},\"returns\":{\"_0\":\"The id of the newly created task\"}},\"editTask(uint256,uint256,string,uint256,uint256)\":{\"params\":{\"endDate\":\"The end date of the task\",\"role\":\"The role with which the task is associated\",\"startDate\":\"The start date of the task\",\"taskId\":\"The id of the task\",\"uri\":\"IPFS CID with the off-chain data of the task\"}},\"finalize(uint256)\":{\"params\":{\"taskID\":\"the task ID\"}},\"finalizeFor(uint256,address)\":{\"params\":{\"submitter\":\"the address of the submitter\",\"taskID\":\"the task ID\"}},\"getById(uint256)\":{\"params\":{\"taskID\":\"the id of the task\"},\"returns\":{\"_0\":\"the Task structure.\"}},\"getCompletionTime(uint256,address)\":{\"params\":{\"taskId\":\"the id of the task\",\"user\":\"the address of the user\"},\"returns\":{\"_0\":\"uint\"}},\"getStatusPerSubmitter(uint256,address)\":{\"params\":{\"submitter\":\"the address of the submitter\",\"taskId\":\"the id of the task\"},\"returns\":{\"_0\":\"TaskStatus\"}},\"hasCompletedTheTask(address,uint256)\":{\"params\":{\"taskID\":\"the id of the task\",\"user\":\"the address of the user\"},\"returns\":{\"_0\":\"bool\"}},\"novaAddress()\":{\"returns\":{\"_0\":\"the address of the daoExpander contract that uses this module.\"}},\"submit(uint256,string)\":{\"params\":{\"submitionUrl\":\"IPFS CID with the off-chain submission data.\",\"taskID\":\"the id of the task\"}},\"take(uint256)\":{\"params\":{\"taskID\":\"the id of the task\"}}},\"title\":\"TasksModule\",\"version\":1},\"userdoc\":{\"errors\":{\"FunctionInvalidAtThisStage()\":[{\"notice\":\"Reverted when the current state of a task is invalid for executing an action\"}]},\"events\":{\"TaskCreated(uint256,string)\":{\"notice\":\"Emitted when a task is created\"},\"TaskEdited(uint256,string)\":{\"notice\":\"Emitted when a task is edited\"},\"TaskFinalized(uint256,address)\":{\"notice\":\"Emitted when a task is finalized\"},\"TaskSubmitted(uint256,uint256)\":{\"notice\":\"Emitted when a task is submitted\"},\"TaskTaken(uint256,address)\":{\"notice\":\"Emitted when a task is taken\"}},\"kind\":\"user\",\"methods\":{\"create(uint256,string,uint256,uint256)\":{\"notice\":\"Creates a new task\"},\"createBy(address,uint256,string,uint256,uint256)\":{\"notice\":\"Creates a new task\"},\"editTask(uint256,uint256,string,uint256,uint256)\":{\"notice\":\"Edits a task\"},\"finalize(uint256)\":{\"notice\":\"A function for finalizing a task.\"},\"finalizeFor(uint256,address)\":{\"notice\":\"A function for finalizing a task for a specific member.\"},\"getById(uint256)\":{\"notice\":\"Fetches task by ID\"},\"getCompletionTime(uint256,address)\":{\"notice\":\"Gets the completion time of a task for a specific user.\"},\"getStatusPerSubmitter(uint256,address)\":{\"notice\":\"Gets the status of a task for a specific submitter.\"},\"hasCompletedTheTask(address,uint256)\":{\"notice\":\"Checks if a specific user has completed a task by ID\"},\"novaAddress()\":{\"notice\":\"A plugin contract is deployed for each daoExpander that uses it. When a plugin is associated to a daoExpander, the address is set by the DAOExpander.\"},\"submit(uint256,string)\":{\"notice\":\"A function for submitting a task. Conceptually only the taker can submit it.\"},\"take(uint256)\":{\"notice\":\"A function for taking a task. The signer is the taker.\"}},\"notice\":\"Implements a simple State Machine for on-chain tasks. The state machine has 4 states - Created, Taken, Submitted, Finalized. The task itself is associated with \\u0430 role. The off-chain data of the task such as description, title, tags etc is represented by IPFS CID pointing to a JSON file. Every tasks plugin must implement this interface.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/modules/tasks/TasksModule.sol\":\"TasksModule\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/modules/IModule.sol\":{\"keccak256\":\"0xa66f8f41a45bd68eddec5d3d047b6f91aebe01fa531d556d048638a4b54a5aef\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7c441222b7f4adb6ef505ee990417a842c9abb74bbc80213e85ce96ffbccb8bd\",\"dweb:/ipfs/QmdEtMxpfvvFGH7F8QQK17eR5GPkGVodiJa1NLXHZP1UtX\"]},\"contracts/modules/tasks/TasksModule.sol\":{\"keccak256\":\"0x34573dcd9a9f49bab55d2ce948d281acaf8aad56bd2d41186d10b71b22f1cf79\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ba1d5b085333a8bff525f0c1e028e1faf6b47639761cd6d05d5bbb483af4e305\",\"dweb:/ipfs/QmRo5wGrBZQDhGPngCD4EXhWmzGifLTxDFDtsBdXnYR5Sd\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "FunctionInvalidAtThisStage"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "FunctionNotImplemented"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "string",
+              "name": "uri",
+              "type": "string",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "TaskCreated",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "string",
+              "name": "uri",
+              "type": "string",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "TaskEdited",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "taker",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "TaskFinalized",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "uint256",
+              "name": "submissionId",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "TaskSubmitted",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "taker",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "TaskTaken",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "role",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "uri",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "startDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "endDate",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "create",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "role",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "uri",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "startDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "endDate",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "createBy",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "role",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "uri",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "startDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "endDate",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "editTask"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "finalize"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "submitter",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "finalizeFor"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getById",
+          "outputs": [
+            {
+              "internalType": "struct TasksModule.Task",
+              "name": "",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "createdOn",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "creator",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "role",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "metadata",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "startDate",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "endDate",
+                  "type": "uint256"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getCompletionTime",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "submitter",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getStatusPerSubmitter",
+          "outputs": [
+            {
+              "internalType": "enum TasksModule.TaskStatus",
+              "name": "",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "hasCompletedTheTask",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isActive",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "moduleId",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "novaAddress",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "submitionUrl",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "submit"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "taskID",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "take"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "create(uint256,string,uint256,uint256)": {
+            "params": {
+              "role": "The role with which the task is associated",
+              "uri": "IPFS CID with the off-chain data of the task"
+            },
+            "returns": {
+              "_0": "The id of the newly created task"
+            }
+          },
+          "createBy(address,uint256,string,uint256,uint256)": {
+            "params": {
+              "creator": "The creator of the task",
+              "role": "The role with which the task is associated",
+              "uri": "IPFS CID with the off-chain data of the task"
+            },
+            "returns": {
+              "_0": "The id of the newly created task"
+            }
+          },
+          "editTask(uint256,uint256,string,uint256,uint256)": {
+            "params": {
+              "endDate": "The end date of the task",
+              "role": "The role with which the task is associated",
+              "startDate": "The start date of the task",
+              "taskId": "The id of the task",
+              "uri": "IPFS CID with the off-chain data of the task"
+            }
+          },
+          "finalize(uint256)": {
+            "params": {
+              "taskID": "the task ID"
+            }
+          },
+          "finalizeFor(uint256,address)": {
+            "params": {
+              "submitter": "the address of the submitter",
+              "taskID": "the task ID"
+            }
+          },
+          "getById(uint256)": {
+            "params": {
+              "taskID": "the id of the task"
+            },
+            "returns": {
+              "_0": "the Task structure."
+            }
+          },
+          "getCompletionTime(uint256,address)": {
+            "params": {
+              "taskId": "the id of the task",
+              "user": "the address of the user"
+            },
+            "returns": {
+              "_0": "uint"
+            }
+          },
+          "getStatusPerSubmitter(uint256,address)": {
+            "params": {
+              "submitter": "the address of the submitter",
+              "taskId": "the id of the task"
+            },
+            "returns": {
+              "_0": "TaskStatus"
+            }
+          },
+          "hasCompletedTheTask(address,uint256)": {
+            "params": {
+              "taskID": "the id of the task",
+              "user": "the address of the user"
+            },
+            "returns": {
+              "_0": "bool"
+            }
+          },
+          "novaAddress()": {
+            "returns": {
+              "_0": "the address of the daoExpander contract that uses this module."
+            }
+          },
+          "submit(uint256,string)": {
+            "params": {
+              "submitionUrl": "IPFS CID with the off-chain submission data.",
+              "taskID": "the id of the task"
+            }
+          },
+          "take(uint256)": {
+            "params": {
+              "taskID": "the id of the task"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "create(uint256,string,uint256,uint256)": {
+            "notice": "Creates a new task"
+          },
+          "createBy(address,uint256,string,uint256,uint256)": {
+            "notice": "Creates a new task"
+          },
+          "editTask(uint256,uint256,string,uint256,uint256)": {
+            "notice": "Edits a task"
+          },
+          "finalize(uint256)": {
+            "notice": "A function for finalizing a task."
+          },
+          "finalizeFor(uint256,address)": {
+            "notice": "A function for finalizing a task for a specific member."
+          },
+          "getById(uint256)": {
+            "notice": "Fetches task by ID"
+          },
+          "getCompletionTime(uint256,address)": {
+            "notice": "Gets the completion time of a task for a specific user."
+          },
+          "getStatusPerSubmitter(uint256,address)": {
+            "notice": "Gets the status of a task for a specific submitter."
+          },
+          "hasCompletedTheTask(address,uint256)": {
+            "notice": "Checks if a specific user has completed a task by ID"
+          },
+          "novaAddress()": {
+            "notice": "A plugin contract is deployed for each daoExpander that uses it. When a plugin is associated to a daoExpander, the address is set by the DAOExpander."
+          },
+          "submit(uint256,string)": {
+            "notice": "A function for submitting a task. Conceptually only the taker can submit it."
+          },
+          "take(uint256)": {
+            "notice": "A function for taking a task. The signer is the taker."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/modules/tasks/TasksModule.sol": "TasksModule"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/modules/IModule.sol": {
+        "keccak256": "0xa66f8f41a45bd68eddec5d3d047b6f91aebe01fa531d556d048638a4b54a5aef",
+        "urls": [
+          "bzz-raw://7c441222b7f4adb6ef505ee990417a842c9abb74bbc80213e85ce96ffbccb8bd",
+          "dweb:/ipfs/QmdEtMxpfvvFGH7F8QQK17eR5GPkGVodiJa1NLXHZP1UtX"
+        ],
+        "license": "MIT"
+      },
+      "contracts/modules/tasks/TasksModule.sol": {
+        "keccak256": "0x34573dcd9a9f49bab55d2ce948d281acaf8aad56bd2d41186d10b71b22f1cf79",
+        "urls": [
+          "bzz-raw://ba1d5b085333a8bff525f0c1e028e1faf6b47639761cd6d05d5bbb483af4e305",
+          "dweb:/ipfs/QmRo5wGrBZQDhGPngCD4EXhWmzGifLTxDFDtsBdXnYR5Sd"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/modules/tasks/TasksModule.sol",
+    "id": 6501,
+    "exportedSymbols": {
+      "IModule": [
+        5932
+      ],
+      "TasksModule": [
+        6500
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:5487:70",
+    "nodes": [
+      {
+        "id": 6327,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:70",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 6328,
+        "nodeType": "ImportDirective",
+        "src": "56:24:70",
+        "nodes": [],
+        "absolutePath": "contracts/modules/IModule.sol",
+        "file": "../IModule.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 6501,
+        "sourceUnit": 5933,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 6500,
+        "nodeType": "ContractDefinition",
+        "src": "474:5043:70",
+        "nodes": [
+          {
+            "id": 6334,
+            "nodeType": "ErrorDefinition",
+            "src": "621:35:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6332,
+              "nodeType": "StructuredDocumentation",
+              "src": "513:103:70",
+              "text": " @notice Reverted when the current state of a task is invalid for executing an action"
+            },
+            "errorSelector": "a264a954",
+            "name": "FunctionInvalidAtThisStage",
+            "nameLocation": "627:26:70",
+            "parameters": {
+              "id": 6333,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "653:2:70"
+            }
+          },
+          {
+            "id": 6341,
+            "nodeType": "EventDefinition",
+            "src": "841:46:70",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 6335,
+              "nodeType": "StructuredDocumentation",
+              "src": "662:174:70",
+              "text": " @notice Emitted when a task is created\n @param taskID The id of the newly created task\n @param uri IPFS CID with the off-chain data of the task"
+            },
+            "eventSelector": "a5ed9e6226c584326505694539c95cb0e3238ae09bcda5a65c00bbfdab1c6662",
+            "name": "TaskCreated",
+            "nameLocation": "847:11:70",
+            "parameters": {
+              "id": 6340,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6337,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "867:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6341,
+                  "src": "859:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6336,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "859:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6339,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "uri",
+                  "nameLocation": "882:3:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6341,
+                  "src": "875:10:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6338,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "875:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "858:28:70"
+            }
+          },
+          {
+            "id": 6348,
+            "nodeType": "EventDefinition",
+            "src": "1071:45:70",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 6342,
+              "nodeType": "StructuredDocumentation",
+              "src": "893:173:70",
+              "text": " @notice Emitted when a task is edited\n @param taskID The id of the newly created task\n @param uri IPFS CID with the off-chain data of the task"
+            },
+            "eventSelector": "126a0ea5197c062eb92c789989294eb8d2aef31cf41fd012da26dfab98b29a16",
+            "name": "TaskEdited",
+            "nameLocation": "1077:10:70",
+            "parameters": {
+              "id": 6347,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6344,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "1096:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6348,
+                  "src": "1088:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6343,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1088:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6346,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "uri",
+                  "nameLocation": "1111:3:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6348,
+                  "src": "1104:10:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6345,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1104:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1087:28:70"
+            }
+          },
+          {
+            "id": 6355,
+            "nodeType": "EventDefinition",
+            "src": "1267:47:70",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 6349,
+              "nodeType": "StructuredDocumentation",
+              "src": "1122:140:70",
+              "text": " @notice Emitted when a task is taken\n @param taskID The id of the task\n @param taker The address of the taker"
+            },
+            "eventSelector": "958c71e470fd97af28579d832a7e3450d0df0c2bf36b188ffc7ecf861c7d6689",
+            "name": "TaskTaken",
+            "nameLocation": "1273:9:70",
+            "parameters": {
+              "id": 6354,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6351,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "1291:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6355,
+                  "src": "1283:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6350,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1283:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6353,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "taker",
+                  "nameLocation": "1307:5:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6355,
+                  "src": "1299:13:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6352,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1299:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1282:31:70"
+            }
+          },
+          {
+            "id": 6362,
+            "nodeType": "EventDefinition",
+            "src": "1476:58:70",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 6356,
+              "nodeType": "StructuredDocumentation",
+              "src": "1320:151:70",
+              "text": " @notice Emitted when a task is submitted\n @param taskID The id of the task\n @param submissionId The id of the submission"
+            },
+            "eventSelector": "732b29041dfc9fd7a86ce0ca090ecaabdc1a602620a65264047baf43d8ba31be",
+            "name": "TaskSubmitted",
+            "nameLocation": "1482:13:70",
+            "parameters": {
+              "id": 6361,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6358,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "1504:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6362,
+                  "src": "1496:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6357,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1496:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6360,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "submissionId",
+                  "nameLocation": "1520:12:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6362,
+                  "src": "1512:20:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6359,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1512:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1495:38:70"
+            }
+          },
+          {
+            "id": 6369,
+            "nodeType": "EventDefinition",
+            "src": "1689:51:70",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 6363,
+              "nodeType": "StructuredDocumentation",
+              "src": "1540:144:70",
+              "text": " @notice Emitted when a task is finalized\n @param taskID The id of the task\n @param taker The address of the taker"
+            },
+            "eventSelector": "c923846dc69de8ab93cf9ea85e31a6e1ba93bd70bf0cec92b2c98b8f4b4485da",
+            "name": "TaskFinalized",
+            "nameLocation": "1695:13:70",
+            "parameters": {
+              "id": 6368,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6365,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "1717:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6369,
+                  "src": "1709:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6364,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1709:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6367,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "taker",
+                  "nameLocation": "1733:5:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6369,
+                  "src": "1725:13:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6366,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1725:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1708:31:70"
+            }
+          },
+          {
+            "id": 6374,
+            "nodeType": "EnumDefinition",
+            "src": "1809:91:70",
+            "nodes": [],
+            "canonicalName": "TasksModule.TaskStatus",
+            "members": [
+              {
+                "id": 6370,
+                "name": "Created",
+                "nameLocation": "1835:7:70",
+                "nodeType": "EnumValue",
+                "src": "1835:7:70"
+              },
+              {
+                "id": 6371,
+                "name": "Taken",
+                "nameLocation": "1852:5:70",
+                "nodeType": "EnumValue",
+                "src": "1852:5:70"
+              },
+              {
+                "id": 6372,
+                "name": "Submitted",
+                "nameLocation": "1867:9:70",
+                "nodeType": "EnumValue",
+                "src": "1867:9:70"
+              },
+              {
+                "id": 6373,
+                "name": "Finished",
+                "nameLocation": "1886:8:70",
+                "nodeType": "EnumValue",
+                "src": "1886:8:70"
+              }
+            ],
+            "name": "TaskStatus",
+            "nameLocation": "1814:10:70"
+          },
+          {
+            "id": 6387,
+            "nodeType": "StructDefinition",
+            "src": "2318:170:70",
+            "nodes": [],
+            "canonicalName": "TasksModule.Task",
+            "members": [
+              {
+                "constant": false,
+                "id": 6376,
+                "mutability": "mutable",
+                "name": "createdOn",
+                "nameLocation": "2348:9:70",
+                "nodeType": "VariableDeclaration",
+                "scope": 6387,
+                "src": "2340:17:70",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6375,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2340:7:70",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6378,
+                "mutability": "mutable",
+                "name": "creator",
+                "nameLocation": "2375:7:70",
+                "nodeType": "VariableDeclaration",
+                "scope": 6387,
+                "src": "2367:15:70",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 6377,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2367:7:70",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6380,
+                "mutability": "mutable",
+                "name": "role",
+                "nameLocation": "2400:4:70",
+                "nodeType": "VariableDeclaration",
+                "scope": 6387,
+                "src": "2392:12:70",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6379,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2392:7:70",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6382,
+                "mutability": "mutable",
+                "name": "metadata",
+                "nameLocation": "2421:8:70",
+                "nodeType": "VariableDeclaration",
+                "scope": 6387,
+                "src": "2414:15:70",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 6381,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2414:6:70",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6384,
+                "mutability": "mutable",
+                "name": "startDate",
+                "nameLocation": "2447:9:70",
+                "nodeType": "VariableDeclaration",
+                "scope": 6387,
+                "src": "2439:17:70",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6383,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2439:7:70",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6386,
+                "mutability": "mutable",
+                "name": "endDate",
+                "nameLocation": "2474:7:70",
+                "nodeType": "VariableDeclaration",
+                "scope": 6387,
+                "src": "2466:15:70",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6385,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2466:7:70",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Task",
+            "nameLocation": "2325:4:70",
+            "scope": 6500,
+            "visibility": "public"
+          },
+          {
+            "id": 6401,
+            "nodeType": "FunctionDefinition",
+            "src": "2717:112:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6388,
+              "nodeType": "StructuredDocumentation",
+              "src": "2494:218:70",
+              "text": " @notice Creates a new task\n @param role The role with which the task is associated\n @param uri IPFS CID with the off-chain data of the task\n @return The id of the newly created task"
+            },
+            "functionSelector": "bd45a0a9",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "create",
+            "nameLocation": "2726:6:70",
+            "parameters": {
+              "id": 6397,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6390,
+                  "mutability": "mutable",
+                  "name": "role",
+                  "nameLocation": "2741:4:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6401,
+                  "src": "2733:12:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6389,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2733:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6392,
+                  "mutability": "mutable",
+                  "name": "uri",
+                  "nameLocation": "2761:3:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6401,
+                  "src": "2747:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6391,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2747:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6394,
+                  "mutability": "mutable",
+                  "name": "startDate",
+                  "nameLocation": "2774:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6401,
+                  "src": "2766:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6393,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2766:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6396,
+                  "mutability": "mutable",
+                  "name": "endDate",
+                  "nameLocation": "2793:7:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6401,
+                  "src": "2785:15:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6395,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2785:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2732:69:70"
+            },
+            "returnParameters": {
+              "id": 6400,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6399,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6401,
+                  "src": "2820:7:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6398,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2820:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2819:9:70"
+            },
+            "scope": 6500,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6417,
+            "nodeType": "FunctionDefinition",
+            "src": "3104:147:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6402,
+              "nodeType": "StructuredDocumentation",
+              "src": "2835:264:70",
+              "text": " @notice Creates a new task\n @param creator The creator of the task\n @param role The role with which the task is associated\n @param uri IPFS CID with the off-chain data of the task\n @return The id of the newly created task"
+            },
+            "functionSelector": "0bb75b45",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "createBy",
+            "nameLocation": "3113:8:70",
+            "parameters": {
+              "id": 6413,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6404,
+                  "mutability": "mutable",
+                  "name": "creator",
+                  "nameLocation": "3130:7:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6417,
+                  "src": "3122:15:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6403,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3122:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6406,
+                  "mutability": "mutable",
+                  "name": "role",
+                  "nameLocation": "3147:4:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6417,
+                  "src": "3139:12:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6405,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3139:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6408,
+                  "mutability": "mutable",
+                  "name": "uri",
+                  "nameLocation": "3167:3:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6417,
+                  "src": "3153:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6407,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3153:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6410,
+                  "mutability": "mutable",
+                  "name": "startDate",
+                  "nameLocation": "3180:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6417,
+                  "src": "3172:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6409,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3172:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6412,
+                  "mutability": "mutable",
+                  "name": "endDate",
+                  "nameLocation": "3199:7:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6417,
+                  "src": "3191:15:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6411,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3191:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3121:86:70"
+            },
+            "returnParameters": {
+              "id": 6416,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6415,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6417,
+                  "src": "3242:7:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6414,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3242:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3241:9:70"
+            },
+            "scope": 6500,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6431,
+            "nodeType": "FunctionDefinition",
+            "src": "3564:112:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6418,
+              "nodeType": "StructuredDocumentation",
+              "src": "3257:302:70",
+              "text": " @notice Edits a task\n @param taskId The id of the task\n @param role The role with which the task is associated\n @param uri IPFS CID with the off-chain data of the task\n @param startDate The start date of the task\n @param endDate The end date of the task"
+            },
+            "functionSelector": "2b086648",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "editTask",
+            "nameLocation": "3573:8:70",
+            "parameters": {
+              "id": 6429,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6420,
+                  "mutability": "mutable",
+                  "name": "taskId",
+                  "nameLocation": "3590:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6431,
+                  "src": "3582:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6419,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3582:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6422,
+                  "mutability": "mutable",
+                  "name": "role",
+                  "nameLocation": "3606:4:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6431,
+                  "src": "3598:12:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6421,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3598:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6424,
+                  "mutability": "mutable",
+                  "name": "uri",
+                  "nameLocation": "3626:3:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6431,
+                  "src": "3612:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6423,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3612:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6426,
+                  "mutability": "mutable",
+                  "name": "startDate",
+                  "nameLocation": "3639:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6431,
+                  "src": "3631:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6425,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3631:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6428,
+                  "mutability": "mutable",
+                  "name": "endDate",
+                  "nameLocation": "3658:7:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6431,
+                  "src": "3650:15:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6427,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3650:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3581:85:70"
+            },
+            "returnParameters": {
+              "id": 6430,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3675:0:70"
+            },
+            "scope": 6500,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6437,
+            "nodeType": "FunctionDefinition",
+            "src": "3794:39:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6432,
+              "nodeType": "StructuredDocumentation",
+              "src": "3682:107:70",
+              "text": "@notice A function for taking a task. The signer is the taker.\n @param taskID the id of the task"
+            },
+            "functionSelector": "4fd9efc4",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "take",
+            "nameLocation": "3803:4:70",
+            "parameters": {
+              "id": 6435,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6434,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "3816:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6437,
+                  "src": "3808:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6433,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3808:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3807:16:70"
+            },
+            "returnParameters": {
+              "id": 6436,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3832:0:70"
+            },
+            "scope": 6500,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6445,
+            "nodeType": "FunctionDefinition",
+            "src": "4054:71:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6438,
+              "nodeType": "StructuredDocumentation",
+              "src": "3839:210:70",
+              "text": "@notice A function for submitting a task.\n Conceptually only the taker can submit it.\n @param taskID the id of the task\n @param submitionUrl IPFS CID with the off-chain submission data."
+            },
+            "functionSelector": "5d63f6c6",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "submit",
+            "nameLocation": "4063:6:70",
+            "parameters": {
+              "id": 6443,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6440,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "4078:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6445,
+                  "src": "4070:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6439,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4070:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6442,
+                  "mutability": "mutable",
+                  "name": "submitionUrl",
+                  "nameLocation": "4102:12:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6445,
+                  "src": "4086:28:70",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6441,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4086:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4069:46:70"
+            },
+            "returnParameters": {
+              "id": 6444,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4124:0:70"
+            },
+            "scope": 6500,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6451,
+            "nodeType": "FunctionDefinition",
+            "src": "4215:43:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6446,
+              "nodeType": "StructuredDocumentation",
+              "src": "4131:79:70",
+              "text": "@notice A function for finalizing a task.\n @param taskID the task ID"
+            },
+            "functionSelector": "05261aea",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "finalize",
+            "nameLocation": "4224:8:70",
+            "parameters": {
+              "id": 6449,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6448,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "4241:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6451,
+                  "src": "4233:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6447,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4233:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4232:16:70"
+            },
+            "returnParameters": {
+              "id": 6450,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4257:0:70"
+            },
+            "scope": 6500,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6459,
+            "nodeType": "FunctionDefinition",
+            "src": "4424:65:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6452,
+              "nodeType": "StructuredDocumentation",
+              "src": "4264:155:70",
+              "text": "@notice A function for finalizing a task for a specific member.\n @param taskID the task ID\n @param submitter the address of the submitter"
+            },
+            "functionSelector": "daf91137",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "finalizeFor",
+            "nameLocation": "4433:11:70",
+            "parameters": {
+              "id": 6457,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6454,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "4453:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6459,
+                  "src": "4445:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6453,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4445:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6456,
+                  "mutability": "mutable",
+                  "name": "submitter",
+                  "nameLocation": "4469:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6459,
+                  "src": "4461:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6455,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4461:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4444:35:70"
+            },
+            "returnParameters": {
+              "id": 6458,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4488:0:70"
+            },
+            "scope": 6500,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6468,
+            "nodeType": "FunctionDefinition",
+            "src": "4607:69:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6460,
+              "nodeType": "StructuredDocumentation",
+              "src": "4495:107:70",
+              "text": "@notice Fetches task by ID\n @param taskID the id of the task\n @return the Task structure."
+            },
+            "functionSelector": "f4f4d237",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getById",
+            "nameLocation": "4616:7:70",
+            "parameters": {
+              "id": 6463,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6462,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "4632:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6468,
+                  "src": "4624:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6461,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4624:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4623:16:70"
+            },
+            "returnParameters": {
+              "id": 6467,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6466,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6468,
+                  "src": "4663:11:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Task_$6387_memory_ptr",
+                    "typeString": "struct TasksModule.Task"
+                  },
+                  "typeName": {
+                    "id": 6465,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6464,
+                      "name": "Task",
+                      "nameLocations": [
+                        "4663:4:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6387,
+                      "src": "4663:4:70"
+                    },
+                    "referencedDeclaration": 6387,
+                    "src": "4663:4:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Task_$6387_storage_ptr",
+                      "typeString": "struct TasksModule.Task"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4662:13:70"
+            },
+            "scope": 6500,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6478,
+            "nodeType": "FunctionDefinition",
+            "src": "4857:88:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6469,
+              "nodeType": "StructuredDocumentation",
+              "src": "4682:170:70",
+              "text": "@notice Checks if a specific user has completed a task by ID\n @param user the address of the user\n @param taskID the id of the task\n @return bool"
+            },
+            "functionSelector": "973cdc78",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "hasCompletedTheTask",
+            "nameLocation": "4866:19:70",
+            "parameters": {
+              "id": 6474,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6471,
+                  "mutability": "mutable",
+                  "name": "user",
+                  "nameLocation": "4894:4:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6478,
+                  "src": "4886:12:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6470,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4886:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6473,
+                  "mutability": "mutable",
+                  "name": "taskID",
+                  "nameLocation": "4908:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6478,
+                  "src": "4900:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6472,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4900:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4885:30:70"
+            },
+            "returnParameters": {
+              "id": 6477,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6476,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6478,
+                  "src": "4939:4:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 6475,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4939:4:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4938:6:70"
+            },
+            "scope": 6500,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6489,
+            "nodeType": "FunctionDefinition",
+            "src": "5141:101:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6479,
+              "nodeType": "StructuredDocumentation",
+              "src": "4951:185:70",
+              "text": "@notice Gets the status of a task for a specific submitter.\n @param taskId the id of the task\n @param submitter the address of the submitter\n @return TaskStatus"
+            },
+            "functionSelector": "b206b569",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getStatusPerSubmitter",
+            "nameLocation": "5150:21:70",
+            "parameters": {
+              "id": 6484,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6481,
+                  "mutability": "mutable",
+                  "name": "taskId",
+                  "nameLocation": "5180:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6489,
+                  "src": "5172:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6480,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5172:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6483,
+                  "mutability": "mutable",
+                  "name": "submitter",
+                  "nameLocation": "5196:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6489,
+                  "src": "5188:17:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6482,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5188:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5171:35:70"
+            },
+            "returnParameters": {
+              "id": 6488,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6487,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6489,
+                  "src": "5230:10:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_TaskStatus_$6374",
+                    "typeString": "enum TasksModule.TaskStatus"
+                  },
+                  "typeName": {
+                    "id": 6486,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6485,
+                      "name": "TaskStatus",
+                      "nameLocations": [
+                        "5230:10:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6374,
+                      "src": "5230:10:70"
+                    },
+                    "referencedDeclaration": 6374,
+                    "src": "5230:10:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_TaskStatus_$6374",
+                      "typeString": "enum TasksModule.TaskStatus"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5229:12:70"
+            },
+            "scope": 6500,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6499,
+            "nodeType": "FunctionDefinition",
+            "src": "5426:89:70",
+            "nodes": [],
+            "documentation": {
+              "id": 6490,
+              "nodeType": "StructuredDocumentation",
+              "src": "5248:173:70",
+              "text": "@notice Gets the completion time of a task for a specific user.\n @param taskId the id of the task\n @param user the address of the user\n @return uint"
+            },
+            "functionSelector": "e31c007f",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getCompletionTime",
+            "nameLocation": "5435:17:70",
+            "parameters": {
+              "id": 6495,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6492,
+                  "mutability": "mutable",
+                  "name": "taskId",
+                  "nameLocation": "5461:6:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6499,
+                  "src": "5453:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6491,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5453:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6494,
+                  "mutability": "mutable",
+                  "name": "user",
+                  "nameLocation": "5477:4:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6499,
+                  "src": "5469:12:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6493,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5469:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5452:30:70"
+            },
+            "returnParameters": {
+              "id": 6498,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6497,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6499,
+                  "src": "5506:7:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6496,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5506:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5505:9:70"
+            },
+            "scope": 6500,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 6330,
+              "name": "IModule",
+              "nameLocations": [
+                "499:7:70"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 5932,
+              "src": "499:7:70"
+            },
+            "id": 6331,
+            "nodeType": "InheritanceSpecifier",
+            "src": "499:7:70"
+          }
+        ],
+        "canonicalName": "TasksModule",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 6329,
+          "nodeType": "StructuredDocumentation",
+          "src": "82:391:70",
+          "text": " @title TasksModule\n @notice Implements a simple State Machine for on-chain tasks.\n The state machine has 4 states - Created, Taken, Submitted, Finalized.\n The task itself is associated with а role.\n The off-chain data of the task such as description, title, tags etc is represented by IPFS CID pointing to a JSON file.\n Every tasks plugin must implement this interface."
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          6500,
+          5932
+        ],
+        "name": "TasksModule",
+        "nameLocation": "484:11:70",
+        "scope": 6501,
+        "usedErrors": [
+          5915,
+          6334
+        ]
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 70
+}

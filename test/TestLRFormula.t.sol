@@ -3,15 +3,14 @@ pragma solidity 0.8.19;
 
 import {DeploysInit} from "./DeploysInit.t.sol";
 
-import {LocalRep} from "../contracts/plugins/interactions/LocalReputation.sol";
-import "../contracts/plugins/interactions/ILocalReputation.sol";
+import {LocalReputation} from "../contracts/LocalReputation.sol";
+import "../contracts/ILocalReputation.sol";
 import {SampleInteractionPlugin} from "../contracts/plugins/interactions/SampleInteractionPlugin.sol";
 
 import "forge-std/console.sol";
 
 contract TestLRFuzz is DeploysInit {
-    LocalRep LocalRepAlgo;
-    ILocalReputation iLR;
+    LocalReputation LocalRepAlgo;
     SampleInteractionPlugin InteractionPlugin;
 
     uint256 taskPluginId;
@@ -23,7 +22,7 @@ contract TestLRFuzz is DeploysInit {
 
         super.setUp();
 
-        LocalRepAlgo = new LocalRep();
+        LocalRepAlgo = new LocalReputation();
         vm.label(address(LocalRepAlgo), "LocalRep");
 
         iLR = ILocalReputation(address(LocalRepAlgo));

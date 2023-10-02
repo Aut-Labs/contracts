@@ -1,0 +1,692 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "FunctionNotImplemented",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "dao",
+          "type": "address"
+        }
+      ],
+      "name": "Onboarded",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "isActive",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "role",
+          "type": "uint256"
+        }
+      ],
+      "name": "isOnboarded",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "moduleId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "novaAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "role",
+          "type": "uint256"
+        }
+      ],
+      "name": "onboard",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "isActive()": "22f3e2d4",
+    "isOnboarded(address,uint256)": "4f2b51c7",
+    "moduleId()": "a1308f27",
+    "novaAddress()": "89f12ed9",
+    "onboard(address,uint256)": "7fa56b83"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"FunctionNotImplemented\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"dao\",\"type\":\"address\"}],\"name\":\"Onboarded\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"isActive\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"}],\"name\":\"isOnboarded\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"moduleId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"novaAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"}],\"name\":\"onboard\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"isOnboarded(address,uint256)\":{\"params\":{\"member\":\"The address for whom the check is made\",\"role\":\"The role for which the member is checked\"},\"returns\":{\"_0\":\"Returns bool, true if the member is onboarded, false - otherwise\"}},\"novaAddress()\":{\"returns\":{\"_0\":\"the address of the daoExpander contract that uses this module.\"}},\"onboard(address,uint256)\":{\"params\":{\"member\":\"The member to be onboarded\",\"role\":\"The role for which the member is onboarded\"}}},\"title\":\"OnboardingModule - interaface\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"isOnboarded(address,uint256)\":{\"notice\":\"Checks if a member is onboarded for a specific role\"},\"novaAddress()\":{\"notice\":\"A plugin contract is deployed for each daoExpander that uses it. When a plugin is associated to a daoExpander, the address is set by the DAOExpander.\"},\"onboard(address,uint256)\":{\"notice\":\"Onboards a new member if needed.\"}},\"notice\":\"Every onboarding plugin must implement this interface\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/modules/onboarding/OnboardingModule.sol\":\"OnboardingModule\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/modules/IModule.sol\":{\"keccak256\":\"0xa66f8f41a45bd68eddec5d3d047b6f91aebe01fa531d556d048638a4b54a5aef\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7c441222b7f4adb6ef505ee990417a842c9abb74bbc80213e85ce96ffbccb8bd\",\"dweb:/ipfs/QmdEtMxpfvvFGH7F8QQK17eR5GPkGVodiJa1NLXHZP1UtX\"]},\"contracts/modules/onboarding/OnboardingModule.sol\":{\"keccak256\":\"0x7f7644a379e6ec4441ad3e1f77b1c5a31ca33c81bf08a45ad783e5b970d7868c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d26895f83acd7ca1619cfbde8ec1f97e508134ca5962d0ea2e74675447e29a9c\",\"dweb:/ipfs/QmacM4ryLMbv471UmrpYgyonNfWAmswa5Vgqg3hw33ypW4\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "FunctionNotImplemented"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "dao",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "Onboarded",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isActive",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "role",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isOnboarded",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "moduleId",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "novaAddress",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "role",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "onboard"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "isOnboarded(address,uint256)": {
+            "params": {
+              "member": "The address for whom the check is made",
+              "role": "The role for which the member is checked"
+            },
+            "returns": {
+              "_0": "Returns bool, true if the member is onboarded, false - otherwise"
+            }
+          },
+          "novaAddress()": {
+            "returns": {
+              "_0": "the address of the daoExpander contract that uses this module."
+            }
+          },
+          "onboard(address,uint256)": {
+            "params": {
+              "member": "The member to be onboarded",
+              "role": "The role for which the member is onboarded"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "isOnboarded(address,uint256)": {
+            "notice": "Checks if a member is onboarded for a specific role"
+          },
+          "novaAddress()": {
+            "notice": "A plugin contract is deployed for each daoExpander that uses it. When a plugin is associated to a daoExpander, the address is set by the DAOExpander."
+          },
+          "onboard(address,uint256)": {
+            "notice": "Onboards a new member if needed."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/modules/onboarding/OnboardingModule.sol": "OnboardingModule"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/modules/IModule.sol": {
+        "keccak256": "0xa66f8f41a45bd68eddec5d3d047b6f91aebe01fa531d556d048638a4b54a5aef",
+        "urls": [
+          "bzz-raw://7c441222b7f4adb6ef505ee990417a842c9abb74bbc80213e85ce96ffbccb8bd",
+          "dweb:/ipfs/QmdEtMxpfvvFGH7F8QQK17eR5GPkGVodiJa1NLXHZP1UtX"
+        ],
+        "license": "MIT"
+      },
+      "contracts/modules/onboarding/OnboardingModule.sol": {
+        "keccak256": "0x7f7644a379e6ec4441ad3e1f77b1c5a31ca33c81bf08a45ad783e5b970d7868c",
+        "urls": [
+          "bzz-raw://d26895f83acd7ca1619cfbde8ec1f97e508134ca5962d0ea2e74675447e29a9c",
+          "dweb:/ipfs/QmacM4ryLMbv471UmrpYgyonNfWAmswa5Vgqg3hw33ypW4"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/modules/onboarding/OnboardingModule.sol",
+    "id": 5964,
+    "exportedSymbols": {
+      "IModule": [
+        5932
+      ],
+      "OnboardingModule": [
+        5963
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:1621:66",
+    "nodes": [
+      {
+        "id": 5934,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:66",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 5935,
+        "nodeType": "ImportDirective",
+        "src": "56:24:66",
+        "nodes": [],
+        "absolutePath": "contracts/modules/IModule.sol",
+        "file": "../IModule.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 5964,
+        "sourceUnit": 5933,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 5963,
+        "nodeType": "ContractDefinition",
+        "src": "587:1064:66",
+        "nodes": [
+          {
+            "id": 5944,
+            "nodeType": "EventDefinition",
+            "src": "673:45:66",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "eb8b7c765c848f2aeca4810b4bc2d00652995baee71bf65d37f6ae6e8a0de82e",
+            "name": "Onboarded",
+            "nameLocation": "679:9:66",
+            "parameters": {
+              "id": 5943,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5940,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "member",
+                  "nameLocation": "697:6:66",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5944,
+                  "src": "689:14:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5939,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "689:7:66",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5942,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "dao",
+                  "nameLocation": "713:3:66",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5944,
+                  "src": "705:11:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5941,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "705:7:66",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "688:29:66"
+            }
+          },
+          {
+            "id": 5954,
+            "nodeType": "FunctionDefinition",
+            "src": "995:80:66",
+            "nodes": [],
+            "documentation": {
+              "id": 5945,
+              "nodeType": "StructuredDocumentation",
+              "src": "724:266:66",
+              "text": "@notice Checks if a member is onboarded for a specific role\n @param member The address for whom the check is made\n @param role The role for which the member is checked\n @return Returns bool, true if the member is onboarded, false - otherwise"
+            },
+            "functionSelector": "4f2b51c7",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isOnboarded",
+            "nameLocation": "1004:11:66",
+            "parameters": {
+              "id": 5950,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5947,
+                  "mutability": "mutable",
+                  "name": "member",
+                  "nameLocation": "1024:6:66",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5954,
+                  "src": "1016:14:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5946,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1016:7:66",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5949,
+                  "mutability": "mutable",
+                  "name": "role",
+                  "nameLocation": "1040:4:66",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5954,
+                  "src": "1032:12:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5948,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1032:7:66",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1015:30:66"
+            },
+            "returnParameters": {
+              "id": 5953,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5952,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5954,
+                  "src": "1069:4:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5951,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1069:4:66",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1068:6:66"
+            },
+            "scope": 5963,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 5962,
+            "nodeType": "FunctionDefinition",
+            "src": "1593:56:66",
+            "nodes": [],
+            "documentation": {
+              "id": 5955,
+              "nodeType": "StructuredDocumentation",
+              "src": "1432:156:66",
+              "text": "@notice Onboards a new member if needed.\n @param member The member to be onboarded\n @param role The role for which the member is onboarded"
+            },
+            "functionSelector": "7fa56b83",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "onboard",
+            "nameLocation": "1602:7:66",
+            "parameters": {
+              "id": 5960,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5957,
+                  "mutability": "mutable",
+                  "name": "member",
+                  "nameLocation": "1618:6:66",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5962,
+                  "src": "1610:14:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5956,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1610:7:66",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5959,
+                  "mutability": "mutable",
+                  "name": "role",
+                  "nameLocation": "1634:4:66",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5962,
+                  "src": "1626:12:66",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5958,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1626:7:66",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1609:30:66"
+            },
+            "returnParameters": {
+              "id": 5961,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1648:0:66"
+            },
+            "scope": 5963,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 5937,
+              "name": "IModule",
+              "nameLocations": [
+                "617:7:66"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 5932,
+              "src": "617:7:66"
+            },
+            "id": 5938,
+            "nodeType": "InheritanceSpecifier",
+            "src": "617:7:66"
+          }
+        ],
+        "canonicalName": "OnboardingModule",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 5936,
+          "nodeType": "StructuredDocumentation",
+          "src": "480:107:66",
+          "text": "@title OnboardingModule - interaface\n @notice Every onboarding plugin must implement this interface"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          5963,
+          5932
+        ],
+        "name": "OnboardingModule",
+        "nameLocation": "597:16:66",
+        "scope": 5964,
+        "usedErrors": [
+          5915
+        ]
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 66
+}

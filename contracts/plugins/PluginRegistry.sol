@@ -11,7 +11,6 @@ import "../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../daoUtils/interfaces/get/IDAOAdmin.sol";
 import "../daoUtils/interfaces/get/IDAOModules.sol";
 import "../nova/interfaces/INova.sol";
-import "../IInteraction.sol";
 
 /// @title PluginRegistry
 /// @notice Stores all plugins available and allows them to be added to a dao
@@ -47,21 +46,10 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
 
     // Plugin creation
     function addPluginToDAO(address pluginAddress, uint256 pluginDefinitionId) external payable override nonReentrant {
-        address nova = IPlugin(pluginAddress).daoAddress();
+        address nova = IPlugin(pluginAddress).novaAddress();
 
         require(IDAOAdmin(nova).isAdmin(msg.sender) == true, "Not an admin");
         PluginDefinition memory pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
-        uint256[] memory depModules = pluginDefinition.dependencyModules;
-        uint256 i;
-
-        for (i; i < depModules.length;) {
-            if (!IDAOModules(modulesRegistry).isModuleActivated(depModules[i])) {
-                IDAOModules(modulesRegistry).activateModule(depModules[i]);
-            }
-            unchecked {
-                ++i;
-            }
-        }
 
         require(pluginDefinition.canBeStandalone, "can't be standalone");
         require(msg.value >= pluginDefinition.price, "AUT: Insufficient price paid");
@@ -86,8 +74,6 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
 
         IPlugin(pluginAddress).setPluginId(tokenId);
         // allow interactions to be used from plugin
-        address interactions = IDAOInteractions(nova).getInteractionsAddr();
-        IInteraction(interactions).allowAccess(pluginAddress);
 
         if (IModule(pluginAddress).moduleId() == 1) {
             INova(nova).setOnboardingStrategy(pluginAddress);

@@ -23,7 +23,7 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
     }
 
     modifier onlyAdmin() {
-        require(IDAOAdmin(daoAddress()).isAdmin(msg.sender), "Not an admin.");
+        require(IDAOAdmin(novaAddress()).isAdmin(msg.sender), "Not an admin.");
         _;
     }
 

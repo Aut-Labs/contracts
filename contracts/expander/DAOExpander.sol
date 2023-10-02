@@ -12,7 +12,6 @@ import "../daoUtils/abstracts/DAOModules.sol";
 import "../daoUtils/abstracts/DAOMetadata.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
 import "../daoUtils/abstracts/DAOMarket.sol";
-import "../daoUtils/abstracts/DAOInteractions.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../expander/interfaces/IDAOExpander.sol";
 import "../modules/onboarding/OnboardingModule.sol";
@@ -25,7 +24,7 @@ contract DAOExpander is
     DAOMembers,
     DAOUrls,
     DAOMetadata,
-    DAOInteractions,
+    // DAOInteractions,
     DAOCommitment,
     DAOMarket,
     DAOModules,
@@ -76,7 +75,6 @@ contract DAOExpander is
         super._setAutIDAddress(IAutID(_autAddr));
         super._setCommitment(_commitment);
         super._setMetadataUri(_metadata);
-        super._deployInteractions();
         super._setPluginRegistry(_pluginRegistry);
     }
 
