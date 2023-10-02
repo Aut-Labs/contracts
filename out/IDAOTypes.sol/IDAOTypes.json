@@ -1,0 +1,557 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "daoType",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "membershipCheckerAddress",
+          "type": "address"
+        }
+      ],
+      "name": "DAOTypeAdded",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "membershipChecker",
+          "type": "address"
+        }
+      ],
+      "name": "addNewMembershipChecker",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "membershipType",
+          "type": "uint256"
+        }
+      ],
+      "name": "getMembershipCheckerAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "typesCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "addNewMembershipChecker(address)": "4e12c7ce",
+    "getMembershipCheckerAddress(uint256)": "979a607e",
+    "typesCount()": "4edf6fe0"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"daoType\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"membershipCheckerAddress\",\"type\":\"address\"}],\"name\":\"DAOTypeAdded\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"membershipChecker\",\"type\":\"address\"}],\"name\":\"addNewMembershipChecker\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"membershipType\",\"type\":\"uint256\"}],\"name\":\"getMembershipCheckerAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"typesCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"The contract is Ownable to ensure that only the AutID team can add new types.\",\"kind\":\"dev\",\"methods\":{\"addNewMembershipChecker(address)\":{\"details\":\"Can be called only by the AutID contracts deployer\",\"params\":{\"membershipChecker\":\"the new contract address that is supported now\"}},\"getMembershipCheckerAddress(uint256)\":{\"params\":{\"membershipType\":\"the type of the Membership Checker DAO\"},\"returns\":{\"_0\":\"the address of the contract that implements IMembershipChecker\"}}},\"title\":\"IDAOTypes\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addNewMembershipChecker(address)\":{\"notice\":\"Adds a new type and contract address in the types\"},\"getMembershipCheckerAddress(uint256)\":{\"notice\":\"Returns the address of the MembershipChecker implementation for a given type\"}},\"notice\":\"IDAOTypes has a mapping between type and MembershipChecker deployed for all DAO standards that are supported by AutID\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/membershipCheckers/IDAOTypes.sol\":\"IDAOTypes\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/membershipCheckers/IDAOTypes.sol\":{\"keccak256\":\"0xd550d1486bcdbac8a88ff829752740d2dfb2fb54d1c5d661c83037970513821e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1d3a07d459235b85171f066e25bbac7c0aadcc8bd2874f613d9ea5a473557c39\",\"dweb:/ipfs/QmYGaYyHMfnSHfsNR1TuuD1MN53rMXrNAwBx6XZY4EFqFC\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "daoType",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "membershipCheckerAddress",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "DAOTypeAdded",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "membershipChecker",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addNewMembershipChecker"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "membershipType",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getMembershipCheckerAddress",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "typesCount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "addNewMembershipChecker(address)": {
+            "details": "Can be called only by the AutID contracts deployer",
+            "params": {
+              "membershipChecker": "the new contract address that is supported now"
+            }
+          },
+          "getMembershipCheckerAddress(uint256)": {
+            "params": {
+              "membershipType": "the type of the Membership Checker DAO"
+            },
+            "returns": {
+              "_0": "the address of the contract that implements IMembershipChecker"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "addNewMembershipChecker(address)": {
+            "notice": "Adds a new type and contract address in the types"
+          },
+          "getMembershipCheckerAddress(uint256)": {
+            "notice": "Returns the address of the MembershipChecker implementation for a given type"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/membershipCheckers/IDAOTypes.sol": "IDAOTypes"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/membershipCheckers/IDAOTypes.sol": {
+        "keccak256": "0xd550d1486bcdbac8a88ff829752740d2dfb2fb54d1c5d661c83037970513821e",
+        "urls": [
+          "bzz-raw://1d3a07d459235b85171f066e25bbac7c0aadcc8bd2874f613d9ea5a473557c39",
+          "dweb:/ipfs/QmYGaYyHMfnSHfsNR1TuuD1MN53rMXrNAwBx6XZY4EFqFC"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/membershipCheckers/IDAOTypes.sol",
+    "id": 5314,
+    "exportedSymbols": {
+      "IDAOTypes": [
+        5313
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:1047:49",
+    "nodes": [
+      {
+        "id": 5286,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:49",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 5313,
+        "nodeType": "ContractDefinition",
+        "src": "294:783:49",
+        "nodes": [
+          {
+            "id": 5293,
+            "nodeType": "EventDefinition",
+            "src": "320:70:49",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "dccc0bef10080086bbc26f7f9f19b40614526b4af7554e79f4b67440f6393f11",
+            "name": "DAOTypeAdded",
+            "nameLocation": "326:12:49",
+            "parameters": {
+              "id": 5292,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5289,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "daoType",
+                  "nameLocation": "347:7:49",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5293,
+                  "src": "339:15:49",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5288,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "339:7:49",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5291,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "membershipCheckerAddress",
+                  "nameLocation": "364:24:49",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5293,
+                  "src": "356:32:49",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5290,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "356:7:49",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "338:51:49"
+            }
+          },
+          {
+            "id": 5301,
+            "nodeType": "FunctionDefinition",
+            "src": "637:93:49",
+            "nodes": [],
+            "documentation": {
+              "id": 5294,
+              "nodeType": "StructuredDocumentation",
+              "src": "396:236:49",
+              "text": "@notice Returns the address of the MembershipChecker implementation for a given type\n @param membershipType the type of the Membership Checker DAO\n @return the address of the contract that implements IMembershipChecker"
+            },
+            "functionSelector": "979a607e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getMembershipCheckerAddress",
+            "nameLocation": "646:27:49",
+            "parameters": {
+              "id": 5297,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5296,
+                  "mutability": "mutable",
+                  "name": "membershipType",
+                  "nameLocation": "682:14:49",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5301,
+                  "src": "674:22:49",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5295,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "674:7:49",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "673:24:49"
+            },
+            "returnParameters": {
+              "id": 5300,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5299,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5301,
+                  "src": "721:7:49",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5298,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "721:7:49",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "720:9:49"
+            },
+            "scope": 5313,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 5307,
+            "nodeType": "FunctionDefinition",
+            "src": "946:69:49",
+            "nodes": [],
+            "documentation": {
+              "id": 5302,
+              "nodeType": "StructuredDocumentation",
+              "src": "736:205:49",
+              "text": "@notice Adds a new type and contract address in the types\n @dev Can be called only by the AutID contracts deployer\n @param membershipChecker the new contract address that is supported now"
+            },
+            "functionSelector": "4e12c7ce",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addNewMembershipChecker",
+            "nameLocation": "955:23:49",
+            "parameters": {
+              "id": 5305,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5304,
+                  "mutability": "mutable",
+                  "name": "membershipChecker",
+                  "nameLocation": "987:17:49",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5307,
+                  "src": "979:25:49",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5303,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "979:7:49",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "978:27:49"
+            },
+            "returnParameters": {
+              "id": 5306,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1014:0:49"
+            },
+            "scope": 5313,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 5312,
+            "nodeType": "FunctionDefinition",
+            "src": "1021:54:49",
+            "nodes": [],
+            "functionSelector": "4edf6fe0",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "typesCount",
+            "nameLocation": "1030:10:49",
+            "parameters": {
+              "id": 5308,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1040:2:49"
+            },
+            "returnParameters": {
+              "id": 5311,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5310,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5312,
+                  "src": "1066:7:49",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5309,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1066:7:49",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1065:9:49"
+            },
+            "scope": 5313,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IDAOTypes",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 5287,
+          "nodeType": "StructuredDocumentation",
+          "src": "56:238:49",
+          "text": "@title IDAOTypes\n @notice IDAOTypes has a mapping between type and MembershipChecker deployed for all DAO standards that are supported by AutID\n @dev The contract is Ownable to ensure that only the AutID team can add new types."
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          5313
+        ],
+        "name": "IDAOTypes",
+        "nameLocation": "304:9:49",
+        "scope": 5314,
+        "usedErrors": []
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 49
+}
