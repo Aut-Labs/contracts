@@ -19,10 +19,6 @@ interface INova {
 
     function getAutIDAddress() external view returns (address);
 
-    function getInteractionsAddr() external view returns (address);
-
-    function getInteractionsPerUser(address member) external view returns (uint256);
-
     function getCommitment() external view returns (uint256 commitment);
 
     function addAdmin(address member) external;

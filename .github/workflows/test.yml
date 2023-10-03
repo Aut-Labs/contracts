@@ -32,8 +32,8 @@ jobs:
       # - name: Build with Hardhat
       #   run: npm run test
 
-      # - name: Install TypeScript type generator
-      #   run: npm install --save-dev typechain
+      - name: generate types
+        run: typechain --target ethers-v5 --out-dir app/contractTypes './out/*.sol/*.json'
 
       # - name: Generate TypeScript types
       #   run: npx hardhat typechain
