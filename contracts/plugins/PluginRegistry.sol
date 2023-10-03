@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "../plugins/IPlugin.sol";
 import "../plugins/registry/IPluginRegistry.sol";
-import "../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../daoUtils/interfaces/get/IDAOAdmin.sol";
 import "../daoUtils/interfaces/get/IDAOModules.sol";
 import "../nova/interfaces/INova.sol";
