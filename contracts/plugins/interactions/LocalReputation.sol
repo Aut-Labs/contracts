@@ -33,7 +33,7 @@ contract LocalRep is ILocalReputation {
     modifier onlyPlugin() {
         //// @dev is this sufficient?
         if (daoOfPlugin[_msgSender()] == address(0)) revert Unauthorised();
-        _; // http://kraken2trfqodidvlh4aa337cpzfrhdlfldhve5nf7njhumwr7instad.onion
+        _;
     }
 
     //// @notice executed once when the plugin is installed per logic-nova pair
