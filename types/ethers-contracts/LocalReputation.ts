@@ -112,7 +112,6 @@ export interface LocalReputationInterface extends utils.Interface {
     "DEFAULT_PERIOD()": FunctionFragment;
     "bulkPeriodicUpdate(address)": FunctionFragment;
     "calculateLocalReputation(uint256,uint256,uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
-    "daoOfPlugin(address)": FunctionFragment;
     "getAvReputationAndCommitment(address)": FunctionFragment;
     "getContextID(address,address)": FunctionFragment;
     "getGroupState(address)": FunctionFragment;
@@ -123,6 +122,7 @@ export interface LocalReputationInterface extends utils.Interface {
     "initialize(address)": FunctionFragment;
     "interaction(bytes,address)": FunctionFragment;
     "interactionID(address,bytes)": FunctionFragment;
+    "novaOfPlugin(address)": FunctionFragment;
     "periodicGroupStateUpdate(address)": FunctionFragment;
     "pointsPerInteraction(uint256)": FunctionFragment;
     "setInteractionWeights(address,bytes[],uint16[])": FunctionFragment;
@@ -139,7 +139,6 @@ export interface LocalReputationInterface extends utils.Interface {
       | "DEFAULT_PERIOD"
       | "bulkPeriodicUpdate"
       | "calculateLocalReputation"
-      | "daoOfPlugin"
       | "getAvReputationAndCommitment"
       | "getContextID"
       | "getGroupState"
@@ -150,6 +149,7 @@ export interface LocalReputationInterface extends utils.Interface {
       | "initialize"
       | "interaction"
       | "interactionID"
+      | "novaOfPlugin"
       | "periodicGroupStateUpdate"
       | "pointsPerInteraction"
       | "setInteractionWeights"
@@ -187,7 +187,6 @@ export interface LocalReputationInterface extends utils.Interface {
       BigNumberish
     ]
   ): string;
-  encodeFunctionData(functionFragment: "daoOfPlugin", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getAvReputationAndCommitment",
     values: [string]
@@ -224,6 +223,10 @@ export interface LocalReputationInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "interactionID",
     values: [string, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "novaOfPlugin",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "periodicGroupStateUpdate",
@@ -272,10 +275,6 @@ export interface LocalReputationInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "daoOfPlugin",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getAvReputationAndCommitment",
     data: BytesLike
   ): Result;
@@ -307,6 +306,10 @@ export interface LocalReputationInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "interactionID",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "novaOfPlugin",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -427,7 +430,7 @@ export interface LocalReputation extends BaseContract {
     DEFAULT_PERIOD(overrides?: CallOverrides): Promise<[number]>;
 
     bulkPeriodicUpdate(
-      group_: string,
+      nova_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -442,11 +445,6 @@ export interface LocalReputation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { score: BigNumber }>;
 
-    daoOfPlugin(
-      plugin: string,
-      overrides?: CallOverrides
-    ): Promise<[string] & { dao: string }>;
-
     getAvReputationAndCommitment(
       nova_: string,
       overrides?: CallOverrides
@@ -456,7 +454,7 @@ export interface LocalReputation extends BaseContract {
 
     getContextID(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -473,13 +471,13 @@ export interface LocalReputation extends BaseContract {
 
     getLRof(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<[IndividualStateStructOutput]>;
 
     getLocalReputationScore(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { score: BigNumber }>;
 
@@ -505,8 +503,13 @@ export interface LocalReputation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { id: BigNumber }>;
 
+    novaOfPlugin(
+      plugin: string,
+      overrides?: CallOverrides
+    ): Promise<[string] & { nova: string }>;
+
     periodicGroupStateUpdate(
-      group_: string,
+      nova_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -537,7 +540,7 @@ export interface LocalReputation extends BaseContract {
 
     updateIndividualLR(
       who_: string,
-      group_: string,
+      nova_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
@@ -551,7 +554,7 @@ export interface LocalReputation extends BaseContract {
   DEFAULT_PERIOD(overrides?: CallOverrides): Promise<number>;
 
   bulkPeriodicUpdate(
-    group_: string,
+    nova_: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -566,8 +569,6 @@ export interface LocalReputation extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  daoOfPlugin(plugin: string, overrides?: CallOverrides): Promise<string>;
-
   getAvReputationAndCommitment(
     nova_: string,
     overrides?: CallOverrides
@@ -577,7 +578,7 @@ export interface LocalReputation extends BaseContract {
 
   getContextID(
     subject_: string,
-    group_: string,
+    nova_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -594,13 +595,13 @@ export interface LocalReputation extends BaseContract {
 
   getLRof(
     subject_: string,
-    group_: string,
+    nova_: string,
     overrides?: CallOverrides
   ): Promise<IndividualStateStructOutput>;
 
   getLocalReputationScore(
     subject_: string,
-    group_: string,
+    nova_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -626,8 +627,10 @@ export interface LocalReputation extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  novaOfPlugin(plugin: string, overrides?: CallOverrides): Promise<string>;
+
   periodicGroupStateUpdate(
-    group_: string,
+    nova_: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -658,7 +661,7 @@ export interface LocalReputation extends BaseContract {
 
   updateIndividualLR(
     who_: string,
-    group_: string,
+    nova_: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -672,7 +675,7 @@ export interface LocalReputation extends BaseContract {
     DEFAULT_PERIOD(overrides?: CallOverrides): Promise<number>;
 
     bulkPeriodicUpdate(
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
@@ -687,8 +690,6 @@ export interface LocalReputation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    daoOfPlugin(plugin: string, overrides?: CallOverrides): Promise<string>;
-
     getAvReputationAndCommitment(
       nova_: string,
       overrides?: CallOverrides
@@ -698,7 +699,7 @@ export interface LocalReputation extends BaseContract {
 
     getContextID(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -715,13 +716,13 @@ export interface LocalReputation extends BaseContract {
 
     getLRof(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<IndividualStateStructOutput>;
 
     getLocalReputationScore(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -744,8 +745,10 @@ export interface LocalReputation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    novaOfPlugin(plugin: string, overrides?: CallOverrides): Promise<string>;
+
     periodicGroupStateUpdate(
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -776,7 +779,7 @@ export interface LocalReputation extends BaseContract {
 
     updateIndividualLR(
       who_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -820,7 +823,7 @@ export interface LocalReputation extends BaseContract {
     DEFAULT_PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
     bulkPeriodicUpdate(
-      group_: string,
+      nova_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -835,8 +838,6 @@ export interface LocalReputation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    daoOfPlugin(plugin: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     getAvReputationAndCommitment(
       nova_: string,
       overrides?: CallOverrides
@@ -844,7 +845,7 @@ export interface LocalReputation extends BaseContract {
 
     getContextID(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -858,13 +859,13 @@ export interface LocalReputation extends BaseContract {
 
     getLRof(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getLocalReputationScore(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -890,8 +891,10 @@ export interface LocalReputation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    novaOfPlugin(plugin: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     periodicGroupStateUpdate(
-      group_: string,
+      nova_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -922,7 +925,7 @@ export interface LocalReputation extends BaseContract {
 
     updateIndividualLR(
       who_: string,
-      group_: string,
+      nova_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
@@ -939,7 +942,7 @@ export interface LocalReputation extends BaseContract {
     DEFAULT_PERIOD(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     bulkPeriodicUpdate(
-      group_: string,
+      nova_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
@@ -954,11 +957,6 @@ export interface LocalReputation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    daoOfPlugin(
-      plugin: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getAvReputationAndCommitment(
       nova_: string,
       overrides?: CallOverrides
@@ -966,7 +964,7 @@ export interface LocalReputation extends BaseContract {
 
     getContextID(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -983,13 +981,13 @@ export interface LocalReputation extends BaseContract {
 
     getLRof(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getLocalReputationScore(
       subject_: string,
-      group_: string,
+      nova_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1015,8 +1013,13 @@ export interface LocalReputation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    novaOfPlugin(
+      plugin: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     periodicGroupStateUpdate(
-      group_: string,
+      nova_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
@@ -1047,7 +1050,7 @@ export interface LocalReputation extends BaseContract {
 
     updateIndividualLR(
       who_: string,
-      group_: string,
+      nova_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };

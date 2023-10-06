@@ -42,7 +42,9 @@ export interface ModuleRegistryInterface extends utils.Interface {
   functions: {
     "addModuleDefinition(string)": FunctionFragment;
     "getAllModules()": FunctionFragment;
+    "getAllowListAddress()": FunctionFragment;
     "getModuleById(uint256)": FunctionFragment;
+    "isProtocolMaintaier(address)": FunctionFragment;
     "modules(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -54,7 +56,9 @@ export interface ModuleRegistryInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "addModuleDefinition"
       | "getAllModules"
+      | "getAllowListAddress"
       | "getModuleById"
+      | "isProtocolMaintaier"
       | "modules"
       | "owner"
       | "renounceOwnership"
@@ -71,8 +75,16 @@ export interface ModuleRegistryInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getAllowListAddress",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getModuleById",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isProtocolMaintaier",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "modules",
@@ -101,7 +113,15 @@ export interface ModuleRegistryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getAllowListAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getModuleById",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isProtocolMaintaier",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "modules", data: BytesLike): Result;
@@ -187,10 +207,17 @@ export interface ModuleRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[IModuleRegistry.ModuleDefinitionStructOutput[]]>;
 
+    getAllowListAddress(overrides?: CallOverrides): Promise<[string]>;
+
     getModuleById(
       moduleId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[IModuleRegistry.ModuleDefinitionStructOutput]>;
+
+    isProtocolMaintaier(
+      subject: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     modules(
       arg0: BigNumberish,
@@ -224,10 +251,17 @@ export interface ModuleRegistry extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IModuleRegistry.ModuleDefinitionStructOutput[]>;
 
+  getAllowListAddress(overrides?: CallOverrides): Promise<string>;
+
   getModuleById(
     moduleId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IModuleRegistry.ModuleDefinitionStructOutput>;
+
+  isProtocolMaintaier(
+    subject: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   modules(
     arg0: BigNumberish,
@@ -261,10 +295,17 @@ export interface ModuleRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IModuleRegistry.ModuleDefinitionStructOutput[]>;
 
+    getAllowListAddress(overrides?: CallOverrides): Promise<string>;
+
     getModuleById(
       moduleId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IModuleRegistry.ModuleDefinitionStructOutput>;
+
+    isProtocolMaintaier(
+      subject: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     modules(
       arg0: BigNumberish,
@@ -311,8 +352,15 @@ export interface ModuleRegistry extends BaseContract {
 
     getAllModules(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getAllowListAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
     getModuleById(
       moduleId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isProtocolMaintaier(
+      subject: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -344,8 +392,17 @@ export interface ModuleRegistry extends BaseContract {
 
     getAllModules(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getAllowListAddress(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getModuleById(
       moduleId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isProtocolMaintaier(
+      subject: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -57,6 +57,8 @@ export interface TestSocialBotPluginInterface extends utils.Interface {
     "targetSenders()": FunctionFragment;
     "testAreDeployedContracts()": FunctionFragment;
     "testBotAltersLR()": FunctionFragment;
+    "testMemebrshpInversePerformance()": FunctionFragment;
+    "testNonMemberReputation()": FunctionFragment;
     "testSocialBot()": FunctionFragment;
   };
 
@@ -76,6 +78,8 @@ export interface TestSocialBotPluginInterface extends utils.Interface {
       | "targetSenders"
       | "testAreDeployedContracts"
       | "testBotAltersLR"
+      | "testMemebrshpInversePerformance"
+      | "testNonMemberReputation"
       | "testSocialBot"
   ): FunctionFragment;
 
@@ -124,6 +128,14 @@ export interface TestSocialBotPluginInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "testBotAltersLR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "testMemebrshpInversePerformance",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "testNonMemberReputation",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -176,6 +188,14 @@ export interface TestSocialBotPluginInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "testBotAltersLR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "testMemebrshpInversePerformance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "testNonMemberReputation",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -551,6 +571,14 @@ export interface TestSocialBotPlugin extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
+    testMemebrshpInversePerformance(
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    testNonMemberReputation(
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
     testSocialBot(
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
@@ -598,6 +626,14 @@ export interface TestSocialBotPlugin extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
+  testMemebrshpInversePerformance(
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  testNonMemberReputation(
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
   testSocialBot(
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
@@ -636,6 +672,10 @@ export interface TestSocialBotPlugin extends BaseContract {
     testAreDeployedContracts(overrides?: CallOverrides): Promise<void>;
 
     testBotAltersLR(overrides?: CallOverrides): Promise<void>;
+
+    testMemebrshpInversePerformance(overrides?: CallOverrides): Promise<void>;
+
+    testNonMemberReputation(overrides?: CallOverrides): Promise<void>;
 
     testSocialBot(overrides?: CallOverrides): Promise<void>;
   };
@@ -774,6 +814,14 @@ export interface TestSocialBotPlugin extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
+    testMemebrshpInversePerformance(
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    testNonMemberReputation(
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
     testSocialBot(
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
@@ -815,6 +863,14 @@ export interface TestSocialBotPlugin extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     testBotAltersLR(
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    testMemebrshpInversePerformance(
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    testNonMemberReputation(
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

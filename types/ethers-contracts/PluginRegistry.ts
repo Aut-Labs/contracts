@@ -71,7 +71,6 @@ export interface PluginRegistryInterface extends utils.Interface {
     "setActive(uint256,bool)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setDefaulLRAddress(address)": FunctionFragment;
-    "setDefaultReputationAlgo(address)": FunctionFragment;
     "setFeeBase1000(uint256)": FunctionFragment;
     "setFeeReciever(address)": FunctionFragment;
     "setOracleAddress(address)": FunctionFragment;
@@ -117,7 +116,6 @@ export interface PluginRegistryInterface extends utils.Interface {
       | "setActive"
       | "setApprovalForAll"
       | "setDefaulLRAddress"
-      | "setDefaultReputationAlgo"
       | "setFeeBase1000"
       | "setFeeReciever"
       | "setOracleAddress"
@@ -240,10 +238,6 @@ export interface PluginRegistryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setDefaulLRAddress",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setDefaultReputationAlgo",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -388,10 +382,6 @@ export interface PluginRegistryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setDefaulLRAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setDefaultReputationAlgo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -722,11 +712,6 @@ export interface PluginRegistry extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    setDefaultReputationAlgo(
-      newRepAlgoAddr_: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
     setFeeBase1000(
       newFeeBase1000: BigNumberish,
       overrides?: Overrides & { from?: string }
@@ -928,11 +913,6 @@ export interface PluginRegistry extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  setDefaultReputationAlgo(
-    newRepAlgoAddr_: string,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
   setFeeBase1000(
     newFeeBase1000: BigNumberish,
     overrides?: Overrides & { from?: string }
@@ -1125,11 +1105,6 @@ export interface PluginRegistry extends BaseContract {
     ): Promise<void>;
 
     setDefaulLRAddress(LR: string, overrides?: CallOverrides): Promise<void>;
-
-    setDefaultReputationAlgo(
-      newRepAlgoAddr_: string,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     setFeeBase1000(
       newFeeBase1000: BigNumberish,
@@ -1400,11 +1375,6 @@ export interface PluginRegistry extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
-    setDefaultReputationAlgo(
-      newRepAlgoAddr_: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
     setFeeBase1000(
       newFeeBase1000: BigNumberish,
       overrides?: Overrides & { from?: string }
@@ -1599,11 +1569,6 @@ export interface PluginRegistry extends BaseContract {
 
     setDefaulLRAddress(
       LR: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    setDefaultReputationAlgo(
-      newRepAlgoAddr_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

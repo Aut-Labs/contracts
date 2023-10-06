@@ -68,6 +68,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getAllowListAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -93,6 +106,25 @@ const _abi = [
         internalType: "struct IModuleRegistry.ModuleDefinition",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "subject",
+        type: "address",
+      },
+    ],
+    name: "isProtocolMaintaier",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "view",

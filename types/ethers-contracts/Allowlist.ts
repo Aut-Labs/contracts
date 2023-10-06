@@ -31,6 +31,7 @@ export interface AllowlistInterface extends utils.Interface {
     "addOwner(address)": FunctionFragment;
     "addToAllowlist(address)": FunctionFragment;
     "isAllowed(address)": FunctionFragment;
+    "isAllowedOwner(address)": FunctionFragment;
     "isOwner(address)": FunctionFragment;
     "removeBatchFromAllowlist(address[])": FunctionFragment;
     "removeFromAllowlist(address)": FunctionFragment;
@@ -42,6 +43,7 @@ export interface AllowlistInterface extends utils.Interface {
       | "addOwner"
       | "addToAllowlist"
       | "isAllowed"
+      | "isAllowedOwner"
       | "isOwner"
       | "removeBatchFromAllowlist"
       | "removeFromAllowlist"
@@ -57,6 +59,10 @@ export interface AllowlistInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "isAllowed", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "isAllowedOwner",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "isOwner", values: [string]): string;
   encodeFunctionData(
     functionFragment: "removeBatchFromAllowlist",
@@ -77,6 +83,10 @@ export interface AllowlistInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isAllowed", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isAllowedOwner",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isOwner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeBatchFromAllowlist",
@@ -162,6 +172,11 @@ export interface Allowlist extends BaseContract {
 
     isAllowed(_addr: string, overrides?: CallOverrides): Promise<[boolean]>;
 
+    isAllowedOwner(
+      subject: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     isOwner(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     removeBatchFromAllowlist(
@@ -192,6 +207,8 @@ export interface Allowlist extends BaseContract {
 
   isAllowed(_addr: string, overrides?: CallOverrides): Promise<boolean>;
 
+  isAllowedOwner(subject: string, overrides?: CallOverrides): Promise<boolean>;
+
   isOwner(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
   removeBatchFromAllowlist(
@@ -218,6 +235,11 @@ export interface Allowlist extends BaseContract {
     ): Promise<void>;
 
     isAllowed(_addr: string, overrides?: CallOverrides): Promise<boolean>;
+
+    isAllowedOwner(
+      subject: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     isOwner(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
@@ -260,6 +282,11 @@ export interface Allowlist extends BaseContract {
 
     isAllowed(_addr: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    isAllowedOwner(
+      subject: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isOwner(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     removeBatchFromAllowlist(
@@ -291,6 +318,11 @@ export interface Allowlist extends BaseContract {
 
     isAllowed(
       _addr: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isAllowedOwner(
+      subject: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

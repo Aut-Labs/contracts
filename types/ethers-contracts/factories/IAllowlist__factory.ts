@@ -115,6 +115,25 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "subject",
+        type: "address",
+      },
+    ],
+    name: "isAllowedOwner",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address[]",
         name: "_addrs",
         type: "address[]",
