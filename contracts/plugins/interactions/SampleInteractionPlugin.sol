@@ -3,15 +3,13 @@ pragma solidity 0.8.19;
 
 import {SimplePlugin} from "../SimplePlugin.sol";
 import {InteractionModifier} from "./InteractionModifier.sol";
-import {ILocalReputation} from "./ILocalReputation.sol";
+import {ILocalReputation} from "../../ILocalReputation.sol";
 
 contract SampleInteractionPlugin is SimplePlugin, InteractionModifier {
     uint256 public number;
 
-    constructor(address dao_, address localReputationAlgo_)
-        SimplePlugin(dao_, 0)
-        InteractionModifier(dao_, localReputationAlgo_)
-    {
+    //// @dev todo test other than 0 , reverts on autid mint @todo
+    constructor(address dao_) SimplePlugin(dao_, 0) InteractionModifier(dao_) {
         number = 1;
     }
 

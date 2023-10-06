@@ -4,6 +4,8 @@ pragma solidity 0.8.19;
 import "./AutIDAddress.sol";
 import "../interfaces/get/IDAOAdmin.sol";
 import "../interfaces/get/IDAOMembership.sol";
+import "../interfaces/get/IDAOModules.sol";
+import "../../plugins/registry/IPluginRegistry.sol";
 import "../interfaces/set/IDAOMembershipSet.sol";
 import "../interfaces/set/IDAOAdminSet.sol";
 
@@ -25,6 +27,7 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
         require(isAdmin[msg.sender], "Not an admin!");
         _;
     }
+    /// @dev role not used
 
     function join(address newMember, uint256 role) public virtual override onlyAutID {
         require(!isMember[newMember], "Already a member");
@@ -41,11 +44,42 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
     }
 
     /// Admins
+    /// @notice adds admins provided a member address. Plugins do not have to be members.
+    /// @param member address to add as member.
     function addAdmin(address member) public override onlyAdmin {
-        require(isMember[member], "Not a member");
+        if ((! isMember[member] ) &&  (IPluginRegistry(IDAOModules(address(this)).pluginRegistry()).tokenIdFromAddress(member) == 0) ) revert("Not a member");
         isAdmin[member] = true;
         admins.push(member);
         emit AdminMemberAdded(member);
+    }
+
+    //// @notice adds admins provided a batch of addresses that are already members
+    //// @param adminAddr list of addresses to make admin
+    //// @dev skips if any of addresses is not already a member.
+    //// @return retruns addresses that were successfully added as admins, already admins or not members are replaced with address(0)
+    function addAdmins(address[] memory adminAddr) public override onlyAdmin returns (address[] memory) {
+        uint256 i;
+        for (i; i < adminAddr.length;) {
+            if (!isMember[adminAddr[i]]) {
+                delete adminAddr[i];
+                unchecked {
+                    ++i;
+                }
+                continue;
+            }
+            if (!isAdmin[adminAddr[i]]) {
+                admins.push(adminAddr[i]);
+                /// @dev
+                isAdmin[adminAddr[i]] = true;
+
+                emit AdminMemberAdded(adminAddr[i]);
+            }
+
+            unchecked {
+                ++i;
+            }
+        }
+        return adminAddr;
     }
 
     function removeAdmin(address member) public override onlyAdmin {

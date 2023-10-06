@@ -2,10 +2,9 @@
 pragma solidity 0.8.19;
 
 import "../SimplePlugin.sol";
-import "../../IInteraction.sol";
 
 import "../../modules/tasks/TasksModule.sol";
-import "../../daoUtils/interfaces/get/IDAOInteractions.sol";
+import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -42,7 +41,7 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
     }
 
     modifier onlyAdmin() {
-        require(IDAOAdmin(_dao).isAdmin(msg.sender), "Only admin.");
+        require(IDAOAdmin(_novaAddress).isAdmin(msg.sender), "Only admin.");
         _;
     }
 
@@ -91,8 +90,6 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
 
         taskStatuses[taskId][submitter].status = TaskStatus.Finished;
         taskStatuses[taskId][submitter].completionTime = block.timestamp;
-
-        IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr()).addInteraction(taskId, submitter);
 
         emit TaskFinalized(taskId, submitter);
     }

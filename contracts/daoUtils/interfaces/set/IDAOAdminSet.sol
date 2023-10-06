@@ -9,5 +9,7 @@ interface IDAOAdminSet {
 
     function addAdmin(address member) external;
 
+    function addAdmins(address[] memory adminAddr) external returns (address[] memory);
+
     function removeAdmin(address member) external;
 }

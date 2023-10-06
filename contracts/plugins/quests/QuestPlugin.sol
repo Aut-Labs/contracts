@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
-import "../../daoUtils/interfaces/get/IDAOInteractions.sol";
 
 import "../../modules/tasks/TasksModule.sol";
 import "../../modules/quests/QuestsModule.sol";
@@ -36,7 +35,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     }
 
     modifier onlyAdmin() {
-        require(IDAOAdmin(daoAddress()).isAdmin(msg.sender), "Not an admin.");
+        require(IDAOAdmin(_novaAddress).isAdmin(msg.sender), "Not an admin.");
         _;
     }
 
@@ -232,8 +231,8 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
         require(plugin.pluginAddress != address(0), "Invalid plugin");
         bool isInstalled =
-            IPluginRegistry(pluginRegistry).pluginDefinitionsInstalledByDAO(daoAddress(), plugin.pluginDefinitionId);
-        if (TasksModule(plugin.pluginAddress).daoAddress() == daoAddress() && isInstalled) {
+            IPluginRegistry(pluginRegistry).pluginDefinitionsInstalledByDAO(novaAddress(), plugin.pluginDefinitionId);
+        if (TasksModule(plugin.pluginAddress).novaAddress() == novaAddress() && isInstalled) {
             int256 index = findTask(questId, task);
             if (index == -1) {
                 questTasks[questId].push(task);

@@ -1,0 +1,1059 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "AlreadyDepolyedANova",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyPlusOne",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "Unallowed",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "who",
+          "type": "address"
+        }
+      ],
+      "name": "AddedToAllowList",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "who",
+          "type": "address"
+        }
+      ],
+      "name": "RemovedFromAllowList",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "addrsToAdd_",
+          "type": "address[]"
+        }
+      ],
+      "name": "addBatchToAllowlist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner_",
+          "type": "address"
+        }
+      ],
+      "name": "addOwner",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "addrToAdd_",
+          "type": "address"
+        }
+      ],
+      "name": "addToAllowlist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_addr",
+          "type": "address"
+        }
+      ],
+      "name": "isAllowed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "subject",
+          "type": "address"
+        }
+      ],
+      "name": "isAllowedOwner",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_addrs",
+          "type": "address[]"
+        }
+      ],
+      "name": "removeBatchFromAllowlist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "addrToAdd_",
+          "type": "address"
+        }
+      ],
+      "name": "removeFromAllowlist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "addBatchToAllowlist(address[])": "519cecce",
+    "addOwner(address)": "7065cb48",
+    "addToAllowlist(address)": "f8e86ece",
+    "isAllowed(address)": "babcc539",
+    "isAllowedOwner(address)": "974b1521",
+    "removeBatchFromAllowlist(address[])": "846be7ed",
+    "removeFromAllowlist(address)": "5da93d7e"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"AlreadyDepolyedANova\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"AlreadyPlusOne\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"Unallowed\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"who\",\"type\":\"address\"}],\"name\":\"AddedToAllowList\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"who\",\"type\":\"address\"}],\"name\":\"RemovedFromAllowList\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"addrsToAdd_\",\"type\":\"address[]\"}],\"name\":\"addBatchToAllowlist\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner_\",\"type\":\"address\"}],\"name\":\"addOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"addrToAdd_\",\"type\":\"address\"}],\"name\":\"addToAllowlist\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_addr\",\"type\":\"address\"}],\"name\":\"isAllowed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"subject\",\"type\":\"address\"}],\"name\":\"isAllowedOwner\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"_addrs\",\"type\":\"address[]\"}],\"name\":\"removeBatchFromAllowlist\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"addrToAdd_\",\"type\":\"address\"}],\"name\":\"removeFromAllowlist\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/utils/IAllowlist.sol\":\"IAllowlist\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/utils/IAllowlist.sol\":{\"keccak256\":\"0x1b4b22db726d072b0e5795b59ea9d6b97f333dc3f020623efe0857ccb29633cf\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://88be5287d7695fa32c444032283a6c79a3f5198822b4d2f04e9e49771d48ec76\",\"dweb:/ipfs/QmbjoAanVPopYyuf2J8aoTdQd9jKkzgusfojfaZ69Njs8C\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "AlreadyDepolyedANova"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "AlreadyPlusOne"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "type": "error",
+          "name": "Unallowed"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "who",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "AddedToAllowList",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "who",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "RemovedFromAllowList",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address[]",
+              "name": "addrsToAdd_",
+              "type": "address[]"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addBatchToAllowlist"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "owner_",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addOwner"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "addrToAdd_",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addToAllowlist"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_addr",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isAllowed",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "subject",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isAllowedOwner",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address[]",
+              "name": "_addrs",
+              "type": "address[]"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "removeBatchFromAllowlist"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "addrToAdd_",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "removeFromAllowlist"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/utils/IAllowlist.sol": "IAllowlist"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/utils/IAllowlist.sol": {
+        "keccak256": "0x1b4b22db726d072b0e5795b59ea9d6b97f333dc3f020623efe0857ccb29633cf",
+        "urls": [
+          "bzz-raw://88be5287d7695fa32c444032283a6c79a3f5198822b4d2f04e9e49771d48ec76",
+          "dweb:/ipfs/QmbjoAanVPopYyuf2J8aoTdQd9jKkzgusfojfaZ69Njs8C"
+        ],
+        "license": "UNLICENSED"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/utils/IAllowlist.sol",
+    "id": 11793,
+    "exportedSymbols": {
+      "IAllowlist": [
+        11792
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "39:686:90",
+    "nodes": [
+      {
+        "id": 11734,
+        "nodeType": "PragmaDirective",
+        "src": "39:23:90",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 11792,
+        "nodeType": "ContractDefinition",
+        "src": "64:660:90",
+        "nodes": [
+          {
+            "id": 11738,
+            "nodeType": "ErrorDefinition",
+            "src": "91:24:90",
+            "nodes": [],
+            "errorSelector": "b54ecb9b",
+            "name": "Unallowed",
+            "nameLocation": "97:9:90",
+            "parameters": {
+              "id": 11737,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11736,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11738,
+                  "src": "107:6:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 11735,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "107:6:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "106:8:90"
+            }
+          },
+          {
+            "id": 11740,
+            "nodeType": "ErrorDefinition",
+            "src": "120:23:90",
+            "nodes": [],
+            "errorSelector": "b1e153ab",
+            "name": "AlreadyPlusOne",
+            "nameLocation": "126:14:90",
+            "parameters": {
+              "id": 11739,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "140:2:90"
+            }
+          },
+          {
+            "id": 11742,
+            "nodeType": "ErrorDefinition",
+            "src": "148:29:90",
+            "nodes": [],
+            "errorSelector": "909568db",
+            "name": "AlreadyDepolyedANova",
+            "nameLocation": "154:20:90",
+            "parameters": {
+              "id": 11741,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "174:2:90"
+            }
+          },
+          {
+            "id": 11746,
+            "nodeType": "EventDefinition",
+            "src": "183:36:90",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "a29fd8e8b328183429f81e3acc10dc14196777efa4ccd23165f71d4dd027ac1b",
+            "name": "AddedToAllowList",
+            "nameLocation": "189:16:90",
+            "parameters": {
+              "id": 11745,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11744,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "who",
+                  "nameLocation": "214:3:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11746,
+                  "src": "206:11:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11743,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "206:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "205:13:90"
+            }
+          },
+          {
+            "id": 11750,
+            "nodeType": "EventDefinition",
+            "src": "224:40:90",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "29beb8aae77ba82cbb9d5a13ac9153539286534ddea0dc0a0aa61c484585a614",
+            "name": "RemovedFromAllowList",
+            "nameLocation": "230:20:90",
+            "parameters": {
+              "id": 11749,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11748,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "who",
+                  "nameLocation": "259:3:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11750,
+                  "src": "251:11:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11747,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "251:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "250:13:90"
+            }
+          },
+          {
+            "id": 11757,
+            "nodeType": "FunctionDefinition",
+            "src": "270:63:90",
+            "nodes": [],
+            "functionSelector": "babcc539",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isAllowed",
+            "nameLocation": "279:9:90",
+            "parameters": {
+              "id": 11753,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11752,
+                  "mutability": "mutable",
+                  "name": "_addr",
+                  "nameLocation": "297:5:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11757,
+                  "src": "289:13:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11751,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "289:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "288:15:90"
+            },
+            "returnParameters": {
+              "id": 11756,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11755,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11757,
+                  "src": "327:4:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 11754,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "327:4:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "326:6:90"
+            },
+            "scope": 11792,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11762,
+            "nodeType": "FunctionDefinition",
+            "src": "338:53:90",
+            "nodes": [],
+            "functionSelector": "f8e86ece",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addToAllowlist",
+            "nameLocation": "347:14:90",
+            "parameters": {
+              "id": 11760,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11759,
+                  "mutability": "mutable",
+                  "name": "addrToAdd_",
+                  "nameLocation": "370:10:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11762,
+                  "src": "362:18:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11758,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "362:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "361:20:90"
+            },
+            "returnParameters": {
+              "id": 11761,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "390:0:90"
+            },
+            "scope": 11792,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11767,
+            "nodeType": "FunctionDefinition",
+            "src": "396:58:90",
+            "nodes": [],
+            "functionSelector": "5da93d7e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "removeFromAllowlist",
+            "nameLocation": "405:19:90",
+            "parameters": {
+              "id": 11765,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11764,
+                  "mutability": "mutable",
+                  "name": "addrToAdd_",
+                  "nameLocation": "433:10:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11767,
+                  "src": "425:18:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11763,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "425:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "424:20:90"
+            },
+            "returnParameters": {
+              "id": 11766,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "453:0:90"
+            },
+            "scope": 11792,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11773,
+            "nodeType": "FunctionDefinition",
+            "src": "459:68:90",
+            "nodes": [],
+            "functionSelector": "519cecce",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addBatchToAllowlist",
+            "nameLocation": "468:19:90",
+            "parameters": {
+              "id": 11771,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11770,
+                  "mutability": "mutable",
+                  "name": "addrsToAdd_",
+                  "nameLocation": "505:11:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11773,
+                  "src": "488:28:90",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 11768,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "488:7:90",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 11769,
+                    "nodeType": "ArrayTypeName",
+                    "src": "488:9:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "487:30:90"
+            },
+            "returnParameters": {
+              "id": 11772,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "526:0:90"
+            },
+            "scope": 11792,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11779,
+            "nodeType": "FunctionDefinition",
+            "src": "532:68:90",
+            "nodes": [],
+            "functionSelector": "846be7ed",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "removeBatchFromAllowlist",
+            "nameLocation": "541:24:90",
+            "parameters": {
+              "id": 11777,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11776,
+                  "mutability": "mutable",
+                  "name": "_addrs",
+                  "nameLocation": "583:6:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11779,
+                  "src": "566:23:90",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 11774,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "566:7:90",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 11775,
+                    "nodeType": "ArrayTypeName",
+                    "src": "566:9:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "565:25:90"
+            },
+            "returnParameters": {
+              "id": 11778,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "599:0:90"
+            },
+            "scope": 11792,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11784,
+            "nodeType": "FunctionDefinition",
+            "src": "605:43:90",
+            "nodes": [],
+            "functionSelector": "7065cb48",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addOwner",
+            "nameLocation": "614:8:90",
+            "parameters": {
+              "id": 11782,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11781,
+                  "mutability": "mutable",
+                  "name": "owner_",
+                  "nameLocation": "631:6:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11784,
+                  "src": "623:14:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11780,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "623:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "622:16:90"
+            },
+            "returnParameters": {
+              "id": 11783,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "647:0:90"
+            },
+            "scope": 11792,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11791,
+            "nodeType": "FunctionDefinition",
+            "src": "653:69:90",
+            "nodes": [],
+            "functionSelector": "974b1521",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isAllowedOwner",
+            "nameLocation": "662:14:90",
+            "parameters": {
+              "id": 11787,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11786,
+                  "mutability": "mutable",
+                  "name": "subject",
+                  "nameLocation": "685:7:90",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11791,
+                  "src": "677:15:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11785,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "677:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "676:17:90"
+            },
+            "returnParameters": {
+              "id": 11790,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11789,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11791,
+                  "src": "716:4:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 11788,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "716:4:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "715:6:90"
+            },
+            "scope": 11792,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IAllowlist",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          11792
+        ],
+        "name": "IAllowlist",
+        "nameLocation": "74:10:90",
+        "scope": 11793,
+        "usedErrors": [
+          11738,
+          11740,
+          11742
+        ]
+      }
+    ],
+    "license": "UNLICENSED"
+  },
+  "id": 90
+}

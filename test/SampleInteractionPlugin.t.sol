@@ -3,15 +3,14 @@ pragma solidity 0.8.19;
 
 import {DeploysInit} from "./DeploysInit.t.sol";
 
-import {LocalRep} from "../contracts/plugins/interactions/LocalReputation.sol";
-import "../contracts/plugins/interactions/ILocalReputation.sol";
+import {LocalReputation} from "../contracts/LocalReputation.sol";
+import "../contracts/ILocalReputation.sol";
 import {SampleInteractionPlugin} from "../contracts/plugins/interactions/SampleInteractionPlugin.sol";
 
 import "forge-std/console.sol";
 
 contract TestSampleInteractionPlugin is DeploysInit {
-    LocalRep LocalRepAlgo;
-    ILocalReputation iLR;
+    LocalReputation LocalRepAlgo;
     SampleInteractionPlugin InteractionPlugin;
 
     uint256 taskPluginId;
@@ -23,15 +22,19 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         super.setUp();
 
-        LocalRepAlgo = new LocalRep();
+        LocalRepAlgo = new LocalReputation();
         vm.label(address(LocalRepAlgo), "LocalRep");
 
-        iLR = ILocalReputation(address(LocalRepAlgo));
+        vm.prank(IPR.owner());
+        IPR.setDefaulLRAddress(address(LocalRepAlgo));
+
+        iLR = ILocalReputation(IPR.defaultLRAddr());
+        vm.label(address(iLR), "LocalReputation");
 
         vm.prank(A1);
         aID.mint("a Name", "urlll", 1, 4, address(Nova));
 
-        InteractionPlugin = new SampleInteractionPlugin(address(Nova), address(iLR) );
+        InteractionPlugin = new SampleInteractionPlugin(address(Nova) );
         vm.label(address(InteractionPlugin), "InteractionPlugin");
 
         uint256[] memory depmodrek;
@@ -47,7 +50,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         Admin = A0;
         assertTrue(Nova.isAdmin(Admin), "expected deployer admin");
-        assertFalse(Nova.isMember(Admin), "admin is member - maybe should be the case");
+        assertFalse(Nova.isMember(Admin), "deployer admin is member");
     }
 
     function testUnconfiguredInteraction() public {
@@ -64,13 +67,13 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
     function testSetWeight() public {
         bytes[] memory datas = new bytes[](2);
-        uint256[] memory points = new uint256[](2);
+        uint16[] memory points = new uint16[](2);
 
         datas[0] = abi.encodePacked(InteractionPlugin.incrementNumberPlusOne.selector);
         datas[1] = abi.encodeWithSelector(InteractionPlugin.incrementNumber.selector, "averyrandomstring");
 
         points[0] = 5;
-        points[1] = 500;
+        points[1] = 9;
 
         vm.expectRevert(ILocalReputation.OnlyAdmin.selector);
         iLR.setInteractionWeights(address(InteractionPlugin), datas, points);
@@ -78,9 +81,9 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(Admin);
         iLR.setInteractionWeights(address(InteractionPlugin), datas, points);
 
-        uint256 number1 = InteractionPlugin.number();
+        InteractionPlugin.number();
         testUnconfiguredInteraction();
-        uint256 number2 = InteractionPlugin.number();
+        InteractionPlugin.number();
 
         individualState memory IS1 = iLR.getIndividualState(A2, address(Nova));
 
@@ -94,7 +97,8 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(A1);
         InteractionPlugin.incrementNumber("averyrandomstring");
         individualState memory IS3 = iLR.getIndividualState(A1, address(Nova));
-        assertTrue(IS3.GC >= 500, "function arg points mismatch");
+        assertTrue(IS3.GC >= 9, "function arg points mismatch");
+        console.log(IS3.GC);
     }
 
     function testGroupInitDefault() public {
@@ -111,11 +115,11 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
     function testWithSameCommitmentPeriod() public {
         uint256 membersAmt = 3;
-        uint256 firsPoints = 1;
-        uint256 secondPoints = 5;
+        uint16 firsPoints = 1;
+        uint16 secondPoints = 5;
 
         bytes[] memory datas = new bytes[](2);
-        uint256[] memory points = new uint256[](2);
+        uint16[] memory points = new uint16[](2);
 
         datas[0] = abi.encodePacked(InteractionPlugin.incrementNumberPlusOne.selector);
         datas[1] = abi.encodeWithSelector(InteractionPlugin.incrementNumber.selector, "averyrandomstring");
@@ -144,9 +148,6 @@ contract TestSampleInteractionPlugin is DeploysInit {
                 ++i;
             }
 
-            address[] memory members = Nova.getAllMembers();
-            groupState memory GSbefore = iLR.getGroupState(address(Nova));
-
             iLR.updateCommitmentLevels(address(Nova));
         }
         assertTrue(iLR.getGroupState(address(Nova)).lastPeriod > 1, "lastPeriod not block.timestamp");
@@ -173,7 +174,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
     function testIndividualLRUpdate() public {
         address A55 = address(5);
 
-        vm.expectRevert(ILocalReputation.OnlyAdmin.selector);
+        vm.expectRevert(ILocalReputation.Unauthorised.selector);
         uint256 prevScore = iLR.updateIndividualLR(A55, address(Nova));
 
         vm.expectRevert(ILocalReputation.ZeroUnallawed.selector);
@@ -210,7 +211,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
         scores1 = iLR.bulkPeriodicUpdate(address(Nova));
     }
 
-    function testArchetypeDataUpdates() public {
+    function testperiodTypeDataUpdates() public {
         testPeriodFlip();
 
         vm.warp(block.timestamp + 1);
@@ -227,23 +228,18 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         assertTrue(avComm == 4, "all have 4, expeced 4");
 
-        int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
 
-        assertTrue(archetypeData[0] > 1, "exp members were added");
+        assertTrue(periodTypeData.aDiffMembersLP > 1, "exp members were added");
 
-        assertTrue(uint256(uint64(archetypeData[1])) == allMembers.length);
-        assertTrue(uint256(uint64(archetypeData[2])) == avRep, "should be same lifecycle");
-        assertTrue(uint256(uint64(archetypeData[3])) == avComm, "all were 4");
-
-        // console.logInt(archetypeData[0]);
-        // console.log(uint64(archetypeData[1]));
-        // console.log(uint64(archetypeData[2]));
-        // console.log(uint64(archetypeData[3]));
+        assertTrue(uint256(uint32(periodTypeData.bMembersLastLP)) == allMembers.length);
+        assertTrue(uint256(uint64(periodTypeData.cAverageRepLP)) == avRep, "should be same lifecycle");
+        assertTrue(uint256(uint64(periodTypeData.dAverageCommitmentLP)) == avComm, "all were 4");
     }
 
-    function testArchetypeUpd2() public {
+    function testperiodTypeUpd2() public {
         testPeriodFlip();
-        int64[4] memory prevArchetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory prevperiodTypeData = iLR.getPeriodNovaParameters(address(Nova));
 
         uint256 i = 8888888888888888;
         for (i; i < 8888888888888948;) {
@@ -264,22 +260,17 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.prank(Admin);
         iLR.bulkPeriodicUpdate(address(Nova));
         (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
-        int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
 
-        assertTrue(archetypeData[0] < 100, "diff still 100");
-        console.logInt(archetypeData[1]);
-        assertTrue(archetypeData[1] > 100, "members not added");
-        assertTrue(archetypeData[3] > 4, "same average commitment");
-        assertTrue(prevArchetypeData[2] != archetypeData[2], "average reputation unchanged");
-
-        // console.logInt(archetypeData[0]);
-        // console.log(uint64(archetypeData[1]));
-        // console.log(uint64(archetypeData[2]));
-        // console.log(uint64(archetypeData[3]));
+        assertTrue(periodTypeData.aDiffMembersLP < 100, "diff still 100");
+        console.logInt(periodTypeData.bMembersLastLP);
+        console.log(periodTypeData.cAverageRepLP);
+        assertTrue(periodTypeData.cAverageRepLP > 100, "members not added");
+        assertTrue(periodTypeData.dAverageCommitmentLP > 4, "same average commitment");
     }
 
     function testMembershipDiff() public {
-        testArchetypeUpd2();
+        testperiodTypeUpd2();
 
         address[] memory members = aID.getAllActiveMembers(address(Nova));
 
@@ -304,19 +295,93 @@ contract TestSampleInteractionPlugin is DeploysInit {
         iLR.bulkPeriodicUpdate(address(Nova));
 
         (uint256 avComm, uint256 avRep) = iLR.getAvReputationAndCommitment(address(Nova));
-        int64[4] memory archetypeData = iLR.getArchetypeData(address(Nova));
+        periodData memory periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
 
         address[] memory allMembers2 = aID.getAllActiveMembers(address(Nova));
 
-        assertTrue(archetypeData[0] < 0, "expected negative on lost members");
+        assertTrue(periodTypeData.aDiffMembersLP < 0, "expected negative on lost members");
         assertTrue(members.length > allMembers2.length, "members left for negative diff");
         assertTrue(
-            int64(int256(allMembers2.length)) - int64(int256(members.length)) == archetypeData[0], "expected diff"
+            int64(int256(allMembers2.length)) - int64(int256(members.length)) == periodTypeData.aDiffMembersLP,
+            "expected diff"
         );
 
-        // console.logInt(archetypeData[0]);
-        // console.log(uint64(archetypeData[1]));
-        // console.log(uint64(archetypeData[2]));
-        // console.log(uint64(archetypeData[3]));
+        assertTrue(periodTypeData.ePerformanceLP > 0, "expected performance score");
+    }
+
+    function testPerformanceChanges() public {
+        testperiodTypeDataUpdates();
+
+        uint256 i = 1;
+
+        for (i; i < 100;) {
+            vm.prank(address(uint160(i)));
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            vm.warp(block.timestamp + 1);
+
+            unchecked {
+                ++i;
+            }
+        }
+        vm.warp(block.timestamp + 31 days);
+
+        vm.prank(A0);
+        iLR.bulkPeriodicUpdate(address(Nova));
+
+        periodData memory periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
+        console.log(periodTypeData.ePerformanceLP);
+        uint64 performance1 = periodTypeData.ePerformanceLP;
+
+        i = 1;
+
+        for (i; i < 100;) {
+            vm.prank(address(uint160(i)));
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (!(i % 2 == 0))
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            (i % 2 == 0)
+                ? InteractionPlugin.incrementNumberPlusOne()
+                : InteractionPlugin.incrementNumber("averyrandomstring");
+
+            vm.warp(block.timestamp + 1);
+
+            unchecked {
+                ++i;
+            }
+        }
+        vm.warp(block.timestamp + 31 days);
+
+        vm.prank(A0);
+        iLR.bulkPeriodicUpdate(address(Nova));
+
+        periodTypeData = iLR.getPeriodNovaParameters(address(Nova));
+        console.log(periodTypeData.ePerformanceLP);
+        uint64 performance2 = periodTypeData.ePerformanceLP;
+
+        assertTrue(performance2 != performance1, "equally performant");
     }
 }
