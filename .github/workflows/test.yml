@@ -32,16 +32,13 @@ jobs:
       # - name: Build with Hardhat
       #   run: npm run test
 
-      # - name: Install TypeScript type generator
-      #   run: npm install --save-dev typechain
-
-      # - name: Generate TypeScript types
-      #   run: npx hardhat typechain
+      - name: generate types
+        run: npx typechain --target ethers-v5  './out/*.sol/*'
 
       - name: Commit changes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
-          git commit -m "ci:gh test&abi gen"
+          git commit -m "ci: forge test and typechain"
           git push

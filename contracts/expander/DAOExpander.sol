@@ -24,7 +24,6 @@ contract DAOExpander is
     DAOMembers,
     DAOUrls,
     DAOMetadata,
-    // DAOInteractions,
     DAOCommitment,
     DAOMarket,
     DAOModules,

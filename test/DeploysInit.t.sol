@@ -15,17 +15,19 @@ import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
 import {LocalReputation} from "../contracts/LocalReputation.sol";
 import "../contracts/ILocalReputation.sol";
 
+import {IAllowlist, Allowlist} from "../contracts/utils/Allowlist.sol";
+
 //// @notice Tests Basic Deployment attainable
 contract DeploysInit is Test {
     IAutID aID;
     INovaRegistry INR;
     INovaFactory NovaFactor;
-    // IInteraction Interact;
     IPluginRegistry IPR;
     IModuleRegistry IMR;
     SWLegacyDAO LegacyDAO;
     INova Nova;
     ILocalReputation iLR;
+    IAllowlist AList;
 
     address A0 = address(uint160(uint256(keccak256("Account0 Deployer"))));
 
@@ -49,8 +51,12 @@ contract DeploysInit is Test {
 
         vm.startPrank(A0);
 
+
         LegacyDAO = new SWLegacyDAO();
         vm.label(address(LegacyDAO), "LegacyDAOI");
+
+        AList = new Allowlist();
+        vm.label(address(AList), "allowlist");
 
         aID = IAutID(address(new AutID()));
         vm.label(address(aID), "AutIDI");
@@ -60,7 +66,7 @@ contract DeploysInit is Test {
         // Interact = IInteraction(address(new Interaction()));
         // vm.label(address(Interact), "InteractionI");
 
-        IMR = IModuleRegistry(address(new ModuleRegistry()));
+        IMR = IModuleRegistry(address(new ModuleRegistry(address(AList))));
         vm.label(address(IMR), "ModuleRegistryI");
 
         IPR = IPluginRegistry(
@@ -89,5 +95,8 @@ contract DeploysInit is Test {
         assertTrue(address(IPR).code.length > 5, "expected IPR contract");
         assertTrue(address(INR).code.length > 6, "expected INRcontract");
         assertTrue(Nova.pluginRegistry() == address(IPR), "expected another plugin registry address");
+        //////////////////
+        assertTrue(IMR.isProtocolMaintaier(A0), "deployer not maintainer");
+        assertTrue(IPR.defaultLRAddr() != address(0), "no LR address set" );
     }
 }

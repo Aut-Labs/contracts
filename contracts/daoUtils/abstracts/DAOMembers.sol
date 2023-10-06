@@ -4,6 +4,8 @@ pragma solidity 0.8.19;
 import "./AutIDAddress.sol";
 import "../interfaces/get/IDAOAdmin.sol";
 import "../interfaces/get/IDAOMembership.sol";
+import "../interfaces/get/IDAOModules.sol";
+import "../../plugins/registry/IPluginRegistry.sol";
 import "../interfaces/set/IDAOMembershipSet.sol";
 import "../interfaces/set/IDAOAdminSet.sol";
 
@@ -42,8 +44,10 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
     }
 
     /// Admins
+    /// @notice adds admins provided a member address. Plugins do not have to be members.
+    /// @param member address to add as member.
     function addAdmin(address member) public override onlyAdmin {
-        require(isMember[member], "Not a member");
+        if ((! isMember[member] ) &&  (IPluginRegistry(IDAOModules(address(this)).pluginRegistry()).tokenIdFromAddress(member) == 0) ) revert("Not a member");
         isAdmin[member] = true;
         admins.push(member);
         emit AdminMemberAdded(member);

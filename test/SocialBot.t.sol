@@ -91,8 +91,8 @@ contract TestSocialBotPlugin is DeploysInit {
         participationPoints[0] = 80;
         participationPoints[1] = 240;
 
-        assertTrue(Nova.isMember(A2), "A1 not member");
-        assertTrue(Nova.isMember(A3), "A2 not member");
+        assertTrue(Nova.isMember(A2), "A2 not member");
+        assertTrue(Nova.isMember(A3), "A3 not member");
 
         vm.expectRevert(SocialBotPlugin.NotAdmin.selector);
         BotPlugin.applyEventConsequences(
@@ -118,7 +118,7 @@ contract TestSocialBotPlugin is DeploysInit {
 
         vm.expectRevert();
         iLR.bulkPeriodicUpdate(novaAddr);
-        individualState memory IS2 = iLR.getIndividualState(A1, novaAddr);
+        individualState memory IS2 = iLR.getIndividualState(A2, novaAddr);
 
         skip(block.timestamp + 32 days);
 
@@ -128,6 +128,30 @@ contract TestSocialBotPlugin is DeploysInit {
         periodData memory P2 = iLR.getPeriodNovaParameters(address(novaAddr));
         groupState memory GS2 = iLR.getGroupState(novaAddr);
 
+        vm.prank(A0);
+        BotPlugin.applyEventConsequences(
+            participants, participationPoints, maxPossiblePointsPerUser, categoryOrDescription
+        );
+        
+        IS2 = iLR.getIndividualState(A2, novaAddr);
+
+
         console.log("Average rep. | Average perf. | A1 givenC ", P2.cAverageRepLP, P2.ePerformanceLP, IS2.GC);
     }
+
+    function testMemebrshpInversePerformance() public {
+        vm.skip(true);
+        testBotAltersLR();
+
+    } 
+
+    function testNonMemberReputation() public {
+        vm.skip(true);
+        /// thesis: non-members can have reputation obtained through meeting attendence
+        /// outcome: social participation can be a potential onboarding strategy
+        testBotAltersLR();
+
+    } 
+
+
 }

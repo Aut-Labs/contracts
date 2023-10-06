@@ -9,8 +9,8 @@ import "./ILocalReputation.sol";
 /// @title Local Reputation Framework for ĀutID holders
 
 contract LocalReputation is ILocalReputation {
-    /// @notice stores plugin(or authorised address)-dao relation on initialization
-    mapping(address plugin => address dao) public daoOfPlugin;
+    /// @notice stores plugin(or authorised address)-nova relation on initialization
+    mapping(address plugin => address nova) public novaOfPlugin;
 
     /// @notice  stores Group State
     mapping(uint256 contextID => groupState) getGS;
@@ -30,7 +30,7 @@ contract LocalReputation is ILocalReputation {
     ///////////////////////////////////////////////////////////////
     modifier onlyPlugin() {
         //// @dev is this sufficient?
-        if (daoOfPlugin[_msgSender()] == address(0)) revert Unauthorised();
+        if (novaOfPlugin[_msgSender()] == address(0)) revert Unauthorised();
         _;
     }
 
@@ -54,7 +54,7 @@ contract LocalReputation is ILocalReputation {
 
         updateCommitmentLevels(nova_);
 
-        daoOfPlugin[_msgSender()] = nova_;
+        novaOfPlugin[_msgSender()] = nova_;
 
         emit LocalRepInit(nova_, _msgSender());
     }
@@ -96,19 +96,19 @@ contract LocalReputation is ILocalReputation {
     }
 
     /// @notice updates group state to latest to account for latest interactions
-    /// @param group_ target address to update group state for
-    function periodicGroupStateUpdate(address group_) public returns (uint256 nextUpdateAt) {
-        uint256 context = getContextID(group_, group_);
-        uint256 membersLen = updateCommitmentLevels(group_).length;
+    /// @param nova_ target address to update group state for
+    function periodicGroupStateUpdate(address nova_) public returns (uint256 nextUpdateAt) {
+        uint256 context = getContextID(nova_, nova_);
+        uint256 membersLen = updateCommitmentLevels(nova_).length;
 
         groupState memory gs = getGS[context];
         nextUpdateAt = gs.p + gs.lastPeriod;
 
-        if (gs.lrUpdatesPerPeriod >= INova(group_).memberCount()) {
+        if (gs.lrUpdatesPerPeriod >= INova(nova_).memberCount()) {
             gs.lastPeriod = uint64(block.timestamp);
             gs.lrUpdatesPerPeriod = 0;
             gs.periodNovaParameters.ePerformanceLP = gs.TCP > 0
-                ? uint64(pointsPerInteraction[getContextID(group_, group_)] * membersLen * 1 ether / gs.TCP)
+                ? uint64(pointsPerInteraction[getContextID(nova_, nova_)] * membersLen * 1 ether / gs.TCP)
                 : 1 ether;
             gs.TCP = 0;
             getGS[context] = gs;
@@ -120,11 +120,11 @@ contract LocalReputation is ILocalReputation {
 
     /// @notice updates local reputation of a specific individual context
     /// @param who_ agent address to update local reputation for
-    /// @param group_ target group context for local repuatation update
-    function updateIndividualLR(address who_, address group_) public returns (uint256) {
-        if (!INova(group_).isAdmin(_msgSender())) revert Unauthorised();
-        uint256 Icontext = getContextID(who_, group_);
-        uint256 Gcontext = getContextID(group_, group_);
+    /// @param nova_ target group context for local repuatation update
+    function updateIndividualLR(address who_, address nova_) public returns (uint256) {
+        if (!INova(nova_).isAdmin(_msgSender())) revert Unauthorised();
+        uint256 Icontext = getContextID(who_, nova_);
+        uint256 Gcontext = getContextID(nova_, nova_);
         individualState memory ISS = getIS[Icontext];
         groupState memory GSS = getGS[Gcontext];
 
@@ -136,7 +136,7 @@ contract LocalReputation is ILocalReputation {
 
         GSS.lrUpdatesPerPeriod += 1;
         getGS[Gcontext] = GSS;
-        if (GSS.lrUpdatesPerPeriod >= INova(group_).memberCount()) periodicGroupStateUpdate(group_);
+        if (GSS.lrUpdatesPerPeriod >= INova(nova_).memberCount()) periodicGroupStateUpdate(nova_);
 
         ISS.score = calculateLocalReputation(ISS.GC, ISS.iCL, GSS.TCL, GSS.TCP, GSS.k, ISS.score, GSS.penalty);
         ISS.GC = 0;
@@ -182,20 +182,20 @@ contract LocalReputation is ILocalReputation {
 
     /// @dev consider dos vectors and changing return type
     /// @notice updates the local reputation of all members in the given nova
-    /// @param group_ address of nova
-    function bulkPeriodicUpdate(address group_) external returns (uint256[] memory localReputationScores) {
-        uint256 context = getContextID(group_, group_);
+    /// @param nova_ address of nova
+    function bulkPeriodicUpdate(address nova_) external returns (uint256[] memory localReputationScores) {
+        uint256 context = getContextID(nova_, nova_);
         groupState memory startGS = getGS[context];
         if ((startGS.lastPeriod + startGS.p) > block.timestamp) revert PeriodUnelapsed();
 
-        periodicGroupStateUpdate(group_);
+        periodicGroupStateUpdate(nova_);
 
-        address[] memory members = IAutID(INova(group_).getAutIDAddress()).getAllActiveMembers(group_);
+        address[] memory members = IAutID(INova(nova_).getAutIDAddress()).getAllActiveMembers(nova_);
         localReputationScores = new uint256[](members.length);
         uint256 sumLR;
         uint256 i;
         for (i; i < members.length;) {
-            localReputationScores[i] = updateIndividualLR(members[i], group_);
+            localReputationScores[i] = updateIndividualLR(members[i], nova_);
             sumLR += localReputationScores[i];
 
             unchecked {
@@ -212,8 +212,8 @@ contract LocalReputation is ILocalReputation {
     /// @param datas_, array of selector encoded (msg.data) bytes
     /// @param points_, amount of points to be awared for each of datas_, 0 to remove and readjust for performance
     function setInteractionWeights(address plugin_, bytes[] memory datas_, uint16[] memory points_) external {
-        if (daoOfPlugin[plugin_] == address(0)) revert UninitializedPair();
-        address nova = daoOfPlugin[plugin_];
+        if (novaOfPlugin[plugin_] == address(0)) revert UninitializedPair();
+        address nova = novaOfPlugin[plugin_];
         if (!(INova(nova).isAdmin(_msgSender())) && (_msgSender() != plugin_)) revert OnlyAdmin();
         if (datas_.length != points_.length) revert ArgLenMismatch();
         uint256 interact;
@@ -244,10 +244,10 @@ contract LocalReputation is ILocalReputation {
         if (datas_.length == 2) repPoints = uint16(bytes2(datas_[:2]));
 
         if (repPoints == 0) return;
-        address dao = daoOfPlugin[_msgSender()];
+        address nova = novaOfPlugin[_msgSender()];
 
-        getIS[getContextID(callerAgent_, dao)].GC += uint64(repPoints);
-        getGS[getContextID(dao, dao)].TCP += uint64(repPoints);
+        getIS[getContextID(callerAgent_, nova)].GC += uint64(repPoints);
+        getGS[getContextID(nova, nova)].TCP += uint64(repPoints);
 
         emit Interaction(interactID, callerAgent_);
     }
@@ -276,9 +276,9 @@ contract LocalReputation is ILocalReputation {
 
     /// @notice context specific ID
     /// @param subject_ address of the subject
-    /// @param group_ address of the group
-    function getContextID(address subject_, address group_) public pure returns (uint256) {
-        return uint256(uint160(subject_)) + uint256(uint160(group_));
+    /// @param nova_ address of the group
+    function getContextID(address subject_, address nova_) public pure returns (uint256) {
+        return uint256(uint160(subject_)) + uint256(uint160(nova_));
     }
 
     /// @notice context specific ID
@@ -294,17 +294,17 @@ contract LocalReputation is ILocalReputation {
 
     /// @notice get the individual state of a subject in a group
     /// @param subject_ address of the subject
-    /// @param group_ address of the group
-    function getLRof(address subject_, address group_) public view returns (individualState memory) {
-        return getIS[getContextID(subject_, group_)];
+    /// @param nova_ address of the group
+    function getLRof(address subject_, address nova_) public view returns (individualState memory) {
+        return getIS[getContextID(subject_, nova_)];
     }
 
     /// @notice get the local reputation score of an agent withoin a specified group.
     /// @dev defaut value is 1 ether. Score should be parsed as ether with two decimals in expected range (0.01 - 9.99)
     /// @param subject_ address of target agent
-    /// @param group_ address of nova instance
-    function getLocalReputationScore(address subject_, address group_) public view returns (uint256 score) {
-        score = getLRof(subject_, group_).score;
+    /// @param nova_ address of nova instance
+    function getLocalReputationScore(address subject_, address nova_) public view returns (uint256 score) {
+        score = getLRof(subject_, nova_).score;
         if (score == 0) score = 1 ether;
     }
 

@@ -244,22 +244,22 @@
   },
   "ast": {
     "absolutePath": "contracts/expander/interfaces/IDAOExpanderMembership.sol",
-    "id": 5003,
+    "id": 5009,
     "exportedSymbols": {
       "IDAOExpanderMembership": [
-        5002
+        5008
       ],
       "IDAOMembership": [
-        4061
+        4067
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "31:627:44",
+    "src": "31:627:43",
     "nodes": [
       {
-        "id": 4989,
+        "id": 4995,
         "nodeType": "PragmaDirective",
-        "src": "31:23:44",
+        "src": "31:23:43",
         "nodes": [],
         "literals": [
           "solidity",
@@ -268,32 +268,32 @@
         ]
       },
       {
-        "id": 4990,
+        "id": 4996,
         "nodeType": "ImportDirective",
-        "src": "56:58:44",
+        "src": "56:58:43",
         "nodes": [],
         "absolutePath": "contracts/daoUtils/interfaces/get/IDAOMembership.sol",
         "file": "../../daoUtils/interfaces/get/IDAOMembership.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 5003,
-        "sourceUnit": 4062,
+        "scope": 5009,
+        "sourceUnit": 4068,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 5002,
+        "id": 5008,
         "nodeType": "ContractDefinition",
-        "src": "218:439:44",
+        "src": "218:439:43",
         "nodes": [
           {
-            "id": 5001,
+            "id": 5007,
             "nodeType": "FunctionDefinition",
-            "src": "579:76:44",
+            "src": "579:76:43",
             "nodes": [],
             "documentation": {
-              "id": 4994,
+              "id": 5000,
               "nodeType": "StructuredDocumentation",
-              "src": "275:299:44",
+              "src": "275:299:43",
               "text": "@notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership\n @dev checks if the member is a part of a DAO\n @param member the address of the member that's checked\n @return true if they're a member, false otherwise"
             },
             "functionSelector": "8e99076a",
@@ -301,20 +301,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "isMemberOfOriginalDAO",
-            "nameLocation": "588:21:44",
+            "nameLocation": "588:21:43",
             "parameters": {
-              "id": 4997,
+              "id": 5003,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4996,
+                  "id": 5002,
                   "mutability": "mutable",
                   "name": "member",
-                  "nameLocation": "618:6:44",
+                  "nameLocation": "618:6:43",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5001,
-                  "src": "610:14:44",
+                  "scope": 5007,
+                  "src": "610:14:43",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -322,10 +322,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4995,
+                    "id": 5001,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "610:7:44",
+                    "src": "610:7:43",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -335,21 +335,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "609:16:44"
+              "src": "609:16:43"
             },
             "returnParameters": {
-              "id": 5000,
+              "id": 5006,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4999,
+                  "id": 5005,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5001,
-                  "src": "649:4:44",
+                  "scope": 5007,
+                  "src": "649:4:43",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -357,10 +357,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 4998,
+                    "id": 5004,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "649:4:44",
+                    "src": "649:4:43",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -369,9 +369,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "648:6:44"
+              "src": "648:6:43"
             },
-            "scope": 5002,
+            "scope": 5008,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -381,41 +381,41 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 4992,
+              "id": 4998,
               "name": "IDAOMembership",
               "nameLocations": [
-                "254:14:44"
+                "254:14:43"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4061,
-              "src": "254:14:44"
+              "referencedDeclaration": 4067,
+              "src": "254:14:43"
             },
-            "id": 4993,
+            "id": 4999,
             "nodeType": "InheritanceSpecifier",
-            "src": "254:14:44"
+            "src": "254:14:43"
           }
         ],
         "canonicalName": "IDAOExpanderMembership",
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 4991,
+          "id": 4997,
           "nodeType": "StructuredDocumentation",
-          "src": "116:102:44",
+          "src": "116:102:43",
           "text": "@title IDAOExpander\n @notice The interface for the extension of each DAO that integrates AutID"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          5002,
-          4061
+          5008,
+          4067
         ],
         "name": "IDAOExpanderMembership",
-        "nameLocation": "228:22:44",
-        "scope": 5003,
+        "nameLocation": "228:22:43",
+        "scope": 5009,
         "usedErrors": []
       }
     ],
     "license": "MIT"
   },
-  "id": 44
+  "id": 43
 }

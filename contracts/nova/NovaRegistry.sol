@@ -4,6 +4,8 @@ pragma solidity 0.8.19;
 import "./interfaces/INovaFactory.sol";
 import "./interfaces/INovaRegistry.sol";
 import "../utils/IAllowlist.sol";
+import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
+import {IPluginRegistry} from "../plugins/registry/IPluginRegistry.sol";
 import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 contract NovaRegistry is ERC2771Recipient, INovaRegistry {
@@ -28,6 +30,7 @@ contract NovaRegistry is ERC2771Recipient, INovaRegistry {
         _setTrustedForwarder(trustedForwarder);
         pluginRegistry = _pluginRegistry;
         deployerAddress = msg.sender;
+        AllowList = IAllowlist(IModuleRegistry(IPluginRegistry(_pluginRegistry).modulesRegistry()).getAllowListAddress());
     }
 
     /// @notice Deploys a new Nova
@@ -66,4 +69,6 @@ contract NovaRegistry is ERC2771Recipient, INovaRegistry {
     function getNovaByDeployer(address deployer) public view returns (address[] memory) {
         return novaDeployers[deployer];
     }
+    
+
 }

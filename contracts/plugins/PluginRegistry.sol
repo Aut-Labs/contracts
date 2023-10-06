@@ -7,10 +7,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "../plugins/IPlugin.sol";
 import "../plugins/registry/IPluginRegistry.sol";
-import "../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../daoUtils/interfaces/get/IDAOAdmin.sol";
-import "../daoUtils/interfaces/get/IDAOModules.sol";
 import "../nova/interfaces/INova.sol";
+
+
 
 /// @title PluginRegistry
 /// @notice Stores all plugins available and allows them to be added to a dao
@@ -64,7 +64,8 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         uint256 fee = (pluginDefinition.price * feeBase1000) / 1000;
 
         feeReciever.transfer(fee);
-        pluginDefinitionsById[pluginDefinitionId].creator.transfer(msg.value - fee);
+        (bool s, ) = pluginDefinition.creator.call{value: msg.value - fee}("");
+        if (!s) revert("Value transfer failed");
 
         emit PluginAddedToDAO(tokenId, pluginDefinitionId, nova);
 
@@ -73,7 +74,6 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         tokenIdByPluginAddress[pluginAddress] = tokenId;
 
         IPlugin(pluginAddress).setPluginId(tokenId);
-        // allow interactions to be used from plugin
 
         if (IModule(pluginAddress).moduleId() == 1) {
             INova(nova).setOnboardingStrategy(pluginAddress);
@@ -119,6 +119,7 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
     ) external onlyOwner returns (uint256 pluginDefinitionId) {
         require(bytes(metadataURI).length > 0, "AUT: Metadata URI is empty");
         require(canBeStandalone || price == 0, "AUT: Should be free if not standalone");
+        
 
         _numPluginDefinitions++;
         pluginDefinitionId = _numPluginDefinitions;
@@ -127,10 +128,6 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
             PluginDefinition(metadataURI, price, creator, true, canBeStandalone, moduleDependencies);
 
         emit PluginDefinitionAdded(pluginDefinitionId);
-    }
-
-    function setDefaultReputationAlgo(address newRepAlgoAddr_) external onlyOwner returns (address) {
-        return defaultLRAddr = newRepAlgoAddr_;
     }
 
     function setPrice(uint256 pluginDefinitionId, uint256 newPrice) public {
