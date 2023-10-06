@@ -81,4 +81,10 @@ contract Allowlist is IAllowlist {
     function addOwner(address owner_) external isSenderOwner {
         isOwner[owner_] = !isOwner[owner_];
     }
+
+    /// @notice checks if is owner for protocol maintainance priviledges
+    /// @param subject address to check
+    function isAllowedOwner(address subject) external view returns(bool) {
+        return isOwner[subject];
+    } 
 }

@@ -53,4 +53,12 @@ interface IModuleRegistry {
      * @param uri the new metadata URI for the module
      */
     function updateMetadataURI(uint256 moduleId, string calldata uri) external;
+
+
+    /// @notice checks if an address is authorised to perform maintenance functions
+    /// @param subject address to check
+    function isProtocolMaintaier(address subject) external view returns (bool); 
+
+    /// @notice 
+    function getAllowListAddress() external view returns (address);
 }

@@ -15,4 +15,5 @@ interface IAllowlist {
     function addBatchToAllowlist(address[] memory addrsToAdd_) external;
     function removeBatchFromAllowlist(address[] memory _addrs) external;
     function addOwner(address owner_) external;
+    function isAllowedOwner(address subject) external view returns(bool);
 }
