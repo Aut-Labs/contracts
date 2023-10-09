@@ -9,7 +9,7 @@ import type { IAllowlist, IAllowlistInterface } from "../IAllowlist";
 const _abi = [
   {
     inputs: [],
-    name: "AlreadyDepolyedANova",
+    name: "AlreadyDeployedANova",
     type: "error",
   },
   {
@@ -18,13 +18,7 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
+    inputs: [],
     name: "Unallowed",
     type: "error",
   },
@@ -97,6 +91,44 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "subject",
+        type: "address",
+      },
+    ],
+    name: "canAllowList",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "subject",
+        type: "address",
+      },
+    ],
+    name: "isAllowListed",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "_addr",
         type: "address",
       },
@@ -126,6 +158,44 @@ const _abi = [
         internalType: "bool",
         name: "",
         type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "subject",
+        type: "address",
+      },
+    ],
+    name: "isOwner",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "plusOne",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",

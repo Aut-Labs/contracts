@@ -41,7 +41,7 @@ export declare namespace StdInvariant {
   };
 }
 
-export interface AllowListTInterface extends utils.Interface {
+export interface MultiPluginLRInterface extends utils.Interface {
   functions: {
     "IS_TEST()": FunctionFragment;
     "excludeArtifacts()": FunctionFragment;
@@ -55,7 +55,6 @@ export interface AllowListTInterface extends utils.Interface {
     "targetInterfaces()": FunctionFragment;
     "targetSelectors()": FunctionFragment;
     "targetSenders()": FunctionFragment;
-    "testAllowListSequence()": FunctionFragment;
     "testAreDeployedContracts()": FunctionFragment;
   };
 
@@ -73,7 +72,6 @@ export interface AllowListTInterface extends utils.Interface {
       | "targetInterfaces"
       | "targetSelectors"
       | "targetSenders"
-      | "testAllowListSequence"
       | "testAreDeployedContracts"
   ): FunctionFragment;
 
@@ -114,10 +112,6 @@ export interface AllowListTInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "targetSenders",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "testAllowListSequence",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -162,10 +156,6 @@ export interface AllowListTInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "targetSenders",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "testAllowListSequence",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -448,12 +438,12 @@ export type logsEvent = TypedEvent<[string], logsEventObject>;
 
 export type logsEventFilter = TypedEventFilter<logsEvent>;
 
-export interface AllowListT extends BaseContract {
+export interface MultiPluginLR extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: AllowListTInterface;
+  interface: MultiPluginLRInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -533,10 +523,6 @@ export interface AllowListT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[]] & { targetedSenders_: string[] }>;
 
-    testAllowListSequence(
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
     testAreDeployedContracts(
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
@@ -576,10 +562,6 @@ export interface AllowListT extends BaseContract {
 
   targetSenders(overrides?: CallOverrides): Promise<string[]>;
 
-  testAllowListSequence(
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
   testAreDeployedContracts(
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
@@ -614,8 +596,6 @@ export interface AllowListT extends BaseContract {
     ): Promise<StdInvariant.FuzzSelectorStructOutput[]>;
 
     targetSenders(overrides?: CallOverrides): Promise<string[]>;
-
-    testAllowListSequence(overrides?: CallOverrides): Promise<void>;
 
     testAreDeployedContracts(overrides?: CallOverrides): Promise<void>;
   };
@@ -746,10 +726,6 @@ export interface AllowListT extends BaseContract {
 
     targetSenders(overrides?: CallOverrides): Promise<BigNumber>;
 
-    testAllowListSequence(
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
     testAreDeployedContracts(
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
@@ -785,10 +761,6 @@ export interface AllowListT extends BaseContract {
     targetSelectors(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     targetSenders(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    testAllowListSequence(
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
 
     testAreDeployedContracts(
       overrides?: Overrides & { from?: string }

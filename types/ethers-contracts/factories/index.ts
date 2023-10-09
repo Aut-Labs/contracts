@@ -8,6 +8,7 @@ export * as deployAllSSol from "./DeployAll.s.sol";
 export * as deploysInitTSol from "./DeploysInit.t.sol";
 export * as iAragonSol from "./IAragon.sol";
 export * as marketsSol from "./Markets.sol";
+export * as multiPluginLrTSol from "./MultiPluginLR.t.sol";
 export * as questOnboardPluginTSol from "./QuestOnboardPlugin.t.sol";
 export * as swLegacyCommunitySol from "./SWLegacyCommunity.sol";
 export * as sampleInteractionPluginTSol from "./SampleInteractionPlugin.t.sol";
