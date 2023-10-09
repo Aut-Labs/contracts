@@ -120,17 +120,17 @@
   },
   "ast": {
     "absolutePath": "node_modules/@opengsn/contracts/src/interfaces/IERC2771Recipient.sol",
-    "id": 55279,
+    "id": 55350,
     "exportedSymbols": {
       "IERC2771Recipient": [
-        55278
+        55349
       ]
     },
     "nodeType": "SourceUnit",
     "src": "32:1730:111",
     "nodes": [
       {
-        "id": 55256,
+        "id": 55327,
         "nodeType": "PragmaDirective",
         "src": "32:24:111",
         "nodes": [],
@@ -142,17 +142,17 @@
         ]
       },
       {
-        "id": 55278,
+        "id": 55349,
         "nodeType": "ContractDefinition",
         "src": "326:1435:111",
         "nodes": [
           {
-            "id": 55265,
+            "id": 55336,
             "nodeType": "FunctionDefinition",
             "src": "716:81:111",
             "nodes": [],
             "documentation": {
-              "id": 55258,
+              "id": 55329,
               "nodeType": "StructuredDocumentation",
               "src": "369:342:111",
               "text": " :warning: **Warning** :warning: The Forwarder can have a full control over your Recipient. Only trust verified Forwarder.\n @param forwarder The address of the Forwarder contract that is being used.\n @return isTrustedForwarder `true` if the Forwarder is trusted to forward relayed transactions by this Recipient."
@@ -164,17 +164,17 @@
             "name": "isTrustedForwarder",
             "nameLocation": "725:18:111",
             "parameters": {
-              "id": 55261,
+              "id": 55332,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 55260,
+                  "id": 55331,
                   "mutability": "mutable",
                   "name": "forwarder",
                   "nameLocation": "752:9:111",
                   "nodeType": "VariableDeclaration",
-                  "scope": 55265,
+                  "scope": 55336,
                   "src": "744:17:111",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -183,7 +183,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 55259,
+                    "id": 55330,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "744:7:111",
@@ -199,17 +199,17 @@
               "src": "743:19:111"
             },
             "returnParameters": {
-              "id": 55264,
+              "id": 55335,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 55263,
+                  "id": 55334,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 55265,
+                  "scope": 55336,
                   "src": "791:4:111",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -218,7 +218,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 55262,
+                    "id": 55333,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "791:4:111",
@@ -232,18 +232,18 @@
               ],
               "src": "790:6:111"
             },
-            "scope": 55278,
+            "scope": 55349,
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           },
           {
-            "id": 55271,
+            "id": 55342,
             "nodeType": "FunctionDefinition",
             "src": "1146:62:111",
             "nodes": [],
             "documentation": {
-              "id": 55266,
+              "id": 55337,
               "nodeType": "StructuredDocumentation",
               "src": "803:338:111",
               "text": " @notice Use this method the contract anywhere instead of msg.sender to support relayed transactions.\n @return sender The real sender of this call.\n For a call that came through the Forwarder the real sender is extracted from the last 20 bytes of the `msg.data`.\n Otherwise simply returns `msg.sender`."
@@ -254,23 +254,23 @@
             "name": "_msgSender",
             "nameLocation": "1155:10:111",
             "parameters": {
-              "id": 55267,
+              "id": 55338,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1165:2:111"
             },
             "returnParameters": {
-              "id": 55270,
+              "id": 55341,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 55269,
+                  "id": 55340,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 55271,
+                  "scope": 55342,
                   "src": "1199:7:111",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -279,7 +279,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 55268,
+                    "id": 55339,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1199:7:111",
@@ -294,18 +294,18 @@
               ],
               "src": "1198:9:111"
             },
-            "scope": 55278,
+            "scope": 55349,
             "stateMutability": "view",
             "virtual": true,
             "visibility": "internal"
           },
           {
-            "id": 55277,
+            "id": 55348,
             "nodeType": "FunctionDefinition",
             "src": "1692:67:111",
             "nodes": [],
             "documentation": {
-              "id": 55272,
+              "id": 55343,
               "nodeType": "StructuredDocumentation",
               "src": "1214:473:111",
               "text": " @notice Use this method in the contract instead of `msg.data` when difference matters (hashing, signature, etc.)\n @return data The real `msg.data` of this call.\n For a call that came through the Forwarder, the real sender address was appended as the last 20 bytes\n of the `msg.data` - so this method will strip those 20 bytes off.\n Otherwise (if the call was made directly and not through the forwarder) simply returns `msg.data`."
@@ -316,23 +316,23 @@
             "name": "_msgData",
             "nameLocation": "1701:8:111",
             "parameters": {
-              "id": 55273,
+              "id": 55344,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1709:2:111"
             },
             "returnParameters": {
-              "id": 55276,
+              "id": 55347,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 55275,
+                  "id": 55346,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 55277,
+                  "scope": 55348,
                   "src": "1743:14:111",
                   "stateVariable": false,
                   "storageLocation": "calldata",
@@ -341,7 +341,7 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 55274,
+                    "id": 55345,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
                     "src": "1743:5:111",
@@ -355,7 +355,7 @@
               ],
               "src": "1742:16:111"
             },
-            "scope": 55278,
+            "scope": 55349,
             "stateMutability": "view",
             "virtual": true,
             "visibility": "internal"
@@ -367,18 +367,18 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 55257,
+          "id": 55328,
           "nodeType": "StructuredDocumentation",
           "src": "58:267:111",
           "text": " @title The ERC-2771 Recipient Base Abstract Class - Declarations\n @notice A contract must implement this interface in order to support relayed transaction.\n @notice It is recommended that your contract inherits from the ERC2771Recipient contract."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          55278
+          55349
         ],
         "name": "IERC2771Recipient",
         "nameLocation": "344:17:111",
-        "scope": 55279,
+        "scope": 55350,
         "usedErrors": []
       }
     ],

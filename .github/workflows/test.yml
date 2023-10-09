@@ -1,5 +1,8 @@
 name: wip-dev-ci
 
+env:
+  FOUNDRY_PROFILE: "ci"
+
 on:
   push:
     branches:
@@ -40,5 +43,5 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
-          git commit -m "ci: forge test and typechain"
+          git commit -m "ci: forge test"
           git push
