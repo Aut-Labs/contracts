@@ -107,6 +107,10 @@ contract AllowListT is DeploysInit {
 
         vm.prank(plussOneTarget);
         vm.expectRevert();
+        AList.addToAllowlist(cluelessFren);
+
+        vm.prank(plussOneTarget);
+        vm.expectRevert();
         AList.addToAllowlist(address(346787965447987878787878787128128128));
 
 
