@@ -30,7 +30,8 @@ contract NovaRegistry is ERC2771Recipient, INovaRegistry {
         _setTrustedForwarder(trustedForwarder);
         pluginRegistry = _pluginRegistry;
         deployerAddress = msg.sender;
-        AllowList = IAllowlist(IModuleRegistry(IPluginRegistry(_pluginRegistry).modulesRegistry()).getAllowListAddress());
+        AllowList =
+            IAllowlist(IModuleRegistry(IPluginRegistry(_pluginRegistry).modulesRegistry()).getAllowListAddress());
     }
 
     /// @notice Deploys a new Nova
@@ -69,6 +70,4 @@ contract NovaRegistry is ERC2771Recipient, INovaRegistry {
     function getNovaByDeployer(address deployer) public view returns (address[] memory) {
         return novaDeployers[deployer];
     }
-    
-
 }

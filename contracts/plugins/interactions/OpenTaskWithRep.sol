@@ -15,7 +15,6 @@ contract OpenTaskWithRep is OpenTaskPlugin, InteractionModifier {
         ILR.initialize(nova_);
     }
 
-
     /// @dev assigning weights to finalizeFor() should be for keccak256 `abi.encodePacked`
     function finalizeFor(uint256 taskId, address submitter)
         public

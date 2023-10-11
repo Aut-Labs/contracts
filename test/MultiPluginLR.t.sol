@@ -10,10 +10,7 @@ import {SocialBotPlugin} from "../contracts/plugins/interactions/SocialBotPlugin
 import "forge-std/console.sol";
 
 contract MultiPluginLR is DeploysInit {
-        function setUp() public override {
+    function setUp() public override {
         super.setUp();
-        }
-
-
-
+    }
 }

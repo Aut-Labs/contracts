@@ -49,39 +49,40 @@ contract Populate is Script {
         PlugReg = PluginRegistry(DeploymentAddresses.pluginRegistryAddr(chainID));
 
         LR = LocalReputation(DeploymentAddresses.LocalReputationutationAddr(chainID));
-
-
     }
 
     function run() public {
         uint256[] memory privateKeys = new uint256[](3);
         privateKeys[0] = vm.envUint("PVK_A1");
         privateKeys[1] = vm.envUint("PVK_A2");
-        privateKeys[2] = vm.envUint("PVK_A3");  
+        privateKeys[2] = vm.envUint("PVK_A3");
 
         A_222 = payable(A_222);
 
         vm.startBroadcast(vm.envUint("PVK_A1")); //////////////////////// BROADCAST
 
         uint256[] memory deps;
-         Nova1 = INova(NovaF.deployNova(A_222, address(aID), 0, "this is where metadata is supposed to be", 4, address(PlugReg)));
+        Nova1 = INova(
+            NovaF.deployNova(A_222, address(aID), 0, "this is where metadata is supposed to be", 4, address(PlugReg))
+        );
 
-         uint256 pluginDefBot1= PlugReg.addPluginDefinition(payable(address(A_222)), "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy", 0, true, deps);
-         uint256 pluginDefOpenTask = PlugReg.addPluginDefinition(payable(address(A_222)), "ipfs://bafkreie45ntwx6trhl4azaixj6st64rcghrnscf2mnlahihctri6ospgte", 0, true, deps);
-         uint256 pluginQuizBot2 = PlugReg.addPluginDefinition(payable(address(A_222)), "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy", 0, true, deps);
-        
+        uint256 pluginDefBot1 = PlugReg.addPluginDefinition(
+            payable(address(A_222)), "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy", 0, true, deps
+        );
+        uint256 pluginDefOpenTask = PlugReg.addPluginDefinition(
+            payable(address(A_222)), "ipfs://bafkreie45ntwx6trhl4azaixj6st64rcghrnscf2mnlahihctri6ospgte", 0, true, deps
+        );
+        uint256 pluginQuizBot2 = PlugReg.addPluginDefinition(
+            payable(address(A_222)), "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy", 0, true, deps
+        );
+
         INova OurNova = INova(
             NovaF.deployNova(vm.addr(privateKeys[0]), address(aID), 0, "this is a metadata string", 9, address(PlugReg))
         );
 
-         address botPluginAddr = address(new SocialBotPlugin(address(OurNova)));
-         address botQuizAddr = address(new SocialQuizPlugin(address(OurNova)));
-         address openTask = address(new OpenTaskWithRep(address(OurNova)));
-
-
-   
-
-
+        address botPluginAddr = address(new SocialBotPlugin(address(OurNova)));
+        address botQuizAddr = address(new SocialQuizPlugin(address(OurNova)));
+        address openTask = address(new OpenTaskWithRep(address(OurNova)));
 
         PlugReg.addPluginToDAO(botPluginAddr, pluginDefBot1);
         PlugReg.addPluginToDAO(botQuizAddr, pluginQuizBot2);
@@ -89,18 +90,16 @@ contract Populate is Script {
 
         LR.setKP(LR.DEFAULT_K(), 5 minutes, LR.DEFAULT_PENALTY(), address(OurNova));
         address[] memory adminAddresses = new address[](5);
-        adminAddresses[0]= 0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3;
-        adminAddresses[1]=0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a;
-        adminAddresses[2]=0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43;
-        adminAddresses[3]= 0x35C92Dd11F4768691e0B66d5B735e9ddE8abE5ad;
-        adminAddresses[4]= 0xCa0a610A75EA146d4ee94824E858B362Ef46Cc29;
-
-
+        adminAddresses[0] = 0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3;
+        adminAddresses[1] = 0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a;
+        adminAddresses[2] = 0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43;
+        adminAddresses[3] = 0x35C92Dd11F4768691e0B66d5B735e9ddE8abE5ad;
+        adminAddresses[4] = 0xCa0a610A75EA146d4ee94824E858B362Ef46Cc29;
 
         OurNova.addAdmins(adminAddresses);
         vm.stopBroadcast(); /////////////////// BROADCAST END
 
-        uint256 i =1;
+        uint256 i = 1;
 
         for (i; i < privateKeys.length;) {
             console.log("###########################################");
@@ -108,14 +107,12 @@ contract Populate is Script {
             console.log("###########################################");
 
             vm.startBroadcast(privateKeys[i]);
-            
-            aID.joinDAO(1, i +3 > 10 ? i : i+3, address(OurNova));
+
+            aID.joinDAO(1, i + 3 > 10 ? i : i + 3, address(OurNova));
 
             /// Agent joins nova
 
             /// Agent does reputation bearing task
-
-
 
             /// Period flip 1
 

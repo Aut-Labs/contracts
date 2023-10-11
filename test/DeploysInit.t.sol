@@ -51,7 +51,6 @@ contract DeploysInit is Test {
 
         vm.startPrank(A0);
 
-
         LegacyDAO = new SWLegacyDAO();
         vm.label(address(LegacyDAO), "LegacyDAOI");
 
@@ -97,6 +96,6 @@ contract DeploysInit is Test {
         assertTrue(Nova.pluginRegistry() == address(IPR), "expected another plugin registry address");
         //////////////////
         assertTrue(IMR.isProtocolMaintaier(A0), "deployer not maintainer");
-        assertTrue(IPR.defaultLRAddr() != address(0), "no LR address set" );
+        assertTrue(IPR.defaultLRAddr() != address(0), "no LR address set");
     }
 }

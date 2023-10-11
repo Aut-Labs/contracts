@@ -36,11 +36,11 @@ contract Allowlist is IAllowlist {
     /// @notice adds address to allowlist if user is on the allowlist or owner
     /// @notice allowlisted addresses can only allowlist once and their target cannot allow another in turn
     function addToAllowlist(address addrToAdd_) external isSenderOwner {
-        if ( isAllowListed[addrToAdd_] ) return;
+        if (isAllowListed[addrToAdd_]) return;
         isAllowListed[addrToAdd_] = true;
-        if (!isOwner[msg.sender] ) {
+        if (!isOwner[msg.sender]) {
             plusOne[addrToAdd_] = msg.sender;
-            plusOne[msg.sender]= addrToAdd_;
+            plusOne[msg.sender] = addrToAdd_;
         }
 
         emit AddedToAllowList(addrToAdd_);
@@ -61,10 +61,10 @@ contract Allowlist is IAllowlist {
             unchecked {
                 ++i;
             }
-            if (isAllowListed[addrsToAdd_[i-1]]) continue;
-            isAllowListed[addrsToAdd_[i-1]] = true;
-            emit AddedToAllowList(addrsToAdd_[i-1]);
-           }
+            if (isAllowListed[addrsToAdd_[i - 1]]) continue;
+            isAllowListed[addrsToAdd_[i - 1]] = true;
+            emit AddedToAllowList(addrsToAdd_[i - 1]);
+        }
     }
 
     //// @notice removes addresses from allowlist if sender is owner
@@ -88,13 +88,13 @@ contract Allowlist is IAllowlist {
 
     /// @notice checks if is owner for protocol maintainance priviledges
     /// @param subject address to check
-    function isAllowedOwner(address subject) external view returns(bool) {
+    function isAllowedOwner(address subject) external view returns (bool) {
         return isOwner[subject];
     }
 
     /// @notice checks if subject can allowlist another address. It can do so if owner or on allowlist and not already allowlisted another address
     /// @param subject address to check if it can allowlist
     function canAllowList(address subject) external view returns (bool) {
-        return (isOwner[subject] ||  (isAllowListed[subject]  && (plusOne[subject] == address(0))));
+        return (isOwner[subject] || (isAllowListed[subject] && (plusOne[subject] == address(0))));
     }
 }

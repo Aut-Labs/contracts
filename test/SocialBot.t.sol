@@ -132,9 +132,8 @@ contract TestSocialBotPlugin is DeploysInit {
         BotPlugin.applyEventConsequences(
             participants, participationPoints, maxPossiblePointsPerUser, categoryOrDescription
         );
-        
-        IS2 = iLR.getIndividualState(A2, novaAddr);
 
+        IS2 = iLR.getIndividualState(A2, novaAddr);
 
         console.log("Average rep. | Average perf. | A1 givenC ", P2.cAverageRepLP, P2.ePerformanceLP, IS2.GC);
     }
@@ -142,16 +141,12 @@ contract TestSocialBotPlugin is DeploysInit {
     function testMemebrshpInversePerformance() public {
         vm.skip(true);
         testBotAltersLR();
-
-    } 
+    }
 
     function testNonMemberReputation() public {
         vm.skip(true);
         /// thesis: non-members can have reputation obtained through meeting attendence
         /// outcome: social participation can be a potential onboarding strategy
         testBotAltersLR();
-
-    } 
-
-
+    }
 }

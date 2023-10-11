@@ -9,38 +9,29 @@ import "forge-std/console.sol";
 //// @notice Tests Basic Deployment attainable
 
 contract AllowListT is DeploysInit {
-
     address notOwner;
     address notOwner2;
     address notOwner3;
     address notOwner4;
-
 
     function setUp() public override {
         super.setUp();
 
         assertTrue(AList.isAllowedOwner(A0), "assumed A0 is owner");
 
-                 notOwner = address(324567234565346578676543875867465543200);
-                 vm.label(notOwner, "notOwner");
-                 notOwner2 = address(6456723456324999995346578676543875211);
-                 vm.label(notOwner2, "notOwner2");
+        notOwner = address(324567234565346578676543875867465543200);
+        vm.label(notOwner, "notOwner");
+        notOwner2 = address(6456723456324999995346578676543875211);
+        vm.label(notOwner2, "notOwner2");
 
-                         notOwner3 =  address(6464593926354346545364752545754574556734563);
+        notOwner3 = address(6464593926354346545364752545754574556734563);
         vm.label(notOwner3, "notOwner3");
-    
-        notOwner4 =  address(12812893475342897583648346);
+
+        notOwner4 = address(12812893475342897583648346);
         vm.label(notOwner4, "notOwner4");
-
-
-    
     }
 
-
-
     function testAllowListSequence() public {
-
-
         assertFalse(AList.isAllowedOwner(notOwner), "rando is owner");
         assertFalse(AList.canAllowList(notOwner2), "rando can allow");
 
@@ -59,20 +50,21 @@ contract AllowListT is DeploysInit {
         assertTrue(AList.isAllowedOwner(nowOwner), "rando is allowed");
         assertTrue(AList.canAllowList(nowOwner), "expected plus one");
 
-
         vm.prank(nowOwner);
         AList.addToAllowlist(notOwner2);
         assertFalse(AList.isOwner(notOwner2), "unexpected as owenr");
-        assertTrue( AList.plusOne(notOwner2) == address(0), "expected not allowed 2");
+        assertTrue(AList.plusOne(notOwner2) == address(0), "expected not allowed 2");
 
-        assertTrue(AList.canAllowList(notOwner2), "is not plusone"); /// @dev owner can grant plusone
+        assertTrue(AList.canAllowList(notOwner2), "is not plusone");
+
+        /// @dev owner can grant plusone
 
         address[] memory toAddToAllowList = new address[](2);
         toAddToAllowList[0] = notOwner3;
         toAddToAllowList[1] = notOwner4;
         assertFalse(AList.isOwner(notOwner3), "not owner 3");
         assertFalse(AList.isAllowedOwner(notOwner4), "not allowed 4");
-                // assertFalse(AList.canAllowList(notOwner3), "cannot allow 3");
+        // assertFalse(AList.canAllowList(notOwner3), "cannot allow 3");
 
         vm.expectRevert();
         AList.addBatchToAllowlist(toAddToAllowList);
@@ -80,11 +72,9 @@ contract AllowListT is DeploysInit {
         vm.prank(A0);
         AList.addBatchToAllowlist(toAddToAllowList);
 
-
         assertFalse(AList.isAllowedOwner(notOwner3), "not allowed 3");
         assertTrue(AList.isAllowed(notOwner4), "has been batch allowed");
         assertTrue(AList.isAllowed(notOwner3), "has been batch allowed");
-
 
         assertTrue(AList.plusOne(notOwner4) == address(0), "already plusone");
         assertTrue(AList.isAllowListed(notOwner4), "not allowlisted");
@@ -103,7 +93,6 @@ contract AllowListT is DeploysInit {
 
         vm.prank(plussOneTarget);
         AList.addToAllowlist(cluelessFren);
-        
 
         vm.prank(plussOneTarget);
         vm.expectRevert();
@@ -112,8 +101,5 @@ contract AllowListT is DeploysInit {
         vm.prank(plussOneTarget);
         vm.expectRevert();
         AList.addToAllowlist(address(346787965447987878787878787128128128));
-
-
-
     }
 }

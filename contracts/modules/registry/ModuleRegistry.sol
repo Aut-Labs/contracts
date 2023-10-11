@@ -8,10 +8,11 @@ import {IAllowlist} from "../../utils/IAllowlist.sol";
 contract ModuleRegistry is IModuleRegistry, Ownable {
     ModuleDefinition[] public modules;
     IAllowlist AllowList;
+
     constructor(address allList) {
         _transferOwnership(msg.sender);
         AllowList = IAllowlist(allList);
-        
+
         modules.push(ModuleDefinition("none", 0));
         modules.push(ModuleDefinition("ipfs://bafkreia2si4nhqjdxg543z7pp5kchvx4auwm7gn54wftfa2vykfkjc4ppe", 1));
         modules.push(ModuleDefinition("ipfs://bafkreihxcz6eytmf6lm5oyqee67jujxepuczl42lw2orlfsw6yds5gm46i", 2));
@@ -46,5 +47,4 @@ contract ModuleRegistry is IModuleRegistry, Ownable {
     function getAllowListAddress() external view returns (address) {
         return address(AllowList);
     }
-
 }
