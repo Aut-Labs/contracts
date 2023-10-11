@@ -38,10 +38,10 @@ jobs:
       - name: generate types
         run: npx typechain --target ethers-v5  './out/*.sol/*'
 
-      - name: Commit changes
-        run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git add .
-          git commit -m "ci: forge test"
-          git push
+      # - name: Commit changes
+      #   run: |
+      #     git config --local user.email "actions@github.com"
+      #     git config --local user.name "GitHub Actions"
+      #     git add .
+      #     git commit -m "ci: forge test"
+      #     git push
