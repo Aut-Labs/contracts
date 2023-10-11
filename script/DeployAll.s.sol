@@ -68,7 +68,7 @@ contract DeployScript is Script {
 
     function run() public {
         {
-            vm.startBroadcast(vm.envUint("DEV_PK"));
+            vm.startBroadcast(vm.envUint("PVK_A1"));
 
             console.log("---------------------------------------------------");
             console.log("Deploying to network ID:  ", block.chainid);
