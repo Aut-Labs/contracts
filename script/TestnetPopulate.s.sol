@@ -92,7 +92,6 @@ contract Populate is Script {
         address openTask = address(new OpenTaskWithRep(address(OurNova)));
 
         PlugReg.addPluginToDAO(botPluginAddr, pluginDefBot1);
-
         PlugReg.addPluginToDAO(botQuizAddr, pluginQuizBot2);
         PlugReg.addPluginToDAO(openTask, pluginDefOpenTask);
 
@@ -118,10 +117,12 @@ contract Populate is Script {
 
             // aID.joinDAO(1, i + 3 > 10 ? i : i + 3, address(OurNova));
 
-            aID.mint("MojoJoJo", "http://IamanURL.xyz.abc.com", i % 2 == 0 ? 1 : 3, i + 3 > 10 ? i : i + 3, address(OurNova));
+            aID.mint(string.concat("MojoJoJo_- ", vm.toString(i)), "http://IamanURL.xyz.abc.com", i % 2 == 0 ? 1 : 3, i + 3 > 10 ? i : i + 3, address(OurNova));
             /// Agent joins nova
 
             /// Agent does reputation bearing task
+
+
 
             /// Period flip 1
 
