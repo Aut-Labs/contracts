@@ -260,8 +260,7 @@ contract LocalReputation is ILocalReputation {
         if (!INova(target_).isAdmin(_msgSender())) revert OnlyAdmin();
 
         if (k * p == 0) revert ZeroUnallowed();
-        if (((k / 100) + (p / 100) + (penalty / 100)) > 0) revert Over100();
-        ///@dev substitute with penalty not p
+        if (((k / 100) + (penalty / 100)) > 0) revert Over100();
 
         uint256 context = getContextID(target_, target_);
         getGS[context].k = k;

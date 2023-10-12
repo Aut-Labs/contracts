@@ -25,7 +25,6 @@ contract SocialBotPlugin is SimplePlugin, InteractionModifier {
         uint256 when;
         uint16 maxPointsPerUser;
     }
-    /// add to available interaction as relevant to performance metric ammended via setWeights
 
     SocialBotEvent[] allBotInteractions;
 

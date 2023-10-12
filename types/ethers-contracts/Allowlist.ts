@@ -30,9 +30,12 @@ export interface AllowlistInterface extends utils.Interface {
     "addBatchToAllowlist(address[])": FunctionFragment;
     "addOwner(address)": FunctionFragment;
     "addToAllowlist(address)": FunctionFragment;
+    "canAllowList(address)": FunctionFragment;
+    "isAllowListed(address)": FunctionFragment;
     "isAllowed(address)": FunctionFragment;
     "isAllowedOwner(address)": FunctionFragment;
     "isOwner(address)": FunctionFragment;
+    "plusOne(address)": FunctionFragment;
     "removeBatchFromAllowlist(address[])": FunctionFragment;
     "removeFromAllowlist(address)": FunctionFragment;
   };
@@ -42,9 +45,12 @@ export interface AllowlistInterface extends utils.Interface {
       | "addBatchToAllowlist"
       | "addOwner"
       | "addToAllowlist"
+      | "canAllowList"
+      | "isAllowListed"
       | "isAllowed"
       | "isAllowedOwner"
       | "isOwner"
+      | "plusOne"
       | "removeBatchFromAllowlist"
       | "removeFromAllowlist"
   ): FunctionFragment;
@@ -58,12 +64,21 @@ export interface AllowlistInterface extends utils.Interface {
     functionFragment: "addToAllowlist",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "canAllowList",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isAllowListed",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "isAllowed", values: [string]): string;
   encodeFunctionData(
     functionFragment: "isAllowedOwner",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "isOwner", values: [string]): string;
+  encodeFunctionData(functionFragment: "plusOne", values: [string]): string;
   encodeFunctionData(
     functionFragment: "removeBatchFromAllowlist",
     values: [string[]]
@@ -82,12 +97,21 @@ export interface AllowlistInterface extends utils.Interface {
     functionFragment: "addToAllowlist",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "canAllowList",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isAllowListed",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isAllowed", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isAllowedOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isOwner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "plusOne", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeBatchFromAllowlist",
     data: BytesLike
@@ -170,6 +194,13 @@ export interface Allowlist extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
+    canAllowList(
+      subject: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isAllowListed(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
+
     isAllowed(_addr: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     isAllowedOwner(
@@ -178,6 +209,8 @@ export interface Allowlist extends BaseContract {
     ): Promise<[boolean]>;
 
     isOwner(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
+
+    plusOne(arg0: string, overrides?: CallOverrides): Promise<[string]>;
 
     removeBatchFromAllowlist(
       addrs_: string[],
@@ -205,11 +238,17 @@ export interface Allowlist extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
+  canAllowList(subject: string, overrides?: CallOverrides): Promise<boolean>;
+
+  isAllowListed(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
   isAllowed(_addr: string, overrides?: CallOverrides): Promise<boolean>;
 
   isAllowedOwner(subject: string, overrides?: CallOverrides): Promise<boolean>;
 
   isOwner(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  plusOne(arg0: string, overrides?: CallOverrides): Promise<string>;
 
   removeBatchFromAllowlist(
     addrs_: string[],
@@ -234,6 +273,10 @@ export interface Allowlist extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    canAllowList(subject: string, overrides?: CallOverrides): Promise<boolean>;
+
+    isAllowListed(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
     isAllowed(_addr: string, overrides?: CallOverrides): Promise<boolean>;
 
     isAllowedOwner(
@@ -242,6 +285,8 @@ export interface Allowlist extends BaseContract {
     ): Promise<boolean>;
 
     isOwner(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    plusOne(arg0: string, overrides?: CallOverrides): Promise<string>;
 
     removeBatchFromAllowlist(
       addrs_: string[],
@@ -280,6 +325,13 @@ export interface Allowlist extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
+    canAllowList(
+      subject: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isAllowListed(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     isAllowed(_addr: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     isAllowedOwner(
@@ -288,6 +340,8 @@ export interface Allowlist extends BaseContract {
     ): Promise<BigNumber>;
 
     isOwner(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    plusOne(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     removeBatchFromAllowlist(
       addrs_: string[],
@@ -316,6 +370,16 @@ export interface Allowlist extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
+    canAllowList(
+      subject: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isAllowListed(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isAllowed(
       _addr: string,
       overrides?: CallOverrides
@@ -327,6 +391,11 @@ export interface Allowlist extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     isOwner(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    plusOne(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

@@ -5,8 +5,8 @@ import "./IAllowlist.sol";
 
 contract Allowlist is IAllowlist {
     mapping(address => bool) public isOwner;
-    mapping(address => bool) allowlist;
-    mapping(address => address) plusOne;
+    mapping(address => bool) public isAllowListed;
+    mapping(address => address) public plusOne;
 
     address deployer;
 
@@ -15,17 +15,17 @@ contract Allowlist is IAllowlist {
     }
 
     function isAllowed(address _addr) public view returns (bool) {
-        return allowlist[_addr];
+        return isAllowListed[_addr];
     }
 
     /////////// Modifiers
     //////////////////////////////////////
     modifier isSenderOwner() {
-        if (allowlist[msg.sender] && msg.sig == this.addToAllowlist.selector) {
+        if (msg.sig == this.addToAllowlist.selector && isAllowListed[msg.sender]) {
             if (plusOne[msg.sender] != address(0)) revert AlreadyPlusOne();
             _;
         } else {
-            if (!isOwner[msg.sender]) revert Unallowed("Only Owner");
+            if (!isOwner[msg.sender]) revert Unallowed();
             _;
         }
     }
@@ -36,9 +36,12 @@ contract Allowlist is IAllowlist {
     /// @notice adds address to allowlist if user is on the allowlist or owner
     /// @notice allowlisted addresses can only allowlist once and their target cannot allow another in turn
     function addToAllowlist(address addrToAdd_) external isSenderOwner {
-        allowlist[addrToAdd_] = true;
-        if (!isOwner[msg.sender]) plusOne[msg.sender] = addrToAdd_;
-        plusOne[addrToAdd_] = msg.sender;
+        if (isAllowListed[addrToAdd_]) return;
+        isAllowListed[addrToAdd_] = true;
+        if (!isOwner[msg.sender]) {
+            plusOne[addrToAdd_] = msg.sender;
+            plusOne[msg.sender] = addrToAdd_;
+        }
 
         emit AddedToAllowList(addrToAdd_);
     }
@@ -46,7 +49,7 @@ contract Allowlist is IAllowlist {
     //// @notice remvoes address from allowlist if sender is owner
     //// @param addrsToAdd_ addresses to remove
     function removeFromAllowlist(address addrToAdd_) external isSenderOwner {
-        allowlist[addrToAdd_] = false;
+        isAllowListed[addrToAdd_] = false;
         emit RemovedFromAllowList(addrToAdd_);
     }
 
@@ -55,11 +58,12 @@ contract Allowlist is IAllowlist {
     function addBatchToAllowlist(address[] memory addrsToAdd_) external isSenderOwner {
         uint256 i;
         for (i; i < addrsToAdd_.length;) {
-            allowlist[addrsToAdd_[i]] = true;
             unchecked {
                 ++i;
             }
-            emit AddedToAllowList(addrsToAdd_[i]);
+            if (isAllowListed[addrsToAdd_[i - 1]]) continue;
+            isAllowListed[addrsToAdd_[i - 1]] = true;
+            emit AddedToAllowList(addrsToAdd_[i - 1]);
         }
     }
 
@@ -68,7 +72,7 @@ contract Allowlist is IAllowlist {
     function removeBatchFromAllowlist(address[] memory addrs_) external isSenderOwner {
         uint256 i;
         for (i; i < addrs_.length;) {
-            allowlist[addrs_[i]] = false;
+            isAllowListed[addrs_[i]] = false;
             unchecked {
                 ++i;
             }
@@ -84,7 +88,13 @@ contract Allowlist is IAllowlist {
 
     /// @notice checks if is owner for protocol maintainance priviledges
     /// @param subject address to check
-    function isAllowedOwner(address subject) external view returns(bool) {
+    function isAllowedOwner(address subject) external view returns (bool) {
         return isOwner[subject];
-    } 
+    }
+
+    /// @notice checks if subject can allowlist another address. It can do so if owner or on allowlist and not already allowlisted another address
+    /// @param subject address to check if it can allowlist
+    function canAllowList(address subject) external view returns (bool) {
+        return (isOwner[subject] || (isAllowListed[subject] && (plusOne[subject] == address(0))));
+    }
 }

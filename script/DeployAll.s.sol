@@ -11,7 +11,6 @@ import {LocalReputation} from "../contracts/LocalReputation.sol";
 
 import {IAllowlist, Allowlist} from "../contracts/utils/Allowlist.sol";
 
-
 import "forge-std/Script.sol";
 
 contract DeployScript is Script {
@@ -25,10 +24,6 @@ contract DeployScript is Script {
     string quizUrl = "ipfs://bafkreign362uxbfxfmczqd73accyqvfllmf5p47lxyubmdxylhin5xdazi";
     string socialBotUrl = "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy";
     string transactionTaskUrl = "ipfs://bafkreidlrxr57x7f3pfen35kzorqxnkfatuc5brofgpztty3qi5eis6f6a";
-
-
-
-
 
     function setUp() public {
         chainID = block.chainid;
@@ -72,34 +67,34 @@ contract DeployScript is Script {
     }
 
     function run() public {
-    {
-        vm.startBroadcast(vm.envUint("DEV_PK"));
+        {
+            vm.startBroadcast(vm.envUint("PVK_A1"));
 
-        console.log("---------------------------------------------------");
-        console.log("Deploying to network ID:  ", block.chainid);
-        console.log("______________________________________________");
+            console.log("---------------------------------------------------");
+            console.log("Deploying to network ID:  ", block.chainid);
+            console.log("______________________________________________");
 
-                vm.writeLine(
-            "deployments.txt",
-            string.concat(
-                "Deployed to network ID:  ",
-                vm.toString(block.chainid),
-                " \n",
-                "At timestamp:  ",
-                vm.toString(block.timestamp),
-                " \n",
-                "#################################################################### \n"
-            )
-        );
-    }
+            vm.writeLine(
+                "deployments.txt",
+                string.concat(
+                    "Deployed to network ID:  ",
+                    vm.toString(block.chainid),
+                    " \n",
+                    "At timestamp:  ",
+                    vm.toString(block.timestamp),
+                    " \n",
+                    "#################################################################### \n"
+                )
+            );
+        }
 
-    //     function addPluginDefinition(
-    //     address payable creator,
-    //     string memory metadataURI,
-    //     uint256 price,
-    //     bool canBeStandalone,
-    //     uint256[] memory moduleDependencies
-    // ) external returns (uint256 pluginDefinitionId) 
+        //     function addPluginDefinition(
+        //     address payable creator,
+        //     string memory metadataURI,
+        //     uint256 price,
+        //     bool canBeStandalone,
+        //     uint256[] memory moduleDependencies
+        // ) external returns (uint256 pluginDefinitionId)
 
         address LocalReputationAddr = address(new LocalReputation());
         address AUTid = address(new AutID());
@@ -110,7 +105,7 @@ contract DeployScript is Script {
         address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
         address NovaRegistryAddr =
             address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr ));
-        
+
         ////////////////////////////////////////////////////////
         //////// set changable contracts
         IPluginRegistry IPR = IPluginRegistry(PluginRegistryAddr);
@@ -119,15 +114,24 @@ contract DeployScript is Script {
         uint256[] memory dependencies;
         uint256[] memory pluginDefinitionIds = new uint256[](6);
 
-
-        pluginDefinitionIds[0] =IPR.addPluginDefinition(payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), onboardingIpfsUrl, 0,true,dependencies);
-        pluginDefinitionIds[1] =IPR.addPluginDefinition(payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), discordUrl, 0,true,dependencies);
-        pluginDefinitionIds[2] =IPR.addPluginDefinition(payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), openTaskUrl, 0,true,dependencies);
-        pluginDefinitionIds[3] =IPR.addPluginDefinition(payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), quizUrl, 0,true,dependencies);
-        pluginDefinitionIds[4] =IPR.addPluginDefinition(payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), socialBotUrl, 0,true,dependencies);
-        pluginDefinitionIds[5] =IPR.addPluginDefinition(payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), transactionTaskUrl, 0,true,dependencies);
-
-        
+        pluginDefinitionIds[0] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), onboardingIpfsUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[1] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), discordUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[2] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), openTaskUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[3] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), quizUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[4] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), socialBotUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[5] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), transactionTaskUrl, 0, true, dependencies
+        );
 
         // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(AUTid));
 
@@ -159,18 +163,30 @@ contract DeployScript is Script {
         console.log("                                                                       ");
         console.log("______________________________________________");
 
-
         vm.writeLine(
             "deployments.txt",
             string.concat(
-                string.concat("AUTid----------------------------------------- : ", vm.toString(AUTid), " \n",
-                    "Nova Factory----------------------------------------- : ", vm.toString(NoveFactoryAddr), " \n"
+                string.concat(
+                    "AUTid----------------------------------------- : ",
+                    vm.toString(AUTid),
+                    " \n",
+                    "Nova Factory----------------------------------------- : ",
+                    vm.toString(NoveFactoryAddr),
+                    " \n"
                 ),
                 string.concat(
-                    "ModuleRegistry----------------------------------------- : ", vm.toString(ModuleRegistryAddr), " \n",
-                    "PluginRegistry----------------------------------------- : ", vm.toString(PluginRegistryAddr), " \n",
-                    "NovaRegistry----------------------------------------- : ", vm.toString(NovaRegistryAddr), " \n",
-                    "NovaRegistry----------------------------------------- : ", vm.toString(NovaRegistryAddr), " \n"
+                    "ModuleRegistry----------------------------------------- : ",
+                    vm.toString(ModuleRegistryAddr),
+                    " \n",
+                    "PluginRegistry----------------------------------------- : ",
+                    vm.toString(PluginRegistryAddr),
+                    " \n",
+                    "NovaRegistry----------------------------------------- : ",
+                    vm.toString(NovaRegistryAddr),
+                    " \n",
+                    "NovaRegistry----------------------------------------- : ",
+                    vm.toString(NovaRegistryAddr),
+                    " \n"
                 ),
                 string.concat(
                     "LocalReputation----------------------------------------- : ",
@@ -180,9 +196,15 @@ contract DeployScript is Script {
                     vm.toString(AllowlistAddr),
                     " \n"
                 ),
-                                string.concat(
+                string.concat(
                     "PluginIDs : ",
-                    vm.toString(pluginDefinitionIds[0]), " , ", vm.toString(pluginDefinitionIds[1]), " , ", vm.toString(pluginDefinitionIds[2]), " , ", vm.toString(pluginDefinitionIds[3])
+                    vm.toString(pluginDefinitionIds[0]),
+                    " , ",
+                    vm.toString(pluginDefinitionIds[1]),
+                    " , ",
+                    vm.toString(pluginDefinitionIds[2]),
+                    " , ",
+                    vm.toString(pluginDefinitionIds[3])
                 )
             )
         );

@@ -2,9 +2,9 @@
 pragma solidity 0.8.19;
 
 interface IAllowlist {
-    error Unallowed(string);
+    error Unallowed();
     error AlreadyPlusOne();
-    error AlreadyDepolyedANova();
+    error AlreadyDeployedANova();
 
     event AddedToAllowList(address who);
     event RemovedFromAllowList(address who);
@@ -15,5 +15,9 @@ interface IAllowlist {
     function addBatchToAllowlist(address[] memory addrsToAdd_) external;
     function removeBatchFromAllowlist(address[] memory _addrs) external;
     function addOwner(address owner_) external;
-    function isAllowedOwner(address subject) external view returns(bool);
+    function isAllowedOwner(address subject) external view returns (bool);
+    function plusOne(address) external view returns (address);
+    function canAllowList(address subject) external view returns (bool);
+    function isOwner(address subject) external view returns (bool);
+    function isAllowListed(address subject) external view returns (bool);
 }

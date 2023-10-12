@@ -55,7 +55,7 @@ export interface AllowListTInterface extends utils.Interface {
     "targetInterfaces()": FunctionFragment;
     "targetSelectors()": FunctionFragment;
     "targetSenders()": FunctionFragment;
-    "testAllowListBase()": FunctionFragment;
+    "testAllowListSequence()": FunctionFragment;
     "testAreDeployedContracts()": FunctionFragment;
   };
 
@@ -73,7 +73,7 @@ export interface AllowListTInterface extends utils.Interface {
       | "targetInterfaces"
       | "targetSelectors"
       | "targetSenders"
-      | "testAllowListBase"
+      | "testAllowListSequence"
       | "testAreDeployedContracts"
   ): FunctionFragment;
 
@@ -117,7 +117,7 @@ export interface AllowListTInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "testAllowListBase",
+    functionFragment: "testAllowListSequence",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -165,7 +165,7 @@ export interface AllowListTInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "testAllowListBase",
+    functionFragment: "testAllowListSequence",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -533,7 +533,7 @@ export interface AllowListT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[]] & { targetedSenders_: string[] }>;
 
-    testAllowListBase(
+    testAllowListSequence(
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -576,7 +576,7 @@ export interface AllowListT extends BaseContract {
 
   targetSenders(overrides?: CallOverrides): Promise<string[]>;
 
-  testAllowListBase(
+  testAllowListSequence(
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -615,7 +615,7 @@ export interface AllowListT extends BaseContract {
 
     targetSenders(overrides?: CallOverrides): Promise<string[]>;
 
-    testAllowListBase(overrides?: CallOverrides): Promise<void>;
+    testAllowListSequence(overrides?: CallOverrides): Promise<void>;
 
     testAreDeployedContracts(overrides?: CallOverrides): Promise<void>;
   };
@@ -746,7 +746,7 @@ export interface AllowListT extends BaseContract {
 
     targetSenders(overrides?: CallOverrides): Promise<BigNumber>;
 
-    testAllowListBase(
+    testAllowListSequence(
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -786,7 +786,7 @@ export interface AllowListT extends BaseContract {
 
     targetSenders(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    testAllowListBase(
+    testAllowListSequence(
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
