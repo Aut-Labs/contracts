@@ -31,10 +31,6 @@ contract Populate is Script {
 
     address deployer = vm.rememberKey(vm.envUint("PVK_A1"));
 
-    // address A_222 = payable(vm.addr(uint256(bytes32(abi.encodePacked(vm.envString("PVK_A1"))))));
-    // address A_333 = vm.addr(uint256(bytes32(abi.encodePacked(vm.envString("PVK_A2")))));
-    // address A_444 = vm.addr(uint256(bytes32(abi.encodePacked(vm.envString("PVK_A3")))));
-
     uint256 chainID;
     address biconomyTrustedForward;
 
@@ -110,7 +106,7 @@ contract Populate is Script {
 
         for (i; i < privateKeys.length;) {
             console.log("###########################################");
-            console.log("o_o : ", vm.addr(privateKeys[i]));
+            console.log(string.concat("o_o Account ", vm.toString(i)),vm.addr(privateKeys[i]));
             console.log("###########################################");
 
             vm.startBroadcast(privateKeys[i]);
