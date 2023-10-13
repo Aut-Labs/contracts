@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -7,11 +7,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "../plugins/IPlugin.sol";
 import "../plugins/registry/IPluginRegistry.sol";
-import "../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../daoUtils/interfaces/get/IDAOAdmin.sol";
-import "../daoUtils/interfaces/get/IDAOModules.sol";
 import "../nova/interfaces/INova.sol";
-import "../IInteraction.sol";
 
 /// @title PluginRegistry
 /// @notice Stores all plugins available and allows them to be added to a dao
@@ -23,7 +20,7 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
     address payable public feeReciever;
     address public oracleAddress;
     address public override modulesRegistry;
-    address public LRaddress;
+    address public defaultLRAddr;
 
     mapping(uint256 => PluginDefinition) public pluginDefinitionsById;
     mapping(uint256 => PluginInstance) public pluginInstanceByTokenId;
@@ -47,40 +44,37 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
 
     // Plugin creation
     function addPluginToDAO(address pluginAddress, uint256 pluginDefinitionId) external payable override nonReentrant {
-        IModule plugin = IModule(pluginAddress);
-        address dao = plugin.daoAddress();
+        address nova = IPlugin(pluginAddress).novaAddress();
 
-        require(IDAOAdmin(dao).isAdmin(msg.sender) == true, "Not an admin");
+        require(IDAOAdmin(nova).isAdmin(msg.sender) == true, "Not an admin");
+        PluginDefinition memory pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
 
-        PluginDefinition storage pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
         require(pluginDefinition.canBeStandalone, "can't be standalone");
         require(msg.value >= pluginDefinition.price, "AUT: Insufficient price paid");
-        require(!pluginDefinitionsInstalledByDAO[dao][pluginDefinitionId], "AUT: Plugin already installed on dao");
+        require(!pluginDefinitionsInstalledByDAO[nova][pluginDefinitionId], "AUT: Plugin already installed on nova");
 
-        pluginDefinitionsInstalledByDAO[dao][pluginDefinitionId] = true;
+        pluginDefinitionsInstalledByDAO[nova][pluginDefinitionId] = true;
 
         uint256 tokenId = _mintPluginNFT(pluginDefinitionId, msg.sender);
 
-        pluginIdsByDAO[dao].push(tokenId);
+        pluginIdsByDAO[nova].push(tokenId);
 
         uint256 fee = (pluginDefinition.price * feeBase1000) / 1000;
 
         feeReciever.transfer(fee);
-        pluginDefinitionsById[pluginDefinitionId].creator.transfer(msg.value - fee);
+        (bool s,) = pluginDefinition.creator.call{value: msg.value - fee}("");
+        if (!s) revert("Value transfer failed");
 
-        emit PluginAddedToDAO(tokenId, pluginDefinitionId, dao);
+        emit PluginAddedToDAO(tokenId, pluginDefinitionId, nova);
 
         pluginInstanceByTokenId[tokenId].pluginAddress = pluginAddress;
 
         tokenIdByPluginAddress[pluginAddress] = tokenId;
 
         IPlugin(pluginAddress).setPluginId(tokenId);
-        // allow interactions to be used from plugin
-        address interactions = IDAOInteractions(dao).getInteractionsAddr();
-        IInteraction(interactions).allowAccess(pluginAddress);
 
         if (IModule(pluginAddress).moduleId() == 1) {
-            INova(dao).setOnboardingStrategy(pluginAddress);
+            INova(nova).setOnboardingStrategy(pluginAddress);
         }
 
         emit PluginRegistered(tokenId, pluginAddress);
@@ -100,14 +94,17 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         return tokenId;
     }
 
-    function getOwnerOfPlugin(address pluginAddress) external view override returns (address owner) {
-        uint256 tokenId = tokenIdByPluginAddress[pluginAddress];
-        owner = ownerOf(tokenId);
-        return owner;
+    function getOwnerOfPlugin(address pluginAddress) external view override returns (address) {
+        return ownerOf(tokenIdByPluginAddress[pluginAddress]);
     }
 
     function editPluginDefinitionMetadata(uint256 pluginDefinitionId, string memory url) external override onlyOwner {
         pluginDefinitionsById[pluginDefinitionId].metadataURI = url;
+    }
+
+    function setDefaulLRAddress(address LR) external onlyOwner {
+        emit DefaultLRAlgoChanged(LR, defaultLRAddr);
+        defaultLRAddr = LR;
     }
 
     // Plugin type management
@@ -142,10 +139,6 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         pluginDefinition.active = newActive;
     }
 
-    function setLocalReputationAddress(address LR_) external onlyOwner {
-        LRaddress = LR_;
-    }
-
     // Admin
     function setFeeBase1000(uint256 newFeeBase1000) public onlyOwner {
         feeBase1000 = newFeeBase1000;
@@ -173,5 +166,9 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
 
     function tokenIdFromAddress(address pluginAddress_) external view override returns (uint256) {
         return tokenIdByPluginAddress[pluginAddress_];
+    }
+
+    function owner() public view override(Ownable, IPluginRegistry) returns (address) {
+        return super.owner();
     }
 }

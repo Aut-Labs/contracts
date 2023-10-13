@@ -11,7 +11,7 @@ import "../daoUtils/interfaces/get/IDAOModules.sol";
  */
 abstract contract SimplePlugin is IPlugin {
     address _deployer;
-    address _dao;
+    address _novaAddress;
 
     uint256 public override pluginId;
     uint256 public override moduleId;
@@ -25,7 +25,7 @@ abstract contract SimplePlugin is IPlugin {
      */
     //// @dev
     modifier onlyDAOModule() {
-        uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry).getPluginIdsByDAO(_dao);
+        uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry).getPluginIdsByDAO(_novaAddress);
         bool pluginFound = false;
         for (uint256 i = 0; i < installedPlugins.length; i++) {
             if (installedPlugins[i] == pluginId) pluginFound = true;
@@ -65,7 +65,7 @@ abstract contract SimplePlugin is IPlugin {
      * @param modId The module ID of the plugin
      */
     constructor(address dao, uint256 modId) {
-        _dao = dao;
+        _novaAddress = dao;
         pluginRegistry = IDAOModules(dao).pluginRegistry();
         _deployer = msg.sender;
         moduleId = modId;
@@ -88,11 +88,11 @@ abstract contract SimplePlugin is IPlugin {
     }
 
     /**
-     * @notice Returns the address of the DAO the plugin is associated with
-     * @return The address of the DAO
+     * @notice Returns the address of the Nova the plugin is associated with
+     * @return The address of the Nova
      */
-    function daoAddress() public view override returns (address) {
-        return _dao;
+    function novaAddress() public view override returns (address) {
+        return _novaAddress;
     }
 
     /**

@@ -8,7 +8,6 @@ import "../daoUtils/abstracts/DAOModules.sol";
 import "../daoUtils/abstracts/DAOMetadata.sol";
 import "../daoUtils/abstracts/AutIDAddress.sol";
 import "../daoUtils/abstracts/DAOCommitment.sol";
-import "../daoUtils/abstracts/DAOInteractions.sol";
 
 import "../modules/onboarding/OnboardingModule.sol";
 import "./interfaces/INova.sol";
@@ -16,7 +15,7 @@ import "./interfaces/INova.sol";
 /// @title Nova
 /// @notice
 /// @dev
-contract Nova is DAOMembers, DAOInteractions, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCommitment {
+contract Nova is DAOMembers, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCommitment {
     address public deployer;
     address public onboardingAddr;
 
@@ -43,7 +42,6 @@ contract Nova is DAOMembers, DAOInteractions, DAOMetadata, DAOUrls, DAOMarket, D
         _setAutIDAddress(_autAddr);
         _setCommitment(_commitment);
         _setMetadataUri(_metadata);
-        _deployInteractions();
         _setPluginRegistry(_pluginRegistry);
     }
 

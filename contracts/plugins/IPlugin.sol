@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
 import "../modules/IModule.sol";
@@ -34,5 +34,5 @@ interface IPlugin is IModule {
      * @notice Returns the address of the DAO the plugin is associated with
      * @return The address of the DAO
      */
-    function daoAddress() external view returns (address);
+    function novaAddress() external view returns (address);
 }

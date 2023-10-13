@@ -3,12 +3,16 @@ pragma solidity 0.8.19;
 
 import "./IModuleRegistry.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import {IAllowlist} from "../../utils/IAllowlist.sol";
 
 contract ModuleRegistry is IModuleRegistry, Ownable {
     ModuleDefinition[] public modules;
+    IAllowlist AllowList;
 
-    constructor() {
+    constructor(address allList) {
         _transferOwnership(msg.sender);
+        AllowList = IAllowlist(allList);
+
         modules.push(ModuleDefinition("none", 0));
         modules.push(ModuleDefinition("ipfs://bafkreia2si4nhqjdxg543z7pp5kchvx4auwm7gn54wftfa2vykfkjc4ppe", 1));
         modules.push(ModuleDefinition("ipfs://bafkreihxcz6eytmf6lm5oyqee67jujxepuczl42lw2orlfsw6yds5gm46i", 2));
@@ -33,5 +37,14 @@ contract ModuleRegistry is IModuleRegistry, Ownable {
 
     function updateMetadataURI(uint256 moduleId, string calldata uri) public override onlyOwner {
         modules[moduleId].metadataURI = uri;
+    }
+
+    function isProtocolMaintaier(address subject) external view override returns (bool) {
+        if (address(AllowList) == address(0)) return false;
+        return AllowList.isAllowedOwner(subject);
+    }
+
+    function getAllowListAddress() external view returns (address) {
+        return address(AllowList);
     }
 }

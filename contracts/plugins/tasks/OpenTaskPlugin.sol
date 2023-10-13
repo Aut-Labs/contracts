@@ -3,11 +3,10 @@ pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "../SimplePlugin.sol";
-import "../../IInteraction.sol";
 
 import "../../modules/tasks/TasksModule.sol";
-import "../../daoUtils/interfaces/get/IDAOInteractions.sol";
 import "../../daoUtils/interfaces/get/IDAOMembership.sol";
+import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -42,7 +41,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
 
     modifier onlyAllowedToSubmit() {
         if (daoMembersOnly) {
-            require(IDAOMembership(_dao).isMember(msg.sender), "Only DAO members");
+            require(IDAOMembership(_novaAddress).isMember(msg.sender), "Only DAO members");
         }
         _;
     }
@@ -53,7 +52,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
     }
 
     modifier onlyAdmin() {
-        require(IDAOAdmin(_dao).isAdmin(msg.sender), "Only admin.");
+        require(IDAOAdmin(_novaAddress).isAdmin(msg.sender), "Only admin.");
         _;
     }
 
@@ -102,6 +101,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
 
     function submit(uint256 taskId, string calldata submitionUrl)
         public
+        virtual
         override
         onlyAllowedToSubmit
         atStatus(taskId, msg.sender, TaskStatus.Created)
@@ -118,6 +118,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
 
     function finalizeFor(uint256 taskId, address submitter)
         public
+        virtual
         override
         atStatus(taskId, submitter, TaskStatus.Submitted)
         onlyCreator(taskId)
@@ -127,8 +128,6 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
 
         submissions[submitterToSubmissionId[taskId][submitter]].status = TaskStatus.Finished;
         submissions[submitterToSubmissionId[taskId][submitter]].completionTime = block.timestamp;
-
-        IInteraction(IDAOInteractions(daoAddress()).getInteractionsAddr()).addInteraction(taskId, submitter);
 
         emit TaskFinalized(taskId, submitter);
     }

@@ -1,34 +1,47 @@
-name: test
-
-on: workflow_dispatch
+name: wip-dev-ci
 
 env:
-  FOUNDRY_PROFILE: default
+  FOUNDRY_PROFILE: "ci"
+
+on:
+  push:
+    branches:
+      - test-dev-2
+      - dev-main
 
 jobs:
-  check:
-    strategy:
-      fail-fast: true
-
-    name: Foundry project
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
+      - name: Install Node.js
+        uses: actions/setup-node@v2
         with:
-          version: nightly
+          node-version: 18.12.1
 
-      - name: Run Forge build
-        run: |
-          forge --version
-          forge build --sizes
-        id: build
+      - name: Install dependencies
+        run: npm install
+
+      - name: "Install Foundry"
+        uses: "foundry-rs/foundry-toolchain@v1"
+
 
       - name: Run Forge tests
-        run: |
-          forge test -vvv
-        id: test
+        run: forge t
+
+      # - name: Build with Hardhat
+      #   run: npm run test
+
+      - name: generate types
+        run: npx typechain --target ethers-v5  './out/*.sol/*'
+
+      # - name: Commit changes
+      #   run: |
+      #     git config --local user.email "actions@github.com"
+      #     git config --local user.name "GitHub Actions"
+      #     git add .
+      #     git commit -m "ci: forge test"
+      #     git push
