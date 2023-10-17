@@ -25,4 +25,7 @@ contract OpenTaskWithRep is OpenTaskPlugin, InteractionModifier {
     {
         super.finalizeFor(taskId, submitter);
     }
+
+    /// @dev todo example of encoding from frontend to set interaction weight for submitting specific task id.
+
 }
