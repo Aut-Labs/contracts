@@ -8,6 +8,36 @@ import "./base/ComponentProxy.sol";
 import "./interfaces/INova.sol";
 import "./ComponentRegistry.sol";
 
+interface INovaComponentDiscovery {
+    function componentRegistry() external view returns(address);
+    function componentAddressForKey(bytes32) external view returns(address);
+    function addComponent(bytes32, bytes calldata initializerArgs) external;
+}
+
+contract NovaComponentDiscovery {
+    event ComponentAdded(bytes32, address);
+
+    mapping(bytes32 => address) public componentAddressForKey;
+    address immutable public componentRegistry;
+
+    constructor(address componentRegistry_) {
+        componentRegistry = componentRegistry_;
+    }
+
+    function addComponent(
+        bytes32 componentKey,
+        bytes calldata initializerArgs
+    )
+        external
+    {
+        require(componentAddressForKey[componentKey] == address(0), "Nova: component exists");
+        address beacon = ComponentRegistry(componentRegistry).beaconFor(componentKey);
+        address proxy = address(new ComponentProxy(beacon, initializerArgs, address(this)));
+        componentAddressForKey[componentKey] = proxy;
+        emit ComponentAdded(componentKey, proxy);
+    }
+}
+
 contract Nova is INova, Ownable {
     event ComponentAdded(bytes32, address);
     event ComponentCalled(bytes32 key, bytes4 selector, bool success);
@@ -64,3 +94,4 @@ contract Nova is INova, Ownable {
         emit ComponentCalled(componentKey, componentSelector, success);
     }
 }
+

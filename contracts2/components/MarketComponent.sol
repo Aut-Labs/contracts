@@ -9,11 +9,15 @@ import "../base/ComponentBase.sol";
 contract MarketComponent is ComponentBase {
     event MarketSet(uint256);
 
-    uint256 public market;
+    uint256 internal _market;
 
-    function setMarket(uint256 _market) external novaCall {
-        require(_market > 0 && _market < 4, "MarketComponent: invalid market");
-        market = _market;
+    function setMarket(uint256 market) external novaCall {
+        require(market > 0 && market < 4, "MarketComponent: invalid market");
+        _market = market;
         emit MarketSet(market);
+    }
+
+    function getMarket() external view returns (uint256) {
+        return _market;
     }
 }

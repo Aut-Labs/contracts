@@ -9,7 +9,7 @@ import "../base/ComponentBase.sol";
 contract CommitmentComponent is ComponentBase {
     event CommitmentSet(uint256);
 
-    uint256 _commitment;
+    uint256 internal _commitment;
 
     function setCommitment(uint256 commitment) external novaCall {
         require(

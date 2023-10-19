@@ -15,3 +15,4 @@ contract ComponentRegistry is Ownable {
         beaconFor[componentKey] = address(new UpgradeableBeacon(implementation));
     }
 }
+

@@ -17,7 +17,7 @@ abstract contract ComponentBase {
     }
 
     function nova() public view returns (INova) {
-        return INova(StorageSlot.getAddressSlot(_NOVA_SLOT).value);
+        return INova(_getNovaSlot().value);
     }
 
     function _getNovaSlot() internal pure returns (StorageSlot.AddressSlot storage) {
