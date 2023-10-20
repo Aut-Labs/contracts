@@ -2,11 +2,12 @@
 pragma solidity 0.8.19;
 
 import "../base/ComponentBase.sol";
+import "../utils/Semver.sol";
 
 /// @title Urls component
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-contract UrlsComponent is ComponentBase {
+contract UrlsComponent is ComponentBase, Semver(0, 1, 0) {
     event UrlAdded(string url);
     event UrlRemoved(string url);
 

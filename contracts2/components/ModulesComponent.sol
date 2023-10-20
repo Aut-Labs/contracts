@@ -5,11 +5,12 @@ import "../interfaces/IModuleRegistry.sol";
 import "../interfaces/IPluginRegistry.sol";
 
 import "../base/ComponentBase.sol";
+import "../utils/Semver.sol";
 
 /// @title Modules component
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-contract ModulesComponent is ComponentBase {
+contract ModulesComponent is ComponentBase, Semver(0, 1, 0) {
     event ModuleActivated(uint256);
 
     address public pluginRegistry;
