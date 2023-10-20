@@ -19,9 +19,6 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         uint256 completionTime;
         TaskStatus status;
     }
-    /// @parseb  
-    /// @dev @todo  add with reputation / interaction
-    /// @dev twice for quiz and joinDiscord - as separate features. 
 
     mapping(uint256 => mapping(address => TaskDetails)) taskStatuses;
 

@@ -14,7 +14,7 @@ library DeploymentAddresses {
     }
 
     /// module registry 0x0D6b0826CA305F54255531C742e3781F442f57CA
-    /// Allowlist 
+    /// Allowlist
 
     function allowListAddr(uint256 chainID) internal pure returns (address) {
         if (chainID == 80001) {
@@ -26,7 +26,7 @@ library DeploymentAddresses {
         }
     }
 
-        function moduleRegistryAddr(uint256 chainID) internal pure returns (address) {
+    function moduleRegistryAddr(uint256 chainID) internal pure returns (address) {
         if (chainID == 80001) {
             return address(0x7d8B9B8170BA2739270039cE5b75B1C5D4952e08); // Replace with the actual address for chain ID 1
         } else if (chainID == 2) {
@@ -35,7 +35,6 @@ library DeploymentAddresses {
             revert("Unsupported chainID");
         }
     }
-
 
     function novaFactoryAddr(uint256 chainID) internal pure returns (address) {
         if (chainID == 80001) {

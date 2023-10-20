@@ -41,8 +41,6 @@ contract TestLRFuzz is DeploysInit {
         uint256 prevscore,
         uint256 penalty
     ) public returns (uint256 score) {
-        
-
         iGC = bound(iGC, 1, 700);
         iCL = bound(iCL, 1, 10);
         TCL = bound(TCL, 10, 3000);

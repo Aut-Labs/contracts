@@ -44,14 +44,13 @@ contract Populate is Script {
         aID = AutID(DeploymentAddresses.autIDAddr(chainID));
         vm.label(address(aID), "AutID");
         NovaF = NovaFactory(DeploymentAddresses.novaFactoryAddr(chainID));
-                vm.label(address(NovaF), "Nova Factory");
+        vm.label(address(NovaF), "Nova Factory");
 
         NovaR = NovaRegistry(DeploymentAddresses.novaRegistryAddr(chainID));
-                        vm.label(address(NovaR), "NovaR");
+        vm.label(address(NovaR), "NovaR");
 
         PlugReg = PluginRegistry(DeploymentAddresses.pluginRegistryAddr(chainID));
-                        vm.label(address(PlugReg), "PluginRegistry");
-
+        vm.label(address(PlugReg), "PluginRegistry");
 
         LR = LocalReputation(DeploymentAddresses.LocalReputationutationAddr(chainID));
         vm.label(address(LR), "LocalReputation");
@@ -59,24 +58,35 @@ contract Populate is Script {
 
     function run() public {
         uint256[] memory privateKeys = new uint256[](3);
-        privateKeys[0] = vm.envUint("PVK_A1"); /// deployer
+        privateKeys[0] = vm.envUint("PVK_A1");
+        /// deployer
         privateKeys[1] = vm.envUint("PVK_A2");
         privateKeys[2] = vm.envUint("PVK_A3");
-
-        
 
         vm.startBroadcast(deployer); //////////////////////// BROADCAST
 
         uint256[] memory deps;
 
         uint256 pluginDefBot1 = PlugReg.addPluginDefinition(
-            payable(address(deployer)), "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy", 0, true, deps
+            payable(address(deployer)),
+            "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy",
+            0,
+            true,
+            deps
         );
         uint256 pluginDefOpenTask = PlugReg.addPluginDefinition(
-            payable(address(deployer)), "ipfs://bafkreie45ntwx6trhl4azaixj6st64rcghrnscf2mnlahihctri6ospgte", 0, true, deps
+            payable(address(deployer)),
+            "ipfs://bafkreie45ntwx6trhl4azaixj6st64rcghrnscf2mnlahihctri6ospgte",
+            0,
+            true,
+            deps
         );
         uint256 pluginQuizBot2 = PlugReg.addPluginDefinition(
-            payable(address(deployer)), "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy", 0, true, deps
+            payable(address(deployer)),
+            "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy",
+            0,
+            true,
+            deps
         );
 
         INova OurNova = INova(
@@ -106,19 +116,23 @@ contract Populate is Script {
 
         for (i; i < privateKeys.length;) {
             console.log("###########################################");
-            console.log(string.concat("o_o Account ", vm.toString(i)),vm.addr(privateKeys[i]));
+            console.log(string.concat("o_o Account ", vm.toString(i)), vm.addr(privateKeys[i]));
             console.log("###########################################");
 
             vm.startBroadcast(privateKeys[i]);
 
             // aID.joinDAO(1, i + 3 > 10 ? i : i + 3, address(OurNova));
 
-            aID.mint(string.concat("MojoJoJo_- ", vm.toString(i)), "http://IamanURL.xyz.abc.com", i % 2 == 0 ? 1 : 3, i + 3 > 10 ? i : i + 3, address(OurNova));
+            aID.mint(
+                string.concat("MojoJoJo_- ", vm.toString(i)),
+                "http://IamanURL.xyz.abc.com",
+                i % 2 == 0 ? 1 : 3,
+                i + 3 > 10 ? i : i + 3,
+                address(OurNova)
+            );
             /// Agent joins nova
 
             /// Agent does reputation bearing task
-
-
 
             /// Period flip 1
 

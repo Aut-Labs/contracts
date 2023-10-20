@@ -26,6 +26,16 @@ contract OpenTaskWithRep is OpenTaskPlugin, InteractionModifier {
         super.finalizeFor(taskId, submitter);
     }
 
-    /// @dev todo example of encoding from frontend to set interaction weight for submitting specific task id.
+    /// @notice the creator of the task can use to set number of points to be awared for finalizing a task
+    /// @param taskID ID of task to assign points balance to
+    /// @param pointsWeight how many points the task will be worth
+    function setWeightForTask(uint256 taskID, uint16 pointsWeight) external onlyCreator(taskID) {
+        bytes memory dataTaskCall = abi.encodeWithSelector(this.finalizeFor.selector, taskID);
+        bytes[] memory bts = new bytes[](1);
+        uint16[] memory pts = new uint16[](1);
+        bts[0] = dataTaskCall;
+        pts[0] = pointsWeight;
 
+        ILR.setInteractionWeights(address(this), bts, pts);
+    }
 }
