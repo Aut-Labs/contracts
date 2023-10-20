@@ -16,11 +16,6 @@ contract ModulesComponent is ComponentBase, Semver(0, 1, 0) {
     address public pluginRegistry;
     uint256[] activatedModules;
 
-    modifier onlyPluginRegistry() {
-        require(msg.sender == address(pluginRegistry), "Only plugin registry");
-        _;
-    }
-
     function setPluginRegistry(address _pluginRegistry) external novaCall {
         require(_pluginRegistry != address(0), "invalid pluginRegistry");
         pluginRegistry = _pluginRegistry;
