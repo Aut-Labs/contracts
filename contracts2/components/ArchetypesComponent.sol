@@ -2,6 +2,7 @@
 pragma solidity 0.8.19;
 
 import "../base/ComponentBase.sol";
+import "../utils/Semver.sol";
 
 interface IArchetype {
     error ArchetypeAlreadySet();
@@ -19,7 +20,7 @@ interface IArchetype {
     function setWeightFor(uint8, uint256) external;
 }
 
-contract ArchetypeComponent is ComponentBase, IArchetype {
+contract ArchetypeComponent is ComponentBase, IArchetype, Semver(0, 1, 0) {
     uint8 public constant SIZE = 1;
     uint8 public constant REPUTATION = 2;
     uint8 public constant CONVICTION = 3;

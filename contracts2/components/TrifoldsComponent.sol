@@ -6,13 +6,14 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "../base/ComponentBase.sol";
+import "../utils/Semver.sol";
 
 
 /// two levels of token access
 // 1 -- admin (can manage the token id)
 // 2 -- operator (can act on behalf of token id)
 
-contract TrifoldsComponent is Initializable, ComponentBase, ERC721Upgradeable {
+contract TrifoldsComponent is Initializable, ComponentBase, ERC721Upgradeable, Semver(0, 1, 0) {
     event NodeAdded(uint64 primaryKey, uint64 uplink, uint8 nodeType, bytes32 symbol, address operator);
 
     enum ENodeType {

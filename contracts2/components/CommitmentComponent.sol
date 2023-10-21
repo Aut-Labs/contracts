@@ -13,18 +13,14 @@ contract CommitmentComponent is ComponentBase, Semver(0, 1, 0) {
     uint256 public constant MAX_COMMITMENT_LEVEL = 10;
     uint256 public constant MIN_COMMITMENT_LEVEL = 1;
 
-    uint256 internal _commitment;
+    uint256 public commitment;
 
-    function setCommitment(uint256 commitment) external novaCall {
+    function setCommitment(uint256 commitment_) external novaCall {
         require(
-            commitment >= MIN_COMMITMENT_LEVEL && commitment <= MAX_COMMITMENT_LEVEL,
+            commitment_ >= MIN_COMMITMENT_LEVEL && commitment_ <= MAX_COMMITMENT_LEVEL,
             "CommitmentComponent: invalid commitment"
         );
-        _commitment = commitment;
-        emit CommitmentSet(commitment);
-    }
-
-    function getCommitment() public view returns (uint256) {
-        return _commitment;
+        commitment = commitment_;
+        emit CommitmentSet(commitment_);
     }
 }
