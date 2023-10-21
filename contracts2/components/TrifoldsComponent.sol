@@ -31,7 +31,7 @@ contract TrifoldsComponent is Initializable, ComponentBase, ERC721Upgradeable {
     mapping(uint64 => uint64[]) internal _nodeUplinkExpJumps;
 
     function initialize(string memory name_, string memory symbol_) public initializer {
-        ERC721.initialize(name_, symbol_);
+        ERC721Upgradeable.__ERC721_init(name_, symbol_);
         TNode memory node;
         _graph.push(node);
         _mint(_msgSender(), 0);
@@ -41,7 +41,7 @@ contract TrifoldsComponent is Initializable, ComponentBase, ERC721Upgradeable {
     function _setIpfsHash(uint64 authorization, uint64 to, bytes32 ipfsHash) internal {
         require(to < _graph.length);
         require(ipfsHash != bytes32(0));
-        require(ERC721.isApprovedForAll(ERC721.ownerOf(authorization), _msgSender()));
+        require(ERC721Upgradeable.isApprovedForAll(ERC721Upgradeable.ownerOf(authorization), _msgSender()));
         require(_checkUplink(to, authorization));
         _graph[to].ipfsHash = ipfsHash;
     }
@@ -53,7 +53,7 @@ contract TrifoldsComponent is Initializable, ComponentBase, ERC721Upgradeable {
         require(to < length);
         TNode memory toNode = _graph[to];
         require(toNode.nodeType == uint8(ENodeType.Cusp));
-        require(ERC721.isApprovedForAll(ERC721.ownerOf(authorization), _msgSender()));
+        require(ERC721Upgradeable.isApprovedForAll(ERC721Upgradeable.ownerOf(authorization), _msgSender()));
         require(_checkUplink(to, authorization));
 
         TNode memory trifoldNode;
@@ -73,7 +73,7 @@ contract TrifoldsComponent is Initializable, ComponentBase, ERC721Upgradeable {
             cuspNodes[i].nodeType = uint8(ENodeType.Cusp);
             cuspNodes[i].ipfsHash = roles[i];
             _graph.push(cuspNodes[i]);
-            ERC721._mint(sender, length + i + 1);
+            ERC721Upgradeable._mint(sender, length + i + 1);
 
             emit NodeAdded(length + uint64(i) + 1, length, uint8(ENodeType.Cusp), ipfsHash, sender);
         }
