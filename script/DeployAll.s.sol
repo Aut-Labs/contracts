@@ -88,14 +88,6 @@ contract DeployScript is Script {
             );
         }
 
-        //     function addPluginDefinition(
-        //     address payable creator,
-        //     string memory metadataURI,
-        //     uint256 price,
-        //     bool canBeStandalone,
-        //     uint256[] memory moduleDependencies
-        // ) external returns (uint256 pluginDefinitionId)
-
         address LocalReputationAddr = address(new LocalReputation());
         address AUTid = address(new AutID());
 
@@ -105,63 +97,6 @@ contract DeployScript is Script {
         address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
         address NovaRegistryAddr =
             address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr ));
-
-        ////////////////////////////////////////////////////////
-        //////// set changable contracts
-        IPluginRegistry IPR = IPluginRegistry(PluginRegistryAddr);
-        IPR.setDefaulLRAddress(LocalReputationAddr);
-
-        uint256[] memory dependencies;
-        uint256[] memory pluginDefinitionIds = new uint256[](6);
-
-        pluginDefinitionIds[0] = IPR.addPluginDefinition(
-            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), onboardingIpfsUrl, 0, true, dependencies
-        );
-        pluginDefinitionIds[1] = IPR.addPluginDefinition(
-            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), discordUrl, 0, true, dependencies
-        );
-        pluginDefinitionIds[2] = IPR.addPluginDefinition(
-            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), openTaskUrl, 0, true, dependencies
-        );
-        pluginDefinitionIds[3] = IPR.addPluginDefinition(
-            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), quizUrl, 0, true, dependencies
-        );
-        pluginDefinitionIds[4] = IPR.addPluginDefinition(
-            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), socialBotUrl, 0, true, dependencies
-        );
-        pluginDefinitionIds[5] = IPR.addPluginDefinition(
-            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), transactionTaskUrl, 0, true, dependencies
-        );
-
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(AUTid));
-
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(NoveFactoryAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(ModuleRegistryAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(PluginRegistryAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(NovaRegistryAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(LocalReputationAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(AllowlistAddr));
-
-        // vm.writeLine("script/DeploymentAddresses.sol", "); /n");
-
-        /// }
-        // vm.writeLine("script/DeploymentAddresses.sol", "} /n");
-
-        // vm.writeLine("script/DeploymentAddresses.sol", "}\n");
-
-        IAllowlist(AllowlistAddr).addOwner(0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3);
-        IAllowlist(AllowlistAddr).addOwner(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a);
-        IAllowlist(AllowlistAddr).addOwner(0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43);
-
-        console.log("AUTid----------------------------------------- : ", AUTid);
-        console.log("Nova Factory----------------------------------------- : ", NoveFactoryAddr);
-        console.log("ModuleRegistry ----------------------------------------- : ", ModuleRegistryAddr);
-        console.log("PluginRegistry ----------------------------------------- : ", PluginRegistryAddr);
-        console.log("NovaRegistry ----------------------------------------- : ", NovaRegistryAddr);
-        console.log("LocalReputation ----------------------------------------- : ", LocalReputationAddr);
-        console.log("Allowlist ----------------------------------------- : ", AllowlistAddr);
-        console.log("                                                                       ");
-        console.log("______________________________________________");
 
         vm.writeLine(
             "deployments.txt",
@@ -195,19 +130,64 @@ contract DeployScript is Script {
                     "AllowlistAddr----------------------------------------- : ",
                     vm.toString(AllowlistAddr),
                     " \n"
-                ),
-                string.concat(
-                    "PluginIDs : ",
-                    vm.toString(pluginDefinitionIds[0]),
-                    " , ",
-                    vm.toString(pluginDefinitionIds[1]),
-                    " , ",
-                    vm.toString(pluginDefinitionIds[2]),
-                    " , ",
-                    vm.toString(pluginDefinitionIds[3])
                 )
             )
         );
+
+        ////////////////////////////////////////////////////////
+        //////// set changable contracts
+        IPluginRegistry IPR = IPluginRegistry(PluginRegistryAddr);
+        IPR.setDefaulLRAddress(LocalReputationAddr);
+
+        uint256[] memory dependencies;
+        uint256[] memory pluginDefinitionIds = new uint256[](6);
+
+        pluginDefinitionIds[0] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), onboardingIpfsUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[1] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), discordUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[2] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), openTaskUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[3] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), quizUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[4] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), socialBotUrl, 0, true, dependencies
+        );
+        pluginDefinitionIds[5] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), transactionTaskUrl, 0, true, dependencies
+        );
+
+        vm.writeFile(
+            "deployments.txt",
+            string.concat(
+                "PluginIDs : ",
+                vm.toString(pluginDefinitionIds[0]),
+                " , ",
+                vm.toString(pluginDefinitionIds[1]),
+                " , ",
+                vm.toString(pluginDefinitionIds[2]),
+                " , ",
+                vm.toString(pluginDefinitionIds[3])
+            )
+        );
+
+        IAllowlist(AllowlistAddr).addOwner(0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3);
+        IAllowlist(AllowlistAddr).addOwner(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a);
+        IAllowlist(AllowlistAddr).addOwner(0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43);
+
+        console.log("AUTid----------------------------------------- : ", AUTid);
+        console.log("Nova Factory----------------------------------------- : ", NoveFactoryAddr);
+        console.log("ModuleRegistry ----------------------------------------- : ", ModuleRegistryAddr);
+        console.log("PluginRegistry ----------------------------------------- : ", PluginRegistryAddr);
+        console.log("NovaRegistry ----------------------------------------- : ", NovaRegistryAddr);
+        console.log("LocalReputation ----------------------------------------- : ", LocalReputationAddr);
+        console.log("Allowlist ----------------------------------------- : ", AllowlistAddr);
+        console.log("                                                                       ");
+        console.log("______________________________________________");
 
         vm.stopBroadcast();
     }

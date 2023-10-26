@@ -36,6 +36,9 @@ contract DeploysInit is Test {
     address A3;
     address A4_outsider;
 
+    uint256 A1role;
+    uint256 A2role;
+
     function setUp() public virtual {
         A1 = address(uint160(uint256(keccak256("Account1"))));
         vm.label(address(A1), "Account1");

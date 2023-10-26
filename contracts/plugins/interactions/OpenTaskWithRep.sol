@@ -38,4 +38,10 @@ contract OpenTaskWithRep is OpenTaskPlugin, InteractionModifier {
 
         ILR.setInteractionWeights(address(this), bts, pts);
     }
+
+    /// @notice retrieves the amount of points associated with provided task id
+    /// @param taskID identifier of task ID
+    function getRepPointsOfTask(uint256 taskID) external view returns(uint256) {
+        return uint256(ILR.pointsPerInteraction(ILR.interactionID(address(this),abi.encodeWithSelector(this.finalizeFor.selector, taskID))));
+    }
 }
