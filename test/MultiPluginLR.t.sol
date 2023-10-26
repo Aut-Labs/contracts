@@ -87,13 +87,13 @@ contract MultiPluginLR is DeploysInit {
         vm.warp(1002);
         vm.prank(A1);
         offTWR.submit(taskid, "urlurl");
-
     }
 
     function testSetsWeightForTask() public {
         uint256 snap1 = vm.snapshot();
 
         uint256 task = testCreateCheckTask();
+        assertTrue(offTWR.getRepPointsOfTask(task) == 0, "not what is set");
 
         vm.expectRevert();
         offTWR.setWeightForTask(task, 320);
@@ -109,16 +109,16 @@ contract MultiPluginLR is DeploysInit {
         offTWR.setWeightForTask(task, 320);
 
         assertTrue(offTWR.getRepPointsOfTask(task) == 320, "not what is set");
-        
     }
 
     function testWorksAsRepProvider() public {
-
+        vm.skip(true);
+        ///
     }
 
     function testNonMembersCanHaveReputation() public {
         vm.skip(true);
-        /// test that addresses that are not members in a particular nova
-        /// potentially useful collateral feature
+        /// thesis test that addresses that are not members in a particular nova
+        /// potentially useful for onboarding via community aprticipation
     }
 }

@@ -161,7 +161,7 @@ contract DeployScript is Script {
             payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), transactionTaskUrl, 0, true, dependencies
         );
 
-        vm.writeFile(
+        vm.writeLine(
             "deployments.txt",
             string.concat(
                 "PluginIDs : ",
