@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../daoUtils/abstracts/DAOUrls.sol";
-import "../daoUtils/abstracts/DAOMarket.sol";
-import "../daoUtils/abstracts/DAOMembers.sol";
-import "../daoUtils/abstracts/DAOModules.sol";
-import "../daoUtils/abstracts/DAOMetadata.sol";
-import "../daoUtils/abstracts/AutIDAddress.sol";
-import "../daoUtils/abstracts/DAOCommitment.sol";
+import "../components/abstracts/NovaUrls.sol";
+import "../components/abstracts/NovaMarket.sol";
+import "../components/abstracts/NovaMembers.sol";
+import "../components/abstracts/NovaModules.sol";
+import "../components/abstracts/NovaMetadata.sol";
+import "../components/abstracts/AutIDAddress.sol";
+import "../components/abstracts/NovaCommitment.sol";
 
 import "../modules/onboarding/OnboardingModule.sol";
 import "./interfaces/INova.sol";
@@ -15,7 +15,7 @@ import "./interfaces/INova.sol";
 /// @title Nova
 /// @notice
 /// @dev
-contract Nova is DAOMembers, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCommitment {
+contract Nova is NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, NovaCommitment {
     address public deployer;
     address public onboardingAddr;
 
@@ -56,7 +56,7 @@ contract Nova is DAOMembers, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCom
         if (onboardingAddr == address(0)) {
             require(msg.sender == pluginRegistry, "Only Plugin Registry");
         } else {
-            require(DAOMembers(this).isAdmin(msg.sender), "Only Admin");
+            require(NovaMembers(this).isAdmin(msg.sender), "Only Admin");
         }
 
         onboardingAddr = onboardingPlugin;

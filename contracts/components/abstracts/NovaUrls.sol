@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../interfaces/get/IDAOURL.sol";
+import "../interfaces/get/INovaURL.sol";
 
-/// @title DAOExpander
+/// @title Nova
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-abstract contract DAOUrls is IDAOURL {
+abstract contract NovaUrls is INovaURL {
     event UrlAdded(string url);
     event UrlRemoved(string url);
 

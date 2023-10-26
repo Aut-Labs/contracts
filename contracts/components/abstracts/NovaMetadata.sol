@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../interfaces/get/IDAOMetadata.sol";
+import "../interfaces/get/INovaMetadata.sol";
 
-/// @title DAOExpander
+/// @title Nova
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-abstract contract DAOMetadata is IDAOMetadata {
+abstract contract NovaMetadata is INovaMetadata {
     event MetadataUriUpdated();
 
     string public override metadataUrl;

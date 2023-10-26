@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../interfaces/get/IDAOCommitment.sol";
+import "../interfaces/get/INovaCommitment.sol";
 
-/// @title DAOExpander
-/// @notice The extension of each DAO that integrates Aut
-/// @dev The extension of each DAO that integrates Aut
-abstract contract DAOCommitment is IDAOCommitment {
+/// @title Nova
+/// @notice The extension of each Nova that integrates Aut
+/// @dev The extension of each Nova that integrates Aut
+abstract contract NovaCommitment is INovaCommitment {
     event CommitmentSet();
 
     uint256 _commitment;

@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../interfaces/get/IDAOMarket.sol";
+import "../interfaces/get/INovaMarket.sol";
 
 /// @title DAOExpander
-/// @notice The extension of each DAO that integrates Aut
-/// @dev The extension of each DAO that integrates Aut
-abstract contract DAOMarket is IDAOMarket {
+/// @notice The extension of each Nova that integrates Aut
+/// @dev The extension of each Nova that integrates Aut
+abstract contract NovaMarket is INovaMarket {
     event MarketSet();
 
     uint256 public override market;

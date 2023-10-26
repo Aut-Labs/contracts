@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-/// @title IDAOExpander
+/// @title INova
 /// @notice The interface for the extension of each DAO that integrates AutID
-interface IDAOAdminSet {
+interface INovaAdminSet {
     event AdminMemberAdded(address member);
     event AdminMemberRemoved(address member);
 

@@ -1,14 +1,14 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../interfaces/get/IDAOModules.sol";
+import "../interfaces/get/INovaModules.sol";
 import "../../modules/registry/IModuleRegistry.sol";
 import "../../plugins/registry/IPluginRegistry.sol";
 
-/// @title DAOModules
+/// @title Nova
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-abstract contract DAOModules is IDAOModules {
+abstract contract NovaModules is INovaModules {
     address public override pluginRegistry;
     uint256[] activatedModules;
 

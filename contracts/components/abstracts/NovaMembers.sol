@@ -2,17 +2,17 @@
 pragma solidity 0.8.19;
 
 import "./AutIDAddress.sol";
-import "../interfaces/get/IDAOAdmin.sol";
-import "../interfaces/get/IDAOMembership.sol";
-import "../interfaces/get/IDAOModules.sol";
+import "../interfaces/get/INovaAdmin.sol";
+import "../interfaces/get/INovaMembership.sol";
+import "../interfaces/get/INovaModules.sol";
 import "../../plugins/registry/IPluginRegistry.sol";
-import "../interfaces/set/IDAOMembershipSet.sol";
-import "../interfaces/set/IDAOAdminSet.sol";
+import "../interfaces/set/INovaMembershipSet.sol";
+import "../interfaces/set/INovaAdminSet.sol";
 
-/// @title DAOExpander
+/// @title Nova
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
-abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, IDAOAdminSet, AutIDAddress {
+abstract contract NovaMembers is INovaAdmin, INovaMembership, INovaMembershipSet, INovaAdminSet, AutIDAddress {
     address[] public members;
 
     mapping(address => bool) public override isMember;
@@ -49,7 +49,7 @@ abstract contract DAOMembers is IDAOAdmin, IDAOMembership, IDAOMembershipSet, ID
     function addAdmin(address member) public override onlyAdmin {
         if (
             (!isMember[member])
-                && (IPluginRegistry(IDAOModules(address(this)).pluginRegistry()).tokenIdFromAddress(member) == 0)
+                && (IPluginRegistry(INovaModules(address(this)).pluginRegistry()).tokenIdFromAddress(member) == 0)
         ) revert("Not a member");
         isAdmin[member] = true;
         admins.push(member);

@@ -5,7 +5,7 @@ import "../interfaces/IMarket.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-/// @title DAOExpander
+/// @title Nova
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 abstract contract Market is IMarket, Ownable {

@@ -4,7 +4,7 @@ pragma solidity 0.8.19;
 import "../interfaces/get/IAutIDAddress.sol";
 import "../../IAutID.sol";
 
-/// @title DAOExpander
+/// @title Nova
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 abstract contract AutIDAddress is IAutIDAddress {

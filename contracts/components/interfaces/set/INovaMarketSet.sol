@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-/// @title IDAOMetadata
+/// @title INova
 /// @notice The interface for the extension of each DAO that integrates AutID
-interface IDAOCommitmentSet {
-    function setCommitment(uint256 commitment) external;
+interface INovaMarketSet {
+    function setMarket(uint256 market) external;
 }
