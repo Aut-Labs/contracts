@@ -118,9 +118,6 @@ contract DeployScript is Script {
                     " \n",
                     "NovaRegistry----------------------------------------- : ",
                     vm.toString(NovaRegistryAddr),
-                    " \n",
-                    "NovaRegistry----------------------------------------- : ",
-                    vm.toString(NovaRegistryAddr),
                     " \n"
                 ),
                 string.concat(
