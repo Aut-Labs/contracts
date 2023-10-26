@@ -7,7 +7,7 @@ import "../interfaces/get/INovaCommitment.sol";
 /// @notice The extension of each Nova that integrates Aut
 /// @dev The extension of each Nova that integrates Aut
 abstract contract NovaCommitment is INovaCommitment {
-    event CommitmentSet();
+    event CommitmentSet(uint256);
 
     uint256 _commitment;
 
@@ -15,7 +15,7 @@ abstract contract NovaCommitment is INovaCommitment {
         require(commitment > 0 && commitment < 11, "invalid commitment");
 
         _commitment = commitment;
-        emit CommitmentSet();
+        emit CommitmentSet(commitment);
     }
 
     function getCommitment() public view override returns (uint256) {

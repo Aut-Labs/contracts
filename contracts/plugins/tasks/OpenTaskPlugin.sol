@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "../SimplePlugin.sol";
 
 import "../../modules/tasks/TasksModule.sol";
-import "../../daoUtils/interfaces/get/IDAOMembership.sol";
-import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
+import "../../components/interfaces/get/INovaMembership.sol";
+import "../../components/interfaces/get/INovaAdmin.sol";
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 

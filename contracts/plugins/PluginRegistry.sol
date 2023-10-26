@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "../plugins/IPlugin.sol";
 import "../plugins/registry/IPluginRegistry.sol";
-import "../daoUtils/interfaces/get/IDAOAdmin.sol";
+import "../components/interfaces/get/INovaAdmin.sol";
 import "../nova/interfaces/INova.sol";
 
 /// @title PluginRegistry
@@ -46,7 +46,7 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
     function addPluginToDAO(address pluginAddress, uint256 pluginDefinitionId) external payable override nonReentrant {
         address nova = IPlugin(pluginAddress).novaAddress();
 
-        require(IDAOAdmin(nova).isAdmin(msg.sender) == true, "Not an admin");
+        require(INovaAdmin(nova).isAdmin(msg.sender) == true, "Not an admin");
         PluginDefinition memory pluginDefinition = pluginDefinitionsById[pluginDefinitionId];
 
         require(pluginDefinition.canBeStandalone, "can't be standalone");

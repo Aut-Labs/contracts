@@ -7,7 +7,7 @@ import "../interfaces/get/INovaMetadata.sol";
 /// @notice The extension of each DAO that integrates Aut
 /// @dev The extension of each DAO that integrates Aut
 abstract contract NovaMetadata is INovaMetadata {
-    event MetadataUriUpdated();
+    event MetadataUriUpdated(string);
 
     string public override metadataUrl;
 
@@ -15,6 +15,6 @@ abstract contract NovaMetadata is INovaMetadata {
         require(bytes(_metadata).length > 0, "invalid url");
 
         metadataUrl = _metadata;
-        emit MetadataUriUpdated();
+        emit MetadataUriUpdated(_metadata);
     }
 }

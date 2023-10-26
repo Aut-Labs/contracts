@@ -3,7 +3,7 @@ pragma solidity 0.8.19;
 
 import "./IPlugin.sol";
 import "./registry/IPluginRegistry.sol";
-import "../daoUtils/interfaces/get/IDAOModules.sol";
+import "../components/interfaces/get/INovaModules.sol";
 
 /**
  * @title SimplePlugin
@@ -66,7 +66,7 @@ abstract contract SimplePlugin is IPlugin {
      */
     constructor(address dao, uint256 modId) {
         _novaAddress = dao;
-        pluginRegistry = IDAOModules(dao).pluginRegistry();
+        pluginRegistry = INovaModules(dao).pluginRegistry();
         _deployer = msg.sender;
         moduleId = modId;
     }

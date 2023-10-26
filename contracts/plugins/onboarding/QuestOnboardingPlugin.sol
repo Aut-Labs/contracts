@@ -4,7 +4,7 @@ pragma solidity 0.8.19;
 import "../../modules/onboarding/OnboardingModule.sol";
 import "../quests/QuestPlugin.sol";
 import "../SimplePlugin.sol";
-import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
+import "../../components/interfaces/get/INovaAdmin.sol";
 
 /**
  * @title QuestOnboardingPlugin

@@ -7,7 +7,7 @@ import "../interfaces/get/INovaMarket.sol";
 /// @notice The extension of each Nova that integrates Aut
 /// @dev The extension of each Nova that integrates Aut
 abstract contract NovaMarket is INovaMarket {
-    event MarketSet();
+    event MarketSet(uint256);
 
     uint256 public override market;
 
@@ -15,6 +15,6 @@ abstract contract NovaMarket is INovaMarket {
         require(_market > 0 && _market < 4, "invalid market");
 
         market = _market;
-        emit MarketSet();
+        emit MarketSet(_market);
     }
 }
