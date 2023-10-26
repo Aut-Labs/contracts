@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 import "./IMembershipChecker.sol";
-import "../daoStandards/IDAOStack.sol";
+import "../standards/IDAOStack.sol";
 
 /// @title DAOStackMembershipChecker
 /// @notice Implementation of DAOStackMembershipChecker for DAOStack DAO

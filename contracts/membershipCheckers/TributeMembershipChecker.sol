@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 import "./IMembershipChecker.sol";
-import "../daoStandards/ITribute.sol";
+import "../standards/ITribute.sol";
 
 /// @title TributeMembershipChecker
 /// @notice Implementation of IMembershipChecker for Tribute DAO type

@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 import "./IMembershipChecker.sol";
-import "../daoStandards/ICompound.sol";
+import "../standards/ICompound.sol";
 
 /// @title CompoundMembershipChecker
 /// @notice Implementation of IMembershipChecker for your new DAO standard
