@@ -32,18 +32,17 @@ contract Nova is NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, N
     /// @param _market one of the 3 markets
     /// @param _metadata url with metadata of the DAO - name, description, logo
     /// @param _commitment minimum commitment that the DAO requires
-    constructor(
+    function __Nova_init(
         address _deployer,
         IAutID _autAddr,
         uint256 _market,
         string memory _metadata,
         uint256 _commitment,
         address _pluginRegistry
-    ) {
+    ) external onlyInitializing {
         deployer = _deployer;
         isAdmin[_deployer] = true;
         admins.push(_deployer);
-
         _setMarket(_market);
         _setAutIDAddress(_autAddr);
         _setCommitment(_commitment);
@@ -93,4 +92,6 @@ contract Nova is NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, N
         if (onboardingAddr != address(0) && !OnboardingModule(onboardingAddr).isActive()) return false;
         else return OnboardingModule(onboardingAddr).isOnboarded(member, role);
     }
+
+    uint256[5 * 10 - 2] private __gap;
 }
