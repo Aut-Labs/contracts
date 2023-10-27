@@ -4,7 +4,7 @@ pragma solidity 0.8.19;
 
 import "../interfaces/get/INovaArchetype.sol";
 
-contract NovaArchetype is INovaArchetype {
+abstract contract NovaArchetype is INovaArchetype {
     uint8 public constant SIZE = 1;
     uint8 public constant REPUTATION = 2;
     uint8 public constant CONVICTION = 3;
@@ -37,4 +37,6 @@ contract NovaArchetype is INovaArchetype {
             revert WrongParameter();
         }
     }
+
+    uint256[8] private __gap;
 }

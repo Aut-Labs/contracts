@@ -21,4 +21,6 @@ abstract contract NovaCommitment is INovaCommitment {
     function getCommitment() public view override returns (uint256) {
         return _commitment;
     }
+
+    uint256[9] private __gap;
 }

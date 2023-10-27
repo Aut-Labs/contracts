@@ -17,4 +17,6 @@ abstract contract NovaMetadata is INovaMetadata {
         metadataUrl = _metadata;
         emit MetadataUriUpdated(_metadata);
     }
+
+    uint256[9] private __gap;
 }

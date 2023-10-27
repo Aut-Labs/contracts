@@ -102,4 +102,6 @@ abstract contract NovaMembers is INovaAdmin, INovaMembership, INovaMembershipSet
     function memberCount() public view returns (uint256) {
         return members.length;
     }
+
+    uint256[6] private __gap;
 }

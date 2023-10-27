@@ -23,4 +23,6 @@ abstract contract AutIDAddress is IAutIDAddress {
     function _setAutIDAddress(IAutID autIDAddress) internal {
         _autID = IAutID(autIDAddress);
     }
+
+    uint256[9] private __gap;
 }

@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
+import "../components/NovaUpgradeable.sol";
 import "../components/abstracts/NovaUrls.sol";
 import "../components/abstracts/NovaMarket.sol";
 import "../components/abstracts/NovaMembers.sol";
@@ -12,10 +13,15 @@ import "../components/abstracts/NovaCommitment.sol";
 import "../modules/onboarding/OnboardingModule.sol";
 import "./interfaces/INova.sol";
 
+/**
+Should inherit `Upgradeable.sol` last
+https://en.wikipedia.org/wiki/C3_linearization
+ */
+
 /// @title Nova
 /// @notice
 /// @dev
-contract Nova is NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, NovaCommitment {
+contract Nova is NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, NovaCommitment, NovaUpgradeable {
     address public deployer;
     address public onboardingAddr;
 
