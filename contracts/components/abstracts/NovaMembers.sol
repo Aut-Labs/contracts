@@ -27,8 +27,8 @@ abstract contract NovaMembers is INovaAdmin, INovaMembership, INovaMembershipSet
         require(isAdmin[msg.sender], "Not an admin!");
         _;
     }
-    /// @dev role not used
 
+    /// @dev role not used
     function join(address newMember, uint256 role) public virtual override onlyAutID {
         require(!isMember[newMember], "Already a member");
         isMember[newMember] = true;

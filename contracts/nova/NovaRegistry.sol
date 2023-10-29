@@ -8,10 +8,11 @@ import {ERC2771Recipient} from "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {IPluginRegistry} from "../plugins/registry/IPluginRegistry.sol";
+import {INovaRegistry} from "./interfaces/INovaRegistry.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 
 /// @title NovaRegistry 
-contract NovaRegistry is ERC2771Recipient, Ownable {
+contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
     event NovaDeployed(address);
 
     // just for interface compatibility 

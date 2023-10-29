@@ -17,13 +17,13 @@ import "./interfaces/INova.sol";
 /// @notice
 /// @dev
 contract Nova is 
+    NovaUpgradeable,
     NovaMembers,
     NovaMetadata,
     NovaUrls,
     NovaMarket,
     NovaModules,
-    NovaCommitment,
-    NovaUpgradeable
+    NovaCommitment
 {
     address public deployer;
     address public onboardingAddr;
