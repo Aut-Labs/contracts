@@ -37,9 +37,9 @@ library DeploymentAddresses {
     }
 
 
-    function novaFactoryAddr(uint256 chainID) internal pure returns (address) {
+    function novaLogicAddr(uint256 chainID) internal pure returns (address) {
         if (chainID == 80001) {
-            return address(0xa7BD9F8678e36AFa08e38f6e9f9e40AF5DE82Eae); // Replace with the actual address for chain ID 1
+            return address(0x4444444444444444444444444444444444444444); // Replace with the actual address for chain ID 1
         } else if (chainID == 2) {
             return address(0x4444444444444444444444444444444444444444); // Replace with the actual address for chain ID 2
         } else {

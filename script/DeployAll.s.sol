@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
-import {NovaFactory} from "../contracts/nova/NovaFactory.sol";
+import {Nova} from "../contracts/nova/Nova.sol";
 import {NovaRegistry, INovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {ModuleRegistry, IModuleRegistry} from "../contracts/modules/registry/ModuleRegistry.sol";
 import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegistry.sol";
@@ -96,15 +96,22 @@ contract DeployScript is Script {
         //     uint256[] memory moduleDependencies
         // ) external returns (uint256 pluginDefinitionId)
 
+        address NovaLogicAddr = address(new Nova());
         address LocalReputationAddr = address(new LocalReputation());
         address AUTid = address(new AutID());
 
         address AllowlistAddr = address(new Allowlist());
-        address NoveFactoryAddr = address(new NovaFactory());
         address ModuleRegistryAddr = address(new ModuleRegistry(AllowlistAddr));
         address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
         address NovaRegistryAddr =
-            address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr ));
+            address(
+                new NovaRegistry(
+                    biconomyTrustedForward,
+                    AUTid,
+                    NovaLogicAddr,
+                    PluginRegistryAddr
+                )
+            );
 
         ////////////////////////////////////////////////////////
         //////// set changable contracts
@@ -170,8 +177,8 @@ contract DeployScript is Script {
                     "AUTid----------------------------------------- : ",
                     vm.toString(AUTid),
                     " \n",
-                    "Nova Factory----------------------------------------- : ",
-                    vm.toString(NoveFactoryAddr),
+                    "Nova Logic----------------------------------------- : ",
+                    vm.toString(NovaLogicAddr),
                     " \n"
                 ),
                 string.concat(
@@ -180,9 +187,6 @@ contract DeployScript is Script {
                     " \n",
                     "PluginRegistry----------------------------------------- : ",
                     vm.toString(PluginRegistryAddr),
-                    " \n",
-                    "NovaRegistry----------------------------------------- : ",
-                    vm.toString(NovaRegistryAddr),
                     " \n",
                     "NovaRegistry----------------------------------------- : ",
                     vm.toString(NovaRegistryAddr),
