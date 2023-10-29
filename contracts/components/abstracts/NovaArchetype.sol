@@ -38,5 +38,5 @@ abstract contract NovaArchetype is INovaArchetype {
         }
     }
 
-    uint256[8] private __gap;
+    uint256[10 - 2] private __gap;
 }

@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../components/NovaUpgradeable.sol";
 import "../components/abstracts/NovaUrls.sol";
 import "../components/abstracts/NovaMarket.sol";
 import "../components/abstracts/NovaMembers.sol";
@@ -9,19 +8,23 @@ import "../components/abstracts/NovaModules.sol";
 import "../components/abstracts/NovaMetadata.sol";
 import "../components/abstracts/AutIDAddress.sol";
 import "../components/abstracts/NovaCommitment.sol";
+import "./NovaUpgradeable.sol";
 
 import "../modules/onboarding/OnboardingModule.sol";
 import "./interfaces/INova.sol";
 
-/**
-Should inherit `Upgradeable.sol` last
-https://en.wikipedia.org/wiki/C3_linearization
- */
-
 /// @title Nova
 /// @notice
 /// @dev
-contract Nova is NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, NovaCommitment, NovaUpgradeable {
+contract Nova is 
+    NovaMembers,
+    NovaMetadata,
+    NovaUrls,
+    NovaMarket,
+    NovaModules,
+    NovaCommitment,
+    NovaUpgradeable
+{
     address public deployer;
     address public onboardingAddr;
 
@@ -93,5 +96,8 @@ contract Nova is NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, N
         else return OnboardingModule(onboardingAddr).isOnboarded(member, role);
     }
 
-    uint256[5 * 10 - 2] private __gap;
+    // 10 total - 2 used slots for this contract itself
+    // 50 more for the future abstract base contracts 10 slots each
+    // https://en.wikipedia.org/wiki/C3_linearization
+    uint256[50 + 10 - 2] private __gap;
 }

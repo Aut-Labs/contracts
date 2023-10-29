@@ -80,5 +80,5 @@ abstract contract NovaUrls is INovaUrls {
         return false;
     }
 
-    uint256[8] private __gap;
+    uint256[10 - 2] private __gap;
 }

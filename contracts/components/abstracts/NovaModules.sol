@@ -38,5 +38,5 @@ abstract contract NovaModules is INovaModules {
         return false;
     }
 
-    uint256[8] private __gap;
+    uint256[10 - 8] private __gap;
 }

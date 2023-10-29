@@ -14,6 +14,10 @@ abstract contract NovaUpgradeable is Initializable {
         return _getImplementationSlot().value;
     }
 
+    function beacon() external view returns(address) {
+        return _getBeaconSlot().value;
+    }
+
     function _getImplementationSlot() internal pure returns (StorageSlot.AddressSlot storage) {
         return StorageSlot.getAddressSlot(_IMPLEMENTATION_SLOT);
     }
@@ -21,6 +25,4 @@ abstract contract NovaUpgradeable is Initializable {
     function _getBeaconSlot() internal pure returns (StorageSlot.AddressSlot storage) {
         return StorageSlot.getAddressSlot(_BEACON_SLOT);
     }
-
-    uint256[5 * 10] private __gap;
 }

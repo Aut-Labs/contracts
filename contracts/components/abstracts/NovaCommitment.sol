@@ -22,5 +22,5 @@ abstract contract NovaCommitment is INovaCommitment {
         return _commitment;
     }
 
-    uint256[9] private __gap;
+    uint256[10 - 1] private __gap;
 }

@@ -103,5 +103,5 @@ abstract contract NovaMembers is INovaAdmin, INovaMembership, INovaMembershipSet
         return members.length;
     }
 
-    uint256[6] private __gap;
+    uint256[10 - 4] private __gap;
 }

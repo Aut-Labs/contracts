@@ -18,5 +18,5 @@ abstract contract NovaMarket is INovaMarket {
         emit MarketSet(_market);
     }
 
-    uint256[9] private __gap;
+    uint256[10 - 1] private __gap;
 }

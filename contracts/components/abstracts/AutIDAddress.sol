@@ -24,5 +24,5 @@ abstract contract AutIDAddress is IAutIDAddress {
         _autID = IAutID(autIDAddress);
     }
 
-    uint256[9] private __gap;
+    uint256[10 - 1] private __gap;
 }
