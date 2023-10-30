@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "../SimplePlugin.sol";
 
 import "../../modules/tasks/TasksModule.sol";
-import "../../daoUtils/interfaces/get/IDAOMembership.sol";
-import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
+import "../../components/interfaces/get/INovaMembership.sol";
+import "../../components/interfaces/get/INovaAdmin.sol";
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -41,7 +41,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
 
     modifier onlyAllowedToSubmit() {
         if (daoMembersOnly) {
-            require(IDAOMembership(_novaAddress).isMember(msg.sender), "Only DAO members");
+            require(INovaMembership(_novaAddress).isMember(msg.sender), "Only DAO members");
         }
         _;
     }
@@ -52,7 +52,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
     }
 
     modifier onlyAdmin() {
-        require(IDAOAdmin(_novaAddress).isAdmin(msg.sender), "Only admin.");
+        require(INovaAdmin(_novaAddress).isAdmin(msg.sender), "Only admin.");
         _;
     }
 

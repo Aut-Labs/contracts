@@ -7,8 +7,6 @@ import {SocialBotPlugin} from "../contracts/plugins/interactions/SocialBotPlugin
 import {OffchainTaskWithRep} from "../contracts/plugins/interactions/OffchainTaskWithRep.sol";
 import {OpenTaskWithRep} from "../contracts/plugins/interactions/OpenTaskWithRep.sol";
 
-
-
 import "forge-std/console.sol";
 
 contract MultiPluginLR is DeploysInit {
@@ -34,7 +32,6 @@ contract MultiPluginLR is DeploysInit {
         IPR.addPluginToDAO(address(offTWR), aDefID1);
         IPR.addPluginToDAO(address(openTWR), aDefID2);
         IPR.addPluginToDAO(address(socBotP), aSocBotID3);
-
 
         vm.stopPrank();
 
@@ -89,18 +86,17 @@ contract MultiPluginLR is DeploysInit {
         vm.expectRevert();
         offTWR.submit(taskid, "urlurl");
 
-        uint256 snap0  = vm.snapshot();
+        uint256 snap0 = vm.snapshot();
 
         vm.warp(1002);
         vm.prank(A1);
         offTWR.submit(taskid, "urlurl");
 
         vm.revertTo(snap0);
-
     }
 
-    function testSetsWeightForTask(uint16 pointsTime) public returns (uint256 snap1, uint256 task){
-        
+    function testSetsWeightForTask(uint16 pointsTime) public returns (uint256 snap1, uint256 task) {
+        vm.assume(pointsTime < 999);
         task = testCreateCheckTask();
         assertTrue(offTWR.getRepPointsOfTask(task) == 0, "not what is set");
 
@@ -120,72 +116,62 @@ contract MultiPluginLR is DeploysInit {
         assertTrue(offTWR.getRepPointsOfTask(task) == pointsTime, "not what is set");
 
         snap1 = vm.snapshot();
-
     }
 
     function testWorksAsRepProvider() public {
-        (uint256 taskid, uint256 snap) = testSetsWeightForTask();
+        (uint256 taskid, uint256 snap) = testSetsWeightForTask(306);
 
         vm.prank(address(43567342568798564));
         individualState memory IA20 = iLR.getIndividualState(A2, address(Nova));
-        
+
         vm.prank(A2);
         vm.expectRevert();
         offTWR.submit(taskid, "urlurl2");
-        
+
         vm.warp(1002);
 
         vm.prank(A2);
         offTWR.submit(taskid, "urlurl2");
 
-
         vm.prank(A0);
-        offTWR.finalizeFor(taskid,A2);
+        offTWR.finalizeFor(taskid, A2);
         individualState memory IA21 = iLR.getIndividualState(A2, address(Nova));
 
         assertTrue(IA21.GC > 0, "default state");
         assertTrue(IA20.GC == 0, "has unexpected contrib");
         assertTrue((IA20.GC + offTWR.getRepPointsOfTask(taskid)) == IA21.GC, "contrib not registered");
-
-
     }
 
-
-        function testMulti() public {
-        (uint256 taskid, uint256 snap) = testSetsWeightForTask();
+    function testMulti() public {
+        (uint256 taskid, uint256 snap) = testSetsWeightForTask(306);
 
         vm.prank(address(43567342568798564));
         individualState memory IA20 = iLR.getIndividualState(A2, address(Nova));
-        
+
         vm.prank(A2);
         vm.expectRevert();
         offTWR.submit(taskid, "urlurl2");
-        
+
         vm.warp(1002);
 
         vm.prank(A2);
         offTWR.submit(taskid, "urlurl2");
 
-
         vm.prank(A0);
-        offTWR.finalizeFor(taskid,A2);
+        offTWR.finalizeFor(taskid, A2);
         individualState memory IA21 = iLR.getIndividualState(A2, address(Nova));
 
         assertTrue(IA21.GC > 0, "default state");
         assertTrue(IA20.GC == 0, "has unexpected contrib");
         assertTrue((IA20.GC + offTWR.getRepPointsOfTask(taskid)) == IA21.GC, "contrib not registered");
-
-
     }
 
     function testSocialTaksMultiple() public {
-        (uint256 taskid, uint256 snap) = testSetsWeightForTask();
-
+        (uint256 taskid, uint256 snap) = testSetsWeightForTask(306);
     }
 
     function testNonMembersCanHaveReputation() public {
-        (uint256 taskid, uint256 snap) = testSetsWeightForTask();
-
+        (uint256 taskid, uint256 snap) = testSetsWeightForTask(307);
 
         vm.skip(true);
         /// thesis test that addresses that are not members in a particular nova

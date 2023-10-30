@@ -2,9 +2,9 @@
 pragma solidity 0.8.19;
 
 import "./IMembershipChecker.sol";
-import {IAragonApp} from "../daoStandards/IAragon.sol";
+import {IAragonApp} from "../standards/IAragon.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {IMiniMeToken} from "../daoStandards/IAragon.sol";
+import {IMiniMeToken} from "../standards/IAragon.sol";
 
 /// @title AragonMembershipChecker
 /// @notice Implementation of IMembershipChecker for Aragon DAO type

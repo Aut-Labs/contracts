@@ -4,7 +4,7 @@ pragma solidity 0.8.19;
 import "../../modules/onboarding/OnboardingModule.sol";
 import "../quests/QuestPlugin.sol";
 import "../SimplePlugin.sol";
-import "../../daoUtils/interfaces/get/IDAOAdmin.sol";
+import "../../components/interfaces/get/INovaAdmin.sol";
 
 /**
  * @title QuestOnboardingPlugin
@@ -23,7 +23,7 @@ contract QuestOnboardingPlugin is SimplePlugin, OnboardingModule {
     }
 
     modifier onlyAdmin() {
-        require(IDAOAdmin(novaAddress()).isAdmin(msg.sender), "Not an admin.");
+        require(INovaAdmin(novaAddress()).isAdmin(msg.sender), "Not an admin.");
         _;
     }
 

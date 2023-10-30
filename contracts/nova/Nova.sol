@@ -1,13 +1,14 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../daoUtils/abstracts/DAOUrls.sol";
-import "../daoUtils/abstracts/DAOMarket.sol";
-import "../daoUtils/abstracts/DAOMembers.sol";
-import "../daoUtils/abstracts/DAOModules.sol";
-import "../daoUtils/abstracts/DAOMetadata.sol";
-import "../daoUtils/abstracts/AutIDAddress.sol";
-import "../daoUtils/abstracts/DAOCommitment.sol";
+import "../components/abstracts/NovaUrls.sol";
+import "../components/abstracts/NovaMarket.sol";
+import "../components/abstracts/NovaMembers.sol";
+import "../components/abstracts/NovaModules.sol";
+import "../components/abstracts/NovaMetadata.sol";
+import "../components/abstracts/AutIDAddress.sol";
+import "../components/abstracts/NovaCommitment.sol";
+import "./NovaUpgradeable.sol";
 
 import "../modules/onboarding/OnboardingModule.sol";
 import "./interfaces/INova.sol";
@@ -15,7 +16,9 @@ import "./interfaces/INova.sol";
 /// @title Nova
 /// @notice
 /// @dev
-contract Nova is DAOMembers, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCommitment {
+contract Nova is NovaUpgradeable, NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, NovaCommitment {
+    uint256[50] private __basesGap;
+
     address public deployer;
     address public onboardingAddr;
 
@@ -26,18 +29,17 @@ contract Nova is DAOMembers, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCom
     /// @param _market one of the 3 markets
     /// @param _metadata url with metadata of the DAO - name, description, logo
     /// @param _commitment minimum commitment that the DAO requires
-    constructor(
+    function initialize(
         address _deployer,
         IAutID _autAddr,
         uint256 _market,
         string memory _metadata,
         uint256 _commitment,
         address _pluginRegistry
-    ) {
+    ) external initializer {
         deployer = _deployer;
         isAdmin[_deployer] = true;
         admins.push(_deployer);
-
         _setMarket(_market);
         _setAutIDAddress(_autAddr);
         _setCommitment(_commitment);
@@ -56,7 +58,7 @@ contract Nova is DAOMembers, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCom
         if (onboardingAddr == address(0)) {
             require(msg.sender == pluginRegistry, "Only Plugin Registry");
         } else {
-            require(DAOMembers(this).isAdmin(msg.sender), "Only Admin");
+            require(NovaMembers(this).isAdmin(msg.sender), "Only Admin");
         }
 
         onboardingAddr = onboardingPlugin;
@@ -87,4 +89,9 @@ contract Nova is DAOMembers, DAOMetadata, DAOUrls, DAOMarket, DAOModules, DAOCom
         if (onboardingAddr != address(0) && !OnboardingModule(onboardingAddr).isActive()) return false;
         else return OnboardingModule(onboardingAddr).isOnboarded(member, role);
     }
+
+    // 10 total - 2 used slots for this contract itself
+    // 50 more for the future abstract base contracts 10 slots each
+    // https://en.wikipedia.org/wiki/C3_linearization
+    uint256[50 - 2] private __gap;
 }

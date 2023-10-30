@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
-import {NovaFactory} from "../contracts/nova/NovaFactory.sol";
+import {Nova} from "../contracts/nova/Nova.sol";
 import {NovaRegistry, INovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {ModuleRegistry, IModuleRegistry} from "../contracts/modules/registry/ModuleRegistry.sol";
 import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegistry.sol";
@@ -18,7 +18,7 @@ import {DeploymentAddresses} from "./DeploymentAddresses.sol";
 import "forge-std/Script.sol";
 
 contract Populate is Script {
-    NovaFactory NovaF;
+    Nova NovaL;
     NovaRegistry NovaR;
     PluginRegistry PlugReg;
     AutID aID;
@@ -43,8 +43,8 @@ contract Populate is Script {
 
         aID = AutID(DeploymentAddresses.autIDAddr(chainID));
         vm.label(address(aID), "AutID");
-        NovaF = NovaFactory(DeploymentAddresses.novaFactoryAddr(chainID));
-        vm.label(address(NovaF), "Nova Factory");
+        NovaL = Nova(DeploymentAddresses.novaLogicAddr(chainID));
+        vm.label(address(NovaL), "Nova Logic");
 
         NovaR = NovaRegistry(DeploymentAddresses.novaRegistryAddr(chainID));
         vm.label(address(NovaR), "NovaR");
@@ -89,9 +89,7 @@ contract Populate is Script {
             deps
         );
 
-        INova OurNova = INova(
-            NovaF.deployNova(vm.addr(privateKeys[0]), address(aID), 1, "this is a metadata string", 1, address(PlugReg))
-        );
+        INova OurNova = INova(NovaR.deployNova(1, "this is a metadata string", 1));
 
         address botPluginAddr = address(new SocialBotPlugin(address(OurNova)));
         address botQuizAddr = address(new SocialQuizPlugin(address(OurNova)));

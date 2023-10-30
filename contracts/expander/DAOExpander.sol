@@ -6,13 +6,14 @@ import "./interfaces/IDAOExpander.sol";
 import "../membershipCheckers/IDAOTypes.sol";
 import "../membershipCheckers/IMembershipChecker.sol";
 
-import "../daoUtils/abstracts/DAOUrls.sol";
-import "../daoUtils/abstracts/DAOMembers.sol";
-import "../daoUtils/abstracts/DAOModules.sol";
-import "../daoUtils/abstracts/DAOMetadata.sol";
-import "../daoUtils/abstracts/DAOCommitment.sol";
-import "../daoUtils/abstracts/DAOMarket.sol";
-import "../daoUtils/abstracts/AutIDAddress.sol";
+import "../components/abstracts/NovaUrls.sol";
+import "../components/abstracts/NovaMembers.sol";
+import "../components/abstracts/NovaModules.sol";
+import "../components/abstracts/NovaMetadata.sol";
+import "../components/abstracts/NovaCommitment.sol";
+import "../components/abstracts/NovaMarket.sol";
+import "../components/interfaces/get/INovaMembership.sol"; // todo: rename to `INovaMembers.sol`
+import "../components/abstracts/AutIDAddress.sol";
 import "../expander/interfaces/IDAOExpander.sol";
 import "../modules/onboarding/OnboardingModule.sol";
 
@@ -21,12 +22,12 @@ import "../modules/onboarding/OnboardingModule.sol";
 /// @dev The extension of each DAO that integrates Aut
 contract DAOExpander is
     AutIDAddress,
-    DAOMembers,
-    DAOUrls,
-    DAOMetadata,
-    DAOCommitment,
-    DAOMarket,
-    DAOModules,
+    NovaMembers,
+    NovaUrls,
+    NovaMetadata,
+    NovaCommitment,
+    NovaMarket,
+    NovaModules,
     IDAOExpander
 {
     /// @notice the basic DAO data
@@ -100,7 +101,7 @@ contract DAOExpander is
     /// @dev checks if the member is a part of a DAO
     /// @param member the address of the member that's checked
     /// @return true if they're a member, false otherwise
-    function canJoin(address member, uint256 role) public view override(IDAOMembership) returns (bool) {
+    function canJoin(address member, uint256 role) public view override(INovaMembership) returns (bool) {
         if (onboardingAddr == address(0)) {
             return isMemberOfOriginalDAO(member)
                 || (

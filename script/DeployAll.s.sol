@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
-import {NovaFactory} from "../contracts/nova/NovaFactory.sol";
+import {Nova} from "../contracts/nova/Nova.sol";
 import {NovaRegistry, INovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {ModuleRegistry, IModuleRegistry} from "../contracts/modules/registry/ModuleRegistry.sol";
 import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegistry.sol";
 import {AutID, IAutID} from "../contracts/AutID.sol";
 import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
 import {LocalReputation} from "../contracts/LocalReputation.sol";
+import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 
 import {IAllowlist, Allowlist} from "../contracts/utils/Allowlist.sol";
 
@@ -29,6 +30,7 @@ contract DeployScript is Script {
         chainID = block.chainid;
         if (chainID == 80001) biconomyTrustedForward = 0x69015912AA33720b842dCD6aC059Ed623F28d9f7;
         if (chainID == 5) biconomyTrustedForward = 0xE041608922d06a4F26C0d4c27d8bCD01daf1f792;
+        if (chainID == 31337) biconomyTrustedForward = address(new TrustedForwarder());
 
         if (biconomyTrustedForward == address(0)) {
             console.log("ERROR: Only Mumbai and Goerli Testnets Supported");
@@ -88,15 +90,21 @@ contract DeployScript is Script {
             );
         }
 
+        address NovaLogicAddr = address(new Nova());
         address LocalReputationAddr = address(new LocalReputation());
         address AUTid = address(new AutID());
 
         address AllowlistAddr = address(new Allowlist());
-        address NoveFactoryAddr = address(new NovaFactory());
         address ModuleRegistryAddr = address(new ModuleRegistry(AllowlistAddr));
         address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
-        address NovaRegistryAddr =
-            address(new NovaRegistry(biconomyTrustedForward,AUTid,NoveFactoryAddr, PluginRegistryAddr ));
+        address NovaRegistryAddr = address(
+            new NovaRegistry(
+                    biconomyTrustedForward,
+                    AUTid,
+                    NovaLogicAddr,
+                    PluginRegistryAddr
+                )
+        );
 
         vm.writeLine(
             "deployments.txt",
@@ -106,7 +114,40 @@ contract DeployScript is Script {
                     vm.toString(AUTid),
                     " \n",
                     "Nova Factory----------------------------------------- : ",
-                    vm.toString(NoveFactoryAddr),
+                    vm.toString(NovaLogicAddr),
+                    " \n"
+                ),
+                string.concat(
+                    "ModuleRegistry----------------------------------------- : ",
+                    vm.toString(ModuleRegistryAddr),
+                    " \n",
+                    "PluginRegistry----------------------------------------- : ",
+                    vm.toString(PluginRegistryAddr),
+                    " \n",
+                    "NovaRegistry----------------------------------------- : ",
+                    vm.toString(NovaRegistryAddr),
+                    " \n"
+                ),
+                string.concat(
+                    "LocalReputation----------------------------------------- : ",
+                    vm.toString(LocalReputationAddr),
+                    " \n",
+                    "AllowlistAddr----------------------------------------- : ",
+                    vm.toString(AllowlistAddr),
+                    " \n"
+                )
+            )
+        );
+
+        vm.writeLine(
+            "deployments.txt",
+            string.concat(
+                string.concat(
+                    "AUTid----------------------------------------- : ",
+                    vm.toString(AUTid),
+                    " \n",
+                    "Nova Factory----------------------------------------- : ",
+                    vm.toString(NovaLogicAddr),
                     " \n"
                 ),
                 string.concat(
@@ -177,7 +218,7 @@ contract DeployScript is Script {
         IAllowlist(AllowlistAddr).addOwner(0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43);
 
         console.log("AUTid----------------------------------------- : ", AUTid);
-        console.log("Nova Factory----------------------------------------- : ", NoveFactoryAddr);
+        console.log("Nova Logic----------------------------------------- : ", NovaLogicAddr);
         console.log("ModuleRegistry ----------------------------------------- : ", ModuleRegistryAddr);
         console.log("PluginRegistry ----------------------------------------- : ", PluginRegistryAddr);
         console.log("NovaRegistry ----------------------------------------- : ", NovaRegistryAddr);
@@ -185,6 +226,45 @@ contract DeployScript is Script {
         console.log("Allowlist ----------------------------------------- : ", AllowlistAddr);
         console.log("                                                                       ");
         console.log("______________________________________________");
+
+        vm.writeLine(
+            "deployments.txt",
+            string.concat(
+                string.concat("AUTid----------------------------------------- : ", vm.toString(AUTid), " \n", " \n"),
+                string.concat(
+                    "ModuleRegistry----------------------------------------- : ",
+                    vm.toString(ModuleRegistryAddr),
+                    " \n",
+                    "PluginRegistry----------------------------------------- : ",
+                    vm.toString(PluginRegistryAddr),
+                    " \n",
+                    "NovaRegistry----------------------------------------- : ",
+                    vm.toString(NovaRegistryAddr),
+                    " \n",
+                    "NovaRegistry----------------------------------------- : ",
+                    vm.toString(NovaRegistryAddr),
+                    " \n"
+                ),
+                string.concat(
+                    "LocalReputation----------------------------------------- : ",
+                    vm.toString(LocalReputationAddr),
+                    " \n",
+                    "AllowlistAddr----------------------------------------- : ",
+                    vm.toString(AllowlistAddr),
+                    " \n"
+                ),
+                string.concat(
+                    "PluginIDs : ",
+                    vm.toString(pluginDefinitionIds[0]),
+                    " , ",
+                    vm.toString(pluginDefinitionIds[1]),
+                    " , ",
+                    vm.toString(pluginDefinitionIds[2]),
+                    " , ",
+                    vm.toString(pluginDefinitionIds[3])
+                )
+            )
+        );
 
         vm.stopBroadcast();
     }

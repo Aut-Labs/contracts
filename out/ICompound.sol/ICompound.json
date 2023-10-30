@@ -38,7 +38,7 @@
   "methodIdentifiers": {
     "accountAssets(address,uint256)": "dce15449"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"accountAssets\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"accountAssets(address,uint256)\":{\"params\":{\"index\":\"Array index of the asset\",\"member\":\"The member address\"},\"returns\":{\"_0\":\"The Member struct of the address passed\"}}},\"title\":\"ICompound\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"accountAssets(address,uint256)\":{\"notice\":\"Function in the Compound contract for fetching a member.If for index 0 returned address is not empty, then account is a member.\"}},\"notice\":\"The minimal interface of the Compound contract needed for implementing IMembershipExtension\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/daoStandards/ICompound.sol\":\"ICompound\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/daoStandards/ICompound.sol\":{\"keccak256\":\"0x2d0d399638f872028a7a5ed44680967eab98475934feb5d806ff4f04c103e29e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://32a0bc72f71f1e8308d24842ce7e3bd70499e928b8fa0863efdbec148910aa4d\",\"dweb:/ipfs/QmSqsiuSYiW3pX1gAva7vKcXLUSdTUbTpfHTN3tdq2Nusa\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"accountAssets\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"accountAssets(address,uint256)\":{\"params\":{\"index\":\"Array index of the asset\",\"member\":\"The member address\"},\"returns\":{\"_0\":\"The Member struct of the address passed\"}}},\"title\":\"ICompound\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"accountAssets(address,uint256)\":{\"notice\":\"Function in the Compound contract for fetching a member.If for index 0 returned address is not empty, then account is a member.\"}},\"notice\":\"The minimal interface of the Compound contract needed for implementing IMembershipExtension\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/standards/ICompound.sol\":\"ICompound\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/standards/ICompound.sol\":{\"keccak256\":\"0x2d0d399638f872028a7a5ed44680967eab98475934feb5d806ff4f04c103e29e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://32a0bc72f71f1e8308d24842ce7e3bd70499e928b8fa0863efdbec148910aa4d\",\"dweb:/ipfs/QmSqsiuSYiW3pX1gAva7vKcXLUSdTUbTpfHTN3tdq2Nusa\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.19+commit.7dd6d404"
@@ -113,12 +113,12 @@
         "bytecodeHash": "ipfs"
       },
       "compilationTarget": {
-        "contracts/daoStandards/ICompound.sol": "ICompound"
+        "contracts/standards/ICompound.sol": "ICompound"
       },
       "libraries": {}
     },
     "sources": {
-      "contracts/daoStandards/ICompound.sol": {
+      "contracts/standards/ICompound.sol": {
         "keccak256": "0x2d0d399638f872028a7a5ed44680967eab98475934feb5d806ff4f04c103e29e",
         "urls": [
           "bzz-raw://32a0bc72f71f1e8308d24842ce7e3bd70499e928b8fa0863efdbec148910aa4d",
@@ -130,20 +130,20 @@
     "version": 1
   },
   "ast": {
-    "absolutePath": "contracts/daoStandards/ICompound.sol",
-    "id": 3014,
+    "absolutePath": "contracts/standards/ICompound.sol",
+    "id": 12542,
     "exportedSymbols": {
       "ICompound": [
-        3013
+        12541
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "31:569:7",
+    "src": "31:569:86",
     "nodes": [
       {
-        "id": 3001,
+        "id": 12529,
         "nodeType": "PragmaDirective",
-        "src": "31:23:7",
+        "src": "31:23:86",
         "nodes": [],
         "literals": [
           "solidity",
@@ -152,19 +152,19 @@
         ]
       },
       {
-        "id": 3013,
+        "id": 12541,
         "nodeType": "ContractDefinition",
-        "src": "181:418:7",
+        "src": "181:418:86",
         "nodes": [
           {
-            "id": 3012,
+            "id": 12540,
             "nodeType": "FunctionDefinition",
-            "src": "511:86:7",
+            "src": "511:86:86",
             "nodes": [],
             "documentation": {
-              "id": 3003,
+              "id": 12531,
               "nodeType": "StructuredDocumentation",
-              "src": "207:299:7",
+              "src": "207:299:86",
               "text": "@notice Function in the Compound contract for fetching a member.\n @notice If for index 0 returned address is not empty, then account is a member.\n @param member The member address\n @param index Array index of the asset\n @return The Member struct of the address passed"
             },
             "functionSelector": "dce15449",
@@ -172,20 +172,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "accountAssets",
-            "nameLocation": "520:13:7",
+            "nameLocation": "520:13:86",
             "parameters": {
-              "id": 3008,
+              "id": 12536,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3005,
+                  "id": 12533,
                   "mutability": "mutable",
                   "name": "member",
-                  "nameLocation": "542:6:7",
+                  "nameLocation": "542:6:86",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3012,
-                  "src": "534:14:7",
+                  "scope": 12540,
+                  "src": "534:14:86",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -193,10 +193,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3004,
+                    "id": 12532,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "534:7:7",
+                    "src": "534:7:86",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -207,13 +207,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3007,
+                  "id": 12535,
                   "mutability": "mutable",
                   "name": "index",
-                  "nameLocation": "558:5:7",
+                  "nameLocation": "558:5:86",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3012,
-                  "src": "550:13:7",
+                  "scope": 12540,
+                  "src": "550:13:86",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -221,10 +221,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3006,
+                    "id": 12534,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "550:7:7",
+                    "src": "550:7:86",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -233,21 +233,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "533:31:7"
+              "src": "533:31:86"
             },
             "returnParameters": {
-              "id": 3011,
+              "id": 12539,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3010,
+                  "id": 12538,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3012,
-                  "src": "588:7:7",
+                  "scope": 12540,
+                  "src": "588:7:86",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -255,10 +255,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3009,
+                    "id": 12537,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "588:7:7",
+                    "src": "588:7:86",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -268,9 +268,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "587:9:7"
+              "src": "587:9:86"
             },
-            "scope": 3013,
+            "scope": 12541,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -282,22 +282,22 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 3002,
+          "id": 12530,
           "nodeType": "StructuredDocumentation",
-          "src": "56:125:7",
+          "src": "56:125:86",
           "text": "@title ICompound\n @notice The minimal interface of the Compound contract needed for implementing IMembershipExtension"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          3013
+          12541
         ],
         "name": "ICompound",
-        "nameLocation": "191:9:7",
-        "scope": 3014,
+        "nameLocation": "191:9:86",
+        "scope": 12542,
         "usedErrors": []
       }
     ],
     "license": "MIT"
   },
-  "id": 7
+  "id": 86
 }

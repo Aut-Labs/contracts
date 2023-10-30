@@ -400,19 +400,19 @@
   },
   "ast": {
     "absolutePath": "contracts/modules/registry/IModuleRegistry.sol",
-    "id": 6213,
+    "id": 6731,
     "exportedSymbols": {
       "IModuleRegistry": [
-        6212
+        6730
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "31:2313:67",
+    "src": "31:2313:62",
     "nodes": [
       {
-        "id": 6153,
+        "id": 6671,
         "nodeType": "PragmaDirective",
-        "src": "31:23:67",
+        "src": "31:23:62",
         "nodes": [],
         "literals": [
           "solidity",
@@ -421,39 +421,39 @@
         ]
       },
       {
-        "id": 6212,
+        "id": 6730,
         "nodeType": "ContractDefinition",
-        "src": "383:1960:67",
+        "src": "383:1960:62",
         "nodes": [
           {
-            "id": 6159,
+            "id": 6677,
             "nodeType": "EventDefinition",
-            "src": "566:40:67",
+            "src": "566:40:62",
             "nodes": [],
             "anonymous": false,
             "documentation": {
-              "id": 6155,
+              "id": 6673,
               "nodeType": "StructuredDocumentation",
-              "src": "415:146:67",
+              "src": "415:146:62",
               "text": " @dev Emitted when a new module definition is added to the registry\n @param id the ID of the newly added module definition"
             },
             "eventSelector": "74e253944c73b5e634175a60d5ef4a7af301f3b0148e2dd3527edfd0329108f6",
             "name": "ModuleDefinitionAdded",
-            "nameLocation": "572:21:67",
+            "nameLocation": "572:21:62",
             "parameters": {
-              "id": 6158,
+              "id": 6676,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6157,
+                  "id": 6675,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "id",
-                  "nameLocation": "602:2:67",
+                  "nameLocation": "602:2:62",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6159,
-                  "src": "594:10:67",
+                  "scope": 6677,
+                  "src": "594:10:62",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -461,10 +461,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6156,
+                    "id": 6674,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "594:7:67",
+                    "src": "594:7:62",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -473,25 +473,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "593:12:67"
+              "src": "593:12:62"
             }
           },
           {
-            "id": 6164,
+            "id": 6682,
             "nodeType": "StructDefinition",
-            "src": "795:79:67",
+            "src": "795:79:62",
             "nodes": [],
             "canonicalName": "IModuleRegistry.ModuleDefinition",
             "members": [
               {
                 "constant": false,
-                "id": 6161,
+                "id": 6679,
                 "mutability": "mutable",
                 "name": "metadataURI",
-                "nameLocation": "836:11:67",
+                "nameLocation": "836:11:62",
                 "nodeType": "VariableDeclaration",
-                "scope": 6164,
-                "src": "829:18:67",
+                "scope": 6682,
+                "src": "829:18:62",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -499,10 +499,10 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 6160,
+                  "id": 6678,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
-                  "src": "829:6:67",
+                  "src": "829:6:62",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_storage_ptr",
                     "typeString": "string"
@@ -512,13 +512,13 @@
               },
               {
                 "constant": false,
-                "id": 6163,
+                "id": 6681,
                 "mutability": "mutable",
                 "name": "id",
-                "nameLocation": "865:2:67",
+                "nameLocation": "865:2:62",
                 "nodeType": "VariableDeclaration",
-                "scope": 6164,
-                "src": "857:10:67",
+                "scope": 6682,
+                "src": "857:10:62",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -526,10 +526,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 6162,
+                  "id": 6680,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "857:7:67",
+                  "src": "857:7:62",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -539,19 +539,19 @@
               }
             ],
             "name": "ModuleDefinition",
-            "nameLocation": "802:16:67",
-            "scope": 6212,
+            "nameLocation": "802:16:62",
+            "scope": 6730,
             "visibility": "public"
           },
           {
-            "id": 6172,
+            "id": 6690,
             "nodeType": "FunctionDefinition",
-            "src": "1135:85:67",
+            "src": "1135:85:62",
             "nodes": [],
             "documentation": {
-              "id": 6165,
+              "id": 6683,
               "nodeType": "StructuredDocumentation",
-              "src": "880:250:67",
+              "src": "880:250:62",
               "text": " @notice Adds a new module definition to the registry\n @dev Only the owner can call this function\n @param metadataURI the metadata URI for the module being added\n @return the ID of the newly added module definition"
             },
             "functionSelector": "664bff0d",
@@ -559,20 +559,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "addModuleDefinition",
-            "nameLocation": "1144:19:67",
+            "nameLocation": "1144:19:62",
             "parameters": {
-              "id": 6168,
+              "id": 6686,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6167,
+                  "id": 6685,
                   "mutability": "mutable",
                   "name": "metadataURI",
-                  "nameLocation": "1180:11:67",
+                  "nameLocation": "1180:11:62",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6172,
-                  "src": "1164:27:67",
+                  "scope": 6690,
+                  "src": "1164:27:62",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -580,10 +580,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 6166,
+                    "id": 6684,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1164:6:67",
+                    "src": "1164:6:62",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -592,21 +592,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1163:29:67"
+              "src": "1163:29:62"
             },
             "returnParameters": {
-              "id": 6171,
+              "id": 6689,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6170,
+                  "id": 6688,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6172,
-                  "src": "1211:7:67",
+                  "scope": 6690,
+                  "src": "1211:7:62",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -614,10 +614,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6169,
+                    "id": 6687,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1211:7:67",
+                    "src": "1211:7:62",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -626,22 +626,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1210:9:67"
+              "src": "1210:9:62"
             },
-            "scope": 6212,
+            "scope": 6730,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 6180,
+            "id": 6698,
             "nodeType": "FunctionDefinition",
-            "src": "1368:75:67",
+            "src": "1368:75:62",
             "nodes": [],
             "documentation": {
-              "id": 6173,
+              "id": 6691,
               "nodeType": "StructuredDocumentation",
-              "src": "1226:137:67",
+              "src": "1226:137:62",
               "text": " @notice Returns an array of all module definitions in the registry\n @return an array of ModuleDefinition structs"
             },
             "functionSelector": "c1398137",
@@ -649,80 +649,80 @@
             "kind": "function",
             "modifiers": [],
             "name": "getAllModules",
-            "nameLocation": "1377:13:67",
+            "nameLocation": "1377:13:62",
             "parameters": {
-              "id": 6174,
+              "id": 6692,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1390:2:67"
+              "src": "1390:2:62"
             },
             "returnParameters": {
-              "id": 6179,
+              "id": 6697,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6178,
+                  "id": 6696,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6180,
-                  "src": "1416:25:67",
+                  "scope": 6698,
+                  "src": "1416:25:62",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_ModuleDefinition_$6164_memory_ptr_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_ModuleDefinition_$6682_memory_ptr_$dyn_memory_ptr",
                     "typeString": "struct IModuleRegistry.ModuleDefinition[]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6176,
+                      "id": 6694,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 6175,
+                        "id": 6693,
                         "name": "ModuleDefinition",
                         "nameLocations": [
-                          "1416:16:67"
+                          "1416:16:62"
                         ],
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 6164,
-                        "src": "1416:16:67"
+                        "referencedDeclaration": 6682,
+                        "src": "1416:16:62"
                       },
-                      "referencedDeclaration": 6164,
-                      "src": "1416:16:67",
+                      "referencedDeclaration": 6682,
+                      "src": "1416:16:62",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ModuleDefinition_$6164_storage_ptr",
+                        "typeIdentifier": "t_struct$_ModuleDefinition_$6682_storage_ptr",
                         "typeString": "struct IModuleRegistry.ModuleDefinition"
                       }
                     },
-                    "id": 6177,
+                    "id": 6695,
                     "nodeType": "ArrayTypeName",
-                    "src": "1416:18:67",
+                    "src": "1416:18:62",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_ModuleDefinition_$6164_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_ModuleDefinition_$6682_storage_$dyn_storage_ptr",
                       "typeString": "struct IModuleRegistry.ModuleDefinition[]"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "1415:27:67"
+              "src": "1415:27:62"
             },
-            "scope": 6212,
+            "scope": 6730,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 6189,
+            "id": 6707,
             "nodeType": "FunctionDefinition",
-            "src": "1645:89:67",
+            "src": "1645:89:62",
             "nodes": [],
             "documentation": {
-              "id": 6181,
+              "id": 6699,
               "nodeType": "StructuredDocumentation",
-              "src": "1449:191:67",
+              "src": "1449:191:62",
               "text": " @notice Returns the module definition for the given module ID\n @param moduleID the ID of the module\n @return the ModuleDefinition struct for the given module ID"
             },
             "functionSelector": "720ed642",
@@ -730,20 +730,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "getModuleById",
-            "nameLocation": "1654:13:67",
+            "nameLocation": "1654:13:62",
             "parameters": {
-              "id": 6184,
+              "id": 6702,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6183,
+                  "id": 6701,
                   "mutability": "mutable",
                   "name": "moduleID",
-                  "nameLocation": "1676:8:67",
+                  "nameLocation": "1676:8:62",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6189,
-                  "src": "1668:16:67",
+                  "scope": 6707,
+                  "src": "1668:16:62",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -751,10 +751,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6182,
+                    "id": 6700,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1668:7:67",
+                    "src": "1668:7:62",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -763,66 +763,66 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1667:18:67"
+              "src": "1667:18:62"
             },
             "returnParameters": {
-              "id": 6188,
+              "id": 6706,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6187,
+                  "id": 6705,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6189,
-                  "src": "1709:23:67",
+                  "scope": 6707,
+                  "src": "1709:23:62",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_ModuleDefinition_$6164_memory_ptr",
+                    "typeIdentifier": "t_struct$_ModuleDefinition_$6682_memory_ptr",
                     "typeString": "struct IModuleRegistry.ModuleDefinition"
                   },
                   "typeName": {
-                    "id": 6186,
+                    "id": 6704,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 6185,
+                      "id": 6703,
                       "name": "ModuleDefinition",
                       "nameLocations": [
-                        "1709:16:67"
+                        "1709:16:62"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6164,
-                      "src": "1709:16:67"
+                      "referencedDeclaration": 6682,
+                      "src": "1709:16:62"
                     },
-                    "referencedDeclaration": 6164,
-                    "src": "1709:16:67",
+                    "referencedDeclaration": 6682,
+                    "src": "1709:16:62",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ModuleDefinition_$6164_storage_ptr",
+                      "typeIdentifier": "t_struct$_ModuleDefinition_$6682_storage_ptr",
                       "typeString": "struct IModuleRegistry.ModuleDefinition"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "1708:25:67"
+              "src": "1708:25:62"
             },
-            "scope": 6212,
+            "scope": 6730,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 6197,
+            "id": 6715,
             "nodeType": "FunctionDefinition",
-            "src": "1976:75:67",
+            "src": "1976:75:62",
             "nodes": [],
             "documentation": {
-              "id": 6190,
+              "id": 6708,
               "nodeType": "StructuredDocumentation",
-              "src": "1740:231:67",
+              "src": "1740:231:62",
               "text": " @notice Updates the metadata URI for a given module ID\n @dev Only the owner can call this function\n @param moduleId the ID of the module to update\n @param uri the new metadata URI for the module"
             },
             "functionSelector": "8fe86b3f",
@@ -830,20 +830,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "updateMetadataURI",
-            "nameLocation": "1985:17:67",
+            "nameLocation": "1985:17:62",
             "parameters": {
-              "id": 6195,
+              "id": 6713,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6192,
+                  "id": 6710,
                   "mutability": "mutable",
                   "name": "moduleId",
-                  "nameLocation": "2011:8:67",
+                  "nameLocation": "2011:8:62",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6197,
-                  "src": "2003:16:67",
+                  "scope": 6715,
+                  "src": "2003:16:62",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -851,10 +851,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6191,
+                    "id": 6709,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2003:7:67",
+                    "src": "2003:7:62",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -864,13 +864,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6194,
+                  "id": 6712,
                   "mutability": "mutable",
                   "name": "uri",
-                  "nameLocation": "2037:3:67",
+                  "nameLocation": "2037:3:62",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6197,
-                  "src": "2021:19:67",
+                  "scope": 6715,
+                  "src": "2021:19:62",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -878,10 +878,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 6193,
+                    "id": 6711,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2021:6:67",
+                    "src": "2021:6:62",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -890,28 +890,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2002:39:67"
+              "src": "2002:39:62"
             },
             "returnParameters": {
-              "id": 6196,
+              "id": 6714,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2050:0:67"
+              "src": "2050:0:62"
             },
-            "scope": 6212,
+            "scope": 6730,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 6205,
+            "id": 6723,
             "nodeType": "FunctionDefinition",
-            "src": "2181:75:67",
+            "src": "2181:75:62",
             "nodes": [],
             "documentation": {
-              "id": 6198,
+              "id": 6716,
               "nodeType": "StructuredDocumentation",
-              "src": "2057:119:67",
+              "src": "2057:119:62",
               "text": "@notice checks if an address is authorised to perform maintenance functions\n @param subject address to check"
             },
             "functionSelector": "adcee6e3",
@@ -919,20 +919,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "isProtocolMaintaier",
-            "nameLocation": "2190:19:67",
+            "nameLocation": "2190:19:62",
             "parameters": {
-              "id": 6201,
+              "id": 6719,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6200,
+                  "id": 6718,
                   "mutability": "mutable",
                   "name": "subject",
-                  "nameLocation": "2218:7:67",
+                  "nameLocation": "2218:7:62",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6205,
-                  "src": "2210:15:67",
+                  "scope": 6723,
+                  "src": "2210:15:62",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -940,10 +940,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6199,
+                    "id": 6717,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2210:7:67",
+                    "src": "2210:7:62",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -953,21 +953,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2209:17:67"
+              "src": "2209:17:62"
             },
             "returnParameters": {
-              "id": 6204,
+              "id": 6722,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6203,
+                  "id": 6721,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6205,
-                  "src": "2250:4:67",
+                  "scope": 6723,
+                  "src": "2250:4:62",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -975,10 +975,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 6202,
+                    "id": 6720,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2250:4:67",
+                    "src": "2250:4:62",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -987,22 +987,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2249:6:67"
+              "src": "2249:6:62"
             },
-            "scope": 6212,
+            "scope": 6730,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 6211,
+            "id": 6729,
             "nodeType": "FunctionDefinition",
-            "src": "2278:63:67",
+            "src": "2278:63:62",
             "nodes": [],
             "documentation": {
-              "id": 6206,
+              "id": 6724,
               "nodeType": "StructuredDocumentation",
-              "src": "2262:11:67",
+              "src": "2262:11:62",
               "text": "@notice"
             },
             "functionSelector": "d36ac27c",
@@ -1010,26 +1010,26 @@
             "kind": "function",
             "modifiers": [],
             "name": "getAllowListAddress",
-            "nameLocation": "2287:19:67",
+            "nameLocation": "2287:19:62",
             "parameters": {
-              "id": 6207,
+              "id": 6725,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2306:2:67"
+              "src": "2306:2:62"
             },
             "returnParameters": {
-              "id": 6210,
+              "id": 6728,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6209,
+                  "id": 6727,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6211,
-                  "src": "2332:7:67",
+                  "scope": 6729,
+                  "src": "2332:7:62",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1037,10 +1037,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6208,
+                    "id": 6726,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2332:7:67",
+                    "src": "2332:7:62",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1050,9 +1050,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2331:9:67"
+              "src": "2331:9:62"
             },
-            "scope": 6212,
+            "scope": 6730,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -1064,22 +1064,22 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 6154,
+          "id": 6672,
           "nodeType": "StructuredDocumentation",
-          "src": "56:326:67",
+          "src": "56:326:62",
           "text": " @title IModuleRegistry\n @notice Interface for the ModuleRegistry contract, which is responsible for managing the modules available for Aut DAOs.\n Modules are represented by metadata and an ID and can only be added by the Aut Team.\n DAOs can activate and install specific plugins from the available modules."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          6212
+          6730
         ],
         "name": "IModuleRegistry",
-        "nameLocation": "393:15:67",
-        "scope": 6213,
+        "nameLocation": "393:15:62",
+        "scope": 6731,
         "usedErrors": []
       }
     ],
     "license": "MIT"
   },
-  "id": 67
+  "id": 62
 }

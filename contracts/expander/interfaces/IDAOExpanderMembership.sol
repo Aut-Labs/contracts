@@ -1,11 +1,11 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../../daoUtils/interfaces/get/IDAOMembership.sol";
+import "../../components/interfaces/get/INovaMembership.sol";
 
 /// @title IDAOExpander
 /// @notice The interface for the extension of each DAO that integrates AutID
-interface IDAOExpanderMembership is IDAOMembership {
+interface IDAOExpanderMembership is INovaMembership {
     /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
     /// @dev checks if the member is a part of a DAO
     /// @param member the address of the member that's checked

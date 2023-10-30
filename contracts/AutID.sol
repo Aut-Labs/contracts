@@ -8,9 +8,9 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 import "./IAutID.sol";
-import "./daoUtils/interfaces/get/IDAOCommitment.sol";
-import "./daoUtils/interfaces/set/IDAOMembershipSet.sol";
-import "./daoUtils/interfaces/get/IDAOMembership.sol";
+import "./components/interfaces/get/INovaCommitment.sol";
+import "./components/interfaces/set/INovaMembershipSet.sol";
+import "./components/interfaces/get/INovaMembership.sol";
 import "./membershipCheckers/IMembershipChecker.sol";
 
 import "./nova/interfaces/INova.sol";
@@ -71,7 +71,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         require(balanceOf(_msgSender()) == 0, "AutID: There is AutID already registered for this address.");
         require(autIDUsername[username] == address(0), "AutID: Username already taken!");
 
-        require(IDAOMembership(daoAddress).canJoin(_msgSender(), role), "AutID: Not a member of this DAO!");
+        require(INovaMembership(daoAddress).canJoin(_msgSender(), role), "AutID: Not a member of this DAO!");
 
         string memory lowerCase = _toLower(username);
         uint256 tokenId = _tokenIds.current();
@@ -86,7 +86,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         autIDUsername[lowerCase] = _msgSender();
         _tokenIds.increment();
 
-        IDAOMembershipSet(daoAddress).join(_msgSender(), role);
+        INovaMembershipSet(daoAddress).join(_msgSender(), role);
 
         emit AutIDCreated(_msgSender(), tokenId);
         emit DAOJoined(daoAddress, _msgSender());
@@ -110,15 +110,15 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         }
 
         require(
-            commitment >= IDAOCommitment(daoAddress).getCommitment(), "Commitment lower than the DAOs min commitment"
+            commitment >= INovaCommitment(daoAddress).getCommitment(), "Commitment lower than the DAOs min commitment"
         );
 
-        require(IDAOMembership(daoAddress).canJoin(_msgSender(), role), "AutID: Not a member of this DAO!");
+        require(INovaMembership(daoAddress).canJoin(_msgSender(), role), "AutID: Not a member of this DAO!");
 
         holderToDAOMembershipData[_msgSender()][daoAddress] = DAOMember(daoAddress, role, commitment, true);
         holderToDAOs[_msgSender()].push(daoAddress);
 
-        IDAOMembershipSet(daoAddress).join(_msgSender(), role);
+        INovaMembershipSet(daoAddress).join(_msgSender(), role);
 
         emit DAOJoined(daoAddress, _msgSender());
     }
@@ -139,7 +139,8 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         require(newCommitment > 0 && newCommitment < 11, "AutID: Commitment should be between 1 and 10");
 
         require(
-            newCommitment >= IDAOCommitment(daoAddress).getCommitment(), "Commitment lower than the DAOs min commitment"
+            newCommitment >= INovaCommitment(daoAddress).getCommitment(),
+            "Commitment lower than the DAOs min commitment"
         );
 
         holderToDAOMembershipData[_msgSender()][daoAddress].commitment = newCommitment;
@@ -233,7 +234,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         returns (uint256[] memory commitments)
     {
         uint256 i;
-        if (agents.length == 0) agents = IDAOMembership(dao_).getAllMembers();
+        if (agents.length == 0) agents = INovaMembership(dao_).getAllMembers();
 
         commitments = new uint256[](agents.length);
 
