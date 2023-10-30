@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import {IMiniMeToken, IAragonApp, IAragonKernel} from "../daoStandards/IAragon.sol";
+import {IMiniMeToken, IAragonApp, IAragonKernel} from "../standards/IAragon.sol";
 
 contract AragonVotingApp is IAragonApp {
     // address private _token;

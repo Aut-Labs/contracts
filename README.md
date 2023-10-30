@@ -37,6 +37,11 @@ You're ready to go! 🚀🚀🚀
 
 `forge script  ./script/DeployAll.s.sol --rpc-url $MUMBAI_ALCHEMY   --etherscan-api-key $POLYGONSCAN_TOKEN --private-key $DEV_PVKEY --verify --broadcast`
 
+### Get Artefacts Using Forge
+
+`forge build`
+Now all artefacts are stored in the `out/` folder (repository root)
+
 ### Deploy Using Hardhat
 
 1. Select your desired network in hardhat.config.json under default network

@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 import "./IMembershipChecker.sol";
-import "../daoStandards/ISWLegacyDAO.sol";
+import "../standards/ISWLegacyDAO.sol";
 
 /// @title SWLegacyMembershipChecker
 /// @notice Implementation of IMembershipChecker for SW Legacy DAO type

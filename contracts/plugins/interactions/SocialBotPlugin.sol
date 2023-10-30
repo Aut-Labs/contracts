@@ -8,8 +8,6 @@ import {InteractionModifier} from "./InteractionModifier.sol";
 
 import {IPluginRegistry} from "../registry/IPluginRegistry.sol";
 
-import "forge-std/console.sol";
-
 contract SocialBotPlugin is SimplePlugin, InteractionModifier {
     uint256 public indexAtPeriod;
 

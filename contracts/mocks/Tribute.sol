@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../daoStandards/ITribute.sol";
+import "../standards/ITribute.sol";
 
 /// @title Tribute
 /// @notice Mock Tribute DAO for testing

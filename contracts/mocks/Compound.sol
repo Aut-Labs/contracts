@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../daoStandards/ICompound.sol";
+import "../standards/ICompound.sol";
 
 /// @title Compound
 /// @notice Mock Compound DAO for testing
