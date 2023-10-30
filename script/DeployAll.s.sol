@@ -36,7 +36,7 @@ contract DeployScript is Script {
             console.log("ERROR: Only Mumbai and Goerli Testnets Supported");
             console.log("See scripts/DeployAll");
         }
-        vm.writeLine(
+        vm.writeFile(
             "deployments.txt",
             string.concat(" \n", " \n", "#################################################################### \n")
         );
@@ -76,7 +76,7 @@ contract DeployScript is Script {
             console.log("Deploying to network ID:  ", block.chainid);
             console.log("______________________________________________");
 
-            vm.writeLine(
+            vm.writeFile(
                 "deployments.txt",
                 string.concat(
                     "Deployed to network ID:  ",
@@ -113,7 +113,7 @@ contract DeployScript is Script {
                     "AUTid----------------------------------------- : ",
                     vm.toString(AUTid),
                     " \n",
-                    "Nova Factory----------------------------------------- : ",
+                    "Nova Logic----------------------------------------- : ",
                     vm.toString(NovaLogicAddr),
                     " \n"
                 ),
@@ -139,38 +139,6 @@ contract DeployScript is Script {
             )
         );
 
-        vm.writeLine(
-            "deployments.txt",
-            string.concat(
-                string.concat(
-                    "AUTid----------------------------------------- : ",
-                    vm.toString(AUTid),
-                    " \n",
-                    "Nova Factory----------------------------------------- : ",
-                    vm.toString(NovaLogicAddr),
-                    " \n"
-                ),
-                string.concat(
-                    "ModuleRegistry----------------------------------------- : ",
-                    vm.toString(ModuleRegistryAddr),
-                    " \n",
-                    "PluginRegistry----------------------------------------- : ",
-                    vm.toString(PluginRegistryAddr),
-                    " \n",
-                    "NovaRegistry----------------------------------------- : ",
-                    vm.toString(NovaRegistryAddr),
-                    " \n"
-                ),
-                string.concat(
-                    "LocalReputation----------------------------------------- : ",
-                    vm.toString(LocalReputationAddr),
-                    " \n",
-                    "AllowlistAddr----------------------------------------- : ",
-                    vm.toString(AllowlistAddr),
-                    " \n"
-                )
-            )
-        );
 
         ////////////////////////////////////////////////////////
         //////// set changable contracts
@@ -226,45 +194,6 @@ contract DeployScript is Script {
         console.log("Allowlist ----------------------------------------- : ", AllowlistAddr);
         console.log("                                                                       ");
         console.log("______________________________________________");
-
-        vm.writeLine(
-            "deployments.txt",
-            string.concat(
-                string.concat("AUTid----------------------------------------- : ", vm.toString(AUTid), " \n", " \n"),
-                string.concat(
-                    "ModuleRegistry----------------------------------------- : ",
-                    vm.toString(ModuleRegistryAddr),
-                    " \n",
-                    "PluginRegistry----------------------------------------- : ",
-                    vm.toString(PluginRegistryAddr),
-                    " \n",
-                    "NovaRegistry----------------------------------------- : ",
-                    vm.toString(NovaRegistryAddr),
-                    " \n",
-                    "NovaRegistry----------------------------------------- : ",
-                    vm.toString(NovaRegistryAddr),
-                    " \n"
-                ),
-                string.concat(
-                    "LocalReputation----------------------------------------- : ",
-                    vm.toString(LocalReputationAddr),
-                    " \n",
-                    "AllowlistAddr----------------------------------------- : ",
-                    vm.toString(AllowlistAddr),
-                    " \n"
-                ),
-                string.concat(
-                    "PluginIDs : ",
-                    vm.toString(pluginDefinitionIds[0]),
-                    " , ",
-                    vm.toString(pluginDefinitionIds[1]),
-                    " , ",
-                    vm.toString(pluginDefinitionIds[2]),
-                    " , ",
-                    vm.toString(pluginDefinitionIds[3])
-                )
-            )
-        );
 
         vm.stopBroadcast();
     }
