@@ -25,6 +25,8 @@ contract Nova is
     NovaModules,
     NovaCommitment
 {
+    uint256[50] private __basesGap;
+
     address public deployer;
     address public onboardingAddr;
 
@@ -99,5 +101,5 @@ contract Nova is
     // 10 total - 2 used slots for this contract itself
     // 50 more for the future abstract base contracts 10 slots each
     // https://en.wikipedia.org/wiki/C3_linearization
-    uint256[50 + 10 - 2] private __gap;
+    uint256[50 - 2] private __gap;
 }
