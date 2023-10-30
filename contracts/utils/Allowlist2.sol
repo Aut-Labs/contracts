@@ -19,8 +19,7 @@ contract AutIdClaimAllowlist is Ownable {
     function confirmClaim() external {
         require(msg.sender == controller, "Allowlist: only authorized by controller");
         require(
-            claimCapacityOf[msg.sender] != 0 && !hasClaimed[msg.sender], 
-            "Allowlist: no capacity or has claimed already"
+            claimCapacityOf[msg.sender] != 0 && !hasClaimed[msg.sender], "Allowlist: no capacity or has claimed already"
         );
         claimCapacityOf[msg.sender]--;
         hasClaimed[msg.sender] = true;
@@ -29,22 +28,13 @@ contract AutIdClaimAllowlist is Ownable {
 
     function transferClaimInvitationTo(address to) external {
         require(claimCapacityOf[msg.sender] != 0, "Allowlist: nothing to send");
-        require(
-            claimCapacityOf[to] == 0 && !hasClaimed[to],
-            "Allowlist: recipient should become eligible in result"
-        );
+        require(claimCapacityOf[to] == 0 && !hasClaimed[to], "Allowlist: recipient should become eligible in result");
         claimCapacityOf[msg.sender]--;
         claimCapacityOf[to]++;
         emit ClaimInvitationTransferred(msg.sender, to);
     }
 
-    function issueClaimInvitationsBulk(
-        address[] calldata recipients,
-        uint256[] calldata amounts
-    )
-        external
-        onlyOwner 
-    {
+    function issueClaimInvitationsBulk(address[] calldata recipients, uint256[] calldata amounts) external onlyOwner {
         require(recipients.length == amounts.length, "Allowlist: lengths mismatch");
         for (uint256 i; i != recipients.length; ++i) {
             issueClaimInvitations(recipients[i], amounts[i]);

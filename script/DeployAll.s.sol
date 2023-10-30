@@ -90,14 +90,6 @@ contract DeployScript is Script {
             );
         }
 
-        //     function addPluginDefinition(
-        //     address payable creator,
-        //     string memory metadataURI,
-        //     uint256 price,
-        //     bool canBeStandalone,
-        //     uint256[] memory moduleDependencies
-        // ) external returns (uint256 pluginDefinitionId)
-
         address NovaLogicAddr = address(new Nova());
         address LocalReputationAddr = address(new LocalReputation());
         address AUTid = address(new AutID());
@@ -105,15 +97,80 @@ contract DeployScript is Script {
         address AllowlistAddr = address(new Allowlist());
         address ModuleRegistryAddr = address(new ModuleRegistry(AllowlistAddr));
         address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
-        address NovaRegistryAddr =
-            address(
-                new NovaRegistry(
+        address NovaRegistryAddr = address(
+            new NovaRegistry(
                     biconomyTrustedForward,
                     AUTid,
                     NovaLogicAddr,
                     PluginRegistryAddr
                 )
-            );
+        );
+
+        vm.writeLine(
+            "deployments.txt",
+            string.concat(
+                string.concat(
+                    "AUTid----------------------------------------- : ",
+                    vm.toString(AUTid),
+                    " \n",
+                    "Nova Factory----------------------------------------- : ",
+                    vm.toString(NovaLogicAddr),
+                    " \n"
+                ),
+                string.concat(
+                    "ModuleRegistry----------------------------------------- : ",
+                    vm.toString(ModuleRegistryAddr),
+                    " \n",
+                    "PluginRegistry----------------------------------------- : ",
+                    vm.toString(PluginRegistryAddr),
+                    " \n",
+                    "NovaRegistry----------------------------------------- : ",
+                    vm.toString(NovaRegistryAddr),
+                    " \n"
+                ),
+                string.concat(
+                    "LocalReputation----------------------------------------- : ",
+                    vm.toString(LocalReputationAddr),
+                    " \n",
+                    "AllowlistAddr----------------------------------------- : ",
+                    vm.toString(AllowlistAddr),
+                    " \n"
+                )
+            )
+        );
+
+        vm.writeLine(
+            "deployments.txt",
+            string.concat(
+                string.concat(
+                    "AUTid----------------------------------------- : ",
+                    vm.toString(AUTid),
+                    " \n",
+                    "Nova Factory----------------------------------------- : ",
+                    vm.toString(NovaLogicAddr),
+                    " \n"
+                ),
+                string.concat(
+                    "ModuleRegistry----------------------------------------- : ",
+                    vm.toString(ModuleRegistryAddr),
+                    " \n",
+                    "PluginRegistry----------------------------------------- : ",
+                    vm.toString(PluginRegistryAddr),
+                    " \n",
+                    "NovaRegistry----------------------------------------- : ",
+                    vm.toString(NovaRegistryAddr),
+                    " \n"
+                ),
+                string.concat(
+                    "LocalReputation----------------------------------------- : ",
+                    vm.toString(LocalReputationAddr),
+                    " \n",
+                    "AllowlistAddr----------------------------------------- : ",
+                    vm.toString(AllowlistAddr),
+                    " \n"
+                )
+            )
+        );
 
         ////////////////////////////////////////////////////////
         //////// set changable contracts
@@ -142,21 +199,19 @@ contract DeployScript is Script {
             payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), transactionTaskUrl, 0, true, dependencies
         );
 
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(AUTid));
-
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(NoveFactoryAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(ModuleRegistryAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(PluginRegistryAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(NovaRegistryAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(LocalReputationAddr));
-        // vm.writeLine("script/DeploymentAddresses.sol", vm.toString(AllowlistAddr));
-
-        // vm.writeLine("script/DeploymentAddresses.sol", "); /n");
-
-        /// }
-        // vm.writeLine("script/DeploymentAddresses.sol", "} /n");
-
-        // vm.writeLine("script/DeploymentAddresses.sol", "}\n");
+        vm.writeLine(
+            "deployments.txt",
+            string.concat(
+                "PluginIDs : ",
+                vm.toString(pluginDefinitionIds[0]),
+                " , ",
+                vm.toString(pluginDefinitionIds[1]),
+                " , ",
+                vm.toString(pluginDefinitionIds[2]),
+                " , ",
+                vm.toString(pluginDefinitionIds[3])
+            )
+        );
 
         IAllowlist(AllowlistAddr).addOwner(0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3);
         IAllowlist(AllowlistAddr).addOwner(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a);
@@ -175,20 +230,16 @@ contract DeployScript is Script {
         vm.writeLine(
             "deployments.txt",
             string.concat(
-                string.concat(
-                    "AUTid----------------------------------------- : ",
-                    vm.toString(AUTid),
-                    " \n",
-                    "Nova Logic----------------------------------------- : ",
-                    vm.toString(NovaLogicAddr),
-                    " \n"
-                ),
+                string.concat("AUTid----------------------------------------- : ", vm.toString(AUTid), " \n", " \n"),
                 string.concat(
                     "ModuleRegistry----------------------------------------- : ",
                     vm.toString(ModuleRegistryAddr),
                     " \n",
                     "PluginRegistry----------------------------------------- : ",
                     vm.toString(PluginRegistryAddr),
+                    " \n",
+                    "NovaRegistry----------------------------------------- : ",
+                    vm.toString(NovaRegistryAddr),
                     " \n",
                     "NovaRegistry----------------------------------------- : ",
                     vm.toString(NovaRegistryAddr),

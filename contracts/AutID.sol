@@ -139,7 +139,8 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         require(newCommitment > 0 && newCommitment < 11, "AutID: Commitment should be between 1 and 10");
 
         require(
-            newCommitment >= INovaCommitment(daoAddress).getCommitment(), "Commitment lower than the DAOs min commitment"
+            newCommitment >= INovaCommitment(daoAddress).getCommitment(),
+            "Commitment lower than the DAOs min commitment"
         );
 
         holderToDAOMembershipData[_msgSender()][daoAddress].commitment = newCommitment;
