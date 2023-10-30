@@ -1,0 +1,977 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "daoAppAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        }
+      ],
+      "name": "isMember",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x608060405234801561001057600080fd5b5061029c806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c806339ac7a0814610030575b600080fd5b61004361003e3660046101f0565b610057565b604051901515815260200160405180910390f35b60006001600160a01b0383166100b45760405162461bcd60e51b815260206004820152601a60248201527f41757449443a2064616f4170704164647265737320656d70747900000000000060448201526064015b60405180910390fd5b6001600160a01b0382166101005760405162461bcd60e51b815260206004820152601360248201527241757449443a206d656d62657220656d70747960681b60448201526064016100ab565b6000836001600160a01b031663fc0c546a6040518163ffffffff1660e01b8152600401602060405180830381865afa158015610140573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101649190610229565b6040516370a0823160e01b81526001600160a01b03858116600483015291909116906370a0823190602401602060405180830381865afa1580156101ac573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101d0919061024d565b119392505050565b6001600160a01b03811681146101ed57600080fd5b50565b6000806040838503121561020357600080fd5b823561020e816101d8565b9150602083013561021e816101d8565b809150509250929050565b60006020828403121561023b57600080fd5b8151610246816101d8565b9392505050565b60006020828403121561025f57600080fd5b505191905056fea2646970667358221220a04f78b508ea4224c9ba155ec889e8677a13f015b2373786a3f5aa9adb6def7a64736f6c63430008130033",
+    "sourceMap": "361:665:38:-:0;;;;;;;;;;;;;;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c806339ac7a0814610030575b600080fd5b61004361003e3660046101f0565b610057565b604051901515815260200160405180910390f35b60006001600160a01b0383166100b45760405162461bcd60e51b815260206004820152601a60248201527f41757449443a2064616f4170704164647265737320656d70747900000000000060448201526064015b60405180910390fd5b6001600160a01b0382166101005760405162461bcd60e51b815260206004820152601360248201527241757449443a206d656d62657220656d70747960681b60448201526064016100ab565b6000836001600160a01b031663fc0c546a6040518163ffffffff1660e01b8152600401602060405180830381865afa158015610140573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101649190610229565b6040516370a0823160e01b81526001600160a01b03858116600483015291909116906370a0823190602401602060405180830381865afa1580156101ac573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101d0919061024d565b119392505050565b6001600160a01b03811681146101ed57600080fd5b50565b6000806040838503121561020357600080fd5b823561020e816101d8565b9150602083013561021e816101d8565b809150509250929050565b60006020828403121561023b57600080fd5b8151610246816101d8565b9392505050565b60006020828403121561025f57600080fd5b505191905056fea2646970667358221220a04f78b508ea4224c9ba155ec889e8677a13f015b2373786a3f5aa9adb6def7a64736f6c63430008130033",
+    "sourceMap": "361:665:38:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;699:325;;;;;;:::i;:::-;;:::i;:::-;;;708:14:167;;701:22;683:41;;671:2;656:18;699:325:38;;;;;;;;786:4;-1:-1:-1;;;;;810:27:38;;802:66;;;;-1:-1:-1;;;802:66:38;;937:2:167;802:66:38;;;919:21:167;976:2;956:18;;;949:30;1015:28;995:18;;;988:56;1061:18;;802:66:38;;;;;;;;;-1:-1:-1;;;;;886:20:38;;878:52;;;;-1:-1:-1;;;878:52:38;;1292:2:167;878:52:38;;;1274:21:167;1331:2;1311:18;;;1304:30;-1:-1:-1;;;1350:18:167;;;1343:49;1409:18;;878:52:38;1090:343:167;878:52:38;1016:1;972:13;-1:-1:-1;;;;;961:31:38;;:33;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;948:65;;-1:-1:-1;;;948:65:38;;-1:-1:-1;;;;;1880:32:167;;;948:65:38;;;1862:51:167;948:57:38;;;;;;;1835:18:167;;948:65:38;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;:69;;699:325;-1:-1:-1;;;699:325:38:o;14:131:167:-;-1:-1:-1;;;;;89:31:167;;79:42;;69:70;;135:1;132;125:12;69:70;14:131;:::o;150:388::-;218:6;226;279:2;267:9;258:7;254:23;250:32;247:52;;;295:1;292;285:12;247:52;334:9;321:23;353:31;378:5;353:31;:::i;:::-;403:5;-1:-1:-1;460:2:167;445:18;;432:32;473:33;432:32;473:33;:::i;:::-;525:7;515:17;;;150:388;;;;;:::o;1438:273::-;1530:6;1583:2;1571:9;1562:7;1558:23;1554:32;1551:52;;;1599:1;1596;1589:12;1551:52;1631:9;1625:16;1650:31;1675:5;1650:31;:::i;:::-;1700:5;1438:273;-1:-1:-1;;;1438:273:167:o;1924:184::-;1994:6;2047:2;2035:9;2026:7;2022:23;2018:32;2015:52;;;2063:1;2060;2053:12;2015:52;-1:-1:-1;2086:16:167;;1924:184;-1:-1:-1;1924:184:167:o",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "isMember(address,address)": "39ac7a08"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"daoAppAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isMember\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"isMember(address,address)\":{\"params\":{\"daoAppAddress\":\"the address of the DAO contract\",\"member\":\"the address of the member for which the check is made\"},\"returns\":{\"_0\":\"true if the user address is a member, false otherwise\"}}},\"title\":\"AragonMembershipChecker\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"isMember(address,address)\":{\"notice\":\"Implements a check if an address is a member of a DAO\"}},\"notice\":\"Implementation of IMembershipChecker for Aragon DAO type\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/membershipCheckers/AragonMembershipChecker.sol\":\"AragonMembershipChecker\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/membershipCheckers/AragonMembershipChecker.sol\":{\"keccak256\":\"0x6cf87696d20afa6456e541cf8381ddcf09847365085b9301ea57a574ea1e96cf\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a918a53ac86e5fa08fd18cb8d98e74f0f9978d94661c5755c5b6b2a35aaa38c6\",\"dweb:/ipfs/QmbKEZeFBCSXPAQxgrPVF7GNfdNjSgS4iU3DajTnSrAevK\"]},\"contracts/membershipCheckers/IMembershipChecker.sol\":{\"keccak256\":\"0x0db016237de654ad5c83738028d7a79515fb7afc629a3cfa068838a50efa6b13\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1fc2313c05722a2e5a671bbb0f8ff9e6b012a72912e80c289bdb43a193e9ca82\",\"dweb:/ipfs/QmaPeuBMoAyeyp4fNxZxo9JWLaWCb93s279PdqXfYRY5fa\"]},\"contracts/standards/IAragon.sol\":{\"keccak256\":\"0xb3d64bcf7040f39a929e58c0c3d4d92c33eb3f6c44e9bf1a9414894b3f526912\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e04ef80e67f130e0773ec56a7bc9d0c3004048a8bce654c62fbfe6de17d9f3e1\",\"dweb:/ipfs/QmYmzhbc14NmhbL6BxGKR7Z2JMZyd7NAiCS2YmJ8Q1aVp5\"]},\"node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x9750c6b834f7b43000631af5cc30001c5f547b3ceb3635488f140f60e897ea6b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5a7d5b1ef5d8d5889ad2ed89d8619c09383b80b72ab226e0fe7bde1636481e34\",\"dweb:/ipfs/QmebXWgtEfumQGBdVeM6c71McLixYXQP5Bk6kKXuoY4Bmr\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "daoAppAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isMember",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "isMember(address,address)": {
+            "params": {
+              "daoAppAddress": "the address of the DAO contract",
+              "member": "the address of the member for which the check is made"
+            },
+            "returns": {
+              "_0": "true if the user address is a member, false otherwise"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "isMember(address,address)": {
+            "notice": "Implements a check if an address is a member of a DAO"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/membershipCheckers/AragonMembershipChecker.sol": "AragonMembershipChecker"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/membershipCheckers/AragonMembershipChecker.sol": {
+        "keccak256": "0x6cf87696d20afa6456e541cf8381ddcf09847365085b9301ea57a574ea1e96cf",
+        "urls": [
+          "bzz-raw://a918a53ac86e5fa08fd18cb8d98e74f0f9978d94661c5755c5b6b2a35aaa38c6",
+          "dweb:/ipfs/QmbKEZeFBCSXPAQxgrPVF7GNfdNjSgS4iU3DajTnSrAevK"
+        ],
+        "license": "MIT"
+      },
+      "contracts/membershipCheckers/IMembershipChecker.sol": {
+        "keccak256": "0x0db016237de654ad5c83738028d7a79515fb7afc629a3cfa068838a50efa6b13",
+        "urls": [
+          "bzz-raw://1fc2313c05722a2e5a671bbb0f8ff9e6b012a72912e80c289bdb43a193e9ca82",
+          "dweb:/ipfs/QmaPeuBMoAyeyp4fNxZxo9JWLaWCb93s279PdqXfYRY5fa"
+        ],
+        "license": "MIT"
+      },
+      "contracts/standards/IAragon.sol": {
+        "keccak256": "0xb3d64bcf7040f39a929e58c0c3d4d92c33eb3f6c44e9bf1a9414894b3f526912",
+        "urls": [
+          "bzz-raw://e04ef80e67f130e0773ec56a7bc9d0c3004048a8bce654c62fbfe6de17d9f3e1",
+          "dweb:/ipfs/QmYmzhbc14NmhbL6BxGKR7Z2JMZyd7NAiCS2YmJ8Q1aVp5"
+        ],
+        "license": "MIT"
+      },
+      "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+        "keccak256": "0x9750c6b834f7b43000631af5cc30001c5f547b3ceb3635488f140f60e897ea6b",
+        "urls": [
+          "bzz-raw://5a7d5b1ef5d8d5889ad2ed89d8619c09383b80b72ab226e0fe7bde1636481e34",
+          "dweb:/ipfs/QmebXWgtEfumQGBdVeM6c71McLixYXQP5Bk6kKXuoY4Bmr"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/membershipCheckers/AragonMembershipChecker.sol",
+    "id": 5581,
+    "exportedSymbols": {
+      "AragonMembershipChecker": [
+        5580
+      ],
+      "IAragonApp": [
+        12527
+      ],
+      "IERC20": [
+        60615
+      ],
+      "IMembershipChecker": [
+        5849
+      ],
+      "IMiniMeToken": [
+        12518
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:996:38",
+    "nodes": [
+      {
+        "id": 5525,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:38",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 5526,
+        "nodeType": "ImportDirective",
+        "src": "56:34:38",
+        "nodes": [],
+        "absolutePath": "contracts/membershipCheckers/IMembershipChecker.sol",
+        "file": "./IMembershipChecker.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 5581,
+        "sourceUnit": 5850,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 5528,
+        "nodeType": "ImportDirective",
+        "src": "91:52:38",
+        "nodes": [],
+        "absolutePath": "contracts/standards/IAragon.sol",
+        "file": "../standards/IAragon.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 5581,
+        "sourceUnit": 12528,
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 5527,
+              "name": "IAragonApp",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 12527,
+              "src": "99:10:38",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "id": 5529,
+        "nodeType": "ImportDirective",
+        "src": "144:56:38",
+        "nodes": [],
+        "absolutePath": "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 5581,
+        "sourceUnit": 60616,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 5531,
+        "nodeType": "ImportDirective",
+        "src": "201:54:38",
+        "nodes": [],
+        "absolutePath": "contracts/standards/IAragon.sol",
+        "file": "../standards/IAragon.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 5581,
+        "sourceUnit": 12528,
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 5530,
+              "name": "IMiniMeToken",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 12518,
+              "src": "209:12:38",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "id": 5580,
+        "nodeType": "ContractDefinition",
+        "src": "361:665:38",
+        "nodes": [
+          {
+            "id": 5579,
+            "nodeType": "FunctionDefinition",
+            "src": "699:325:38",
+            "nodes": [],
+            "body": {
+              "id": 5578,
+              "nodeType": "Block",
+              "src": "792:232:38",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "id": 5551,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "id": 5546,
+                          "name": "daoAppAddress",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 5537,
+                          "src": "810:13:38",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "!=",
+                        "rightExpression": {
+                          "arguments": [
+                            {
+                              "hexValue": "30",
+                              "id": 5549,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "835:1:38",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              },
+                              "value": "0"
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              }
+                            ],
+                            "id": 5548,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "lValueRequested": false,
+                            "nodeType": "ElementaryTypeNameExpression",
+                            "src": "827:7:38",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_address_$",
+                              "typeString": "type(address)"
+                            },
+                            "typeName": {
+                              "id": 5547,
+                              "name": "address",
+                              "nodeType": "ElementaryTypeName",
+                              "src": "827:7:38",
+                              "typeDescriptions": {}
+                            }
+                          },
+                          "id": 5550,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "typeConversion",
+                          "lValueRequested": false,
+                          "nameLocations": [],
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "827:10:38",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "src": "810:27:38",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "41757449443a2064616f4170704164647265737320656d707479",
+                        "id": 5552,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "839:28:38",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_a00b0bd530318933883a5c2cd674f58655d9e33e2e4f7957bf40259e5831a35c",
+                          "typeString": "literal_string \"AutID: daoAppAddress empty\""
+                        },
+                        "value": "AutID: daoAppAddress empty"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_a00b0bd530318933883a5c2cd674f58655d9e33e2e4f7957bf40259e5831a35c",
+                          "typeString": "literal_string \"AutID: daoAppAddress empty\""
+                        }
+                      ],
+                      "id": 5545,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        -18,
+                        -18
+                      ],
+                      "referencedDeclaration": -18,
+                      "src": "802:7:38",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 5553,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "802:66:38",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 5554,
+                  "nodeType": "ExpressionStatement",
+                  "src": "802:66:38"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "id": 5561,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "id": 5556,
+                          "name": "member",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 5539,
+                          "src": "886:6:38",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "!=",
+                        "rightExpression": {
+                          "arguments": [
+                            {
+                              "hexValue": "30",
+                              "id": 5559,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "904:1:38",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              },
+                              "value": "0"
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              }
+                            ],
+                            "id": 5558,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "lValueRequested": false,
+                            "nodeType": "ElementaryTypeNameExpression",
+                            "src": "896:7:38",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_address_$",
+                              "typeString": "type(address)"
+                            },
+                            "typeName": {
+                              "id": 5557,
+                              "name": "address",
+                              "nodeType": "ElementaryTypeName",
+                              "src": "896:7:38",
+                              "typeDescriptions": {}
+                            }
+                          },
+                          "id": 5560,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "typeConversion",
+                          "lValueRequested": false,
+                          "nameLocations": [],
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "896:10:38",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "src": "886:20:38",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "41757449443a206d656d62657220656d707479",
+                        "id": 5562,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "908:21:38",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_0486abb82898a15f38a582164c054f4ddd300aa8cb12586a6561cfaeb02ab108",
+                          "typeString": "literal_string \"AutID: member empty\""
+                        },
+                        "value": "AutID: member empty"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_0486abb82898a15f38a582164c054f4ddd300aa8cb12586a6561cfaeb02ab108",
+                          "typeString": "literal_string \"AutID: member empty\""
+                        }
+                      ],
+                      "id": 5555,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        -18,
+                        -18
+                      ],
+                      "referencedDeclaration": -18,
+                      "src": "878:7:38",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 5563,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "878:52:38",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 5564,
+                  "nodeType": "ExpressionStatement",
+                  "src": "878:52:38"
+                },
+                {
+                  "expression": {
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 5576,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "arguments": [
+                        {
+                          "id": 5573,
+                          "name": "member",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 5539,
+                          "src": "1006:6:38",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        ],
+                        "expression": {
+                          "arguments": [
+                            {
+                              "arguments": [],
+                              "expression": {
+                                "argumentTypes": [],
+                                "expression": {
+                                  "arguments": [
+                                    {
+                                      "id": 5567,
+                                      "name": "daoAppAddress",
+                                      "nodeType": "Identifier",
+                                      "overloadedDeclarations": [],
+                                      "referencedDeclaration": 5537,
+                                      "src": "972:13:38",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_address",
+                                        "typeString": "address"
+                                      }
+                                    }
+                                  ],
+                                  "expression": {
+                                    "argumentTypes": [
+                                      {
+                                        "typeIdentifier": "t_address",
+                                        "typeString": "address"
+                                      }
+                                    ],
+                                    "id": 5566,
+                                    "name": "IAragonApp",
+                                    "nodeType": "Identifier",
+                                    "overloadedDeclarations": [],
+                                    "referencedDeclaration": 12527,
+                                    "src": "961:10:38",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_type$_t_contract$_IAragonApp_$12527_$",
+                                      "typeString": "type(contract IAragonApp)"
+                                    }
+                                  },
+                                  "id": 5568,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "kind": "typeConversion",
+                                  "lValueRequested": false,
+                                  "nameLocations": [],
+                                  "names": [],
+                                  "nodeType": "FunctionCall",
+                                  "src": "961:25:38",
+                                  "tryCall": false,
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_contract$_IAragonApp_$12527",
+                                    "typeString": "contract IAragonApp"
+                                  }
+                                },
+                                "id": 5569,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "memberLocation": "987:5:38",
+                                "memberName": "token",
+                                "nodeType": "MemberAccess",
+                                "referencedDeclaration": 12526,
+                                "src": "961:31:38",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_function_external_view$__$returns$_t_contract$_IMiniMeToken_$12518_$",
+                                  "typeString": "function () view external returns (contract IMiniMeToken)"
+                                }
+                              },
+                              "id": 5570,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "kind": "functionCall",
+                              "lValueRequested": false,
+                              "nameLocations": [],
+                              "names": [],
+                              "nodeType": "FunctionCall",
+                              "src": "961:33:38",
+                              "tryCall": false,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_contract$_IMiniMeToken_$12518",
+                                "typeString": "contract IMiniMeToken"
+                              }
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_contract$_IMiniMeToken_$12518",
+                                "typeString": "contract IMiniMeToken"
+                              }
+                            ],
+                            "id": 5565,
+                            "name": "IMiniMeToken",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 12518,
+                            "src": "948:12:38",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_contract$_IMiniMeToken_$12518_$",
+                              "typeString": "type(contract IMiniMeToken)"
+                            }
+                          },
+                          "id": 5571,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "typeConversion",
+                          "lValueRequested": false,
+                          "nameLocations": [],
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "948:47:38",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_contract$_IMiniMeToken_$12518",
+                            "typeString": "contract IMiniMeToken"
+                          }
+                        },
+                        "id": 5572,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberLocation": "996:9:38",
+                        "memberName": "balanceOf",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 60572,
+                        "src": "948:57:38",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_external_view$_t_address_$returns$_t_uint256_$",
+                          "typeString": "function (address) view external returns (uint256)"
+                        }
+                      },
+                      "id": 5574,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "nameLocations": [],
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "948:65:38",
+                      "tryCall": false,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": ">",
+                    "rightExpression": {
+                      "hexValue": "30",
+                      "id": 5575,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "1016:1:38",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "src": "948:69:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 5544,
+                  "id": 5577,
+                  "nodeType": "Return",
+                  "src": "941:76:38"
+                }
+              ]
+            },
+            "baseFunctions": [
+              5848
+            ],
+            "documentation": {
+              "id": 5535,
+              "nodeType": "StructuredDocumentation",
+              "src": "422:272:38",
+              "text": "@notice Implements a check if an address is a member of a DAO\n @param daoAppAddress the address of the DAO contract\n @param member the address of the member for which the check is made\n @return true if the user address is a member, false otherwise"
+            },
+            "functionSelector": "39ac7a08",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isMember",
+            "nameLocation": "708:8:38",
+            "overrides": {
+              "id": 5541,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "768:8:38"
+            },
+            "parameters": {
+              "id": 5540,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5537,
+                  "mutability": "mutable",
+                  "name": "daoAppAddress",
+                  "nameLocation": "725:13:38",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5579,
+                  "src": "717:21:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5536,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "717:7:38",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5539,
+                  "mutability": "mutable",
+                  "name": "member",
+                  "nameLocation": "748:6:38",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5579,
+                  "src": "740:14:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5538,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "740:7:38",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "716:39:38"
+            },
+            "returnParameters": {
+              "id": 5544,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5543,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5579,
+                  "src": "786:4:38",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5542,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "786:4:38",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "785:6:38"
+            },
+            "scope": 5580,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 5533,
+              "name": "IMembershipChecker",
+              "nameLocations": [
+                "397:18:38"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 5849,
+              "src": "397:18:38"
+            },
+            "id": 5534,
+            "nodeType": "InheritanceSpecifier",
+            "src": "397:18:38"
+          }
+        ],
+        "canonicalName": "AragonMembershipChecker",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 5532,
+          "nodeType": "StructuredDocumentation",
+          "src": "257:104:38",
+          "text": "@title AragonMembershipChecker\n @notice Implementation of IMembershipChecker for Aragon DAO type"
+        },
+        "fullyImplemented": true,
+        "linearizedBaseContracts": [
+          5580,
+          5849
+        ],
+        "name": "AragonMembershipChecker",
+        "nameLocation": "370:23:38",
+        "scope": 5581,
+        "usedErrors": []
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 38
+}

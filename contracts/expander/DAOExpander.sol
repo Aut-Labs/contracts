@@ -12,7 +12,7 @@ import "../components/abstracts/NovaModules.sol";
 import "../components/abstracts/NovaMetadata.sol";
 import "../components/abstracts/NovaCommitment.sol";
 import "../components/abstracts/NovaMarket.sol";
-import "../components/interfaces/get/INovaMembership.sol";  // todo: rename to `INovaMembers.sol`
+import "../components/interfaces/get/INovaMembership.sol"; // todo: rename to `INovaMembers.sol`
 import "../components/abstracts/AutIDAddress.sol";
 import "../expander/interfaces/IDAOExpander.sol";
 import "../modules/onboarding/OnboardingModule.sol";

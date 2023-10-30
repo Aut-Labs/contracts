@@ -92,4 +92,8 @@ interface ILocalReputation {
     ) external pure returns (uint256 score);
 
     function bulkPeriodicUpdate(address group_) external returns (uint256[] memory localReputationScores);
+
+    function pointsPerInteraction(uint256 interactionContextID) external view returns (uint16 points);
+
+    function interactionID(address plugin_, bytes memory data_) external view returns (uint256 id);
 }

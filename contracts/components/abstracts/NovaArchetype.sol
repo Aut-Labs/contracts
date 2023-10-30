@@ -22,12 +22,7 @@ abstract contract NovaArchetype is INovaArchetype {
         archetype = parameter;
     }
 
-    function _setWeightFor(
-        uint8 parameter,
-        uint256 value
-    )
-        internal 
-    {
+    function _setWeightFor(uint8 parameter, uint256 value) internal {
         _validateParameter(parameter);
         weightFor[parameter] = value;
     }

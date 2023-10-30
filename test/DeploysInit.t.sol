@@ -37,6 +37,9 @@ contract DeploysInit is Test {
     address A3;
     address A4_outsider;
 
+    uint256 A1role;
+    uint256 A2role;
+
     function setUp() public virtual {
         A1 = address(uint160(uint256(keccak256("Account1"))));
         vm.label(address(A1), "Account1");
@@ -54,7 +57,7 @@ contract DeploysInit is Test {
 
         LegacyDAO = new SWLegacyDAO();
         vm.label(address(LegacyDAO), "LegacyDAOI");
-    
+
         AList = IAllowlist(address(new Allowlist()));
         vm.label(address(AList), "allowlist");
 
@@ -62,21 +65,14 @@ contract DeploysInit is Test {
 
         aID = IAutID(address(new AutID()));
         vm.label(address(aID), "AutIDI");
-    
+
         NovaLogic = INova(address(new N()));
         vm.label(address(NovaLogic), "NovaLogicI");
-
-        // Interact = IInteraction(address(new Interaction()));
-        // vm.label(address(Interact), "InteractionI");
 
         IMR = IModuleRegistry(address(new ModuleRegistry(address(AList))));
         vm.label(address(IMR), "ModuleRegistryI");
 
-        IPR = IPluginRegistry(
-            address(
-                new PluginRegistry(address(IMR))
-            )
-        );
+        IPR = IPluginRegistry(address(new PluginRegistry(address(IMR))));
         vm.label(address(IPR), "PluginRegistryI");
 
         iLR = ILocalReputation(address(new LocalReputation()));
