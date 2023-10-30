@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 import "forge-std/Test.sol";
-import {Nova as NovaLogicContract} from "../contracts/nova/Nova.sol";
+import {Nova as N} from "../contracts/nova/Nova.sol";
 import {INova} from "../contracts/nova/interfaces/INova.sol";
 import {NovaRegistry, INovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {ModuleRegistry, IModuleRegistry} from "../contracts/modules/registry/ModuleRegistry.sol";
@@ -54,13 +54,16 @@ contract DeploysInit is Test {
 
         LegacyDAO = new SWLegacyDAO();
         vm.label(address(LegacyDAO), "LegacyDAOI");
-
-        AList = new Allowlist();
+    
+        AList = IAllowlist(address(new Allowlist()));
         vm.label(address(AList), "allowlist");
+
+        AList.addToAllowlist(A0);
 
         aID = IAutID(address(new AutID()));
         vm.label(address(aID), "AutIDI");
-        NovaLogic = INova(address(new NovaLogicContract()));
+    
+        NovaLogic = INova(address(new N()));
         vm.label(address(NovaLogic), "NovaLogicI");
 
         // Interact = IInteraction(address(new Interaction()));
@@ -71,8 +74,7 @@ contract DeploysInit is Test {
 
         IPR = IPluginRegistry(
             address(
-                new PluginRegistry(address(IMR)
-                )
+                new PluginRegistry(address(IMR))
             )
         );
         vm.label(address(IPR), "PluginRegistryI");
@@ -83,6 +85,7 @@ contract DeploysInit is Test {
 
         INR = INovaRegistry(address(new NovaRegistry(address(12345),address(aID), address(NovaLogic), address(IPR))));
         vm.label(address(INR), "NovaRegistryI");
+
         address NovaAddr = INR.deployNova(1, "metadataCID", 1);
         Nova = INova(NovaAddr);
         vm.stopPrank();

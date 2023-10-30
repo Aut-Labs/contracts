@@ -10,6 +10,7 @@ import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {IPluginRegistry} from "../plugins/registry/IPluginRegistry.sol";
 import {INovaRegistry} from "./interfaces/INovaRegistry.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
+import {Nova} from "../nova/Nova.sol";
 
 /// @title NovaRegistry 
 contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
@@ -78,8 +79,8 @@ contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
         );
         _checkAllowlist();
 
-        bytes memory data = abi.encodeWithSignature(
-            "initialize(address, address, uint256, string memory, uint256, uint256, address)",
+        bytes memory data = abi.encodeWithSelector(
+            Nova.initialize.selector,
             _msgSender(), autIDAddr, market, metadata, commitment, pluginRegistry
         );
         nova = address(new BeaconProxy(address(upgradeableBeacon), data));

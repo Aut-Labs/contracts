@@ -8,6 +8,7 @@ import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegist
 import {AutID, IAutID} from "../contracts/AutID.sol";
 import {SWLegacyDAO} from "../contracts/mocks/SWLegacyCommunity.sol";
 import {LocalReputation} from "../contracts/LocalReputation.sol";
+import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 
 import {IAllowlist, Allowlist} from "../contracts/utils/Allowlist.sol";
 
@@ -29,6 +30,7 @@ contract DeployScript is Script {
         chainID = block.chainid;
         if (chainID == 80001) biconomyTrustedForward = 0x69015912AA33720b842dCD6aC059Ed623F28d9f7;
         if (chainID == 5) biconomyTrustedForward = 0xE041608922d06a4F26C0d4c27d8bCD01daf1f792;
+        if (chainID == 31337) biconomyTrustedForward = address(new TrustedForwarder());
 
         if (biconomyTrustedForward == address(0)) {
             console.log("ERROR: Only Mumbai and Goerli Testnets Supported");
