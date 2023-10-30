@@ -276,7 +276,7 @@
     "setCommitment(uint256)": "be9cd052",
     "setMetadataUri(string)": "1130630c"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[],\"name\":\"DiscordServerSet\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"addURL\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"}],\"name\":\"canJoin\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAdmins\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllMembers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAutIDAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getCommitment\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getDAOData\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"contractType\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"daoAddress\",\"type\":\"address\"}],\"internalType\":\"struct IDAOExpanderData.DAOExpanssionData\",\"name\":\"data\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getURLs\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isAdmin\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isMember\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isMemberOfOriginalDAO\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"isURLListed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"removeURL\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"name\":\"setCommitment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"setMetadataUri\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"addURL(string)\":{\"details\":\"adds a URL in the listed ones\",\"params\":{\"_url\":\"the URL that's going to be added\"}},\"getURLs()\":{\"details\":\"returns an array with all the listed urls\",\"returns\":{\"_0\":\"returns all the urls listed for the DAO\"}},\"isMemberOfOriginalDAO(address)\":{\"details\":\"checks if the member is a part of a DAO\",\"params\":{\"member\":\"the address of the member that's checked\"},\"returns\":{\"_0\":\"true if they're a member, false otherwise\"}},\"isURLListed(string)\":{\"details\":\"a checker if a url has been listed for this DAO\",\"params\":{\"_url\":\"the url that will be listed\"},\"returns\":{\"_0\":\"true if listed, false otherwise\"}},\"removeURL(string)\":{\"details\":\"removes URL from the listed ones\",\"params\":{\"_url\":\"the URL that's going to be removed\"}}},\"title\":\"IDAOExpander\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addURL(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"getURLs()\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"isMemberOfOriginalDAO(address)\":{\"notice\":\"Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership\"},\"isURLListed(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"removeURL(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"}},\"notice\":\"The interface for the extension of each DAO that integrates AutID\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/expander/interfaces/IDAOExpander.sol\":\"IDAOExpander\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/daoUtils/interfaces/get/IAutIDAddress.sol\":{\"keccak256\":\"0x6dfc95712c40c27f351443eaa7f5c27387159199563615a2803c301c6897addf\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0341e3439c86a3c9c3fed517019154d37099e701a3a4227b82677f5e941e4fad\",\"dweb:/ipfs/QmYeh4HDXusjV3er1ESqq5HawDPWUxh1osBhp8L5vkwvU5\"]},\"contracts/daoUtils/interfaces/get/IDAOAdmin.sol\":{\"keccak256\":\"0x7680c97e151a63123ae5a52583da2827788c658f357ca9fb779156884726d03b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://73ef5aabb5fe4f6209f01d79e559682aacca6e431a426495e2431e197b0539af\",\"dweb:/ipfs/QmRnF9F7GfDzJmM8KaUfgBq4pc6MyDXRE5rsnGK3AYWewQ\"]},\"contracts/daoUtils/interfaces/get/IDAOCommitment.sol\":{\"keccak256\":\"0x1c9e906dedb23192dcdff249aedcd73b848bd4a4683845e330abcaf0938a4941\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a117128d625a57e68178c10201d1eda4a71ce4c705ec696483ce2b210ef9d8fc\",\"dweb:/ipfs/QmbL2625npzeYmbRLcqNdc4NXcwrve2H3kS8MPpttDabMk\"]},\"contracts/daoUtils/interfaces/get/IDAOMembership.sol\":{\"keccak256\":\"0xc625932bfd5354c243a7ccdf6eea9dfc5617bbc3ddf20d16494b7511b4417650\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://adad87d5c01fb8c1f70dc397779fa9265757d0e7da769b82e68106aabe15d974\",\"dweb:/ipfs/QmcrihxLEL44HigLE1XWz3wwuQgSScH5XCeYxKxb79cEmu\"]},\"contracts/daoUtils/interfaces/get/IDAOURL.sol\":{\"keccak256\":\"0x77cccb2c6d00f69cd48e79543543d49c1b3c66590adf1277fcb1899462750d02\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8d424a4786bd0981894196d8a97036055a2b20bfdb3f486a20b901c56543dbcf\",\"dweb:/ipfs/QmY7GUm9LS56Fd8Cie2MmKmbcM2SrCTEBdfTueiZd1n2Z9\"]},\"contracts/daoUtils/interfaces/set/IAutIDAddressSet.sol\":{\"keccak256\":\"0xf364d7435ffca076ef58a22e80ff77f8bc9ffe36ec5b70942ef94c690188b51e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1150ca6ec01420171057fe579fd2f1b00d2b9d0b517e332bc7ea095c8d7e4bfe\",\"dweb:/ipfs/QmR5gJxdZZPutEW9iDi8uRqsbCAtVYEak5tBuMKMXqhDgR\"]},\"contracts/daoUtils/interfaces/set/IDAOAdminSet.sol\":{\"keccak256\":\"0xd9d1ecfc26c565c634bec899f79091a342bc9a2fccc7683a559b20134ab03763\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7f022be607b3f66a76556a876bb3a442f583cea1bec46d15b9ca832f7c857fce\",\"dweb:/ipfs/QmRatDf4bFDc5dhGLvEWnePrFEiRMHksrMfgnLHxfJtWU9\"]},\"contracts/daoUtils/interfaces/set/IDAOCommitmentSet.sol\":{\"keccak256\":\"0xc9ccac48b2cba276e3a67803f22e8a9b95630c3b4297d86b2629bc5f7f0a3295\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://748d7bc71f3cc298a7f61816ab3f8339561c7d92ad7239127e3b90a20654117a\",\"dweb:/ipfs/QmZQ4wyEZ9rxnqppMbtaU3zKCTFmZjhh8eqruLbk6enKLj\"]},\"contracts/daoUtils/interfaces/set/IDAOMetadataSet.sol\":{\"keccak256\":\"0xf60d2104b6ab57166c2e6b448b5b9ced493b990553e695efa108143b04414581\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3298ba38d4996679476c68a57df4db0e5f05aff92504e78b0033fd306671f92a\",\"dweb:/ipfs/QmS9W9rJECjPN2gGHxnQ8oEAN2ooGE7cTiHCAp247std27\"]},\"contracts/daoUtils/interfaces/set/IDAOURLSet.sol\":{\"keccak256\":\"0x5447e520d01b64cd21cfd8dca901bc937ecf2893f7fc440c836518b638fcf080\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1c622b9d7f742e9e368b5ae3d6a81256e1e2bb90c8d1a39b5e3180194da548c8\",\"dweb:/ipfs/QmbhWDiKiZJGcTJ5jSaH1TNonSZY5nC4SwUNM76Xyy9fpj\"]},\"contracts/expander/interfaces/IDAOExpander.sol\":{\"keccak256\":\"0x3bbd9cfdef3370a0b45a18444c8204b05d0074438a907e9f5ff433a9d96f03cf\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2ae75f044e998cd4225ad665b8ed56c29e496a92e275774ff4aa0825b5b111ce\",\"dweb:/ipfs/Qmf8jHKMaYhVry9kY6MfX8jZZn7TYKT1u6dPyAPPmSwjes\"]},\"contracts/expander/interfaces/IDAOExpanderData.sol\":{\"keccak256\":\"0xcd71dc5fca8bfa27576bc76c3ec1dba9ab2cd6a486219b78d426aaa88f677a3e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://51365fb7d6d36f405d6e48d24ff25ef423c96c3dec89b9b0b3b56a4bc43395d6\",\"dweb:/ipfs/QmXDgHiu6UTgu19ZmjiHXndoX3x6nVTXgGzXnPzYkga3w2\"]},\"contracts/expander/interfaces/IDAOExpanderMembership.sol\":{\"keccak256\":\"0x96a68276293ca237f4165230c4d4083fda12102d4681d37ea502a2b91adba590\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d4ecd6c4e5d1de886630be26fd306a9a82ddb5d1e9454df5b80b96984db648de\",\"dweb:/ipfs/QmUdCbxvHY5r4i8pyjCiSW7bycKavoc4K35FDRDmX42zfy\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[],\"name\":\"DiscordServerSet\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"addURL\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"}],\"name\":\"canJoin\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAdmins\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllMembers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAutIDAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getCommitment\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getDAOData\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"contractType\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"daoAddress\",\"type\":\"address\"}],\"internalType\":\"struct IDAOExpanderData.DAOExpanssionData\",\"name\":\"data\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getURLs\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isAdmin\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isMember\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"isMemberOfOriginalDAO\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"isURLListed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"removeURL\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"name\":\"setCommitment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"setMetadataUri\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"addURL(string)\":{\"details\":\"adds a URL in the listed ones\",\"params\":{\"_url\":\"the URL that's going to be added\"}},\"getURLs()\":{\"details\":\"returns an array with all the listed urls\",\"returns\":{\"_0\":\"returns all the urls listed for the Nova\"}},\"isMemberOfOriginalDAO(address)\":{\"details\":\"checks if the member is a part of a DAO\",\"params\":{\"member\":\"the address of the member that's checked\"},\"returns\":{\"_0\":\"true if they're a member, false otherwise\"}},\"isURLListed(string)\":{\"details\":\"a checker if a url has been listed for this Nova\",\"params\":{\"_url\":\"the url that will be listed\"},\"returns\":{\"_0\":\"true if listed, false otherwise\"}},\"removeURL(string)\":{\"details\":\"removes URL from the listed ones\",\"params\":{\"_url\":\"the URL that's going to be removed\"}}},\"title\":\"IDAOExpander\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addURL(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"getURLs()\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"isMemberOfOriginalDAO(address)\":{\"notice\":\"Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership\"},\"isURLListed(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"removeURL(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"}},\"notice\":\"The interface for the extension of each DAO that integrates AutID\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/expander/interfaces/IDAOExpander.sol\":\"IDAOExpander\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/components/interfaces/get/IAutIDAddress.sol\":{\"keccak256\":\"0x494a703f133a6d1102cdd240a9123156be6cda4667a1ade8a0a780f849366601\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://30b3de47d5b90528a2afc75464066d26f94ea224896185a63d1c67ddd459068a\",\"dweb:/ipfs/QmdDZ8sj2Wtsu3kmvJavBM6UD3hSzF6e3PLfLq31aWcr7G\"]},\"contracts/components/interfaces/get/INovaAdmin.sol\":{\"keccak256\":\"0xd39416454267739bd5ba9a9bf0fe8020a81797bd66ea7575b2759b04db561df2\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2c628b6e738a7bc5e5c9d1ecc4fd09574dd2dfdcf9f813e6397905da2d4844f5\",\"dweb:/ipfs/QmQ7YxetS9rMYuc1ZTwC3G3JXqVjRiNp4JrBUHufLZSecq\"]},\"contracts/components/interfaces/get/INovaCommitment.sol\":{\"keccak256\":\"0xe3228025568ddcbe0889b933a1e34ce23729729323357dc544ccc79977434f4b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5acf54ee599fa0f79d3d502ae2122ea08c5d1aab598517c120fa103162bde169\",\"dweb:/ipfs/QmY1WZ4iLvkVYTxpU3gUGGpTVwpgJUkoGyCa17B39GnXzj\"]},\"contracts/components/interfaces/get/INovaMembership.sol\":{\"keccak256\":\"0x0eee7efc2f2abfdd1910ca98a587eab6319dc1f35388189bde92cce21541a3e8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0b575f957c4ae507373072efc8110ff63b008bf3ea3c8aaa8ff5b0014e810911\",\"dweb:/ipfs/QmVvkVWh7qEWMNjUL1pCTdVyhYrLbcNxGoa7TsyafdfL8s\"]},\"contracts/components/interfaces/get/INovaUrls.sol\":{\"keccak256\":\"0x1ecb035ba6a54a4cf9199e809839e14d2dc6c95ded4d4bd906fba02d1c995f49\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ee735a8ff0db12984560acac3888766405ad4ba0b2c00a7f610431792bccef32\",\"dweb:/ipfs/QmexNSqP1GTc5EaULhX2vTZw1VoHchZC6Y8W6md3iph5mG\"]},\"contracts/components/interfaces/set/IAutIDAddressSet.sol\":{\"keccak256\":\"0x51ffe7fcb56aaeb72804b86c518c8ae9b4f268437d553de86cfbe640303ae265\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e4bb4aab0357213732353518bf54a851dc45177b5329c2dc794718617e1a9868\",\"dweb:/ipfs/QmYQD9t65XbxEMmb2afixxCtdcRVkqCLXpSjJvpWeTjx2A\"]},\"contracts/components/interfaces/set/INovaAdminSet.sol\":{\"keccak256\":\"0x2f5ec0f9dfcac7818a94df99537c8870aa450f604bd564b2c8473f00c296bf79\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1f56f4732e74a3a76f6ddd94e76608e12f1b0f48193951c577f9495ecf4d2485\",\"dweb:/ipfs/QmT9aN4uroxkoFibxmbpNJk7baDUetHQTzU3QZy9xaTsNt\"]},\"contracts/components/interfaces/set/INovaCommitmentSet.sol\":{\"keccak256\":\"0x65b8dedf9ca318e6d33c66da5c9b3bcf68541bc731e9108b41d99401337aaa27\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3d3ce621e52dffe770ae1e55de960f026b3f5a3e92f78a23d98d6abcb9a3820c\",\"dweb:/ipfs/QmVXVEP7dmBaNhcVtp9PcrLy3qkaRDMLfqNJVyUokw6E6k\"]},\"contracts/components/interfaces/set/INovaMetadataSet.sol\":{\"keccak256\":\"0x8a690f225b277f0ce5387aeacc705de5b49a853afe46404da52c8c33219c963e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e09dc52c21e9816f55278709b658f5143b8c7577816e9e2fbd60ceb86d7f0c51\",\"dweb:/ipfs/QmTeHWsSQgo9furnB3CA3w2zYQsueYS4xKKm9iKquRq9D4\"]},\"contracts/components/interfaces/set/INovaUrlsSet.sol\":{\"keccak256\":\"0x46e1986f30bc82bd84cb097e5c94bfa01831ca9df2c37b2d13bb4776836593d6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c1678a94b1df25e10108f51db14778fdebfe4aec61594f5eaef6bdc6e21959f6\",\"dweb:/ipfs/QmYshbyDJ48yZ72yUxw9Q53NNVNhtfqTmo25ZixSxyYFR9\"]},\"contracts/expander/interfaces/IDAOExpander.sol\":{\"keccak256\":\"0x2eb7dcc0a2484b0b35e46d1439241e7ee7a997923c00b2984e8a168815c0dd3a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f881dbca22d316891e2d57a53cf203fa7d538a8013a795656fce509188fb17fa\",\"dweb:/ipfs/Qmd7Wj6WrgMdfZz8UGx78wJrQNG1tKL4FSiN5BHtar5Kzy\"]},\"contracts/expander/interfaces/IDAOExpanderData.sol\":{\"keccak256\":\"0x4701dc1bf162c17b482e83f605d74fa3ec5a733877d5235e4b6efdb65cbfbc4d\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://dd8fed32518b2ca0dd6a8fc3f85052d82cb6d5e7091437e51a82beca4df918d9\",\"dweb:/ipfs/QmUktrRf4UzyhXTgpq99HVJ87P7yTmKZe7UyRTvkoUTX4n\"]},\"contracts/expander/interfaces/IDAOExpanderMembership.sol\":{\"keccak256\":\"0x701c1e2569cc4634a9a07b1d8a2fcd330f430fea628ce5c2053d7d772983b207\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://98fbc28675cd5931ce2a123fc96e44673143f4f25342c731b29881aa3235aaf1\",\"dweb:/ipfs/QmP812sFWyVA8kSVWMG27v9c53qFH41feWSwXaZVPVDwwR\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.19+commit.7dd6d404"
@@ -541,7 +541,7 @@
           "getURLs()": {
             "details": "returns an array with all the listed urls",
             "returns": {
-              "_0": "returns all the urls listed for the DAO"
+              "_0": "returns all the urls listed for the Nova"
             }
           },
           "isMemberOfOriginalDAO(address)": {
@@ -554,7 +554,7 @@
             }
           },
           "isURLListed(string)": {
-            "details": "a checker if a url has been listed for this DAO",
+            "details": "a checker if a url has been listed for this Nova",
             "params": {
               "_url": "the url that will be listed"
             },
@@ -615,107 +615,107 @@
       "libraries": {}
     },
     "sources": {
-      "contracts/daoUtils/interfaces/get/IAutIDAddress.sol": {
-        "keccak256": "0x6dfc95712c40c27f351443eaa7f5c27387159199563615a2803c301c6897addf",
+      "contracts/components/interfaces/get/IAutIDAddress.sol": {
+        "keccak256": "0x494a703f133a6d1102cdd240a9123156be6cda4667a1ade8a0a780f849366601",
         "urls": [
-          "bzz-raw://0341e3439c86a3c9c3fed517019154d37099e701a3a4227b82677f5e941e4fad",
-          "dweb:/ipfs/QmYeh4HDXusjV3er1ESqq5HawDPWUxh1osBhp8L5vkwvU5"
+          "bzz-raw://30b3de47d5b90528a2afc75464066d26f94ea224896185a63d1c67ddd459068a",
+          "dweb:/ipfs/QmdDZ8sj2Wtsu3kmvJavBM6UD3hSzF6e3PLfLq31aWcr7G"
         ],
         "license": "MIT"
       },
-      "contracts/daoUtils/interfaces/get/IDAOAdmin.sol": {
-        "keccak256": "0x7680c97e151a63123ae5a52583da2827788c658f357ca9fb779156884726d03b",
+      "contracts/components/interfaces/get/INovaAdmin.sol": {
+        "keccak256": "0xd39416454267739bd5ba9a9bf0fe8020a81797bd66ea7575b2759b04db561df2",
         "urls": [
-          "bzz-raw://73ef5aabb5fe4f6209f01d79e559682aacca6e431a426495e2431e197b0539af",
-          "dweb:/ipfs/QmRnF9F7GfDzJmM8KaUfgBq4pc6MyDXRE5rsnGK3AYWewQ"
+          "bzz-raw://2c628b6e738a7bc5e5c9d1ecc4fd09574dd2dfdcf9f813e6397905da2d4844f5",
+          "dweb:/ipfs/QmQ7YxetS9rMYuc1ZTwC3G3JXqVjRiNp4JrBUHufLZSecq"
         ],
         "license": "MIT"
       },
-      "contracts/daoUtils/interfaces/get/IDAOCommitment.sol": {
-        "keccak256": "0x1c9e906dedb23192dcdff249aedcd73b848bd4a4683845e330abcaf0938a4941",
+      "contracts/components/interfaces/get/INovaCommitment.sol": {
+        "keccak256": "0xe3228025568ddcbe0889b933a1e34ce23729729323357dc544ccc79977434f4b",
         "urls": [
-          "bzz-raw://a117128d625a57e68178c10201d1eda4a71ce4c705ec696483ce2b210ef9d8fc",
-          "dweb:/ipfs/QmbL2625npzeYmbRLcqNdc4NXcwrve2H3kS8MPpttDabMk"
+          "bzz-raw://5acf54ee599fa0f79d3d502ae2122ea08c5d1aab598517c120fa103162bde169",
+          "dweb:/ipfs/QmY1WZ4iLvkVYTxpU3gUGGpTVwpgJUkoGyCa17B39GnXzj"
         ],
         "license": "MIT"
       },
-      "contracts/daoUtils/interfaces/get/IDAOMembership.sol": {
-        "keccak256": "0xc625932bfd5354c243a7ccdf6eea9dfc5617bbc3ddf20d16494b7511b4417650",
+      "contracts/components/interfaces/get/INovaMembership.sol": {
+        "keccak256": "0x0eee7efc2f2abfdd1910ca98a587eab6319dc1f35388189bde92cce21541a3e8",
         "urls": [
-          "bzz-raw://adad87d5c01fb8c1f70dc397779fa9265757d0e7da769b82e68106aabe15d974",
-          "dweb:/ipfs/QmcrihxLEL44HigLE1XWz3wwuQgSScH5XCeYxKxb79cEmu"
+          "bzz-raw://0b575f957c4ae507373072efc8110ff63b008bf3ea3c8aaa8ff5b0014e810911",
+          "dweb:/ipfs/QmVvkVWh7qEWMNjUL1pCTdVyhYrLbcNxGoa7TsyafdfL8s"
         ],
         "license": "MIT"
       },
-      "contracts/daoUtils/interfaces/get/IDAOURL.sol": {
-        "keccak256": "0x77cccb2c6d00f69cd48e79543543d49c1b3c66590adf1277fcb1899462750d02",
+      "contracts/components/interfaces/get/INovaUrls.sol": {
+        "keccak256": "0x1ecb035ba6a54a4cf9199e809839e14d2dc6c95ded4d4bd906fba02d1c995f49",
         "urls": [
-          "bzz-raw://8d424a4786bd0981894196d8a97036055a2b20bfdb3f486a20b901c56543dbcf",
-          "dweb:/ipfs/QmY7GUm9LS56Fd8Cie2MmKmbcM2SrCTEBdfTueiZd1n2Z9"
+          "bzz-raw://ee735a8ff0db12984560acac3888766405ad4ba0b2c00a7f610431792bccef32",
+          "dweb:/ipfs/QmexNSqP1GTc5EaULhX2vTZw1VoHchZC6Y8W6md3iph5mG"
         ],
         "license": "MIT"
       },
-      "contracts/daoUtils/interfaces/set/IAutIDAddressSet.sol": {
-        "keccak256": "0xf364d7435ffca076ef58a22e80ff77f8bc9ffe36ec5b70942ef94c690188b51e",
+      "contracts/components/interfaces/set/IAutIDAddressSet.sol": {
+        "keccak256": "0x51ffe7fcb56aaeb72804b86c518c8ae9b4f268437d553de86cfbe640303ae265",
         "urls": [
-          "bzz-raw://1150ca6ec01420171057fe579fd2f1b00d2b9d0b517e332bc7ea095c8d7e4bfe",
-          "dweb:/ipfs/QmR5gJxdZZPutEW9iDi8uRqsbCAtVYEak5tBuMKMXqhDgR"
+          "bzz-raw://e4bb4aab0357213732353518bf54a851dc45177b5329c2dc794718617e1a9868",
+          "dweb:/ipfs/QmYQD9t65XbxEMmb2afixxCtdcRVkqCLXpSjJvpWeTjx2A"
         ],
         "license": "MIT"
       },
-      "contracts/daoUtils/interfaces/set/IDAOAdminSet.sol": {
-        "keccak256": "0xd9d1ecfc26c565c634bec899f79091a342bc9a2fccc7683a559b20134ab03763",
+      "contracts/components/interfaces/set/INovaAdminSet.sol": {
+        "keccak256": "0x2f5ec0f9dfcac7818a94df99537c8870aa450f604bd564b2c8473f00c296bf79",
         "urls": [
-          "bzz-raw://7f022be607b3f66a76556a876bb3a442f583cea1bec46d15b9ca832f7c857fce",
-          "dweb:/ipfs/QmRatDf4bFDc5dhGLvEWnePrFEiRMHksrMfgnLHxfJtWU9"
+          "bzz-raw://1f56f4732e74a3a76f6ddd94e76608e12f1b0f48193951c577f9495ecf4d2485",
+          "dweb:/ipfs/QmT9aN4uroxkoFibxmbpNJk7baDUetHQTzU3QZy9xaTsNt"
         ],
         "license": "MIT"
       },
-      "contracts/daoUtils/interfaces/set/IDAOCommitmentSet.sol": {
-        "keccak256": "0xc9ccac48b2cba276e3a67803f22e8a9b95630c3b4297d86b2629bc5f7f0a3295",
+      "contracts/components/interfaces/set/INovaCommitmentSet.sol": {
+        "keccak256": "0x65b8dedf9ca318e6d33c66da5c9b3bcf68541bc731e9108b41d99401337aaa27",
         "urls": [
-          "bzz-raw://748d7bc71f3cc298a7f61816ab3f8339561c7d92ad7239127e3b90a20654117a",
-          "dweb:/ipfs/QmZQ4wyEZ9rxnqppMbtaU3zKCTFmZjhh8eqruLbk6enKLj"
+          "bzz-raw://3d3ce621e52dffe770ae1e55de960f026b3f5a3e92f78a23d98d6abcb9a3820c",
+          "dweb:/ipfs/QmVXVEP7dmBaNhcVtp9PcrLy3qkaRDMLfqNJVyUokw6E6k"
         ],
         "license": "MIT"
       },
-      "contracts/daoUtils/interfaces/set/IDAOMetadataSet.sol": {
-        "keccak256": "0xf60d2104b6ab57166c2e6b448b5b9ced493b990553e695efa108143b04414581",
+      "contracts/components/interfaces/set/INovaMetadataSet.sol": {
+        "keccak256": "0x8a690f225b277f0ce5387aeacc705de5b49a853afe46404da52c8c33219c963e",
         "urls": [
-          "bzz-raw://3298ba38d4996679476c68a57df4db0e5f05aff92504e78b0033fd306671f92a",
-          "dweb:/ipfs/QmS9W9rJECjPN2gGHxnQ8oEAN2ooGE7cTiHCAp247std27"
+          "bzz-raw://e09dc52c21e9816f55278709b658f5143b8c7577816e9e2fbd60ceb86d7f0c51",
+          "dweb:/ipfs/QmTeHWsSQgo9furnB3CA3w2zYQsueYS4xKKm9iKquRq9D4"
         ],
         "license": "MIT"
       },
-      "contracts/daoUtils/interfaces/set/IDAOURLSet.sol": {
-        "keccak256": "0x5447e520d01b64cd21cfd8dca901bc937ecf2893f7fc440c836518b638fcf080",
+      "contracts/components/interfaces/set/INovaUrlsSet.sol": {
+        "keccak256": "0x46e1986f30bc82bd84cb097e5c94bfa01831ca9df2c37b2d13bb4776836593d6",
         "urls": [
-          "bzz-raw://1c622b9d7f742e9e368b5ae3d6a81256e1e2bb90c8d1a39b5e3180194da548c8",
-          "dweb:/ipfs/QmbhWDiKiZJGcTJ5jSaH1TNonSZY5nC4SwUNM76Xyy9fpj"
+          "bzz-raw://c1678a94b1df25e10108f51db14778fdebfe4aec61594f5eaef6bdc6e21959f6",
+          "dweb:/ipfs/QmYshbyDJ48yZ72yUxw9Q53NNVNhtfqTmo25ZixSxyYFR9"
         ],
         "license": "MIT"
       },
       "contracts/expander/interfaces/IDAOExpander.sol": {
-        "keccak256": "0x3bbd9cfdef3370a0b45a18444c8204b05d0074438a907e9f5ff433a9d96f03cf",
+        "keccak256": "0x2eb7dcc0a2484b0b35e46d1439241e7ee7a997923c00b2984e8a168815c0dd3a",
         "urls": [
-          "bzz-raw://2ae75f044e998cd4225ad665b8ed56c29e496a92e275774ff4aa0825b5b111ce",
-          "dweb:/ipfs/Qmf8jHKMaYhVry9kY6MfX8jZZn7TYKT1u6dPyAPPmSwjes"
+          "bzz-raw://f881dbca22d316891e2d57a53cf203fa7d538a8013a795656fce509188fb17fa",
+          "dweb:/ipfs/Qmd7Wj6WrgMdfZz8UGx78wJrQNG1tKL4FSiN5BHtar5Kzy"
         ],
         "license": "MIT"
       },
       "contracts/expander/interfaces/IDAOExpanderData.sol": {
-        "keccak256": "0xcd71dc5fca8bfa27576bc76c3ec1dba9ab2cd6a486219b78d426aaa88f677a3e",
+        "keccak256": "0x4701dc1bf162c17b482e83f605d74fa3ec5a733877d5235e4b6efdb65cbfbc4d",
         "urls": [
-          "bzz-raw://51365fb7d6d36f405d6e48d24ff25ef423c96c3dec89b9b0b3b56a4bc43395d6",
-          "dweb:/ipfs/QmXDgHiu6UTgu19ZmjiHXndoX3x6nVTXgGzXnPzYkga3w2"
+          "bzz-raw://dd8fed32518b2ca0dd6a8fc3f85052d82cb6d5e7091437e51a82beca4df918d9",
+          "dweb:/ipfs/QmUktrRf4UzyhXTgpq99HVJ87P7yTmKZe7UyRTvkoUTX4n"
         ],
         "license": "MIT"
       },
       "contracts/expander/interfaces/IDAOExpanderMembership.sol": {
-        "keccak256": "0x96a68276293ca237f4165230c4d4083fda12102d4681d37ea502a2b91adba590",
+        "keccak256": "0x701c1e2569cc4634a9a07b1d8a2fcd330f430fea628ce5c2053d7d772983b207",
         "urls": [
-          "bzz-raw://d4ecd6c4e5d1de886630be26fd306a9a82ddb5d1e9454df5b80b96984db648de",
-          "dweb:/ipfs/QmUdCbxvHY5r4i8pyjCiSW7bycKavoc4K35FDRDmX42zfy"
+          "bzz-raw://98fbc28675cd5931ce2a123fc96e44673143f4f25342c731b29881aa3235aaf1",
+          "dweb:/ipfs/QmP812sFWyVA8kSVWMG27v9c53qFH41feWSwXaZVPVDwwR"
         ],
         "license": "MIT"
       }
@@ -724,55 +724,55 @@
   },
   "ast": {
     "absolutePath": "contracts/expander/interfaces/IDAOExpander.sol",
-    "id": 4945,
+    "id": 5450,
     "exportedSymbols": {
       "IAutIDAddress": [
-        4000
+        4460
       ],
       "IAutIDAddressSet": [
-        4123
-      ],
-      "IDAOAdmin": [
-        4017
-      ],
-      "IDAOAdminSet": [
-        4154
-      ],
-      "IDAOCommitment": [
-        4026
-      ],
-      "IDAOCommitmentSet": [
-        4163
+        4612
       ],
       "IDAOExpander": [
-        4944
+        5449
       ],
       "IDAOExpanderData": [
-        4961
+        5466
       ],
       "IDAOExpanderMembership": [
-        5002
+        5507
       ],
-      "IDAOMembership": [
-        4061
+      "INovaAdmin": [
+        4477
       ],
-      "IDAOMetadataSet": [
-        4194
+      "INovaAdminSet": [
+        4643
       ],
-      "IDAOURL": [
-        4114
+      "INovaCommitment": [
+        4515
       ],
-      "IDAOURLSet": [
-        4210
+      "INovaCommitmentSet": [
+        4667
+      ],
+      "INovaMembership": [
+        4550
+      ],
+      "INovaMetadataSet": [
+        4698
+      ],
+      "INovaUrls": [
+        4603
+      ],
+      "INovaUrlsSet": [
+        4714
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "31:925:40",
+    "src": "32:989:34",
     "nodes": [
       {
-        "id": 4913,
+        "id": 5418,
         "nodeType": "PragmaDirective",
-        "src": "31:23:40",
+        "src": "32:23:34",
         "nodes": [],
         "literals": [
           "solidity",
@@ -781,321 +781,321 @@
         ]
       },
       {
-        "id": 4914,
+        "id": 5419,
         "nodeType": "ImportDirective",
-        "src": "56:53:40",
+        "src": "59:56:34",
         "nodes": [],
-        "absolutePath": "contracts/daoUtils/interfaces/get/IDAOAdmin.sol",
-        "file": "../../daoUtils/interfaces/get/IDAOAdmin.sol",
+        "absolutePath": "contracts/components/interfaces/get/INovaAdmin.sol",
+        "file": "../../components/interfaces/get/INovaAdmin.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4018,
+        "scope": 5450,
+        "sourceUnit": 4478,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4915,
+        "id": 5420,
         "nodeType": "ImportDirective",
-        "src": "110:51:40",
+        "src": "117:55:34",
         "nodes": [],
-        "absolutePath": "contracts/daoUtils/interfaces/get/IDAOURL.sol",
-        "file": "../../daoUtils/interfaces/get/IDAOURL.sol",
+        "absolutePath": "contracts/components/interfaces/get/INovaUrls.sol",
+        "file": "../../components/interfaces/get/INovaUrls.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4115,
+        "scope": 5450,
+        "sourceUnit": 4604,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4916,
+        "id": 5421,
         "nodeType": "ImportDirective",
-        "src": "162:57:40",
+        "src": "174:59:34",
         "nodes": [],
-        "absolutePath": "contracts/daoUtils/interfaces/get/IAutIDAddress.sol",
-        "file": "../../daoUtils/interfaces/get/IAutIDAddress.sol",
+        "absolutePath": "contracts/components/interfaces/get/IAutIDAddress.sol",
+        "file": "../../components/interfaces/get/IAutIDAddress.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4001,
+        "scope": 5450,
+        "sourceUnit": 4461,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4917,
+        "id": 5422,
         "nodeType": "ImportDirective",
-        "src": "220:58:40",
+        "src": "235:61:34",
         "nodes": [],
-        "absolutePath": "contracts/daoUtils/interfaces/get/IDAOCommitment.sol",
-        "file": "../../daoUtils/interfaces/get/IDAOCommitment.sol",
+        "absolutePath": "contracts/components/interfaces/get/INovaCommitment.sol",
+        "file": "../../components/interfaces/get/INovaCommitment.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4027,
+        "scope": 5450,
+        "sourceUnit": 4516,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4918,
+        "id": 5423,
         "nodeType": "ImportDirective",
-        "src": "280:56:40",
+        "src": "300:59:34",
         "nodes": [],
-        "absolutePath": "contracts/daoUtils/interfaces/set/IDAOAdminSet.sol",
-        "file": "../../daoUtils/interfaces/set/IDAOAdminSet.sol",
+        "absolutePath": "contracts/components/interfaces/set/INovaAdminSet.sol",
+        "file": "../../components/interfaces/set/INovaAdminSet.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4155,
+        "scope": 5450,
+        "sourceUnit": 4644,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4919,
+        "id": 5424,
         "nodeType": "ImportDirective",
-        "src": "337:54:40",
+        "src": "361:58:34",
         "nodes": [],
-        "absolutePath": "contracts/daoUtils/interfaces/set/IDAOURLSet.sol",
-        "file": "../../daoUtils/interfaces/set/IDAOURLSet.sol",
+        "absolutePath": "contracts/components/interfaces/set/INovaUrlsSet.sol",
+        "file": "../../components/interfaces/set/INovaUrlsSet.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4211,
+        "scope": 5450,
+        "sourceUnit": 4715,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4920,
+        "id": 5425,
         "nodeType": "ImportDirective",
-        "src": "392:60:40",
+        "src": "421:62:34",
         "nodes": [],
-        "absolutePath": "contracts/daoUtils/interfaces/set/IAutIDAddressSet.sol",
-        "file": "../../daoUtils/interfaces/set/IAutIDAddressSet.sol",
+        "absolutePath": "contracts/components/interfaces/set/IAutIDAddressSet.sol",
+        "file": "../../components/interfaces/set/IAutIDAddressSet.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4124,
+        "scope": 5450,
+        "sourceUnit": 4613,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4921,
+        "id": 5426,
         "nodeType": "ImportDirective",
-        "src": "453:61:40",
+        "src": "485:64:34",
         "nodes": [],
-        "absolutePath": "contracts/daoUtils/interfaces/set/IDAOCommitmentSet.sol",
-        "file": "../../daoUtils/interfaces/set/IDAOCommitmentSet.sol",
+        "absolutePath": "contracts/components/interfaces/set/INovaCommitmentSet.sol",
+        "file": "../../components/interfaces/set/INovaCommitmentSet.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4164,
+        "scope": 5450,
+        "sourceUnit": 4668,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4922,
+        "id": 5427,
         "nodeType": "ImportDirective",
-        "src": "515:59:40",
+        "src": "551:62:34",
         "nodes": [],
-        "absolutePath": "contracts/daoUtils/interfaces/set/IDAOMetadataSet.sol",
-        "file": "../../daoUtils/interfaces/set/IDAOMetadataSet.sol",
+        "absolutePath": "contracts/components/interfaces/set/INovaMetadataSet.sol",
+        "file": "../../components/interfaces/set/INovaMetadataSet.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4195,
+        "scope": 5450,
+        "sourceUnit": 4699,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4923,
+        "id": 5428,
         "nodeType": "ImportDirective",
-        "src": "576:38:40",
+        "src": "617:38:34",
         "nodes": [],
         "absolutePath": "contracts/expander/interfaces/IDAOExpanderMembership.sol",
         "file": "./IDAOExpanderMembership.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 5003,
+        "scope": 5450,
+        "sourceUnit": 5508,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4924,
+        "id": 5429,
         "nodeType": "ImportDirective",
-        "src": "615:32:40",
+        "src": "657:32:34",
         "nodes": [],
         "absolutePath": "contracts/expander/interfaces/IDAOExpanderData.sol",
         "file": "./IDAOExpanderData.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 4945,
-        "sourceUnit": 4962,
+        "scope": 5450,
+        "sourceUnit": 5467,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 4944,
+        "id": 5449,
         "nodeType": "ContractDefinition",
-        "src": "751:204:40",
+        "src": "797:222:34",
         "nodes": [],
         "abstract": false,
         "baseContracts": [
           {
             "baseName": {
-              "id": 4926,
-              "name": "IDAOURLSet",
+              "id": 5431,
+              "name": "INovaUrlsSet",
               "nameLocations": [
-                "781:10:40"
+                "828:12:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4210,
-              "src": "781:10:40"
+              "referencedDeclaration": 4714,
+              "src": "828:12:34"
             },
-            "id": 4927,
+            "id": 5432,
             "nodeType": "InheritanceSpecifier",
-            "src": "781:10:40"
+            "src": "828:12:34"
           },
           {
             "baseName": {
-              "id": 4928,
-              "name": "IDAOCommitmentSet",
+              "id": 5433,
+              "name": "INovaCommitmentSet",
               "nameLocations": [
-                "797:17:40"
+                "847:18:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4163,
-              "src": "797:17:40"
+              "referencedDeclaration": 4667,
+              "src": "847:18:34"
             },
-            "id": 4929,
+            "id": 5434,
             "nodeType": "InheritanceSpecifier",
-            "src": "797:17:40"
+            "src": "847:18:34"
           },
           {
             "baseName": {
-              "id": 4930,
-              "name": "IDAOMetadataSet",
+              "id": 5435,
+              "name": "INovaMetadataSet",
               "nameLocations": [
-                "820:15:40"
+                "872:16:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4194,
-              "src": "820:15:40"
+              "referencedDeclaration": 4698,
+              "src": "872:16:34"
             },
-            "id": 4931,
+            "id": 5436,
             "nodeType": "InheritanceSpecifier",
-            "src": "820:15:40"
+            "src": "872:16:34"
           },
           {
             "baseName": {
-              "id": 4932,
-              "name": "IDAOAdmin",
+              "id": 5437,
+              "name": "INovaAdmin",
               "nameLocations": [
-                "841:9:40"
+                "895:10:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4017,
-              "src": "841:9:40"
+              "referencedDeclaration": 4477,
+              "src": "895:10:34"
             },
-            "id": 4933,
+            "id": 5438,
             "nodeType": "InheritanceSpecifier",
-            "src": "841:9:40"
+            "src": "895:10:34"
           },
           {
             "baseName": {
-              "id": 4934,
+              "id": 5439,
               "name": "IDAOExpanderData",
               "nameLocations": [
-                "856:16:40"
+                "912:16:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4961,
-              "src": "856:16:40"
+              "referencedDeclaration": 5466,
+              "src": "912:16:34"
             },
-            "id": 4935,
+            "id": 5440,
             "nodeType": "InheritanceSpecifier",
-            "src": "856:16:40"
+            "src": "912:16:34"
           },
           {
             "baseName": {
-              "id": 4936,
+              "id": 5441,
               "name": "IDAOExpanderMembership",
               "nameLocations": [
-                "878:22:40"
+                "935:22:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 5002,
-              "src": "878:22:40"
+              "referencedDeclaration": 5507,
+              "src": "935:22:34"
             },
-            "id": 4937,
+            "id": 5442,
             "nodeType": "InheritanceSpecifier",
-            "src": "878:22:40"
+            "src": "935:22:34"
           },
           {
             "baseName": {
-              "id": 4938,
-              "name": "IDAOURL",
+              "id": 5443,
+              "name": "INovaUrls",
               "nameLocations": [
-                "906:7:40"
+                "964:9:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4114,
-              "src": "906:7:40"
+              "referencedDeclaration": 4603,
+              "src": "964:9:34"
             },
-            "id": 4939,
+            "id": 5444,
             "nodeType": "InheritanceSpecifier",
-            "src": "906:7:40"
+            "src": "964:9:34"
           },
           {
             "baseName": {
-              "id": 4940,
-              "name": "IDAOCommitment",
+              "id": 5445,
+              "name": "INovaCommitment",
               "nameLocations": [
-                "919:14:40"
+                "980:15:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4026,
-              "src": "919:14:40"
+              "referencedDeclaration": 4515,
+              "src": "980:15:34"
             },
-            "id": 4941,
+            "id": 5446,
             "nodeType": "InheritanceSpecifier",
-            "src": "919:14:40"
+            "src": "980:15:34"
           },
           {
             "baseName": {
-              "id": 4942,
+              "id": 5447,
               "name": "IAutIDAddress",
               "nameLocations": [
-                "939:13:40"
+                "1002:13:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4000,
-              "src": "939:13:40"
+              "referencedDeclaration": 4460,
+              "src": "1002:13:34"
             },
-            "id": 4943,
+            "id": 5448,
             "nodeType": "InheritanceSpecifier",
-            "src": "939:13:40"
+            "src": "1002:13:34"
           }
         ],
         "canonicalName": "IDAOExpander",
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 4925,
+          "id": 5430,
           "nodeType": "StructuredDocumentation",
-          "src": "649:102:40",
+          "src": "693:104:34",
           "text": "@title IDAOExpander\n @notice The interface for the extension of each DAO that integrates AutID"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          4944,
-          4000,
-          4026,
-          4114,
-          5002,
-          4061,
-          4961,
-          4017,
-          4194,
-          4163,
-          4210
+          5449,
+          4460,
+          4515,
+          4603,
+          5507,
+          4550,
+          5466,
+          4477,
+          4698,
+          4667,
+          4714
         ],
         "name": "IDAOExpander",
-        "nameLocation": "761:12:40",
-        "scope": 4945,
+        "nameLocation": "807:12:34",
+        "scope": 5450,
         "usedErrors": []
       }
     ],
     "license": "MIT"
   },
-  "id": 40
+  "id": 34
 }

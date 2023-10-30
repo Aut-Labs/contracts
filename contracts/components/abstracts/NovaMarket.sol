@@ -3,7 +3,7 @@ pragma solidity 0.8.19;
 
 import "../interfaces/get/INovaMarket.sol";
 
-/// @title DAOExpander
+/// @title Nova
 /// @notice The extension of each Nova that integrates Aut
 /// @dev The extension of each Nova that integrates Aut
 abstract contract NovaMarket is INovaMarket {

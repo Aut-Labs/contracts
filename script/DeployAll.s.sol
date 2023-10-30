@@ -161,7 +161,7 @@ contract DeployScript is Script {
         IAllowlist(AllowlistAddr).addOwner(0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43);
 
         console.log("AUTid----------------------------------------- : ", AUTid);
-        console.log("Nova Factory----------------------------------------- : ", NoveFactoryAddr);
+        console.log("Nova Logic----------------------------------------- : ", NovaLogicAddr);
         console.log("ModuleRegistry ----------------------------------------- : ", ModuleRegistryAddr);
         console.log("PluginRegistry ----------------------------------------- : ", PluginRegistryAddr);
         console.log("NovaRegistry ----------------------------------------- : ", NovaRegistryAddr);

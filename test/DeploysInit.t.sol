@@ -2,7 +2,8 @@
 pragma solidity 0.8.19;
 
 import "forge-std/Test.sol";
-import {NovaFactory, INovaFactory} from "../contracts/nova/NovaFactory.sol";
+import {Nova as NovaLogicContract} from "../contracts/nova/Nova.sol";
+import {INova} from "../contracts/nova/interfaces/INova.sol";
 import {NovaRegistry, INovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {ModuleRegistry, IModuleRegistry} from "../contracts/modules/registry/ModuleRegistry.sol";
 import {PluginRegistry, IPluginRegistry} from "../contracts/plugins/PluginRegistry.sol";
@@ -21,13 +22,13 @@ import {IAllowlist, Allowlist} from "../contracts/utils/Allowlist.sol";
 contract DeploysInit is Test {
     IAutID aID;
     INovaRegistry INR;
-    INovaFactory NovaFactor;
     IPluginRegistry IPR;
     IModuleRegistry IMR;
     SWLegacyDAO LegacyDAO;
-    INova Nova;
+    INova NovaLogic;
     ILocalReputation iLR;
     IAllowlist AList;
+    INova Nova;
 
     address A0 = address(uint160(uint256(keccak256("Account0 Deployer"))));
 
@@ -59,8 +60,8 @@ contract DeploysInit is Test {
 
         aID = IAutID(address(new AutID()));
         vm.label(address(aID), "AutIDI");
-        NovaFactor = INovaFactory(address(new NovaFactory()));
-        vm.label(address(NovaFactor), "NovaFactoryI");
+        NovaLogic = INova(address(new NovaLogicContract()));
+        vm.label(address(NovaLogic), "NovaLogicI");
 
         // Interact = IInteraction(address(new Interaction()));
         // vm.label(address(Interact), "InteractionI");
@@ -80,16 +81,16 @@ contract DeploysInit is Test {
 
         IPR.setDefaulLRAddress(address(iLR));
 
-        INR = INovaRegistry(address(new NovaRegistry(address(12345),address(aID), address(NovaFactor), address(IPR))));
+        INR = INovaRegistry(address(new NovaRegistry(address(12345),address(aID), address(NovaLogic), address(IPR))));
         vm.label(address(INR), "NovaRegistryI");
-        address NovaAddr = NovaFactor.deployNova(A0, address(aID), 1, "metadataCID", 1, address(IPR));
+        address NovaAddr = INR.deployNova(1, "metadataCID", 1);
         Nova = INova(NovaAddr);
         vm.stopPrank();
     }
 
     function testAreDeployedContracts() public {
         assertTrue(address(aID).code.length > 1, "expected aID contract");
-        assertTrue(address(NovaFactor).code.length > 2, "expected NovaFactor contract");
+        assertTrue(address(NovaLogic).code.length > 2, "expected Nova contract");
         assertTrue(address(IMR).code.length > 4, "expected IMR contract");
         assertTrue(address(IPR).code.length > 5, "expected IPR contract");
         assertTrue(address(INR).code.length > 6, "expected INRcontract");

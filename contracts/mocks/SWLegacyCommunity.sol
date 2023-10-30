@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "../daoStandards/ISWLegacyDAO.sol";
+import "../standards/ISWLegacyDAO.sol";
 
 /// @title SWLegacyDAO
 /// @notice Mock SW Legacy DAO for testing

@@ -35,7 +35,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
     }
 
     modifier onlyAdmin() {
-        require(IDAOAdmin(_novaAddress).isAdmin(msg.sender), "Not an admin.");
+        require(INovaAdmin(_novaAddress).isAdmin(msg.sender), "Not an admin.");
         _;
     }
 

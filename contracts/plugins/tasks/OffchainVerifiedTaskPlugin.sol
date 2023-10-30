@@ -41,7 +41,7 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
     }
 
     modifier onlyAdmin() {
-        require(IDAOAdmin(_novaAddress).isAdmin(msg.sender), "Only admin.");
+        require(INovaAdmin(_novaAddress).isAdmin(msg.sender), "Only admin.");
         _;
     }
 
