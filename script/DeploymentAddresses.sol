@@ -13,9 +13,6 @@ library DeploymentAddresses {
         }
     }
 
-    /// module registry 0x0D6b0826CA305F54255531C742e3781F442f57CA
-    /// Allowlist
-
     function allowListAddr(uint256 chainID) internal pure returns (address) {
         if (chainID == 80001) {
             return address(0x1a21e5C95464226a949Df3c7aC4Ffe0Ee4AF7A0d); // Replace with the actual address for chain ID 1
