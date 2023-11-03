@@ -6,6 +6,7 @@ import "../components/abstracts/NovaMarket.sol";
 import "../components/abstracts/NovaMembers.sol";
 import "../components/abstracts/NovaModules.sol";
 import "../components/abstracts/NovaMetadata.sol";
+import "../components/abstracts/NovaArchetype.sol";
 import "../components/abstracts/AutIDAddress.sol";
 import "../components/abstracts/NovaCommitment.sol";
 import "./NovaUpgradeable.sol";
@@ -16,7 +17,7 @@ import "./interfaces/INova.sol";
 /// @title Nova
 /// @notice
 /// @dev
-contract Nova is NovaUpgradeable, NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, NovaCommitment {
+contract Nova is NovaUpgradeable, NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, NovaCommitment, NovaArchetype {
     uint256[50] private __basesGap;
 
     address public deployer;
@@ -82,6 +83,16 @@ contract Nova is NovaUpgradeable, NovaMembers, NovaMetadata, NovaUrls, NovaMarke
 
     function setCommitment(uint256 commitment) external onlyAdmin {
         _setCommitment(commitment);
+    }
+
+    /// @dev set an archetype (for example, Growth or Performance)
+    function setArchetype(uint8 parameter) external onlyAdmin {
+        _setArchetype(parameter);
+    }
+
+    /// @dev set weight for the parameter (for example, Growth or Size)
+    function setWeightFor(uint8 parameter, uint256 value) external onlyAdmin {
+        _setWeightFor(parameter, value);
     }
 
     function canJoin(address member, uint256 role) external view returns (bool) {
