@@ -8,63 +8,61 @@ Below, you'll find a simple walkthrough to get started using Āut's Smart Contra
 
 # Setup 
 
-1. Create .env file and put your testing private key there
-    ```
-    DEV_PK='your_private_key'
-    ```
+## Install Foundry 
 
-2. Install dependencies
-`npm install`
+### Using Foundryup
 
-3. Compile the smart contracts 
-`npm run compile`
+Foundryup is the Foundry toolchain installer. You can find more about it [here](https://github.com/foundry-rs/foundry/blob/master/foundryup/README.md).
 
-4. In a separate terminal (optional)
-`npx hardhat node`
+Open your terminal and run the following command:
 
-5. Run tests (optional)
-`npm run test`
+```sh
+curl -L https://foundry.paradigm.xyz | bash
+```
 
-You're ready to go! 🚀🚀🚀
+This will install Foundryup, then simply follow the instructions on-screen,
+which will make the `foundryup` command available in your CLI.
 
-> **_Recommendation:_** If you're building on top of the Aut Labs Contracts, we strongly recommend running them locally and testing on Hardhat Network/Ganache Network before moving forward with a testnet deployment.
-----
-> > **_Resources:_** 🍫 🍫 🍫 Ganachere sources: https://trufflesuite.com/docs/ganache/
-🎩 🎩 🎩 Hardhat sources: https://hardhat.org/tutorial
+Running `foundryup` by itself will install the latest (nightly) [precompiled binaries](#precompiled-binaries): `forge`, `cast`, `anvil`, and `chisel`.
+See `foundryup --help` for more options, like installing from a specific version or commit.
 
-# Deployments (locally or not)
+## Deployments
 ### Deploy Using Forge Script
 
-`forge script  ./script/DeployAll.s.sol --rpc-url $MUMBAI_ALCHEMY   --etherscan-api-key $POLYGONSCAN_TOKEN --private-key $DEV_PVKEY --verify --broadcast`
+```sh
+forge script  ./script/DeployAll.s.sol --rpc-url $RPC_URL --etherscan-api-key $XSCAN_TOKEN --private-key $DEPLOYER_PRIVATE_KEY --verify --broadcast 
+ ```
+
+Simulate the deployment locally first by running the command without the `--broadcast` (and `--verify`) flag.
+
+`$RPC_URL` replace with the desired EVM RPC. Private RPC recommended. (Alchemy, Infura etc.)<br>
+`$XSCAN_TOKEN` network specific blockchain explorer API key, use to upload ABIs and verify contracts <br>
+`$DEPLOYER_PRIVATE_KEY` The private key of the deploying account (needs to have sufficient gas token balance)
+
 
 ### Get Artefacts Using Forge
 
 `forge build`
 Now all artefacts are stored in the `out/` folder (repository root)
 
-### Deploy Using Hardhat
-
-1. Select your desired network in hardhat.config.json under default network
-2. Run `npm run deployAll` and store the output addresses
-2. If you need to install the Plugin Definitions, copy the PluginRegistry address and put it in ./scripts/addPluginDefinitions.js script
-3. Run `npm run addPluginDefinitions` 
+### 
     
 > **_Tip:_** If you're expanding the DAO Types that the product supports, for testing purposes, you can add it to /scripts/deployDAOTypes.js
-
-
-
-``` javascript
-  const YourMembershipChecker = await hre.ethers.getContractFactory("YourMembershipChecker");
-  const yourMembershipChecker = await YourMembershipChecker.deploy();
-  await yourMembershipChecker.deployed();
-  
-  await (await daoTypes.addNewMembershipChecker(yourMembershipChecker.address)).wait();
-```
 
 ----
 Happy hacking on āut contracts 🤓 🤓 🤓 !! 
  
 ## Useful commands
+Foundry
+```shell
+forge b #build
+forge t #test
+forge fmt #format
+forge help
+```
+
+
+Hardhat
 ```shell
 npm run compile
 npm run test
