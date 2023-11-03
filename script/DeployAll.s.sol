@@ -20,11 +20,20 @@ contract DeployScript is Script {
 
     /// plugin definition hardcoded init metadatauri
     string onboardingIpfsUrl = "ipfs://bafkreig3gwhmraeljunek6rw3vynsbxapmwdmtzaov6uwcsq4qz6t2kmny";
+
     string discordUrl = "ipfs://bafkreic6s52eavmst3w7vebsdzl76a55wbm3asq6qujubjh6xh3323u7f4";
     string openTaskUrl = "ipfs://bafkreie45ntwx6trhl4azaixj6st64rcghrnscf2mnlahihctri6ospgte";
+
     string quizUrl = "ipfs://bafkreign362uxbfxfmczqd73accyqvfllmf5p47lxyubmdxylhin5xdazi";
     string socialBotUrl = "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy";
+
     string transactionTaskUrl = "ipfs://bafkreidlrxr57x7f3pfen35kzorqxnkfatuc5brofgpztty3qi5eis6f6a";
+
+    // JoinDiscordTaskPlugin = 1, (type Task)
+    // OpenTaskPlugin = 2, (type Task)
+    // QuizTaskPlugin = 3, (type Task)
+    // SocialBotPlugin  (gatherings) = 4, -> (type SocialBot)
+    // SocialQuizPlugin (polls) = 5 -> (type SocialBot)
 
     function setUp() public {
         chainID = block.chainid;
@@ -139,7 +148,6 @@ contract DeployScript is Script {
             )
         );
 
-
         ////////////////////////////////////////////////////////
         //////// set changable contracts
         IPluginRegistry IPR = IPluginRegistry(PluginRegistryAddr);
@@ -202,7 +210,4 @@ contract DeployScript is Script {
 
         vm.stopBroadcast();
     }
-
-
-
 }
