@@ -46,48 +46,18 @@ interface INova {
     //////
     function deployer() external view returns (address);
     function onboardingAddr() external view returns (address);
-    function members() external returns (address[] memory);
     function isMember(address) external view returns (bool);
-    function admins() external view returns (address[] memory);
     function isAdmin(address) external returns (bool);
     function join(address newMember, uint256 role) external;
     function getAllMembers() external view returns (address[] memory);
     function getAdmins() external view returns (address[] memory);
 
-    //// IModule
-    function moduleId() external view returns (uint256);
-
-    function isActive() external view returns (bool);
-
-    /// @notice A plugin contract is deployed for each daoExpander that uses it. When a plugin is associated to a daoExpander, the address is set by the DAOExpander.
-    /// @return the address of the daoExpander contract that uses this module.
-    function daoAddress() external view returns (address);
-
     /////////////OnboardingModule /////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /// @notice Checks if a member is onboarded for a specific role
-    /// @param member The address for whom the check is made
-    /// @param role The role for which the member is checked
-    /// @return Returns bool, true if the member is onboarded, false - otherwise
-    function isOnboarded(address member, uint256 role) external view returns (bool);
-
-    /* 
-        The onboard function, marks a member of the community as onboarded. 
-        Not every onboarding module would need this implemented. 
-        For instance if the onboading strategy is based on holding certain token - there is no need for having this function implemented
-        In such cases - Implement by just reverting it.
-    */
-    /// @notice Onboards a new member if needed.
-    /// @param member The member to be onboarded
-    /// @param role The role for which the member is onboarded
-    function onboard(address member, uint256 role) external;
 
     function isModuleActivated(uint256 moduleId) external view returns (bool);
 
     function pluginRegistry() external returns (address);
-
-    function activatedModules() external view returns (uint256[] memory);
 
     function market() external returns (uint256);
 
