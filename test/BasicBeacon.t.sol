@@ -25,8 +25,7 @@ contract BasicNovaDeploy is DeploysInit {
     function testBeaconProxy() public {
         address n = testDeploysNova();
         console.log("=========");
-        INova(n).getAdmins();
-        INova(n).getAllMembers();
+        assertTrue(INova(n).getAdmins()[0] == A0, "deployer not admin");
 
         vm.prank(A0);
         INova(n).setMetadataUri("a metadata uri httppp sdgfsd");
