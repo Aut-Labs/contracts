@@ -17,7 +17,16 @@ import "./interfaces/INova.sol";
 /// @title Nova
 /// @notice
 /// @dev
-contract Nova is NovaUpgradeable, NovaMembers, NovaMetadata, NovaUrls, NovaMarket, NovaModules, NovaCommitment, NovaArchetype {
+contract Nova is
+    NovaUpgradeable,
+    NovaMembers,
+    NovaMetadata,
+    NovaUrls,
+    NovaMarket,
+    NovaModules,
+    NovaCommitment,
+    NovaArchetype
+{
     uint256[50] private __basesGap;
 
     address public deployer;

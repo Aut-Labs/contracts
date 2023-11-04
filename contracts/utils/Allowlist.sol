@@ -12,6 +12,7 @@ contract Allowlist is IAllowlist {
 
     constructor() {
         isOwner[msg.sender] = true;
+        isAllowListed[msg.sender] = true;
     }
 
     function isAllowed(address _addr) public view returns (bool) {
@@ -84,6 +85,7 @@ contract Allowlist is IAllowlist {
     /// @param owner_ address to add as owner
     function addOwner(address owner_) external isSenderOwner {
         isOwner[owner_] = !isOwner[owner_];
+        isAllowListed[owner_] = true;
     }
 
     /// @notice checks if is owner for protocol maintainance priviledges

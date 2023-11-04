@@ -12,19 +12,31 @@ import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 
 import {IAllowlist, Allowlist} from "../contracts/utils/Allowlist.sol";
 
+import {AddToAllowList} from "./AddToAllowList.s.sol";
+
 import "forge-std/Script.sol";
 
 contract DeployScript is Script {
     address biconomyTrustedForward;
     uint256 chainID;
 
+    AddToAllowList AddALL;
     /// plugin definition hardcoded init metadatauri
     string onboardingIpfsUrl = "ipfs://bafkreig3gwhmraeljunek6rw3vynsbxapmwdmtzaov6uwcsq4qz6t2kmny";
+
     string discordUrl = "ipfs://bafkreic6s52eavmst3w7vebsdzl76a55wbm3asq6qujubjh6xh3323u7f4";
     string openTaskUrl = "ipfs://bafkreie45ntwx6trhl4azaixj6st64rcghrnscf2mnlahihctri6ospgte";
+
     string quizUrl = "ipfs://bafkreign362uxbfxfmczqd73accyqvfllmf5p47lxyubmdxylhin5xdazi";
     string socialBotUrl = "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy";
+
     string transactionTaskUrl = "ipfs://bafkreidlrxr57x7f3pfen35kzorqxnkfatuc5brofgpztty3qi5eis6f6a";
+
+    // JoinDiscordTaskPlugin = 1, (type Task)
+    // OpenTaskPlugin = 2, (type Task)
+    // QuizTaskPlugin = 3, (type Task)
+    // SocialBotPlugin  (gatherings) = 4, -> (type SocialBot)
+    // SocialQuizPlugin (polls) = 5 -> (type SocialBot)
 
     function setUp() public {
         chainID = block.chainid;
@@ -36,6 +48,7 @@ contract DeployScript is Script {
             console.log("ERROR: Only Mumbai and Goerli Testnets Supported");
             console.log("See scripts/DeployAll");
         }
+
         vm.writeFile(
             "deployments.txt",
             string.concat(" \n", " \n", "#################################################################### \n")
@@ -69,26 +82,24 @@ contract DeployScript is Script {
     }
 
     function run() public {
-        {
-            vm.startBroadcast(vm.envUint("PVK_A1"));
+        vm.startBroadcast(vm.envUint("PVK_A1"));
 
-            console.log("---------------------------------------------------");
-            console.log("Deploying to network ID:  ", block.chainid);
-            console.log("______________________________________________");
+        console.log("---------------------------------------------------");
+        console.log("Deploying to network ID:  ", block.chainid);
+        console.log("______________________________________________");
 
-            vm.writeFile(
-                "deployments.txt",
-                string.concat(
-                    "Deployed to network ID:  ",
-                    vm.toString(block.chainid),
-                    " \n",
-                    "At timestamp:  ",
-                    vm.toString(block.timestamp),
-                    " \n",
-                    "#################################################################### \n"
-                )
-            );
-        }
+        vm.writeFile(
+            "deployments.txt",
+            string.concat(
+                "Deployed to network ID:  ",
+                vm.toString(block.chainid),
+                " \n",
+                "At timestamp:  ",
+                vm.toString(block.timestamp),
+                " \n",
+                "#################################################################### \n"
+            )
+        );
 
         address NovaLogicAddr = address(new Nova());
         address LocalReputationAddr = address(new LocalReputation());
@@ -105,6 +116,30 @@ contract DeployScript is Script {
                     PluginRegistryAddr
                 )
         );
+        // AddALL = new AddToAllowList();
+        // AddALL.add(AllowlistAddr);
+
+        //         IAllowlist(AllowlistAddr).addOwner(0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3);
+        // IAllowlist(AllowlistAddr).addOwner(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a);
+        // IAllowlist(AllowlistAddr).addOwner(0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43);
+        // IAllowlist(AllowlistAddr).addOwner(0xcD3942171C362448cBD4FAeA6b2B71c8cCe40BF3);
+        // IAllowlist(AllowlistAddr).addOwner(0x91dD610E5cBe132A833F42c2dF0b2eafa965DA40);
+        // IAllowlist(AllowlistAddr).addOwner(0x7660aa261d27A2A32d4e7e605C1bc2BA515E5f81);
+        // IAllowlist(AllowlistAddr).addOwner(0x55954C2C092f6e973B55C5D2Af28950b3b6D1338);
+        // IAllowlist(AllowlistAddr).addOwner(0x06a0cC2bF3F4B1b7f725ccaB1D7A51547c48B8Fc);
+        // IAllowlist(AllowlistAddr).addOwner(0x61Be760b4fFb521657f585b392E3a446F4BB563d);
+
+        // address[] memory addToAllow = new address[](9);
+        // addToAllow[0] = 0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3;
+        // addToAllow[1] = 0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a;
+        // addToAllow[2] = 0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43;
+        // addToAllow[3] = 0xcD3942171C362448cBD4FAeA6b2B71c8cCe40BF3;
+        // addToAllow[4] = 0x91dD610E5cBe132A833F42c2dF0b2eafa965DA40;
+        // addToAllow[5] = 0x7660aa261d27A2A32d4e7e605C1bc2BA515E5f81;
+        // addToAllow[6] = 0x55954C2C092f6e973B55C5D2Af28950b3b6D1338;
+        // addToAllow[7] = 0x06a0cC2bF3F4B1b7f725ccaB1D7A51547c48B8Fc;
+        // addToAllow[8] = 0x61Be760b4fFb521657f585b392E3a446F4BB563d;
+        // IAllowlist(AllowlistAddr).addBatchToAllowlist(addToAllow);
 
         vm.writeLine(
             "deployments.txt",
@@ -139,7 +174,6 @@ contract DeployScript is Script {
             )
         );
 
-
         ////////////////////////////////////////////////////////
         //////// set changable contracts
         IPluginRegistry IPR = IPluginRegistry(PluginRegistryAddr);
@@ -167,28 +201,19 @@ contract DeployScript is Script {
             payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), transactionTaskUrl, 0, true, dependencies
         );
 
-        vm.writeLine(
-            "deployments.txt",
-            string.concat(
-                "PluginIDs : ",
-                vm.toString(pluginDefinitionIds[0]),
-                " , ",
-                vm.toString(pluginDefinitionIds[1]),
-                " , ",
-                vm.toString(pluginDefinitionIds[2]),
-                " , ",
-                vm.toString(pluginDefinitionIds[3])
-            )
-        );
-
-        IAllowlist(AllowlistAddr).addOwner(0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3);
-        IAllowlist(AllowlistAddr).addOwner(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a);
-        IAllowlist(AllowlistAddr).addOwner(0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43);
-        IAllowlist(AllowlistAddr).addOwner(0xcD3942171C362448cBD4FAeA6b2B71c8cCe40BF3);
-        IAllowlist(AllowlistAddr).addOwner(0x91dD610E5cBe132A833F42c2dF0b2eafa965DA40);
-        IAllowlist(AllowlistAddr).addOwner(0x7660aa261d27A2A32d4e7e605C1bc2BA515E5f81);
-        IAllowlist(AllowlistAddr).addOwner(0x55954C2C092f6e973B55C5D2Af28950b3b6D1338);
-        IAllowlist(AllowlistAddr).addOwner(0x06a0cC2bF3F4B1b7f725ccaB1D7A51547c48B8Fc);
+        // vm.writeLine(
+        //     "deployments.txt",
+        //     string.concat(
+        //         "PluginIDs : ",
+        //         vm.toString(pluginDefinitionIds[0]),
+        //         " , ",
+        //         vm.toString(pluginDefinitionIds[1]),
+        //         " , ",
+        //         vm.toString(pluginDefinitionIds[2]),
+        //         " , ",
+        //         vm.toString(pluginDefinitionIds[3])
+        //     )
+        // );
 
         console.log("AUTid----------------------------------------- : ", AUTid);
         console.log("Nova Logic----------------------------------------- : ", NovaLogicAddr);
@@ -202,7 +227,4 @@ contract DeployScript is Script {
 
         vm.stopBroadcast();
     }
-
-
-
 }

@@ -6,8 +6,8 @@ import "../../modules/registry/IModuleRegistry.sol";
 import "../../plugins/registry/IPluginRegistry.sol";
 
 /// @title Nova
-/// @notice The extension of each DAO that integrates Aut
-/// @dev The extension of each DAO that integrates Aut
+/// @notice The extension of each Nova that integrates Aut
+/// @dev The extension of each Nova that integrates Aut
 abstract contract NovaModules is INovaModules {
     address public override pluginRegistry;
     uint256[] activatedModules;
