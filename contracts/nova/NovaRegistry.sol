@@ -95,7 +95,7 @@ contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
             if (!allowlist.isAllowed(_msgSender())) {
                 revert IAllowlist.Unallowed();
             }
-            if (!(novaDeployers[_msgSender()].length != 0)) {
+            if ((novaDeployers[_msgSender()].length != 0)) {
                 revert IAllowlist.AlreadyDeployedANova();
                 // `novaDeployers` state is not stored within allowlist,
                 //  although the error belongs to allowlist
