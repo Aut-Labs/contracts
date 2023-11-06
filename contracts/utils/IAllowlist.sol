@@ -5,6 +5,7 @@ interface IAllowlist {
     error Unallowed();
     error AlreadyPlusOne();
     error AlreadyDeployedANova();
+    error isAlreadyAllowed();
 
     event AddedToAllowList(address who);
     event RemovedFromAllowList(address who);

@@ -37,11 +37,12 @@ contract Allowlist is IAllowlist {
     /// @notice adds address to allowlist if user is on the allowlist or owner
     /// @notice allowlisted addresses can only allowlist once and their target cannot allow another in turn
     function addToAllowlist(address addrToAdd_) external isSenderOwner {
-        if (isAllowListed[addrToAdd_]) return;
+        if (isAllowListed[addrToAdd_]) revert isAlreadyAllowed();
         isAllowListed[addrToAdd_] = true;
         if (!isOwner[msg.sender]) {
             plusOne[addrToAdd_] = msg.sender;
             plusOne[msg.sender] = addrToAdd_;
+                    emit AddedToAllowList(addrToAdd_);
         }
 
         emit AddedToAllowList(addrToAdd_);

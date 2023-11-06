@@ -25,6 +25,8 @@ contract OffchainTaskWithRep is OpenTaskPlugin, InteractionModifier {
         super.finalizeFor(taskId, submitter);
     }
 
+    //// @dev @todo integrate weight as part of creating the task
+
     /// @notice the creator of the task can use to set number of points to be awared for finalizing a task
     /// @param taskID ID of task to assign points balance to
     /// @param pointsWeight how many points the task will be worth
