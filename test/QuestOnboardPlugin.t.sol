@@ -38,7 +38,7 @@ contract TestQuestPlugin is DeploysInit {
 
         console.log("Created plugin definitinion ID --- :  ", pluginDefinitionID);
         vm.prank(A0);
-        IPR.addPluginToDAO(address(TaskPlugin), pluginDefinitionID);
+        IPR.addPluginToNova(address(TaskPlugin), pluginDefinitionID);
 
         taskPluginId = IPR.tokenIdFromAddress(address(TaskPlugin));
     }

@@ -61,8 +61,6 @@ contract DeploysInit is Test {
         AList = IAllowlist(address(new Allowlist()));
         vm.label(address(AList), "allowlist");
 
-        AList.addToAllowlist(A0);
-
         aID = IAutID(address(new AutID()));
         vm.label(address(aID), "AutIDI");
 

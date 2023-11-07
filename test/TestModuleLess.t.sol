@@ -62,15 +62,15 @@ contract ModuleSkipTemp is DeploysInit {
 
     function testPluginInstallModule() public {
         vm.prank(A0);
-        IPR.addPluginToDAO(address(SampleIP1), pluginDefinitionID1);
+        IPR.addPluginToNova(address(SampleIP1), pluginDefinitionID1);
         vm.prank(A0);
-        IPR.addPluginToDAO(address(SampleIP2), pluginDefinitionID2);
+        IPR.addPluginToNova(address(SampleIP2), pluginDefinitionID2);
     }
 
     function testInstallSocialBot() public {
         vm.prank(A0);
-        IPR.addPluginToDAO(address(SampleIP1), pluginDefinitionID1);
+        IPR.addPluginToNova(address(SampleIP1), pluginDefinitionID1);
         vm.prank(A0);
-        IPR.addPluginToDAO(address(SampleIP2), pluginDefinitionID2);
+        IPR.addPluginToNova(address(SampleIP2), pluginDefinitionID2);
     }
 }

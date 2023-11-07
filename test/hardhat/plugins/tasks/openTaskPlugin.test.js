@@ -74,7 +74,7 @@ describe("OpenTaskPlugin", (accounts) => {
     it("Should mint an NFT for it", async () => {
       const tx = await pluginRegistry
         .connect(admin)
-        .addPluginToDAO(openTaskPlugin.address, pluginTypeId);
+        .addPluginToNova(openTaskPlugin.address, pluginTypeId);
       await expect(tx)
         .to.emit(pluginRegistry, "PluginAddedToDAO")
         .withArgs(1, pluginTypeId, dao.address);

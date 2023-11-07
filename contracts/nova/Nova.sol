@@ -32,13 +32,13 @@ contract Nova is
     address public deployer;
     address public onboardingAddr;
 
-    /// @notice Sets the initial details of the DAO
+    /// @notice Sets the initial details of the Nova
     /// @dev all parameters are required.
-    /// @param _deployer the address of the DAOTypes.sol contract
-    /// @param _autAddr the address of the DAOTypes.sol contract
+    /// @param _deployer the address of the NovaTypes.sol contract
+    /// @param _autAddr the address of the NovaTypes.sol contract
     /// @param _market one of the 3 markets
-    /// @param _metadata url with metadata of the DAO - name, description, logo
-    /// @param _commitment minimum commitment that the DAO requires
+    /// @param _metadata url with metadata of the Nova - name, description, logo
+    /// @param _commitment minimum commitment that the Nova requires
     function initialize(
         address _deployer,
         IAutID _autAddr,

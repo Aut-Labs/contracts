@@ -20,18 +20,18 @@ abstract contract SimplePlugin is IPlugin {
     address public pluginRegistry;
 
     /**
-     * @notice A modifier that checks if the caller is a module installed in the DAO
+     * @notice A modifier that checks if the caller is a module installed in the Nova
      * @dev The function must use `_` before the require statement to execute the function body before checking the require condition
      */
     //// @dev
-    modifier onlyDAOModule() {
-        uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry).getPluginIdsByDAO(_novaAddress);
+    modifier onlyNovaModule() {
+        uint256[] memory installedPlugins = IPluginRegistry(pluginRegistry).getPluginIdsByNova(_novaAddress);
         bool pluginFound = false;
         for (uint256 i = 0; i < installedPlugins.length; i++) {
             if (installedPlugins[i] == pluginId) pluginFound = true;
             _;
         }
-        require(pluginFound, "Only DAO Module");
+        require(pluginFound, "Only Nova Module");
         _;
     }
 
@@ -60,13 +60,13 @@ abstract contract SimplePlugin is IPlugin {
     }
 
     /**
-     * @notice Initializes the contract with the provided DAO and module ID
-     * @param dao The address of the DAO
+     * @notice Initializes the contract with the provided Nova and module ID
+     * @param Nova The address of the Nova
      * @param modId The module ID of the plugin
      */
-    constructor(address dao, uint256 modId) {
-        _novaAddress = dao;
-        pluginRegistry = INovaModules(dao).pluginRegistry();
+    constructor(address Nova, uint256 modId) {
+        _novaAddress = Nova;
+        pluginRegistry = INovaModules(Nova).pluginRegistry();
         _deployer = msg.sender;
         moduleId = modId;
     }

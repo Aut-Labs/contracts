@@ -6,13 +6,13 @@ interface INova {
     event AdminMemberRemoved(address member);
     event MetadataUriUpdated();
     // emitted when a member is Onboarded
-    event Onboarded(address member, address dao);
+    event Onboarded(address member, address Nova);
     event MarketSet();
 
     function setOnboardingStrategy(address onboardingPlugin) external;
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
-    /// @dev a checker if a url has been listed for this DAO
+    /// @dev a checker if a url has been listed for this Nova
     /// @param _url the url that will be listed
     /// @return true if listed, false otherwise
     function isURLListed(string memory _url) external view returns (bool);

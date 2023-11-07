@@ -4,8 +4,8 @@ pragma solidity 0.8.19;
 import "../interfaces/get/INovaUrls.sol";
 
 /// @title Nova
-/// @notice The extension of each DAO that integrates Aut
-/// @dev The extension of each DAO that integrates Aut
+/// @notice The extension of each Nova that integrates Aut
+/// @dev The extension of each Nova that integrates Aut
 abstract contract NovaUrls is INovaUrls {
     event UrlAdded(string url);
     event UrlRemoved(string url);
@@ -60,13 +60,13 @@ abstract contract NovaUrls is INovaUrls {
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev returns an array with all the listed urls
-    /// @return returns all the urls listed for the DAO
+    /// @return returns all the urls listed for the Nova
     function getURLs() public view override returns (string[] memory) {
         return urls;
     }
 
     /// @notice The listed URLs are the only ones that can be used for the DAuth
-    /// @dev a checker if a url has been listed for this DAO
+    /// @dev a checker if a url has been listed for this Nova
     /// @param _url the url that will be listed
     /// @return true if listed, false otherwise
     function isURLListed(string memory _url) public view override returns (bool) {

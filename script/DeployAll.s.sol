@@ -12,7 +12,7 @@ import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 
 import {IAllowlist, Allowlist} from "../contracts/utils/Allowlist.sol";
 
-import {AddToAllowList} from "./AddToAllowList.s.sol";
+// import {AddToAllowList} from "./AddToAllowList.s.sol";
 
 import "forge-std/Script.sol";
 
@@ -20,7 +20,7 @@ contract DeployScript is Script {
     address biconomyTrustedForward;
     uint256 chainID;
 
-    AddToAllowList AddALL;
+    // AddToAllowList AddALL;
     /// plugin definition hardcoded init metadatauri
     string onboardingIpfsUrl = "ipfs://bafkreig3gwhmraeljunek6rw3vynsbxapmwdmtzaov6uwcsq4qz6t2kmny";
 
@@ -32,18 +32,13 @@ contract DeployScript is Script {
 
     string transactionTaskUrl = "ipfs://bafkreidlrxr57x7f3pfen35kzorqxnkfatuc5brofgpztty3qi5eis6f6a";
 
-    // JoinDiscordTaskPlugin = 1, (type Task)
-    // OpenTaskPlugin = 2, (type Task)
-    // QuizTaskPlugin = 3, (type Task)
-    // SocialBotPlugin  (gatherings) = 4, -> (type SocialBot)
-    // SocialQuizPlugin (polls) = 5 -> (type SocialBot)
 
     function setUp() public {
         chainID = block.chainid;
         if (chainID == 80001) biconomyTrustedForward = 0x69015912AA33720b842dCD6aC059Ed623F28d9f7;
         if (chainID == 5) biconomyTrustedForward = 0xE041608922d06a4F26C0d4c27d8bCD01daf1f792;
         if (chainID == 31337) biconomyTrustedForward = address(new TrustedForwarder());
-
+        // if ((8001 * 5 * 31337 * 1000) % chainID != 0 )  biconomyTrustedForward = address(128);
         if (biconomyTrustedForward == address(0)) {
             console.log("ERROR: Only Mumbai and Goerli Testnets Supported");
             console.log("See scripts/DeployAll");
@@ -84,6 +79,7 @@ contract DeployScript is Script {
     function run() public {
         vm.startBroadcast(vm.envUint("PVK_A1"));
 
+
         console.log("---------------------------------------------------");
         console.log("Deploying to network ID:  ", block.chainid);
         console.log("______________________________________________");
@@ -99,6 +95,12 @@ contract DeployScript is Script {
                 " \n",
                 "#################################################################### \n"
             )
+        );
+        vm.writeLine("deployments.txt",
+        string.concat(
+            "Deployer address: ",
+            vm.toString(vm.addr(vm.envUint("PVK_A1")))
+        )
         );
 
         address NovaLogicAddr = address(new Nova());
@@ -116,8 +118,6 @@ contract DeployScript is Script {
                     PluginRegistryAddr
                 )
         );
-        // AddALL = new AddToAllowList();
-        // AddALL.add(AllowlistAddr);
 
         IAllowlist(AllowlistAddr).addOwner(0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3);
         IAllowlist(AllowlistAddr).addOwner(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a);
@@ -128,7 +128,6 @@ contract DeployScript is Script {
         IAllowlist(AllowlistAddr).addOwner(0x55954C2C092f6e973B55C5D2Af28950b3b6D1338);
         IAllowlist(AllowlistAddr).addOwner(0x06a0cC2bF3F4B1b7f725ccaB1D7A51547c48B8Fc);
         IAllowlist(AllowlistAddr).addOwner(0x61Be760b4fFb521657f585b392E3a446F4BB563d);
-
 
         vm.writeLine(
             "deployments.txt",

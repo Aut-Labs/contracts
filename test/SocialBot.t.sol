@@ -51,7 +51,7 @@ contract TestSocialBotPlugin is DeploysInit {
             IPR.addPluginDefinition(payable(A1), "owner can spoof metadata", 0, true, depmodrek);
 
         vm.prank(A0);
-        IPR.addPluginToDAO(address(BotPlugin), pluginDefinitionID);
+        IPR.addPluginToNova(address(BotPlugin), pluginDefinitionID);
 
         taskPluginId = IPR.tokenIdFromAddress(address(BotPlugin));
 

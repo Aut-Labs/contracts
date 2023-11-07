@@ -18,7 +18,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
 
     Task[] public tasks;
 
-    bool public daoMembersOnly;
+    bool public novaMembersOnly;
 
     struct Submission {
         address submitter;
@@ -40,7 +40,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
     }
 
     modifier onlyAllowedToSubmit() {
-        if (daoMembersOnly) {
+        if (novaMembersOnly) {
             require(INovaMembership(_novaAddress).isMember(msg.sender), "Only DAO members");
         }
         _;
@@ -62,24 +62,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         idCounter.increment();
         submissionIds.increment();
 
-        daoMembersOnly = membersOnly;
-    }
-
-    function createBy(address creator, uint256 role, string memory uri, uint256 startDate, uint256 endDate)
-        public
-        override
-        onlyDAOModule
-        returns (uint256)
-    {
-        require(endDate > block.timestamp, "Invalid endDate");
-        require(bytes(uri).length > 0, "No URI");
-        uint256 taskId = idCounter.current();
-
-        tasks.push(Task(block.timestamp, creator, role, uri, startDate, endDate));
-
-        idCounter.increment();
-        emit TaskCreated(taskId, uri);
-        return taskId;
+        novaMembersOnly = membersOnly;
     }
 
     function editTask(uint256 taskId, uint256 role, string memory uri, uint256 startDate, uint256 endDate)
@@ -158,6 +141,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
 
     function create(uint256 role, string memory uri, uint256 startDate, uint256 endDate)
         public
+        virtual
         override
         onlyAdmin
         returns (uint256)
@@ -167,6 +151,23 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         uint256 taskId = idCounter.current();
 
         tasks.push(Task(block.timestamp, msg.sender, role, uri, startDate, endDate));
+
+        idCounter.increment();
+        emit TaskCreated(taskId, uri);
+        return taskId;
+    }
+
+    function createBy(address creator, uint256 role, string memory uri, uint256 startDate, uint256 endDate)
+        public
+        override
+        onlyNovaModule
+        returns (uint256)
+    {
+        require(endDate > block.timestamp, "Invalid endDate");
+        require(bytes(uri).length > 0, "No URI");
+        uint256 taskId = idCounter.current();
+
+        tasks.push(Task(block.timestamp, creator, role, uri, startDate, endDate));
 
         idCounter.increment();
         emit TaskCreated(taskId, uri);

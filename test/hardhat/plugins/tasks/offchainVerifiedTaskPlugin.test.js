@@ -61,7 +61,7 @@ describe("OffchainVerifiedTaskPlugin", (accounts) => {
     it("Should mint an NFT for it", async () => {
       const tx = await pluginRegistry
         .connect(admin)
-        .addPluginToDAO(offchainVerifiedTaskPlugin.address, pluginTypeId);
+        .addPluginToNova(offchainVerifiedTaskPlugin.address, pluginTypeId);
       await expect(tx)
         .to.emit(pluginRegistry, "PluginAddedToDAO")
         .withArgs(1, pluginTypeId, dao.address);

@@ -42,12 +42,12 @@ interface IPluginRegistry {
     event PluginDefinitionAdded(uint256 indexed pluginTypeId);
 
     /**
-     * @dev Emitted when a plugin is added to a DAO.
+     * @dev Emitted when a plugin is added to a Nova.
      * @param tokenId The ID of the token associated with the added plugin.
      * @param pluginTypeId The ID of the plugin definition associated with the added plugin.
-     * @param dao The address of the DAO to which the plugin was added.
+     * @param Nova The address of the Nova to which the plugin was added.
      */
-    event PluginAddedToDAO(uint256 indexed tokenId, uint256 indexed pluginTypeId, address indexed dao);
+    event PluginAddedToNova(uint256 indexed tokenId, uint256 indexed pluginTypeId, address indexed Nova);
 
     /**
      * @dev Returns the owner of a given plugin.
@@ -64,19 +64,19 @@ interface IPluginRegistry {
     function getPluginInstanceByTokenId(uint256 tokenId) external view returns (PluginInstance memory);
 
     /**
-     * @dev Returns a boolean indicating whether a given plugin definition is installed for a given DAO.
-     * @param dao The address of the DAO for which to check plugin definition installation.
+     * @dev Returns a boolean indicating whether a given plugin definition is installed for a given Nova.
+     * @param Nova The address of the Nova for which to check plugin definition installation.
      * @param pluginTypeId The ID of the plugin definition for which to check installation.
-     * @return A boolean indicating whether the specified plugin definition is installed for the specified DAO.
+     * @return A boolean indicating whether the specified plugin definition is installed for the specified Nova.
      */
-    function pluginDefinitionsInstalledByDAO(address dao, uint256 pluginTypeId) external view returns (bool);
+    function pluginDefinitionsInstalledByNova(address Nova, uint256 pluginTypeId) external view returns (bool);
 
     /**
-     * @dev Returns an array of token IDs representing the plugins installed for a given DAO.
-     * @param dao The address of the DAO for which to get installed plugins.
-     * @return An array of token IDs representing the plugins installed for the specified DAO.
+     * @dev Returns an array of token IDs representing the plugins installed for a given Nova.
+     * @param Nova The address of the Nova for which to get installed plugins.
+     * @return An array of token IDs representing the plugins installed for the specified Nova.
      */
-    function getPluginIdsByDAO(address dao) external view returns (uint256[] memory);
+    function getPluginIdsByNova(address Nova) external view returns (uint256[] memory);
 
     /**
      * @dev Edits the metadata URI for a given plugin definition.
@@ -92,11 +92,11 @@ interface IPluginRegistry {
     function modulesRegistry() external view returns (address);
 
     /**
-     * @dev Adds a plugin to a DAO.
+     * @dev Adds a plugin to a Nova.
      * @param pluginAddress The address of the plugin contract.
      * @param pluginDefinitionId The ID of the plugin definition.
      */
-    function addPluginToDAO(address pluginAddress, uint256 pluginDefinitionId) external payable;
+    function addPluginToNova(address pluginAddress, uint256 pluginDefinitionId) external payable;
 
     function tokenIdFromAddress(address pluginAddress_) external view returns (uint256);
 

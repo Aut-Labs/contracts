@@ -4,8 +4,8 @@ pragma solidity 0.8.19;
 import "../IModule.sol";
 
 /// @title RewardingModule
-/// @notice The extension of each DAO that integrates Aut
-/// @dev The extension of each DAO that integrates Aut
+/// @notice The extension of each Nova that integrates Aut
+/// @dev The extension of each Nova that integrates Aut
 interface QuestsModule is IModule {
     event QuestCreated(uint256 questId);
     event QuestEdited();

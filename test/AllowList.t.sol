@@ -102,4 +102,24 @@ contract AllowListT is DeploysInit {
         vm.expectRevert();
         AList.addToAllowlist(address(346787965447987878787878787128128128));
     }
+
+    function testCannotMultiDeploywAllow() public {
+        vm.prank(A0);
+        INR.deployNova(1, "stringMetadata1", 6);
+        vm.prank(A0);
+        INR.deployNova(2, "stringMetadata2", 7);
+        vm.prank(A0);
+        INR.deployNova(3, "stringMetadata3", 8);
+
+        assertFalse(AList.isAllowed(A1), "not allowed");
+        vm.prank(A0);
+        AList.addOwner(A1);
+        assertTrue(AList.isAllowed(A1), "not allowed");
+        vm.prank(A1);
+        INR.deployNova(1, "stringMetadata1", 6);
+
+        vm.prank(A1);
+        vm.expectRevert(IAllowlist.AlreadyDeployedANova.selector);
+        INR.deployNova(2, "stringMetadata2", 7);
+    }
 }

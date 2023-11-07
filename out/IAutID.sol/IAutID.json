@@ -75,7 +75,7 @@
         {
           "indexed": false,
           "internalType": "address",
-          "name": "daoExpanderAddress",
+          "name": "NovaExpanderAddress",
           "type": "address"
         },
         {
@@ -92,44 +92,6 @@
         }
       ],
       "name": "CommitmentUpdated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "daoExpanderAddress",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "member",
-          "type": "address"
-        }
-      ],
-      "name": "DAOJoined",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "daoExpanderAddress",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "member",
-          "type": "address"
-        }
-      ],
-      "name": "DAOWithdrown",
       "type": "event"
     },
     {
@@ -155,6 +117,44 @@
         }
       ],
       "name": "MetadataUriSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "NovaExpanderAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        }
+      ],
+      "name": "NovaJoined",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "NovaExpanderAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "member",
+          "type": "address"
+        }
+      ],
+      "name": "NovaWithdrawn",
       "type": "event"
     },
     {
@@ -274,7 +274,7 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "daoExpander",
+          "name": "NovaExpander",
           "type": "address"
         },
         {
@@ -373,7 +373,7 @@
         },
         {
           "internalType": "address",
-          "name": "dao_",
+          "name": "Nova_",
           "type": "address"
         }
       ],
@@ -396,11 +396,11 @@
           "type": "address"
         }
       ],
-      "name": "getHolderDAOs",
+      "name": "getHolderNovae",
       "outputs": [
         {
           "internalType": "address[]",
-          "name": "daos",
+          "name": "Novas",
           "type": "address[]"
         }
       ],
@@ -416,7 +416,7 @@
         },
         {
           "internalType": "address",
-          "name": "daoExpander",
+          "name": "NovaExpander",
           "type": "address"
         }
       ],
@@ -426,7 +426,7 @@
           "components": [
             {
               "internalType": "address",
-              "name": "daoExpanderAddress",
+              "name": "NovaExpanderAddress",
               "type": "address"
             },
             {
@@ -445,7 +445,7 @@
               "type": "bool"
             }
           ],
-          "internalType": "struct IAutID.DAOMember",
+          "internalType": "struct IAutID.NovaMember",
           "name": "",
           "type": "tuple"
         }
@@ -523,11 +523,11 @@
         },
         {
           "internalType": "address",
-          "name": "daoExpander",
+          "name": "NovaExpander",
           "type": "address"
         }
       ],
-      "name": "joinDAO",
+      "name": "joinNova",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -556,7 +556,7 @@
         },
         {
           "internalType": "address",
-          "name": "daoExpander",
+          "name": "NovaExpander",
           "type": "address"
         }
       ],
@@ -712,7 +712,7 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "daoExpander",
+          "name": "NovaExpander",
           "type": "address"
         }
       ],
@@ -744,12 +744,12 @@
     "getAutIDByOwner(address)": "79389510",
     "getAutIDHolderByUsername(string)": "4e51ea39",
     "getCommitmentsOfFor(address[],address)": "ff69a391",
-    "getHolderDAOs(address)": "241cc208",
+    "getHolderNovae(address)": "89cbf104",
     "getMembershipData(address,address)": "96259c66",
     "getNextTokenID()": "4a198119",
     "getTotalCommitment(address)": "da24e8b8",
     "isApprovedForAll(address,address)": "e985e9c5",
-    "joinDAO(uint256,uint256,address)": "a5b58784",
+    "joinNova(uint256,uint256,address)": "daedfed2",
     "mint(string,string,uint256,uint256,address)": "5bc4ffdf",
     "ownerOf(uint256)": "6352211e",
     "safeTransferFrom(address,address,uint256)": "42842e0e",
@@ -760,7 +760,7 @@
     "transferFrom(address,address,uint256)": "23b872dd",
     "withdraw(address)": "51cff8d9"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"approved\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenID\",\"type\":\"uint256\"}],\"name\":\"AutIDCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"daoExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newCommitment\",\"type\":\"uint256\"}],\"name\":\"CommitmentUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"daoExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"DAOJoined\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"daoExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"DAOWithdrown\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"DiscordIDConnectedToAutID\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"metadataUri\",\"type\":\"string\"}],\"name\":\"MetadataUriSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"discordID\",\"type\":\"string\"}],\"name\":\"addDiscordIDToAutID\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenID\",\"type\":\"uint256\"}],\"name\":\"autIDToDiscordID\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"discordID\",\"type\":\"string\"}],\"name\":\"discordIDToAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"daoExpander\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"name\":\"editCommitment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"nova_\",\"type\":\"address\"}],\"name\":\"getAllActiveMembers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDOwner\",\"type\":\"address\"}],\"name\":\"getAutIDByOwner\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"username\",\"type\":\"string\"}],\"name\":\"getAutIDHolderByUsername\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"agents\",\"type\":\"address[]\"},{\"internalType\":\"address\",\"name\":\"dao_\",\"type\":\"address\"}],\"name\":\"getCommitmentsOfFor\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"commitments\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"}],\"name\":\"getHolderDAOs\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"daos\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"daoExpander\",\"type\":\"address\"}],\"name\":\"getMembershipData\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"daoExpanderAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isActive\",\"type\":\"bool\"}],\"internalType\":\"struct IAutID.DAOMember\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNextTokenID\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"}],\"name\":\"getTotalCommitment\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"daoExpander\",\"type\":\"address\"}],\"name\":\"joinDAO\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"username\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"url\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"daoExpander\",\"type\":\"address\"}],\"name\":\"mint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"metadataUri\",\"type\":\"string\"}],\"name\":\"setMetadataUri\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"daoExpander\",\"type\":\"address\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a DAO\",\"events\":{\"Approval(address,address,uint256)\":{\"details\":\"Emitted when `owner` enables `approved` to manage the `tokenId` token.\"},\"ApprovalForAll(address,address,bool)\":{\"details\":\"Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.\"},\"Transfer(address,address,uint256)\":{\"details\":\"Emitted when `tokenId` token is transferred from `from` to `to`.\"}},\"kind\":\"dev\",\"methods\":{\"addDiscordIDToAutID(string)\":{\"details\":\"links the discord ID to the AutID token ID passed.\",\"params\":{\"discordID\":\"the discord ID of the AutID holder\"}},\"approve(address,uint256)\":{\"details\":\"Gives permission to `to` to transfer `tokenId` token to another account. The approval is cleared when the token is transferred. Only a single account can be approved at a time, so approving the zero address clears previous approvals. Requirements: - The caller must own the token or be an approved operator. - `tokenId` must exist. Emits an {Approval} event.\"},\"autIDToDiscordID(uint256)\":{\"details\":\"Returns a discord ID for the AutID token ID passed.\",\"params\":{\"tokenID\":\"the AutID token ID\"},\"returns\":{\"_0\":\"discord ID\"}},\"balanceOf(address)\":{\"details\":\"Returns the number of tokens in ``owner``'s account.\"},\"getApproved(uint256)\":{\"details\":\"Returns the account approved for `tokenId` token. Requirements: - `tokenId` must exist.\"},\"getAutIDByOwner(address)\":{\"params\":{\"autIDOwner\":\"the user address\"},\"returns\":{\"_0\":\"the token ID of their NFT ID\"}},\"getCommitmentsOfFor(address[],address)\":{\"params\":{\"agents\":\"address of agents\",\"dao_\":\"commitment target\"}},\"getHolderDAOs(address)\":{\"params\":{\"autIDHolder\":\"the address of the AutID holder\"},\"returns\":{\"daos\":\"dao expander addresses that the aut holder is a part of\"}},\"isApprovedForAll(address,address)\":{\"details\":\"Returns if the `operator` is allowed to manage all of the assets of `owner`. See {setApprovalForAll}\"},\"joinDAO(uint256,uint256,address)\":{\"details\":\"The commitment of the user can't exceed 10. It fails if the user has already committed to other DAOs\",\"params\":{\"commitment\":\"the commitment value that the user has selected for this DAO\",\"daoExpander\":\"the address of the daoExpander contract\",\"role\":\"the role that the user has selected within the specified DAO\"}},\"mint(string,string,uint256,uint256,address)\":{\"details\":\"each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the DAO passed.\",\"params\":{\"commitment\":\"the commitment value that the user has selected for this DAO\",\"daoExpander\":\"the address of the daoExpander contract\",\"role\":\"the role that the user has selected within the specified DAO\",\"url\":\"the NFT metadata that holds username, avatar\"}},\"ownerOf(uint256)\":{\"details\":\"Returns the owner of the `tokenId` token. Requirements: - `tokenId` must exist.\"},\"safeTransferFrom(address,address,uint256)\":{\"details\":\"Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients are aware of the ERC721 protocol to prevent tokens from being forever locked. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must exist and be owned by `from`. - If the caller is not `from`, it must have been allowed to move this token by either {approve} or {setApprovalForAll}. - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer. Emits a {Transfer} event.\"},\"safeTransferFrom(address,address,uint256,bytes)\":{\"details\":\"Safely transfers `tokenId` token from `from` to `to`. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must exist and be owned by `from`. - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}. - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer. Emits a {Transfer} event.\"},\"setApprovalForAll(address,bool)\":{\"details\":\"Approve or remove `operator` as an operator for the caller. Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller. Requirements: - The `operator` cannot be the caller. Emits an {ApprovalForAll} event.\"},\"supportsInterface(bytes4)\":{\"details\":\"Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.\"},\"transferFrom(address,address,uint256)\":{\"details\":\"Transfers `tokenId` token from `from` to `to`. WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must be owned by `from`. - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}. Emits a {Transfer} event.\"}},\"title\":\"IAutID\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addDiscordIDToAutID(string)\":{\"notice\":\"AutID holders can link their DiscordID to their AutID ID\"},\"autIDToDiscordID(uint256)\":{\"notice\":\"AutID holders can link their DiscordID to their AutID ID\"},\"getAutIDByOwner(address)\":{\"notice\":\"returns NFT ID of the holder\"},\"getCommitmentsOfFor(address[],address)\":{\"notice\":\"returns commitment levels for agents in a dao\"},\"getHolderDAOs(address)\":{\"notice\":\"gets all communities the AutID holder is a member of\"},\"joinDAO(uint256,uint256,address)\":{\"notice\":\"associates a AutID to a new DAO\"},\"mint(string,string,uint256,uint256,address)\":{\"notice\":\"mints a new AutID NFT ID\"}},\"notice\":\"The interface of the IAutID contract\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IAutID.sol\":\"IAutID\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/IAutID.sol\":{\"keccak256\":\"0xe2eaecaf2017084ba1fc713493c29ef8c85e5796203cad6d20d12055acecafd5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://17658f55c0557479867b68c3c4dbfa617414d041b11f2d69ec9e3d3eef1e7f81\",\"dweb:/ipfs/QmRRizYD42it6oRhJmUt4qKZauD3UGyduTBoiBnSbyux6W\"]},\"node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol\":{\"keccak256\":\"0x016298e66a5810253c6c905e61966bb31c8775c3f3517bf946ff56ee31d6c005\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1723de5ae414f210db039b19e6487c19c2d643483c9be7c445cf481a80c199d2\",\"dweb:/ipfs/QmcBLbmPdZsNngYhA1KDadNUqQZoGACytFWuUH74RC4AXC\"]},\"node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol\":{\"keccak256\":\"0xc6cef87559d0aeffdf0a99803de655938a7779ec0a3cd5d4383483ad85565a09\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://92ad7e572cf44e6b4b37631b44b62f9eb9fb1cf14d9ce51c1504d5dc7ccaf758\",\"dweb:/ipfs/QmcnbqX85tsWnUXPmtuPLE4SczME2sJaTfmqEFkuAJvWhy\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"approved\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenID\",\"type\":\"uint256\"}],\"name\":\"AutIDCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newCommitment\",\"type\":\"uint256\"}],\"name\":\"CommitmentUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"DiscordIDConnectedToAutID\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"metadataUri\",\"type\":\"string\"}],\"name\":\"MetadataUriSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"NovaJoined\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"NovaWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"discordID\",\"type\":\"string\"}],\"name\":\"addDiscordIDToAutID\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenID\",\"type\":\"uint256\"}],\"name\":\"autIDToDiscordID\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"discordID\",\"type\":\"string\"}],\"name\":\"discordIDToAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"name\":\"editCommitment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"nova_\",\"type\":\"address\"}],\"name\":\"getAllActiveMembers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDOwner\",\"type\":\"address\"}],\"name\":\"getAutIDByOwner\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"username\",\"type\":\"string\"}],\"name\":\"getAutIDHolderByUsername\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"agents\",\"type\":\"address[]\"},{\"internalType\":\"address\",\"name\":\"Nova_\",\"type\":\"address\"}],\"name\":\"getCommitmentsOfFor\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"commitments\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"}],\"name\":\"getHolderNovae\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"Novas\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"getMembershipData\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isActive\",\"type\":\"bool\"}],\"internalType\":\"struct IAutID.NovaMember\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNextTokenID\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"}],\"name\":\"getTotalCommitment\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"joinNova\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"username\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"url\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"mint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"metadataUri\",\"type\":\"string\"}],\"name\":\"setMetadataUri\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a Nova\",\"events\":{\"Approval(address,address,uint256)\":{\"details\":\"Emitted when `owner` enables `approved` to manage the `tokenId` token.\"},\"ApprovalForAll(address,address,bool)\":{\"details\":\"Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.\"},\"Transfer(address,address,uint256)\":{\"details\":\"Emitted when `tokenId` token is transferred from `from` to `to`.\"}},\"kind\":\"dev\",\"methods\":{\"addDiscordIDToAutID(string)\":{\"details\":\"links the discord ID to the AutID token ID passed.\",\"params\":{\"discordID\":\"the discord ID of the AutID holder\"}},\"approve(address,uint256)\":{\"details\":\"Gives permission to `to` to transfer `tokenId` token to another account. The approval is cleared when the token is transferred. Only a single account can be approved at a time, so approving the zero address clears previous approvals. Requirements: - The caller must own the token or be an approved operator. - `tokenId` must exist. Emits an {Approval} event.\"},\"autIDToDiscordID(uint256)\":{\"details\":\"Returns a discord ID for the AutID token ID passed.\",\"params\":{\"tokenID\":\"the AutID token ID\"},\"returns\":{\"_0\":\"discord ID\"}},\"balanceOf(address)\":{\"details\":\"Returns the number of tokens in ``owner``'s account.\"},\"getApproved(uint256)\":{\"details\":\"Returns the account approved for `tokenId` token. Requirements: - `tokenId` must exist.\"},\"getAutIDByOwner(address)\":{\"params\":{\"autIDOwner\":\"the user address\"},\"returns\":{\"_0\":\"the token ID of their NFT ID\"}},\"getCommitmentsOfFor(address[],address)\":{\"params\":{\"Nova_\":\"commitment target\",\"agents\":\"address of agents\"}},\"getHolderNovae(address)\":{\"params\":{\"autIDHolder\":\"the address of the AutID holder\"},\"returns\":{\"Novas\":\"Nova expander addresses that the aut holder is a part of\"}},\"isApprovedForAll(address,address)\":{\"details\":\"Returns if the `operator` is allowed to manage all of the assets of `owner`. See {setApprovalForAll}\"},\"joinNova(uint256,uint256,address)\":{\"details\":\"The commitment of the user can't exceed 10. It fails if the user has already committed to other Novas\",\"params\":{\"NovaExpander\":\"the address of the NovaExpander contract\",\"commitment\":\"the commitment value that the user has selected for this Nova\",\"role\":\"the role that the user has selected within the specified Nova\"}},\"mint(string,string,uint256,uint256,address)\":{\"details\":\"each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the Nova passed.\",\"params\":{\"NovaExpander\":\"the address of the NovaExpander contract\",\"commitment\":\"the commitment value that the user has selected for this Nova\",\"role\":\"the role that the user has selected within the specified Nova\",\"url\":\"the NFT metadata that holds username, avatar\"}},\"ownerOf(uint256)\":{\"details\":\"Returns the owner of the `tokenId` token. Requirements: - `tokenId` must exist.\"},\"safeTransferFrom(address,address,uint256)\":{\"details\":\"Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients are aware of the ERC721 protocol to prevent tokens from being forever locked. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must exist and be owned by `from`. - If the caller is not `from`, it must have been allowed to move this token by either {approve} or {setApprovalForAll}. - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer. Emits a {Transfer} event.\"},\"safeTransferFrom(address,address,uint256,bytes)\":{\"details\":\"Safely transfers `tokenId` token from `from` to `to`. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must exist and be owned by `from`. - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}. - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer. Emits a {Transfer} event.\"},\"setApprovalForAll(address,bool)\":{\"details\":\"Approve or remove `operator` as an operator for the caller. Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller. Requirements: - The `operator` cannot be the caller. Emits an {ApprovalForAll} event.\"},\"supportsInterface(bytes4)\":{\"details\":\"Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.\"},\"transferFrom(address,address,uint256)\":{\"details\":\"Transfers `tokenId` token from `from` to `to`. WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must be owned by `from`. - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}. Emits a {Transfer} event.\"}},\"title\":\"IAutID\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addDiscordIDToAutID(string)\":{\"notice\":\"AutID holders can link their DiscordID to their AutID ID\"},\"autIDToDiscordID(uint256)\":{\"notice\":\"AutID holders can link their DiscordID to their AutID ID\"},\"getAutIDByOwner(address)\":{\"notice\":\"returns NFT ID of the holder\"},\"getCommitmentsOfFor(address[],address)\":{\"notice\":\"returns commitment levels for agents in a Nova\"},\"getHolderNovae(address)\":{\"notice\":\"gets all communities the AutID holder is a member of\"},\"joinNova(uint256,uint256,address)\":{\"notice\":\"associates a AutID to a new Nova\"},\"mint(string,string,uint256,uint256,address)\":{\"notice\":\"mints a new AutID NFT ID\"}},\"notice\":\"The interface of the IAutID contract\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IAutID.sol\":\"IAutID\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/IAutID.sol\":{\"keccak256\":\"0xedd52edf75848f132f2e0006705a52ad72206df3504dd8ca483426725e151bb3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://13bde473149c92d0810353950edb127d00bc8901f5e33b167399efaa61bd77d4\",\"dweb:/ipfs/QmYFd6gfEjwgM4N2Xt7wuaJgwB2kVYZ5LFU7irvvFvEVHu\"]},\"node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol\":{\"keccak256\":\"0x016298e66a5810253c6c905e61966bb31c8775c3f3517bf946ff56ee31d6c005\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1723de5ae414f210db039b19e6487c19c2d643483c9be7c445cf481a80c199d2\",\"dweb:/ipfs/QmcBLbmPdZsNngYhA1KDadNUqQZoGACytFWuUH74RC4AXC\"]},\"node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol\":{\"keccak256\":\"0xc6cef87559d0aeffdf0a99803de655938a7779ec0a3cd5d4383483ad85565a09\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://92ad7e572cf44e6b4b37631b44b62f9eb9fb1cf14d9ce51c1504d5dc7ccaf758\",\"dweb:/ipfs/QmcnbqX85tsWnUXPmtuPLE4SczME2sJaTfmqEFkuAJvWhy\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.19+commit.7dd6d404"
@@ -841,7 +841,7 @@
           "inputs": [
             {
               "internalType": "address",
-              "name": "daoExpanderAddress",
+              "name": "NovaExpanderAddress",
               "type": "address",
               "indexed": false
             },
@@ -860,44 +860,6 @@
           ],
           "type": "event",
           "name": "CommitmentUpdated",
-          "anonymous": false
-        },
-        {
-          "inputs": [
-            {
-              "internalType": "address",
-              "name": "daoExpanderAddress",
-              "type": "address",
-              "indexed": false
-            },
-            {
-              "internalType": "address",
-              "name": "member",
-              "type": "address",
-              "indexed": false
-            }
-          ],
-          "type": "event",
-          "name": "DAOJoined",
-          "anonymous": false
-        },
-        {
-          "inputs": [
-            {
-              "internalType": "address",
-              "name": "daoExpanderAddress",
-              "type": "address",
-              "indexed": false
-            },
-            {
-              "internalType": "address",
-              "name": "member",
-              "type": "address",
-              "indexed": false
-            }
-          ],
-          "type": "event",
-          "name": "DAOWithdrown",
           "anonymous": false
         },
         {
@@ -923,6 +885,44 @@
           ],
           "type": "event",
           "name": "MetadataUriSet",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "NovaExpanderAddress",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "NovaJoined",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "NovaExpanderAddress",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "member",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "NovaWithdrawn",
           "anonymous": false
         },
         {
@@ -1040,7 +1040,7 @@
           "inputs": [
             {
               "internalType": "address",
-              "name": "daoExpander",
+              "name": "NovaExpander",
               "type": "address"
             },
             {
@@ -1138,7 +1138,7 @@
             },
             {
               "internalType": "address",
-              "name": "dao_",
+              "name": "Nova_",
               "type": "address"
             }
           ],
@@ -1163,11 +1163,11 @@
           ],
           "stateMutability": "view",
           "type": "function",
-          "name": "getHolderDAOs",
+          "name": "getHolderNovae",
           "outputs": [
             {
               "internalType": "address[]",
-              "name": "daos",
+              "name": "Novas",
               "type": "address[]"
             }
           ]
@@ -1181,7 +1181,7 @@
             },
             {
               "internalType": "address",
-              "name": "daoExpander",
+              "name": "NovaExpander",
               "type": "address"
             }
           ],
@@ -1190,13 +1190,13 @@
           "name": "getMembershipData",
           "outputs": [
             {
-              "internalType": "struct IAutID.DAOMember",
+              "internalType": "struct IAutID.NovaMember",
               "name": "",
               "type": "tuple",
               "components": [
                 {
                   "internalType": "address",
-                  "name": "daoExpanderAddress",
+                  "name": "NovaExpanderAddress",
                   "type": "address"
                 },
                 {
@@ -1288,13 +1288,13 @@
             },
             {
               "internalType": "address",
-              "name": "daoExpander",
+              "name": "NovaExpander",
               "type": "address"
             }
           ],
           "stateMutability": "nonpayable",
           "type": "function",
-          "name": "joinDAO"
+          "name": "joinNova"
         },
         {
           "inputs": [
@@ -1320,7 +1320,7 @@
             },
             {
               "internalType": "address",
-              "name": "daoExpander",
+              "name": "NovaExpander",
               "type": "address"
             }
           ],
@@ -1470,7 +1470,7 @@
           "inputs": [
             {
               "internalType": "address",
-              "name": "daoExpander",
+              "name": "NovaExpander",
               "type": "address"
             }
           ],
@@ -1516,35 +1516,35 @@
           },
           "getCommitmentsOfFor(address[],address)": {
             "params": {
-              "agents": "address of agents",
-              "dao_": "commitment target"
+              "Nova_": "commitment target",
+              "agents": "address of agents"
             }
           },
-          "getHolderDAOs(address)": {
+          "getHolderNovae(address)": {
             "params": {
               "autIDHolder": "the address of the AutID holder"
             },
             "returns": {
-              "daos": "dao expander addresses that the aut holder is a part of"
+              "Novas": "Nova expander addresses that the aut holder is a part of"
             }
           },
           "isApprovedForAll(address,address)": {
             "details": "Returns if the `operator` is allowed to manage all of the assets of `owner`. See {setApprovalForAll}"
           },
-          "joinDAO(uint256,uint256,address)": {
-            "details": "The commitment of the user can't exceed 10. It fails if the user has already committed to other DAOs",
+          "joinNova(uint256,uint256,address)": {
+            "details": "The commitment of the user can't exceed 10. It fails if the user has already committed to other Novas",
             "params": {
-              "commitment": "the commitment value that the user has selected for this DAO",
-              "daoExpander": "the address of the daoExpander contract",
-              "role": "the role that the user has selected within the specified DAO"
+              "NovaExpander": "the address of the NovaExpander contract",
+              "commitment": "the commitment value that the user has selected for this Nova",
+              "role": "the role that the user has selected within the specified Nova"
             }
           },
           "mint(string,string,uint256,uint256,address)": {
-            "details": "each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the DAO passed.",
+            "details": "each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the Nova passed.",
             "params": {
-              "commitment": "the commitment value that the user has selected for this DAO",
-              "daoExpander": "the address of the daoExpander contract",
-              "role": "the role that the user has selected within the specified DAO",
+              "NovaExpander": "the address of the NovaExpander contract",
+              "commitment": "the commitment value that the user has selected for this Nova",
+              "role": "the role that the user has selected within the specified Nova",
               "url": "the NFT metadata that holds username, avatar"
             }
           },
@@ -1582,13 +1582,13 @@
             "notice": "returns NFT ID of the holder"
           },
           "getCommitmentsOfFor(address[],address)": {
-            "notice": "returns commitment levels for agents in a dao"
+            "notice": "returns commitment levels for agents in a Nova"
           },
-          "getHolderDAOs(address)": {
+          "getHolderNovae(address)": {
             "notice": "gets all communities the AutID holder is a member of"
           },
-          "joinDAO(uint256,uint256,address)": {
-            "notice": "associates a AutID to a new DAO"
+          "joinNova(uint256,uint256,address)": {
+            "notice": "associates a AutID to a new Nova"
           },
           "mint(string,string,uint256,uint256,address)": {
             "notice": "mints a new AutID NFT ID"
@@ -1620,10 +1620,10 @@
     },
     "sources": {
       "contracts/IAutID.sol": {
-        "keccak256": "0xe2eaecaf2017084ba1fc713493c29ef8c85e5796203cad6d20d12055acecafd5",
+        "keccak256": "0xedd52edf75848f132f2e0006705a52ad72206df3504dd8ca483426725e151bb3",
         "urls": [
-          "bzz-raw://17658f55c0557479867b68c3c4dbfa617414d041b11f2d69ec9e3d3eef1e7f81",
-          "dweb:/ipfs/QmRRizYD42it6oRhJmUt4qKZauD3UGyduTBoiBnSbyux6W"
+          "bzz-raw://13bde473149c92d0810353950edb127d00bc8901f5e33b167399efaa61bd77d4",
+          "dweb:/ipfs/QmYFd6gfEjwgM4N2Xt7wuaJgwB2kVYZ5LFU7irvvFvEVHu"
         ],
         "license": "MIT"
       },
@@ -1654,14 +1654,14 @@
         1194
       ],
       "IERC165Upgradeable": [
-        59256
+        59326
       ],
       "IERC721Upgradeable": [
-        58517
+        58587
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "31:4087:1",
+    "src": "31:4120:1",
     "nodes": [
       {
         "id": 1018,
@@ -1683,24 +1683,24 @@
         "file": "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol",
         "nameLocation": "-1:-1:-1",
         "scope": 1195,
-        "sourceUnit": 58518,
+        "sourceUnit": 58588,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "id": 1194,
         "nodeType": "ContractDefinition",
-        "src": "333:3784:1",
+        "src": "334:3816:1",
         "nodes": [
           {
             "id": 1028,
             "nodeType": "EventDefinition",
-            "src": "378:51:1",
+            "src": "379:51:1",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "d18d4718c9d3e995ccc3faf448a66e5aae275643957aecfff839ae445574e5d3",
             "name": "AutIDCreated",
-            "nameLocation": "384:12:1",
+            "nameLocation": "385:12:1",
             "parameters": {
               "id": 1027,
               "nodeType": "ParameterList",
@@ -1711,10 +1711,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "owner",
-                  "nameLocation": "405:5:1",
+                  "nameLocation": "406:5:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1028,
-                  "src": "397:13:1",
+                  "src": "398:13:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1725,7 +1725,7 @@
                     "id": 1023,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "397:7:1",
+                    "src": "398:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1740,10 +1740,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "tokenID",
-                  "nameLocation": "420:7:1",
+                  "nameLocation": "421:7:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1028,
-                  "src": "412:15:1",
+                  "src": "413:15:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1754,7 +1754,7 @@
                     "id": 1025,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "412:7:1",
+                    "src": "413:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1763,18 +1763,18 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "396:32:1"
+              "src": "397:32:1"
             }
           },
           {
             "id": 1034,
             "nodeType": "EventDefinition",
-            "src": "434:60:1",
+            "src": "435:62:1",
             "nodes": [],
             "anonymous": false,
-            "eventSelector": "19c2cee09470d9f5934cb6d3839371932a4999f4d3ab1423e43465bb26858634",
-            "name": "DAOJoined",
-            "nameLocation": "440:9:1",
+            "eventSelector": "11f49dc9a23622fcefb8ce53014a211d0b8b75c15e386e4970915b72927cd57d",
+            "name": "NovaJoined",
+            "nameLocation": "441:10:1",
             "parameters": {
               "id": 1033,
               "nodeType": "ParameterList",
@@ -1784,11 +1784,11 @@
                   "id": 1030,
                   "indexed": false,
                   "mutability": "mutable",
-                  "name": "daoExpanderAddress",
-                  "nameLocation": "458:18:1",
+                  "name": "NovaExpanderAddress",
+                  "nameLocation": "460:19:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1034,
-                  "src": "450:26:1",
+                  "src": "452:27:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1799,7 +1799,7 @@
                     "id": 1029,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "450:7:1",
+                    "src": "452:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1814,10 +1814,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "member",
-                  "nameLocation": "486:6:1",
+                  "nameLocation": "489:6:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1034,
-                  "src": "478:14:1",
+                  "src": "481:14:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1828,7 +1828,7 @@
                     "id": 1031,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "478:7:1",
+                    "src": "481:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1838,18 +1838,18 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "449:44:1"
+              "src": "451:45:1"
             }
           },
           {
             "id": 1040,
             "nodeType": "EventDefinition",
-            "src": "499:63:1",
+            "src": "502:65:1",
             "nodes": [],
             "anonymous": false,
-            "eventSelector": "a1bb6a1161e67eed91355570b58f001eb7071b21d785264e36afcee01d92a8b0",
-            "name": "DAOWithdrown",
-            "nameLocation": "505:12:1",
+            "eventSelector": "746dfa771d4c23edf7e2589349c78f19155011a7154d365b9e49a691ab0458cf",
+            "name": "NovaWithdrawn",
+            "nameLocation": "508:13:1",
             "parameters": {
               "id": 1039,
               "nodeType": "ParameterList",
@@ -1859,11 +1859,11 @@
                   "id": 1036,
                   "indexed": false,
                   "mutability": "mutable",
-                  "name": "daoExpanderAddress",
-                  "nameLocation": "526:18:1",
+                  "name": "NovaExpanderAddress",
+                  "nameLocation": "530:19:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1040,
-                  "src": "518:26:1",
+                  "src": "522:27:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1874,7 +1874,7 @@
                     "id": 1035,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "518:7:1",
+                    "src": "522:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1889,10 +1889,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "member",
-                  "nameLocation": "554:6:1",
+                  "nameLocation": "559:6:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1040,
-                  "src": "546:14:1",
+                  "src": "551:14:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1903,7 +1903,7 @@
                     "id": 1037,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "546:7:1",
+                    "src": "551:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1913,18 +1913,18 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "517:44:1"
+              "src": "521:45:1"
             }
           },
           {
             "id": 1048,
             "nodeType": "EventDefinition",
-            "src": "567:91:1",
+            "src": "572:92:1",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "d79a2f47c1c734f8660476261fe14c54bb4b004e21643d70f34e76f590df70ba",
             "name": "CommitmentUpdated",
-            "nameLocation": "573:17:1",
+            "nameLocation": "578:17:1",
             "parameters": {
               "id": 1047,
               "nodeType": "ParameterList",
@@ -1934,11 +1934,11 @@
                   "id": 1042,
                   "indexed": false,
                   "mutability": "mutable",
-                  "name": "daoExpanderAddress",
-                  "nameLocation": "599:18:1",
+                  "name": "NovaExpanderAddress",
+                  "nameLocation": "604:19:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1048,
-                  "src": "591:26:1",
+                  "src": "596:27:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1949,7 +1949,7 @@
                     "id": 1041,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "591:7:1",
+                    "src": "596:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1964,10 +1964,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "member",
-                  "nameLocation": "627:6:1",
+                  "nameLocation": "633:6:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1048,
-                  "src": "619:14:1",
+                  "src": "625:14:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1978,7 +1978,7 @@
                     "id": 1043,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "619:7:1",
+                    "src": "625:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1993,10 +1993,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "newCommitment",
-                  "nameLocation": "643:13:1",
+                  "nameLocation": "649:13:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1048,
-                  "src": "635:21:1",
+                  "src": "641:21:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2007,7 +2007,7 @@
                     "id": 1045,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "635:7:1",
+                    "src": "641:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2016,34 +2016,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "590:67:1"
+              "src": "595:68:1"
             }
           },
           {
             "id": 1050,
             "nodeType": "EventDefinition",
-            "src": "663:34:1",
+            "src": "669:34:1",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "d751b525f83cb4458bf789d0f717631f3a26d5c70a81ea922690f3cf09f3e6df",
             "name": "DiscordIDConnectedToAutID",
-            "nameLocation": "669:25:1",
+            "nameLocation": "675:25:1",
             "parameters": {
               "id": 1049,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "694:2:1"
+              "src": "700:2:1"
             }
           },
           {
             "id": 1056,
             "nodeType": "EventDefinition",
-            "src": "702:58:1",
+            "src": "708:58:1",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "8b20b7ba7012e3c6dd7eebc0edcd0b48b7b1baaefa3edd31c7c9fe4600378401",
             "name": "MetadataUriSet",
-            "nameLocation": "708:14:1",
+            "nameLocation": "714:14:1",
             "parameters": {
               "id": 1055,
               "nodeType": "ParameterList",
@@ -2054,10 +2054,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "tokenId",
-                  "nameLocation": "731:7:1",
+                  "nameLocation": "737:7:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1056,
-                  "src": "723:15:1",
+                  "src": "729:15:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2068,7 +2068,7 @@
                     "id": 1051,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "723:7:1",
+                    "src": "729:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2082,10 +2082,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "metadataUri",
-                  "nameLocation": "747:11:1",
+                  "nameLocation": "753:11:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1056,
-                  "src": "740:18:1",
+                  "src": "746:18:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2096,7 +2096,7 @@
                     "id": 1053,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "740:6:1",
+                    "src": "746:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2105,25 +2105,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "722:37:1"
+              "src": "728:37:1"
             }
           },
           {
             "id": 1065,
             "nodeType": "StructDefinition",
-            "src": "766:133:1",
+            "src": "772:135:1",
             "nodes": [],
-            "canonicalName": "IAutID.DAOMember",
+            "canonicalName": "IAutID.NovaMember",
             "members": [
               {
                 "constant": false,
                 "id": 1058,
                 "mutability": "mutable",
-                "name": "daoExpanderAddress",
-                "nameLocation": "801:18:1",
+                "name": "NovaExpanderAddress",
+                "nameLocation": "808:19:1",
                 "nodeType": "VariableDeclaration",
                 "scope": 1065,
-                "src": "793:26:1",
+                "src": "800:27:1",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -2134,7 +2134,7 @@
                   "id": 1057,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "793:7:1",
+                  "src": "800:7:1",
                   "stateMutability": "nonpayable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address",
@@ -2148,10 +2148,10 @@
                 "id": 1060,
                 "mutability": "mutable",
                 "name": "role",
-                "nameLocation": "837:4:1",
+                "nameLocation": "845:4:1",
                 "nodeType": "VariableDeclaration",
                 "scope": 1065,
-                "src": "829:12:1",
+                "src": "837:12:1",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -2162,7 +2162,7 @@
                   "id": 1059,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "829:7:1",
+                  "src": "837:7:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -2175,10 +2175,10 @@
                 "id": 1062,
                 "mutability": "mutable",
                 "name": "commitment",
-                "nameLocation": "859:10:1",
+                "nameLocation": "867:10:1",
                 "nodeType": "VariableDeclaration",
                 "scope": 1065,
-                "src": "851:18:1",
+                "src": "859:18:1",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -2189,7 +2189,7 @@
                   "id": 1061,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "851:7:1",
+                  "src": "859:7:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -2202,10 +2202,10 @@
                 "id": 1064,
                 "mutability": "mutable",
                 "name": "isActive",
-                "nameLocation": "884:8:1",
+                "nameLocation": "892:8:1",
                 "nodeType": "VariableDeclaration",
                 "scope": 1065,
-                "src": "879:13:1",
+                "src": "887:13:1",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -2216,7 +2216,7 @@
                   "id": 1063,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "879:4:1",
+                  "src": "887:4:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -2225,28 +2225,28 @@
                 "visibility": "internal"
               }
             ],
-            "name": "DAOMember",
-            "nameLocation": "773:9:1",
+            "name": "NovaMember",
+            "nameLocation": "779:10:1",
             "scope": 1194,
             "visibility": "public"
           },
           {
             "id": 1079,
             "nodeType": "FunctionDefinition",
-            "src": "1384:129:1",
+            "src": "1397:130:1",
             "nodes": [],
             "documentation": {
               "id": 1066,
               "nodeType": "StructuredDocumentation",
-              "src": "905:474:1",
-              "text": "@notice mints a new AutID NFT ID\n @dev each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the DAO passed.\n @param url the NFT metadata that holds username, avatar\n @param role the role that the user has selected within the specified DAO\n @param commitment the commitment value that the user has selected for this DAO\n @param daoExpander the address of the daoExpander contract"
+              "src": "913:479:1",
+              "text": "@notice mints a new AutID NFT ID\n @dev each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the Nova passed.\n @param url the NFT metadata that holds username, avatar\n @param role the role that the user has selected within the specified Nova\n @param commitment the commitment value that the user has selected for this Nova\n @param NovaExpander the address of the NovaExpander contract"
             },
             "functionSelector": "5bc4ffdf",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "mint",
-            "nameLocation": "1393:4:1",
+            "nameLocation": "1406:4:1",
             "parameters": {
               "id": 1077,
               "nodeType": "ParameterList",
@@ -2256,10 +2256,10 @@
                   "id": 1068,
                   "mutability": "mutable",
                   "name": "username",
-                  "nameLocation": "1412:8:1",
+                  "nameLocation": "1425:8:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1079,
-                  "src": "1398:22:1",
+                  "src": "1411:22:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2270,7 +2270,7 @@
                     "id": 1067,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1398:6:1",
+                    "src": "1411:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2283,10 +2283,10 @@
                   "id": 1070,
                   "mutability": "mutable",
                   "name": "url",
-                  "nameLocation": "1436:3:1",
+                  "nameLocation": "1449:3:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1079,
-                  "src": "1422:17:1",
+                  "src": "1435:17:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2297,7 +2297,7 @@
                     "id": 1069,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1422:6:1",
+                    "src": "1435:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2310,10 +2310,10 @@
                   "id": 1072,
                   "mutability": "mutable",
                   "name": "role",
-                  "nameLocation": "1449:4:1",
+                  "nameLocation": "1462:4:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1079,
-                  "src": "1441:12:1",
+                  "src": "1454:12:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2324,7 +2324,7 @@
                     "id": 1071,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1441:7:1",
+                    "src": "1454:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2337,10 +2337,10 @@
                   "id": 1074,
                   "mutability": "mutable",
                   "name": "commitment",
-                  "nameLocation": "1463:10:1",
+                  "nameLocation": "1476:10:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1079,
-                  "src": "1455:18:1",
+                  "src": "1468:18:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2351,7 +2351,7 @@
                     "id": 1073,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1455:7:1",
+                    "src": "1468:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2363,11 +2363,11 @@
                   "constant": false,
                   "id": 1076,
                   "mutability": "mutable",
-                  "name": "daoExpander",
-                  "nameLocation": "1483:11:1",
+                  "name": "NovaExpander",
+                  "nameLocation": "1496:12:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1079,
-                  "src": "1475:19:1",
+                  "src": "1488:20:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2378,7 +2378,7 @@
                     "id": 1075,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1475:7:1",
+                    "src": "1488:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2388,13 +2388,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1397:98:1"
+              "src": "1410:99:1"
             },
             "returnParameters": {
               "id": 1078,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1512:0:1"
+              "src": "1526:0:1"
             },
             "scope": 1194,
             "stateMutability": "nonpayable",
@@ -2404,20 +2404,20 @@
           {
             "id": 1089,
             "nodeType": "FunctionDefinition",
-            "src": "1916:81:1",
+            "src": "1936:83:1",
             "nodes": [],
             "documentation": {
               "id": 1080,
               "nodeType": "StructuredDocumentation",
-              "src": "1519:392:1",
-              "text": "@notice associates a AutID to a new DAO\n @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other DAOs\n @param role the role that the user has selected within the specified DAO\n @param commitment the commitment value that the user has selected for this DAO\n @param daoExpander the address of the daoExpander contract"
+              "src": "1533:398:1",
+              "text": "@notice associates a AutID to a new Nova\n @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other Novas\n @param role the role that the user has selected within the specified Nova\n @param commitment the commitment value that the user has selected for this Nova\n @param NovaExpander the address of the NovaExpander contract"
             },
-            "functionSelector": "a5b58784",
+            "functionSelector": "daedfed2",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "joinDAO",
-            "nameLocation": "1925:7:1",
+            "name": "joinNova",
+            "nameLocation": "1945:8:1",
             "parameters": {
               "id": 1087,
               "nodeType": "ParameterList",
@@ -2427,10 +2427,10 @@
                   "id": 1082,
                   "mutability": "mutable",
                   "name": "role",
-                  "nameLocation": "1941:4:1",
+                  "nameLocation": "1962:4:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1089,
-                  "src": "1933:12:1",
+                  "src": "1954:12:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2441,7 +2441,7 @@
                     "id": 1081,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1933:7:1",
+                    "src": "1954:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2454,10 +2454,10 @@
                   "id": 1084,
                   "mutability": "mutable",
                   "name": "commitment",
-                  "nameLocation": "1955:10:1",
+                  "nameLocation": "1976:10:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1089,
-                  "src": "1947:18:1",
+                  "src": "1968:18:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2468,7 +2468,7 @@
                     "id": 1083,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1947:7:1",
+                    "src": "1968:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2480,11 +2480,11 @@
                   "constant": false,
                   "id": 1086,
                   "mutability": "mutable",
-                  "name": "daoExpander",
-                  "nameLocation": "1975:11:1",
+                  "name": "NovaExpander",
+                  "nameLocation": "1996:12:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1089,
-                  "src": "1967:19:1",
+                  "src": "1988:20:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2495,7 +2495,7 @@
                     "id": 1085,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1967:7:1",
+                    "src": "1988:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2505,13 +2505,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1932:55:1"
+              "src": "1953:56:1"
             },
             "returnParameters": {
               "id": 1088,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1996:0:1"
+              "src": "2018:0:1"
             },
             "scope": 1194,
             "stateMutability": "nonpayable",
@@ -2521,20 +2521,20 @@
           {
             "id": 1098,
             "nodeType": "FunctionDefinition",
-            "src": "2208:90:1",
+            "src": "2232:92:1",
             "nodes": [],
             "documentation": {
               "id": 1090,
               "nodeType": "StructuredDocumentation",
-              "src": "2003:200:1",
-              "text": "@notice gets all communities the AutID holder is a member of\n @param autIDHolder the address of the AutID holder\n @return daos dao expander addresses that the aut holder is a part of"
+              "src": "2025:202:1",
+              "text": "@notice gets all communities the AutID holder is a member of\n @param autIDHolder the address of the AutID holder\n @return Novas Nova expander addresses that the aut holder is a part of"
             },
-            "functionSelector": "241cc208",
+            "functionSelector": "89cbf104",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "getHolderDAOs",
-            "nameLocation": "2217:13:1",
+            "name": "getHolderNovae",
+            "nameLocation": "2241:14:1",
             "parameters": {
               "id": 1093,
               "nodeType": "ParameterList",
@@ -2544,10 +2544,10 @@
                   "id": 1092,
                   "mutability": "mutable",
                   "name": "autIDHolder",
-                  "nameLocation": "2239:11:1",
+                  "nameLocation": "2264:11:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1098,
-                  "src": "2231:19:1",
+                  "src": "2256:19:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2558,7 +2558,7 @@
                     "id": 1091,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2231:7:1",
+                    "src": "2256:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2568,7 +2568,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2230:21:1"
+              "src": "2255:21:1"
             },
             "returnParameters": {
               "id": 1097,
@@ -2578,11 +2578,11 @@
                   "constant": false,
                   "id": 1096,
                   "mutability": "mutable",
-                  "name": "daos",
-                  "nameLocation": "2292:4:1",
+                  "name": "Novas",
+                  "nameLocation": "2317:5:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1098,
-                  "src": "2275:21:1",
+                  "src": "2300:22:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2594,7 +2594,7 @@
                       "id": 1094,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2275:7:1",
+                      "src": "2300:7:1",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -2603,7 +2603,7 @@
                     },
                     "id": 1095,
                     "nodeType": "ArrayTypeName",
-                    "src": "2275:9:1",
+                    "src": "2300:9:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -2612,7 +2612,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2274:23:1"
+              "src": "2299:24:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -2622,12 +2622,12 @@
           {
             "id": 1106,
             "nodeType": "FunctionDefinition",
-            "src": "2437:77:1",
+            "src": "2463:77:1",
             "nodes": [],
             "documentation": {
               "id": 1099,
               "nodeType": "StructuredDocumentation",
-              "src": "2304:128:1",
+              "src": "2330:128:1",
               "text": "@notice returns NFT ID of the holder\n @param autIDOwner the user address\n @return the token ID of their NFT ID"
             },
             "functionSelector": "79389510",
@@ -2635,7 +2635,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "getAutIDByOwner",
-            "nameLocation": "2446:15:1",
+            "nameLocation": "2472:15:1",
             "parameters": {
               "id": 1102,
               "nodeType": "ParameterList",
@@ -2645,10 +2645,10 @@
                   "id": 1101,
                   "mutability": "mutable",
                   "name": "autIDOwner",
-                  "nameLocation": "2470:10:1",
+                  "nameLocation": "2496:10:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1106,
-                  "src": "2462:18:1",
+                  "src": "2488:18:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2659,7 +2659,7 @@
                     "id": 1100,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2462:7:1",
+                    "src": "2488:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2669,7 +2669,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2461:20:1"
+              "src": "2487:20:1"
             },
             "returnParameters": {
               "id": 1105,
@@ -2683,7 +2683,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1106,
-                  "src": "2505:7:1",
+                  "src": "2531:7:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2694,7 +2694,7 @@
                     "id": 1103,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2505:7:1",
+                    "src": "2531:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2703,7 +2703,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2504:9:1"
+              "src": "2530:9:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -2713,12 +2713,12 @@
           {
             "id": 1114,
             "nodeType": "FunctionDefinition",
-            "src": "2727:81:1",
+            "src": "2753:81:1",
             "nodes": [],
             "documentation": {
               "id": 1107,
               "nodeType": "StructuredDocumentation",
-              "src": "2520:202:1",
+              "src": "2546:202:1",
               "text": "@notice AutID holders can link their DiscordID to their AutID ID\n @dev Returns a discord ID for the AutID token ID passed.\n @param tokenID the AutID token ID\n @return discord ID"
             },
             "functionSelector": "fa320285",
@@ -2726,7 +2726,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "autIDToDiscordID",
-            "nameLocation": "2736:16:1",
+            "nameLocation": "2762:16:1",
             "parameters": {
               "id": 1110,
               "nodeType": "ParameterList",
@@ -2736,10 +2736,10 @@
                   "id": 1109,
                   "mutability": "mutable",
                   "name": "tokenID",
-                  "nameLocation": "2761:7:1",
+                  "nameLocation": "2787:7:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1114,
-                  "src": "2753:15:1",
+                  "src": "2779:15:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2750,7 +2750,7 @@
                     "id": 1108,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2753:7:1",
+                    "src": "2779:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2759,7 +2759,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2752:17:1"
+              "src": "2778:17:1"
             },
             "returnParameters": {
               "id": 1113,
@@ -2773,7 +2773,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1114,
-                  "src": "2793:13:1",
+                  "src": "2819:13:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2784,7 +2784,7 @@
                     "id": 1111,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2793:6:1",
+                    "src": "2819:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2793,7 +2793,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2792:15:1"
+              "src": "2818:15:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -2803,12 +2803,12 @@
           {
             "id": 1120,
             "nodeType": "FunctionDefinition",
-            "src": "3011:65:1",
+            "src": "3037:65:1",
             "nodes": [],
             "documentation": {
               "id": 1115,
               "nodeType": "StructuredDocumentation",
-              "src": "2814:192:1",
+              "src": "2840:192:1",
               "text": "@notice AutID holders can link their DiscordID to their AutID ID\n @dev links the discord ID to the AutID token ID passed.\n @param discordID the discord ID of the AutID holder"
             },
             "functionSelector": "72e4c149",
@@ -2816,7 +2816,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "addDiscordIDToAutID",
-            "nameLocation": "3020:19:1",
+            "nameLocation": "3046:19:1",
             "parameters": {
               "id": 1118,
               "nodeType": "ParameterList",
@@ -2826,10 +2826,10 @@
                   "id": 1117,
                   "mutability": "mutable",
                   "name": "discordID",
-                  "nameLocation": "3056:9:1",
+                  "nameLocation": "3082:9:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1120,
-                  "src": "3040:25:1",
+                  "src": "3066:25:1",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -2840,7 +2840,7 @@
                     "id": 1116,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3040:6:1",
+                    "src": "3066:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2849,13 +2849,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3039:27:1"
+              "src": "3065:27:1"
             },
             "returnParameters": {
               "id": 1119,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3075:0:1"
+              "src": "3101:0:1"
             },
             "scope": 1194,
             "stateMutability": "nonpayable",
@@ -2865,14 +2865,14 @@
           {
             "id": 1130,
             "nodeType": "FunctionDefinition",
-            "src": "3082:110:1",
+            "src": "3108:112:1",
             "nodes": [],
             "functionSelector": "96259c66",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getMembershipData",
-            "nameLocation": "3091:17:1",
+            "nameLocation": "3117:17:1",
             "parameters": {
               "id": 1125,
               "nodeType": "ParameterList",
@@ -2882,10 +2882,10 @@
                   "id": 1122,
                   "mutability": "mutable",
                   "name": "autIDHolder",
-                  "nameLocation": "3117:11:1",
+                  "nameLocation": "3143:11:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1130,
-                  "src": "3109:19:1",
+                  "src": "3135:19:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2896,7 +2896,7 @@
                     "id": 1121,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3109:7:1",
+                    "src": "3135:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2909,11 +2909,11 @@
                   "constant": false,
                   "id": 1124,
                   "mutability": "mutable",
-                  "name": "daoExpander",
-                  "nameLocation": "3138:11:1",
+                  "name": "NovaExpander",
+                  "nameLocation": "3164:12:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1130,
-                  "src": "3130:19:1",
+                  "src": "3156:20:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2924,7 +2924,7 @@
                     "id": 1123,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3130:7:1",
+                    "src": "3156:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2934,7 +2934,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3108:42:1"
+              "src": "3134:43:1"
             },
             "returnParameters": {
               "id": 1129,
@@ -2948,37 +2948,37 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1130,
-                  "src": "3174:16:1",
+                  "src": "3201:17:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_DAOMember_$1065_memory_ptr",
-                    "typeString": "struct IAutID.DAOMember"
+                    "typeIdentifier": "t_struct$_NovaMember_$1065_memory_ptr",
+                    "typeString": "struct IAutID.NovaMember"
                   },
                   "typeName": {
                     "id": 1127,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
                       "id": 1126,
-                      "name": "DAOMember",
+                      "name": "NovaMember",
                       "nameLocations": [
-                        "3174:9:1"
+                        "3201:10:1"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 1065,
-                      "src": "3174:9:1"
+                      "src": "3201:10:1"
                     },
                     "referencedDeclaration": 1065,
-                    "src": "3174:9:1",
+                    "src": "3201:10:1",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_DAOMember_$1065_storage_ptr",
-                      "typeString": "struct IAutID.DAOMember"
+                      "typeIdentifier": "t_struct$_NovaMember_$1065_storage_ptr",
+                      "typeString": "struct IAutID.NovaMember"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "3173:18:1"
+              "src": "3200:19:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -2988,14 +2988,14 @@
           {
             "id": 1137,
             "nodeType": "FunctionDefinition",
-            "src": "3198:81:1",
+            "src": "3226:81:1",
             "nodes": [],
             "functionSelector": "da24e8b8",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getTotalCommitment",
-            "nameLocation": "3207:18:1",
+            "nameLocation": "3235:18:1",
             "parameters": {
               "id": 1133,
               "nodeType": "ParameterList",
@@ -3005,10 +3005,10 @@
                   "id": 1132,
                   "mutability": "mutable",
                   "name": "autIDHolder",
-                  "nameLocation": "3234:11:1",
+                  "nameLocation": "3262:11:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1137,
-                  "src": "3226:19:1",
+                  "src": "3254:19:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3019,7 +3019,7 @@
                     "id": 1131,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3226:7:1",
+                    "src": "3254:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3029,7 +3029,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3225:21:1"
+              "src": "3253:21:1"
             },
             "returnParameters": {
               "id": 1136,
@@ -3043,7 +3043,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1137,
-                  "src": "3270:7:1",
+                  "src": "3298:7:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3054,7 +3054,7 @@
                     "id": 1134,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3270:7:1",
+                    "src": "3298:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -3063,7 +3063,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3269:9:1"
+              "src": "3297:9:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -3073,14 +3073,14 @@
           {
             "id": 1142,
             "nodeType": "FunctionDefinition",
-            "src": "3285:48:1",
+            "src": "3313:49:1",
             "nodes": [],
             "functionSelector": "51cff8d9",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "withdraw",
-            "nameLocation": "3294:8:1",
+            "nameLocation": "3322:8:1",
             "parameters": {
               "id": 1140,
               "nodeType": "ParameterList",
@@ -3089,11 +3089,11 @@
                   "constant": false,
                   "id": 1139,
                   "mutability": "mutable",
-                  "name": "daoExpander",
-                  "nameLocation": "3311:11:1",
+                  "name": "NovaExpander",
+                  "nameLocation": "3339:12:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1142,
-                  "src": "3303:19:1",
+                  "src": "3331:20:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3104,7 +3104,7 @@
                     "id": 1138,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3303:7:1",
+                    "src": "3331:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3114,13 +3114,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3302:21:1"
+              "src": "3330:22:1"
             },
             "returnParameters": {
               "id": 1141,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3332:0:1"
+              "src": "3361:0:1"
             },
             "scope": 1194,
             "stateMutability": "nonpayable",
@@ -3130,14 +3130,14 @@
           {
             "id": 1149,
             "nodeType": "FunctionDefinition",
-            "src": "3339:74:1",
+            "src": "3368:75:1",
             "nodes": [],
             "functionSelector": "f359d863",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "editCommitment",
-            "nameLocation": "3348:14:1",
+            "nameLocation": "3377:14:1",
             "parameters": {
               "id": 1147,
               "nodeType": "ParameterList",
@@ -3146,11 +3146,11 @@
                   "constant": false,
                   "id": 1144,
                   "mutability": "mutable",
-                  "name": "daoExpander",
-                  "nameLocation": "3371:11:1",
+                  "name": "NovaExpander",
+                  "nameLocation": "3400:12:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1149,
-                  "src": "3363:19:1",
+                  "src": "3392:20:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3161,7 +3161,7 @@
                     "id": 1143,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3363:7:1",
+                    "src": "3392:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3175,10 +3175,10 @@
                   "id": 1146,
                   "mutability": "mutable",
                   "name": "commitment",
-                  "nameLocation": "3392:10:1",
+                  "nameLocation": "3422:10:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1149,
-                  "src": "3384:18:1",
+                  "src": "3414:18:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3189,7 +3189,7 @@
                     "id": 1145,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3384:7:1",
+                    "src": "3414:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -3198,13 +3198,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3362:41:1"
+              "src": "3391:42:1"
             },
             "returnParameters": {
               "id": 1148,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3412:0:1"
+              "src": "3442:0:1"
             },
             "scope": 1194,
             "stateMutability": "nonpayable",
@@ -3214,14 +3214,14 @@
           {
             "id": 1156,
             "nodeType": "FunctionDefinition",
-            "src": "3419:87:1",
+            "src": "3449:87:1",
             "nodes": [],
             "functionSelector": "6dc5cc06",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "discordIDToAddress",
-            "nameLocation": "3428:18:1",
+            "nameLocation": "3458:18:1",
             "parameters": {
               "id": 1152,
               "nodeType": "ParameterList",
@@ -3231,10 +3231,10 @@
                   "id": 1151,
                   "mutability": "mutable",
                   "name": "discordID",
-                  "nameLocation": "3463:9:1",
+                  "nameLocation": "3493:9:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1156,
-                  "src": "3447:25:1",
+                  "src": "3477:25:1",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -3245,7 +3245,7 @@
                     "id": 1150,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3447:6:1",
+                    "src": "3477:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -3254,7 +3254,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3446:27:1"
+              "src": "3476:27:1"
             },
             "returnParameters": {
               "id": 1155,
@@ -3268,7 +3268,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1156,
-                  "src": "3497:7:1",
+                  "src": "3527:7:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3279,7 +3279,7 @@
                     "id": 1153,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3497:7:1",
+                    "src": "3527:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3289,7 +3289,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3496:9:1"
+              "src": "3526:9:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -3299,14 +3299,14 @@
           {
             "id": 1161,
             "nodeType": "FunctionDefinition",
-            "src": "3512:62:1",
+            "src": "3542:62:1",
             "nodes": [],
             "functionSelector": "1130630c",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setMetadataUri",
-            "nameLocation": "3521:14:1",
+            "nameLocation": "3551:14:1",
             "parameters": {
               "id": 1159,
               "nodeType": "ParameterList",
@@ -3316,10 +3316,10 @@
                   "id": 1158,
                   "mutability": "mutable",
                   "name": "metadataUri",
-                  "nameLocation": "3552:11:1",
+                  "nameLocation": "3582:11:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1161,
-                  "src": "3536:27:1",
+                  "src": "3566:27:1",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -3330,7 +3330,7 @@
                     "id": 1157,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3536:6:1",
+                    "src": "3566:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -3339,13 +3339,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3535:29:1"
+              "src": "3565:29:1"
             },
             "returnParameters": {
               "id": 1160,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3573:0:1"
+              "src": "3603:0:1"
             },
             "scope": 1194,
             "stateMutability": "nonpayable",
@@ -3355,14 +3355,14 @@
           {
             "id": 1168,
             "nodeType": "FunctionDefinition",
-            "src": "3580:90:1",
+            "src": "3610:90:1",
             "nodes": [],
             "functionSelector": "4e51ea39",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getAutIDHolderByUsername",
-            "nameLocation": "3589:24:1",
+            "nameLocation": "3619:24:1",
             "parameters": {
               "id": 1164,
               "nodeType": "ParameterList",
@@ -3372,10 +3372,10 @@
                   "id": 1163,
                   "mutability": "mutable",
                   "name": "username",
-                  "nameLocation": "3628:8:1",
+                  "nameLocation": "3658:8:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1168,
-                  "src": "3614:22:1",
+                  "src": "3644:22:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3386,7 +3386,7 @@
                     "id": 1162,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3614:6:1",
+                    "src": "3644:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -3395,7 +3395,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3613:24:1"
+              "src": "3643:24:1"
             },
             "returnParameters": {
               "id": 1167,
@@ -3409,7 +3409,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1168,
-                  "src": "3661:7:1",
+                  "src": "3691:7:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3420,7 +3420,7 @@
                     "id": 1165,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3661:7:1",
+                    "src": "3691:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3430,7 +3430,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3660:9:1"
+              "src": "3690:9:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -3440,19 +3440,19 @@
           {
             "id": 1173,
             "nodeType": "FunctionDefinition",
-            "src": "3675:58:1",
+            "src": "3705:58:1",
             "nodes": [],
             "functionSelector": "4a198119",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getNextTokenID",
-            "nameLocation": "3684:14:1",
+            "nameLocation": "3714:14:1",
             "parameters": {
               "id": 1169,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3698:2:1"
+              "src": "3728:2:1"
             },
             "returnParameters": {
               "id": 1172,
@@ -3466,7 +3466,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1173,
-                  "src": "3724:7:1",
+                  "src": "3754:7:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3477,7 +3477,7 @@
                     "id": 1170,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3724:7:1",
+                    "src": "3754:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -3486,7 +3486,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3723:9:1"
+              "src": "3753:9:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -3496,14 +3496,14 @@
           {
             "id": 1181,
             "nodeType": "FunctionDefinition",
-            "src": "3739:85:1",
+            "src": "3769:85:1",
             "nodes": [],
             "functionSelector": "2ca62cd5",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getAllActiveMembers",
-            "nameLocation": "3748:19:1",
+            "nameLocation": "3778:19:1",
             "parameters": {
               "id": 1176,
               "nodeType": "ParameterList",
@@ -3513,10 +3513,10 @@
                   "id": 1175,
                   "mutability": "mutable",
                   "name": "nova_",
-                  "nameLocation": "3776:5:1",
+                  "nameLocation": "3806:5:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1181,
-                  "src": "3768:13:1",
+                  "src": "3798:13:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3527,7 +3527,7 @@
                     "id": 1174,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3768:7:1",
+                    "src": "3798:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3537,7 +3537,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3767:15:1"
+              "src": "3797:15:1"
             },
             "returnParameters": {
               "id": 1180,
@@ -3551,7 +3551,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1181,
-                  "src": "3806:16:1",
+                  "src": "3836:16:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3563,7 +3563,7 @@
                       "id": 1177,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "3806:7:1",
+                      "src": "3836:7:1",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -3572,7 +3572,7 @@
                     },
                     "id": 1178,
                     "nodeType": "ArrayTypeName",
-                    "src": "3806:9:1",
+                    "src": "3836:9:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -3581,7 +3581,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3805:18:1"
+              "src": "3835:18:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -3591,20 +3591,20 @@
           {
             "id": 1193,
             "nodeType": "FunctionDefinition",
-            "src": "3970:145:1",
+            "src": "4002:146:1",
             "nodes": [],
             "documentation": {
               "id": 1182,
               "nodeType": "StructuredDocumentation",
-              "src": "3830:135:1",
-              "text": "@notice returns commitment levels for agents in a dao\n @param agents address of agents\n @param dao_ commitment target"
+              "src": "3860:137:1",
+              "text": "@notice returns commitment levels for agents in a Nova\n @param agents address of agents\n @param Nova_ commitment target"
             },
             "functionSelector": "ff69a391",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getCommitmentsOfFor",
-            "nameLocation": "3979:19:1",
+            "nameLocation": "4011:19:1",
             "parameters": {
               "id": 1188,
               "nodeType": "ParameterList",
@@ -3614,10 +3614,10 @@
                   "id": 1185,
                   "mutability": "mutable",
                   "name": "agents",
-                  "nameLocation": "4016:6:1",
+                  "nameLocation": "4048:6:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1193,
-                  "src": "3999:23:1",
+                  "src": "4031:23:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3629,7 +3629,7 @@
                       "id": 1183,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "3999:7:1",
+                      "src": "4031:7:1",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -3638,7 +3638,7 @@
                     },
                     "id": 1184,
                     "nodeType": "ArrayTypeName",
-                    "src": "3999:9:1",
+                    "src": "4031:9:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -3650,11 +3650,11 @@
                   "constant": false,
                   "id": 1187,
                   "mutability": "mutable",
-                  "name": "dao_",
-                  "nameLocation": "4032:4:1",
+                  "name": "Nova_",
+                  "nameLocation": "4064:5:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1193,
-                  "src": "4024:12:1",
+                  "src": "4056:13:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3665,7 +3665,7 @@
                     "id": 1186,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4024:7:1",
+                    "src": "4056:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3675,7 +3675,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3998:39:1"
+              "src": "4030:40:1"
             },
             "returnParameters": {
               "id": 1192,
@@ -3686,10 +3686,10 @@
                   "id": 1191,
                   "mutability": "mutable",
                   "name": "commitments",
-                  "nameLocation": "4102:11:1",
+                  "nameLocation": "4135:11:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1193,
-                  "src": "4085:28:1",
+                  "src": "4118:28:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3701,7 +3701,7 @@
                       "id": 1189,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
-                      "src": "4085:7:1",
+                      "src": "4118:7:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -3709,7 +3709,7 @@
                     },
                     "id": 1190,
                     "nodeType": "ArrayTypeName",
-                    "src": "4085:9:1",
+                    "src": "4118:9:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -3718,7 +3718,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4084:30:1"
+              "src": "4117:30:1"
             },
             "scope": 1194,
             "stateMutability": "view",
@@ -3733,15 +3733,15 @@
               "id": 1021,
               "name": "IERC721Upgradeable",
               "nameLocations": [
-                "353:18:1"
+                "354:18:1"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 58517,
-              "src": "353:18:1"
+              "referencedDeclaration": 58587,
+              "src": "354:18:1"
             },
             "id": 1022,
             "nodeType": "InheritanceSpecifier",
-            "src": "353:18:1"
+            "src": "354:18:1"
           }
         ],
         "canonicalName": "IAutID",
@@ -3750,17 +3750,17 @@
         "documentation": {
           "id": 1020,
           "nodeType": "StructuredDocumentation",
-          "src": "139:194:1",
-          "text": "@title IAutID\n @notice The interface of the IAutID contract\n @dev The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a DAO"
+          "src": "139:195:1",
+          "text": "@title IAutID\n @notice The interface of the IAutID contract\n @dev The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a Nova"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
           1194,
-          58517,
-          59256
+          58587,
+          59326
         ],
         "name": "IAutID",
-        "nameLocation": "343:6:1",
+        "nameLocation": "344:6:1",
         "scope": 1195,
         "usedErrors": []
       }

@@ -29,9 +29,9 @@ contract MultiPluginLR is DeploysInit {
         uint256 aDefID2 = IPR.addPluginDefinition(payable(A0), "a metadata string 2", 0, true, mockdependencies);
         uint256 aSocBotID3 = IPR.addPluginDefinition(payable(A0), "a metadata string bot", 0, true, mockdependencies);
 
-        IPR.addPluginToDAO(address(offTWR), aDefID1);
-        IPR.addPluginToDAO(address(openTWR), aDefID2);
-        IPR.addPluginToDAO(address(socBotP), aSocBotID3);
+        IPR.addPluginToNova(address(offTWR), aDefID1);
+        IPR.addPluginToNova(address(openTWR), aDefID2);
+        IPR.addPluginToNova(address(socBotP), aSocBotID3);
 
         vm.stopPrank();
 
@@ -164,6 +164,41 @@ contract MultiPluginLR is DeploysInit {
         assertTrue(IA21.GC > 0, "default state");
         assertTrue(IA20.GC == 0, "has unexpected contrib");
         assertTrue((IA20.GC + offTWR.getRepPointsOfTask(taskid)) == IA21.GC, "contrib not registered");
+    }
+
+    function testCreatesWithRepWeight() public {
+        vm.prank(A3);
+        vm.expectRevert("Only admin.");
+        uint256 returnsID = offTWR.createOffChainTaskWithWeight(
+            1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 450
+        );
+
+        vm.prank(A3);
+        aID.mint("AAA333", "a user url", 1, 3, address(Nova));
+        assertTrue(Nova.isMember(A3), "failed to add member");
+
+        vm.prank(A0);
+        Nova.addAdmin(A3);
+        assertTrue(Nova.isAdmin(A3), "failed to add admin");
+
+        vm.prank(A3);
+        returnsID = offTWR.createOffChainTaskWithWeight(
+            1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 450
+        );
+
+        assertTrue(returnsID > 0, "id is 0");
+
+        vm.prank(A3);
+        returnsID = offTWR.createOffChainTaskWithWeight(
+            1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 950
+        );
+
+        vm.warp(block.timestamp + 13245);
+
+        vm.prank(A3);
+        returnsID = offTWR.createOffChainTaskWithWeight(
+            1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 450
+        );
     }
 
     function testSocialTaksMultiple() public {

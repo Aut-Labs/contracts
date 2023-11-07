@@ -5,8 +5,8 @@ import "../interfaces/get/IAutIDAddress.sol";
 import "../../IAutID.sol";
 
 /// @title Nova
-/// @notice The extension of each DAO that integrates Aut
-/// @dev The extension of each DAO that integrates Aut
+/// @notice The extension of each Nova that integrates Aut
+/// @dev The extension of each Nova that integrates Aut
 abstract contract AutIDAddress is IAutIDAddress {
     IAutID private _autID;
 

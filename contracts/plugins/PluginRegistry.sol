@@ -11,7 +11,7 @@ import "../components/interfaces/get/INovaAdmin.sol";
 import "../nova/interfaces/INova.sol";
 
 /// @title PluginRegistry
-/// @notice Stores all plugins available and allows them to be added to a dao
+/// @notice Stores all plugins available and allows them to be added to a Nova
 contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRegistry {
     uint256 public _numPluginDefinitions;
     uint256 public _numPluginsMinted;
@@ -27,9 +27,9 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
 
     mapping(address => uint256) public tokenIdByPluginAddress;
 
-    mapping(address => mapping(uint256 => bool)) public override pluginDefinitionsInstalledByDAO;
+    mapping(address => mapping(uint256 => bool)) public override pluginDefinitionsInstalledByNova;
 
-    mapping(address => uint256[]) pluginIdsByDAO;
+    mapping(address => uint256[]) pluginIdsByNova;
 
     modifier onlyOracle() {
         require(msg.sender == oracleAddress, "AUT: Only oracle can call this function");
@@ -43,7 +43,12 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
     }
 
     // Plugin creation
-    function addPluginToDAO(address pluginAddress, uint256 pluginDefinitionId) external payable override nonReentrant {
+    function addPluginToNova(address pluginAddress, uint256 pluginDefinitionId)
+        external
+        payable
+        override
+        nonReentrant
+    {
         address nova = IPlugin(pluginAddress).novaAddress();
 
         require(INovaAdmin(nova).isAdmin(msg.sender) == true, "Not an admin");
@@ -51,13 +56,13 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
 
         require(pluginDefinition.canBeStandalone, "can't be standalone");
         require(msg.value >= pluginDefinition.price, "AUT: Insufficient price paid");
-        require(!pluginDefinitionsInstalledByDAO[nova][pluginDefinitionId], "AUT: Plugin already installed on nova");
+        require(!pluginDefinitionsInstalledByNova[nova][pluginDefinitionId], "AUT: Plugin already installed on nova");
 
-        pluginDefinitionsInstalledByDAO[nova][pluginDefinitionId] = true;
+        pluginDefinitionsInstalledByNova[nova][pluginDefinitionId] = true;
 
         uint256 tokenId = _mintPluginNFT(pluginDefinitionId, msg.sender);
 
-        pluginIdsByDAO[nova].push(tokenId);
+        pluginIdsByNova[nova].push(tokenId);
 
         uint256 fee = (pluginDefinition.price * feeBase1000) / 1000;
 
@@ -65,7 +70,7 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         (bool s,) = pluginDefinition.creator.call{value: msg.value - fee}("");
         if (!s) revert("Value transfer failed");
 
-        emit PluginAddedToDAO(tokenId, pluginDefinitionId, nova);
+        emit PluginAddedToNova(tokenId, pluginDefinitionId, nova);
 
         pluginInstanceByTokenId[tokenId].pluginAddress = pluginAddress;
 
@@ -156,8 +161,8 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         return pluginInstanceByTokenId[tokenId];
     }
 
-    function getPluginIdsByDAO(address dao) public view override returns (uint256[] memory) {
-        return pluginIdsByDAO[dao];
+    function getPluginIdsByNova(address Nova) public view override returns (uint256[] memory) {
+        return pluginIdsByNova[Nova];
     }
 
     function getDependencyModulesForPlugin(uint256 pluginDefinitionId) public view returns (uint256[] memory) {
