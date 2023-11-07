@@ -116,8 +116,6 @@ contract DeployScript is Script {
                     PluginRegistryAddr
                 )
         );
-        // AddALL = new AddToAllowList();
-        // AddALL.add(AllowlistAddr);
 
         IAllowlist(AllowlistAddr).addOwner(0x1b403ff6EB37D25dCCbA0540637D65550f84aCB3);
         IAllowlist(AllowlistAddr).addOwner(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a);
