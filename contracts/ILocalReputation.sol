@@ -60,7 +60,7 @@ interface ILocalReputation {
     error MaxK();
     error k1MaxPointPerInteraction();
 
-    function initialize(address dao_) external;
+    function initialize(address Nova_) external;
 
     function interaction(bytes calldata msgData, address agent) external;
 

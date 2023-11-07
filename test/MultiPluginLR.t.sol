@@ -29,9 +29,9 @@ contract MultiPluginLR is DeploysInit {
         uint256 aDefID2 = IPR.addPluginDefinition(payable(A0), "a metadata string 2", 0, true, mockdependencies);
         uint256 aSocBotID3 = IPR.addPluginDefinition(payable(A0), "a metadata string bot", 0, true, mockdependencies);
 
-        IPR.addPluginToDAO(address(offTWR), aDefID1);
-        IPR.addPluginToDAO(address(openTWR), aDefID2);
-        IPR.addPluginToDAO(address(socBotP), aSocBotID3);
+        IPR.addPluginToNova(address(offTWR), aDefID1);
+        IPR.addPluginToNova(address(openTWR), aDefID2);
+        IPR.addPluginToNova(address(socBotP), aSocBotID3);
 
         vm.stopPrank();
 

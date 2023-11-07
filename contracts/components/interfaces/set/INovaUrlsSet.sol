@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 /// @title INova
-/// @notice The interface for the extension of each DAO that integrates AutID
+/// @notice The interface for the extension of each Nova that integrates AutID
 interface INovaUrlsSet {
     /// @notice The listed URLs are the only ones that can be used for the DAuth
     /// @dev adds a URL in the listed ones

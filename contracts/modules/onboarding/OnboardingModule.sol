@@ -13,7 +13,7 @@ this contract can implement additional functions for this off-chain flow using o
 /// @notice Every onboarding plugin must implement this interface
 interface OnboardingModule is IModule {
     // emitted when a member is Onboarded
-    event Onboarded(address member, address dao);
+    event Onboarded(address member, address Nova);
 
     /// @notice Checks if a member is onboarded for a specific role
     /// @param member The address for whom the check is made

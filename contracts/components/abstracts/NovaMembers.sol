@@ -10,8 +10,8 @@ import "../interfaces/set/INovaMembershipSet.sol";
 import "../interfaces/set/INovaAdminSet.sol";
 
 /// @title Nova
-/// @notice The extension of each DAO that integrates Aut
-/// @dev The extension of each DAO that integrates Aut
+/// @notice The extension of each Nova that integrates Aut
+/// @dev The extension of each Nova that integrates Aut
 abstract contract NovaMembers is INovaAdmin, INovaMembership, INovaMembershipSet, INovaAdminSet, AutIDAddress {
     address[] public members;
 
@@ -36,8 +36,8 @@ abstract contract NovaMembers is INovaAdmin, INovaMembership, INovaMembershipSet
         emit MemberAdded();
     }
 
-    /// @notice Checks if the passed member is a part of the original DAO contract depending on it's implementation of membership
-    /// @dev checks if the member is a part of a DAO
+    /// @notice Checks if the passed member is a part of the original Nova contract depending on it's implementation of membership
+    /// @dev checks if the member is a part of a Nova
     /// @return true if they're a member, false otherwise
     function getAllMembers() public view override returns (address[] memory) {
         return members;

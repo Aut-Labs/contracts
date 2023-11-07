@@ -106,7 +106,7 @@ describe("PluginRegistry", (accounts) => {
         });
 
         it("Should add a free plugin to the DAO", async () => {
-            let tx = pluginRegistry.connect(admin).addPluginToDAO(
+            let tx = pluginRegistry.connect(admin).addPluginToNova(
                 offchainVerifiedTaskPlugin.address,
                 2
             );
@@ -115,7 +115,7 @@ describe("PluginRegistry", (accounts) => {
 
         it("Should fail if payment is incorrect", async () => {
 
-            await expect(pluginRegistry.connect(admin).addPluginToDAO(
+            await expect(pluginRegistry.connect(admin).addPluginToNova(
                 offchainVerifiedTaskPlugin.address,
                 1,
                 {
@@ -127,7 +127,7 @@ describe("PluginRegistry", (accounts) => {
 
         it("Should add a paid plugin to the DAO", async () => {
 
-            let tx = pluginRegistry.connect(admin).addPluginToDAO(
+            let tx = pluginRegistry.connect(admin).addPluginToNova(
                 offchainVerifiedTaskPlugin.address,
                 1,
                 {

@@ -31,8 +31,8 @@ interface IPlugin is IModule {
     function pluginRegistry() external view returns (address);
 
     /**
-     * @notice Returns the address of the DAO the plugin is associated with
-     * @return The address of the DAO
+     * @notice Returns the address of the Nova the plugin is associated with
+     * @return The address of the Nova
      */
     function novaAddress() external view returns (address);
 }

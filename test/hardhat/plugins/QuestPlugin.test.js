@@ -89,14 +89,14 @@ describe("QuestPlugin", (accounts) => {
     // Add plugins to the DAO
      tx = await pluginRegistry
       .connect(admin)
-      .addPluginToDAO(offchainVerifiedTaskPlugin.address, offchainVerifiedTaskPluginType);
+      .addPluginToNova(offchainVerifiedTaskPlugin.address, offchainVerifiedTaskPluginType);
     await expect(tx)
       .to.emit(pluginRegistry, "PluginAddedToDAO")
       .withArgs(1, offchainVerifiedTaskPluginType, nova.address);
 
     tx = await pluginRegistry
       .connect(admin)
-      .addPluginToDAO(openTaskPlugin.address, openTaskPluginType);
+      .addPluginToNova(openTaskPlugin.address, openTaskPluginType);
     await expect(tx)
       .to.emit(pluginRegistry, "PluginAddedToDAO")
       .withArgs(2, openTaskPluginType, nova.address);
@@ -127,7 +127,7 @@ describe("QuestPlugin", (accounts) => {
     it("Should mint an NFT for it", async () => {
       const tx = await pluginRegistry
         .connect(admin)
-        .addPluginToDAO(questPlugin.address, questPluginType);
+        .addPluginToNova(questPlugin.address, questPluginType);
       await expect(tx)
         .to.emit(pluginRegistry, "PluginAddedToDAO")
         .withArgs(3, questPluginType, nova.address);

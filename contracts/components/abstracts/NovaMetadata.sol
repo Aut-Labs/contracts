@@ -4,8 +4,8 @@ pragma solidity 0.8.19;
 import "../interfaces/get/INovaMetadata.sol";
 
 /// @title Nova
-/// @notice The extension of each DAO that integrates Aut
-/// @dev The extension of each DAO that integrates Aut
+/// @notice The extension of each Nova that integrates Aut
+/// @dev The extension of each Nova that integrates Aut
 abstract contract NovaMetadata is INovaMetadata {
     event MetadataUriUpdated(string);
 

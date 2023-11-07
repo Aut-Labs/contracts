@@ -231,7 +231,7 @@ contract QuestPlugin is QuestsModule, SimplePlugin {
 
         require(plugin.pluginAddress != address(0), "Invalid plugin");
         bool isInstalled =
-            IPluginRegistry(pluginRegistry).pluginDefinitionsInstalledByDAO(novaAddress(), plugin.pluginDefinitionId);
+            IPluginRegistry(pluginRegistry).pluginDefinitionsInstalledByNova(novaAddress(), plugin.pluginDefinitionId);
         if (TasksModule(plugin.pluginAddress).novaAddress() == novaAddress() && isInstalled) {
             int256 index = findTask(questId, task);
             if (index == -1) {

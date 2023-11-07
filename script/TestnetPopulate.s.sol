@@ -95,9 +95,9 @@ contract Populate is Script {
         address botQuizAddr = address(new SocialQuizPlugin(address(OurNova)));
         address openTask = address(new OpenTaskWithRep(address(OurNova)));
 
-        PlugReg.addPluginToDAO(botPluginAddr, pluginDefBot1);
-        PlugReg.addPluginToDAO(botQuizAddr, pluginQuizBot2);
-        PlugReg.addPluginToDAO(openTask, pluginDefOpenTask);
+        PlugReg.addPluginToNova(botPluginAddr, pluginDefBot1);
+        PlugReg.addPluginToNova(botQuizAddr, pluginQuizBot2);
+        PlugReg.addPluginToNova(openTask, pluginDefOpenTask);
 
         LR.setKP(LR.DEFAULT_K(), 90, LR.DEFAULT_PENALTY(), address(OurNova));
         address[] memory adminAddresses = new address[](5);

@@ -44,7 +44,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
             IPR.addPluginDefinition(payable(A1), "owner can spoof metadata", 0, true, depmodrek);
 
         vm.prank(A0);
-        IPR.addPluginToDAO(address(InteractionPlugin), pluginDefinitionID);
+        IPR.addPluginToNova(address(InteractionPlugin), pluginDefinitionID);
 
         taskPluginId = IPR.tokenIdFromAddress(address(InteractionPlugin));
 

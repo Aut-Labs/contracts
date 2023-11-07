@@ -24,9 +24,9 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
 
     Counters.Counter private _tokenIds;
 
-    // Mapping from token ID to an active DAO that the AutID holder is a part of
-    mapping(address => mapping(address => DAOMember)) private holderToDAOMembershipData;
-    mapping(address => address[]) holderToDAOs;
+    // Mapping from token ID to an active  that the AutID holder is a part of
+    mapping(address => mapping(address => NovaMember)) private holderToMembershipData;
+    mapping(address => address[]) holderTos;
 
     // Mapping from autIDOwner to token ID
     mapping(address => uint256) private _autIDByOwner;
@@ -55,23 +55,23 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     }
 
     /// @notice mints a new AutID NFT ID
-    /// @dev each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the DAO passed.
+    /// @dev each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the  passed.
     /// @param url the NFT metadata that holds username, avatar
-    /// @param role the role that the user has selected within the specified DAO
-    /// @param commitment the commitment value that the user has selected for this DAO
-    /// @param daoAddress the address of the DAOExpender contract
-    function mint(string memory username, string memory url, uint256 role, uint256 commitment, address daoAddress)
+    /// @param role the role that the user has selected within the specified 
+    /// @param commitment the commitment value that the user has selected for this 
+    /// @param Address the address of the Expender contract
+    function mint(string memory username, string memory url, uint256 role, uint256 commitment, address Address)
         external
         override
     {
         require(bytes(username).length < 17, "Username must be max 16 characters");
         require(role > 0 && role < 4, "Role must be between 1 and 3");
         require(commitment > 0 && commitment < 11, "AutID: Commitment should be between 1 and 10");
-        require(daoAddress != address(0), "AutID: Missing DAO");
+        require(Address != address(0), "AutID: Missing ");
         require(balanceOf(_msgSender()) == 0, "AutID: There is AutID already registered for this address.");
         require(autIDUsername[username] == address(0), "AutID: Username already taken!");
 
-        require(INovaMembership(daoAddress).canJoin(_msgSender(), role), "AutID: Not a member of this DAO!");
+        require(INovaMembership(Address).canJoin(_msgSender(), role), "AutID: Not a member of this !");
 
         string memory lowerCase = _toLower(username);
         uint256 tokenId = _tokenIds.current();
@@ -79,73 +79,73 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         _safeMint(_msgSender(), tokenId);
         _setTokenURI(tokenId, url);
 
-        holderToDAOMembershipData[_msgSender()][daoAddress] = DAOMember(daoAddress, role, commitment, true);
-        holderToDAOs[_msgSender()].push(daoAddress);
+        holderToMembershipData[_msgSender()][Address] = NovaMember(Address, role, commitment, true);
+        holderTos[_msgSender()].push(Address);
 
         _autIDByOwner[_msgSender()] = tokenId;
         autIDUsername[lowerCase] = _msgSender();
         _tokenIds.increment();
 
-        INovaMembershipSet(daoAddress).join(_msgSender(), role);
+        INovaMembershipSet(Address).join(_msgSender(), role);
 
         emit AutIDCreated(_msgSender(), tokenId);
-        emit DAOJoined(daoAddress, _msgSender());
+        emit NovaJoined(Address, _msgSender());
     }
 
-    /// @notice associates an AutID to a new DAO
+    /// @notice associates an AutID to a new 
     /// @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other communities
-    /// @param role the role that the user has selected within the specified DAO
-    /// @param commitment the commitment value that the user has selected for this DAO
-    /// @param daoAddress the address of the daoAddress contract
-    function joinDAO(uint256 role, uint256 commitment, address daoAddress) external override {
+    /// @param role the role that the user has selected within the specified 
+    /// @param commitment the commitment value that the user has selected for this 
+    /// @param Address the address of the Address contract
+    function joinNova(uint256 role, uint256 commitment, address Address) external override {
         require(role > 0 && role < 4, "Role must be between 1 and 3");
         ///@dev @todo consider if role commitment dependent as initial.
         require(commitment > 0 && commitment < 11, "AutID: Commitment should be between 1 and 10");
-        require(daoAddress != address(0), "AutID: Missing DAO");
+        require(Address != address(0), "AutID: Missing ");
         require(balanceOf(_msgSender()) == 1, "AutID: There is no AutID registered for this address.");
 
-        address[] memory currentComs = holderToDAOs[_msgSender()];
+        address[] memory currentComs = holderTos[_msgSender()];
         for (uint256 index = 0; index < currentComs.length; index++) {
-            require(currentComs[index] != daoAddress, "AutID: Already a member");
+            require(currentComs[index] != Address, "AutID: Already a member");
         }
 
         require(
-            commitment >= INovaCommitment(daoAddress).getCommitment(), "Commitment lower than the DAOs min commitment"
+            commitment >= INovaCommitment(Address).getCommitment(), "Commitment lower than the s min commitment"
         );
 
-        require(INovaMembership(daoAddress).canJoin(_msgSender(), role), "AutID: Not a member of this DAO!");
+        require(INovaMembership(Address).canJoin(_msgSender(), role), "AutID: Not a member of this !");
 
-        holderToDAOMembershipData[_msgSender()][daoAddress] = DAOMember(daoAddress, role, commitment, true);
-        holderToDAOs[_msgSender()].push(daoAddress);
+        holderToMembershipData[_msgSender()][Address] = NovaMember(Address, role, commitment, true);
+        holderTos[_msgSender()].push(Address);
 
-        INovaMembershipSet(daoAddress).join(_msgSender(), role);
+        INovaMembershipSet(Address).join(_msgSender(), role);
 
-        emit DAOJoined(daoAddress, _msgSender());
+        emit NovaJoined(Address, _msgSender());
     }
 
-    function withdraw(address daoAddress) external override {
-        require(holderToDAOMembershipData[_msgSender()][daoAddress].isActive, "AutID: Not a member");
-        holderToDAOMembershipData[_msgSender()][daoAddress].isActive = false;
-        holderToDAOMembershipData[_msgSender()][daoAddress].commitment = 0;
+    function withdraw(address Address) external override {
+        require(holderToMembershipData[_msgSender()][Address].isActive, "AutID: Not a member");
+        holderToMembershipData[_msgSender()][Address].isActive = false;
+        holderToMembershipData[_msgSender()][Address].commitment = 0;
 
         /// @dev @todo this does not change Nova storage isMember[_msgSender] will still return true (has dos implications on admin check allowlist spec)
 
-        emit DAOWithdrown(daoAddress, _msgSender());
+        emit NovaWithdrawn(Address, _msgSender());
     }
 
-    function editCommitment(address daoAddress, uint256 newCommitment) external override {
-        require(holderToDAOMembershipData[_msgSender()][daoAddress].isActive, "AutID: Not a member");
+    function editCommitment(address Address, uint256 newCommitment) external override {
+        require(holderToMembershipData[_msgSender()][Address].isActive, "AutID: Not a member");
 
         require(newCommitment > 0 && newCommitment < 11, "AutID: Commitment should be between 1 and 10");
 
         require(
-            newCommitment >= INovaCommitment(daoAddress).getCommitment(),
-            "Commitment lower than the DAOs min commitment"
+            newCommitment >= INovaCommitment(Address).getCommitment(),
+            "Commitment lower than the s min commitment"
         );
 
-        holderToDAOMembershipData[_msgSender()][daoAddress].commitment = newCommitment;
+        holderToMembershipData[_msgSender()][Address].commitment = newCommitment;
 
-        emit CommitmentUpdated(daoAddress, _msgSender(), newCommitment);
+        emit CommitmentUpdated(Address, _msgSender(), newCommitment);
     }
 
     function setMetadataUri(string calldata metadataUri) public override {
@@ -158,19 +158,19 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
 
     /// @notice gets all communities the AutID holder is a member of
     /// @param autIDHolder the address of the AutID holder
-    /// @return daos dao expander addresses that the aut holder is a part of
-    function getHolderDAOs(address autIDHolder) external view override returns (address[] memory daos) {
+    /// @return s  expander addresses that the aut holder is a part of
+    function getHolderNovae(address autIDHolder) external view override returns (address[] memory s) {
         require(balanceOf(autIDHolder) == 1, "AutID: There is no AutID registered for this address.");
-        return holderToDAOs[autIDHolder];
+        return holderTos[autIDHolder];
     }
 
-    function getMembershipData(address autIDHolder, address daoAddress)
+    function getMembershipData(address autIDHolder, address Address)
         external
         view
         override
-        returns (DAOMember memory)
+        returns (NovaMember memory)
     {
-        return holderToDAOMembershipData[autIDHolder][daoAddress];
+        return holderToMembershipData[autIDHolder][Address];
     }
 
     /// @notice retieves all members with active status for provided nova address
@@ -183,7 +183,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         address[] memory actives = new address[](members.length);
 
         for (i; i < members.length;) {
-            if (holderToDAOMembershipData[members[i]][nova_].isActive) {
+            if (holderToMembershipData[members[i]][nova_].isActive) {
                 actives[i] = members[i];
             } else {
                 ++len;
@@ -216,30 +216,30 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     }
 
     function getTotalCommitment(address autIDHolder) public view override returns (uint256) {
-        address[] memory userDAOs = holderToDAOs[autIDHolder];
+        address[] memory users = holderTos[autIDHolder];
 
         uint256 totalCommitment = 0;
-        for (uint256 index = 0; index < userDAOs.length; index++) {
-            totalCommitment += holderToDAOMembershipData[autIDHolder][userDAOs[index]].commitment;
+        for (uint256 index = 0; index < users.length; index++) {
+            totalCommitment += holderToMembershipData[autIDHolder][users[index]].commitment;
         }
         return totalCommitment;
     }
 
-    /// @notice returns commitment levels for agents in a dao
+    /// @notice returns commitment levels for agents in a 
     /// @param agents address of agents
-    /// @param dao_ commitment target
-    function getCommitmentsOfFor(address[] memory agents, address dao_)
+    /// @param _nova commitment target
+    function getCommitmentsOfFor(address[] memory agents, address _nova)
         external
         view
         returns (uint256[] memory commitments)
     {
         uint256 i;
-        if (agents.length == 0) agents = INovaMembership(dao_).getAllMembers();
+        if (agents.length == 0) agents = INovaMembership(_nova).getAllMembers();
 
         commitments = new uint256[](agents.length);
 
         for (i; i < agents.length;) {
-            commitments[i] = holderToDAOMembershipData[agents[i]][dao_].commitment;
+            commitments[i] = holderToMembershipData[agents[i]][_nova].commitment;
             unchecked {
                 ++i;
             }
