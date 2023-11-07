@@ -43,7 +43,12 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
     }
 
     // Plugin creation
-    function addPluginToNova(address pluginAddress, uint256 pluginDefinitionId) external payable override nonReentrant {
+    function addPluginToNova(address pluginAddress, uint256 pluginDefinitionId)
+        external
+        payable
+        override
+        nonReentrant
+    {
         address nova = IPlugin(pluginAddress).novaAddress();
 
         require(INovaAdmin(nova).isAdmin(msg.sender) == true, "Not an admin");

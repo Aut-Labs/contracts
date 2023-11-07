@@ -65,7 +65,6 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
         novaMembersOnly = membersOnly;
     }
 
-
     function editTask(uint256 taskId, uint256 role, string memory uri, uint256 startDate, uint256 endDate)
         public
         override
@@ -142,6 +141,7 @@ contract OpenTaskPlugin is TasksModule, SimplePlugin {
 
     function create(uint256 role, string memory uri, uint256 startDate, uint256 endDate)
         public
+        virtual
         override
         onlyAdmin
         returns (uint256)

@@ -57,8 +57,8 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     /// @notice mints a new AutID NFT ID
     /// @dev each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the  passed.
     /// @param url the NFT metadata that holds username, avatar
-    /// @param role the role that the user has selected within the specified 
-    /// @param commitment the commitment value that the user has selected for this 
+    /// @param role the role that the user has selected within the specified
+    /// @param commitment the commitment value that the user has selected for this
     /// @param Address the address of the Expender contract
     function mint(string memory username, string memory url, uint256 role, uint256 commitment, address Address)
         external
@@ -92,10 +92,10 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         emit NovaJoined(Address, _msgSender());
     }
 
-    /// @notice associates an AutID to a new 
+    /// @notice associates an AutID to a new
     /// @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other communities
-    /// @param role the role that the user has selected within the specified 
-    /// @param commitment the commitment value that the user has selected for this 
+    /// @param role the role that the user has selected within the specified
+    /// @param commitment the commitment value that the user has selected for this
     /// @param Address the address of the Address contract
     function joinNova(uint256 role, uint256 commitment, address Address) external override {
         require(role > 0 && role < 4, "Role must be between 1 and 3");
@@ -109,9 +109,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
             require(currentComs[index] != Address, "AutID: Already a member");
         }
 
-        require(
-            commitment >= INovaCommitment(Address).getCommitment(), "Commitment lower than the s min commitment"
-        );
+        require(commitment >= INovaCommitment(Address).getCommitment(), "Commitment lower than the s min commitment");
 
         require(INovaMembership(Address).canJoin(_msgSender(), role), "AutID: Not a member of this !");
 
@@ -138,10 +136,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
 
         require(newCommitment > 0 && newCommitment < 11, "AutID: Commitment should be between 1 and 10");
 
-        require(
-            newCommitment >= INovaCommitment(Address).getCommitment(),
-            "Commitment lower than the s min commitment"
-        );
+        require(newCommitment >= INovaCommitment(Address).getCommitment(), "Commitment lower than the s min commitment");
 
         holderToMembershipData[_msgSender()][Address].commitment = newCommitment;
 
@@ -225,7 +220,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         return totalCommitment;
     }
 
-    /// @notice returns commitment levels for agents in a 
+    /// @notice returns commitment levels for agents in a
     /// @param agents address of agents
     /// @param _nova commitment target
     function getCommitmentsOfFor(address[] memory agents, address _nova)

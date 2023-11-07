@@ -166,6 +166,41 @@ contract MultiPluginLR is DeploysInit {
         assertTrue((IA20.GC + offTWR.getRepPointsOfTask(taskid)) == IA21.GC, "contrib not registered");
     }
 
+    function testCreatesWithRepWeight() public {
+        vm.prank(A3);
+        vm.expectRevert("Only admin.");
+        uint256 returnsID = offTWR.createOffChainTaskWithWeight(
+            1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 450
+        );
+
+        vm.prank(A3);
+        aID.mint("AAA333", "a user url", 1, 3, address(Nova));
+        assertTrue(Nova.isMember(A3), "failed to add member");
+
+        vm.prank(A0);
+        Nova.addAdmin(A3);
+        assertTrue(Nova.isAdmin(A3), "failed to add admin");
+
+        vm.prank(A3);
+        returnsID = offTWR.createOffChainTaskWithWeight(
+            1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 450
+        );
+
+        assertTrue(returnsID > 0, "id is 0");
+
+        vm.prank(A3);
+        returnsID = offTWR.createOffChainTaskWithWeight(
+            1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 950
+        );
+
+        vm.warp(block.timestamp + 13245);
+
+        vm.prank(A3);
+        returnsID = offTWR.createOffChainTaskWithWeight(
+            1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 450
+        );
+    }
+
     function testSocialTaksMultiple() public {
         (uint256 taskid, uint256 snap) = testSetsWeightForTask(306);
     }

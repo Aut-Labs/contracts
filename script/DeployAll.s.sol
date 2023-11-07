@@ -129,7 +129,6 @@ contract DeployScript is Script {
         IAllowlist(AllowlistAddr).addOwner(0x06a0cC2bF3F4B1b7f725ccaB1D7A51547c48B8Fc);
         IAllowlist(AllowlistAddr).addOwner(0x61Be760b4fFb521657f585b392E3a446F4BB563d);
 
-
         vm.writeLine(
             "deployments.txt",
             string.concat(

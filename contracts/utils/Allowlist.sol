@@ -42,7 +42,7 @@ contract Allowlist is IAllowlist {
         if (!isOwner[msg.sender]) {
             plusOne[addrToAdd_] = msg.sender;
             plusOne[msg.sender] = addrToAdd_;
-                    emit AddedToAllowList(addrToAdd_);
+            emit AddedToAllowList(addrToAdd_);
         }
 
         emit AddedToAllowList(addrToAdd_);
