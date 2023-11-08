@@ -22,16 +22,12 @@ contract DeployScript is Script {
 
     // AddToAllowList AddALL;
     /// plugin definition hardcoded init metadatauri
-    string onboardingIpfsUrl = "ipfs://bafkreig3gwhmraeljunek6rw3vynsbxapmwdmtzaov6uwcsq4qz6t2kmny";
-
-    string discordUrl = "ipfs://bafkreic6s52eavmst3w7vebsdzl76a55wbm3asq6qujubjh6xh3323u7f4";
-    string openTaskUrl = "ipfs://bafkreie45ntwx6trhl4azaixj6st64rcghrnscf2mnlahihctri6ospgte";
-
-    string quizUrl = "ipfs://bafkreign362uxbfxfmczqd73accyqvfllmf5p47lxyubmdxylhin5xdazi";
-    string socialBotUrl = "ipfs://bafkreidz4ik2na4wj54ha3kvjjauaxkumd3xrejpvqbt7vzdekw4vzgvqy";
-
-    string transactionTaskUrl = "ipfs://bafkreidlrxr57x7f3pfen35kzorqxnkfatuc5brofgpztty3qi5eis6f6a";
-
+    string joinDisocrdUrl = "ipfs://bafkreiczcramssdxwman5yry2xexqvjqxjix7fz7eeiekuqbkusuxnqkym";
+    string openTaskUrl = "ipfs://bafkreibycwcobqp4ietiownx2y63us6f4kxte5ql6dsvmpurggsqkbgnj4";
+    string quizUrl = "ipfs://bafkreibs7zxogv4j2acclnliuqbj2rhcpc7xf4fovbe3gu4lta76ie4hsq";
+    string socialBotUrl = "ipfs://bafkreifeesdwui5ly2wscrtu5xiztb7mk4gypvu4fjhpu5kyspasld2fze";
+    string socialQuizUrl = "ipfs://bafkreibu4wyucyrvb3wkd3blwhc4n2ayg7sugpl7egxrdglsorlvpkekv4";
+ 
 
     function setUp() public {
         chainID = block.chainid;
@@ -171,23 +167,20 @@ contract DeployScript is Script {
         uint256[] memory pluginDefinitionIds = new uint256[](6);
 
         pluginDefinitionIds[0] = IPR.addPluginDefinition(
-            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), onboardingIpfsUrl, 0, true, dependencies
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), joinDisocrdUrl, 0, true, dependencies
         );
         pluginDefinitionIds[1] = IPR.addPluginDefinition(
-            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), discordUrl, 0, true, dependencies
-        );
-        pluginDefinitionIds[2] = IPR.addPluginDefinition(
             payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), openTaskUrl, 0, true, dependencies
         );
-        pluginDefinitionIds[3] = IPR.addPluginDefinition(
+        pluginDefinitionIds[2] = IPR.addPluginDefinition(
             payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), quizUrl, 0, true, dependencies
         );
-        pluginDefinitionIds[4] = IPR.addPluginDefinition(
+        pluginDefinitionIds[3] = IPR.addPluginDefinition(
             payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), socialBotUrl, 0, true, dependencies
         );
-        pluginDefinitionIds[5] = IPR.addPluginDefinition(
-            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), transactionTaskUrl, 0, true, dependencies
-        );
+        pluginDefinitionIds[4] = IPR.addPluginDefinition(
+            payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), socialQuizUrl, 0, true, dependencies
+        ); 
 
         // vm.writeLine(
         //     "deployments.txt",
