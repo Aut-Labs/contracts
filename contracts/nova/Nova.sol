@@ -94,6 +94,16 @@ contract Nova is
         _setCommitment(commitment);
     }
 
+    /// @dev set archetype and parameter weights simultaneously
+    /// @param input an array of 6 items: 1-st is an archetype, the rest are parameters (size, rep, conviction, perf, growth)
+    function setArchetypeAndParameters(uint8[] memory input) external onlyAdmin {
+        require(input.length == 6, "Nova: incorrect input length");
+        _setArchetype(input[0]);
+        for (uint256 i = 1; i != 6; ++i) {
+            _setWeightFor(uint8(i), input[i]);
+        }
+    }
+
     /// @dev set an archetype (for example, Growth or Performance)
     function setArchetype(uint8 parameter) external onlyAdmin {
         _setArchetype(parameter);
