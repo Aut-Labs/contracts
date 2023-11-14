@@ -14,38 +14,11 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Approval
-        - ApprovalForAll
         - AutIDCreated
-        - CommitmentUpdated
-        - DiscordIDConnectedToAutID
-        - Initialized
-        - MetadataUriSet
-        - NovaJoined
-        - NovaWithdrawn
-        - Transfer
       abis:
         - name: AutID
-          file: ./abis/AutID.json
+          file: ../../volumes/out/AutID.sol/AutID.json
       eventHandlers:
-        - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleApproval
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
         - event: AutIDCreated(address,uint256,string)
           handler: handleAutIDCreated
-        - event: CommitmentUpdated(address,address,uint256)
-          handler: handleCommitmentUpdated
-        - event: DiscordIDConnectedToAutID()
-          handler: handleDiscordIDConnectedToAutID
-        - event: Initialized(uint8)
-          handler: handleInitialized
-        - event: MetadataUriSet(uint256,string)
-          handler: handleMetadataUriSet
-        - event: NovaJoined(address,address)
-          handler: handleNovaJoined
-        - event: NovaWithdrawn(address,address)
-          handler: handleNovaWithdrawn
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
       file: ./src/aut-id.ts

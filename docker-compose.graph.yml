@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   graph-node:
     image: graphprotocol/graph-node
@@ -29,6 +29,8 @@ services:
       - '5001:5001'
     volumes:
       - ./volumes/ipfs:/data/ipfs
+    networks:
+      - mainnet
   postgres:
     image: postgres:14
     ports:
@@ -50,6 +52,8 @@ services:
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
     volumes:
       - ./volumes/postgres:/var/lib/postgresql/data
+    networks:
+      - mainnet
 
 networks:
   mainnet:
