@@ -8,16 +8,30 @@ Below, you'll find a simple walkthrough to get started using Āut's Smart Contra
 
 # Docker Setup
 
-```
+Create docker network (once)
+```bash
 docker network create mainnet
 ```
 
-```
+Run local blockchain node & deploy contracts. 
+Now the local node is accessable at `http://localhost:8545` (with `chainId=31337`)
+The deployer's PK is specified in `docker-compose.yml`
+```bash
 docker-compose up --build
 ```
 
-```
+Run local graph node
+```bash
 docker-compose -f docker-compose.graph.yml up
+```
+
+Deploy subgraphs
+```bash
+(
+    cd subgraphs/aut-id
+    yarn create-local
+    yarn deploy-local
+)
 ```
 
 # Setup 
