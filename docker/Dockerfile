@@ -29,9 +29,7 @@ COPY lib ./lib
 COPY script ./script
 COPY contracts ./contracts
 
-
 RUN chmod +x ./entrypoint.sh
-
 
 # todo: install solc manually so that forge won't install it each time ruining cached layer
 RUN forge build
