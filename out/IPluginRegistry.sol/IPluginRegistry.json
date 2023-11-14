@@ -1,0 +1,2519 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newReputationAlgo",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "previousAddress",
+          "type": "address"
+        }
+      ],
+      "name": "DefaultLRAlgoChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "pluginTypeId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "Nova",
+          "type": "address"
+        }
+      ],
+      "name": "PluginAddedToNova",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "pluginTypeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "PluginDefinitionAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pluginAddress",
+          "type": "address"
+        }
+      ],
+      "name": "PluginRegistered",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "metadataURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "canBeStandalone",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "moduleDependencies",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "addPluginDefinition",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "pluginDefinitionId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pluginAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pluginDefinitionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "addPluginToNova",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "defaultLRAddr",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "pluginDefinitionId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "url",
+          "type": "string"
+        }
+      ],
+      "name": "editPluginDefinitionMetadata",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pluginAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getOwnerOfPlugin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "Nova",
+          "type": "address"
+        }
+      ],
+      "name": "getPluginIdsByNova",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPluginInstanceByTokenId",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "pluginAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pluginDefinitionId",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IPluginRegistry.PluginInstance",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "modulesRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "Nova",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pluginTypeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "pluginDefinitionsInstalledByNova",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "LR",
+          "type": "address"
+        }
+      ],
+      "name": "setDefaulLRAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pluginAddress_",
+          "type": "address"
+        }
+      ],
+      "name": "tokenIdFromAddress",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "addPluginDefinition(address,string,uint256,bool,uint256[])": "342094ba",
+    "addPluginToNova(address,uint256)": "ac70c99b",
+    "defaultLRAddr()": "f0b7832a",
+    "editPluginDefinitionMetadata(uint256,string)": "26b6ee9e",
+    "getOwnerOfPlugin(address)": "235883e3",
+    "getPluginIdsByNova(address)": "31d2dd3a",
+    "getPluginInstanceByTokenId(uint256)": "e832df91",
+    "modulesRegistry()": "82accae8",
+    "owner()": "8da5cb5b",
+    "pluginDefinitionsInstalledByNova(address,uint256)": "4fc0a0ce",
+    "setDefaulLRAddress(address)": "a9810f45",
+    "tokenIdFromAddress(address)": "51c4d95e"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newReputationAlgo\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"previousAddress\",\"type\":\"address\"}],\"name\":\"DefaultLRAlgoChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"pluginTypeId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"Nova\",\"type\":\"address\"}],\"name\":\"PluginAddedToNova\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"pluginTypeId\",\"type\":\"uint256\"}],\"name\":\"PluginDefinitionAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"pluginAddress\",\"type\":\"address\"}],\"name\":\"PluginRegistered\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"metadataURI\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"canBeStandalone\",\"type\":\"bool\"},{\"internalType\":\"uint256[]\",\"name\":\"moduleDependencies\",\"type\":\"uint256[]\"}],\"name\":\"addPluginDefinition\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"pluginDefinitionId\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pluginAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"pluginDefinitionId\",\"type\":\"uint256\"}],\"name\":\"addPluginToNova\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"defaultLRAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"pluginDefinitionId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"url\",\"type\":\"string\"}],\"name\":\"editPluginDefinitionMetadata\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pluginAddress\",\"type\":\"address\"}],\"name\":\"getOwnerOfPlugin\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"Nova\",\"type\":\"address\"}],\"name\":\"getPluginIdsByNova\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getPluginInstanceByTokenId\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"pluginAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"pluginDefinitionId\",\"type\":\"uint256\"}],\"internalType\":\"struct IPluginRegistry.PluginInstance\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"modulesRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"Nova\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"pluginTypeId\",\"type\":\"uint256\"}],\"name\":\"pluginDefinitionsInstalledByNova\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"LR\",\"type\":\"address\"}],\"name\":\"setDefaulLRAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pluginAddress_\",\"type\":\"address\"}],\"name\":\"tokenIdFromAddress\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for the plugin registry contract, which manages the registration and installation of plugins.\",\"events\":{\"PluginAddedToNova(uint256,uint256,address)\":{\"details\":\"Emitted when a plugin is added to a Nova.\",\"params\":{\"Nova\":\"The address of the Nova to which the plugin was added.\",\"pluginTypeId\":\"The ID of the plugin definition associated with the added plugin.\",\"tokenId\":\"The ID of the token associated with the added plugin.\"}},\"PluginDefinitionAdded(uint256)\":{\"details\":\"Emitted when a new plugin definition is added to the plugin registry.\",\"params\":{\"pluginTypeId\":\"The ID of the newly added plugin definition.\"}},\"PluginRegistered(uint256,address)\":{\"details\":\"Emitted when a new plugin is registered with the plugin registry.\",\"params\":{\"pluginAddress\":\"The address of the registered plugin.\",\"tokenId\":\"The ID of the token associated with the registered plugin.\"}}},\"kind\":\"dev\",\"methods\":{\"addPluginToNova(address,uint256)\":{\"details\":\"Adds a plugin to a Nova.\",\"params\":{\"pluginAddress\":\"The address of the plugin contract.\",\"pluginDefinitionId\":\"The ID of the plugin definition.\"}},\"editPluginDefinitionMetadata(uint256,string)\":{\"details\":\"Edits the metadata URI for a given plugin definition.\",\"params\":{\"pluginDefinitionId\":\"The ID of the plugin for which to edit metadata.\",\"url\":\"The URL of the new metadata.\"}},\"getOwnerOfPlugin(address)\":{\"details\":\"Returns the owner of a given plugin.\",\"params\":{\"pluginAddress\":\"The address of the plugin for which to get the owner.\"},\"returns\":{\"_0\":\"The address of the owner of the specified plugin.\"}},\"getPluginIdsByNova(address)\":{\"details\":\"Returns an array of token IDs representing the plugins installed for a given Nova.\",\"params\":{\"Nova\":\"The address of the Nova for which to get installed plugins.\"},\"returns\":{\"_0\":\"An array of token IDs representing the plugins installed for the specified Nova.\"}},\"getPluginInstanceByTokenId(uint256)\":{\"details\":\"Returns the plugin instance associated with a given token ID.\",\"params\":{\"tokenId\":\"The token ID for which to get the plugin instance.\"},\"returns\":{\"_0\":\"A `PluginInstance` struct containing the plugin address and plugin definition ID associated with the specified token ID.\"}},\"modulesRegistry()\":{\"details\":\"Returns the address of the Modules Registry contract.\",\"returns\":{\"_0\":\"The address of the Modules Registry contract.\"}},\"pluginDefinitionsInstalledByNova(address,uint256)\":{\"details\":\"Returns a boolean indicating whether a given plugin definition is installed for a given Nova.\",\"params\":{\"Nova\":\"The address of the Nova for which to check plugin definition installation.\",\"pluginTypeId\":\"The ID of the plugin definition for which to check installation.\"},\"returns\":{\"_0\":\"A boolean indicating whether the specified plugin definition is installed for the specified Nova.\"}},\"setDefaulLRAddress(address)\":{\"params\":{\"LR\":\"address of new default local reputation state and logic\"}}},\"title\":\"IPluginRegistry\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"owner()\":{\"notice\":\"current owner in ownable\"},\"setDefaulLRAddress(address)\":{\"notice\":\"changes the default local reputation globally\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/plugins/registry/IPluginRegistry.sol\":\"IPluginRegistry\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/plugins/registry/IPluginRegistry.sol\":{\"keccak256\":\"0x62bf007345a349db04d3682ca388de27df70c47f472856db8d1b05906e597074\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://d39ad7b6aaca91c0315fa5fc5d2e3c24c9ba752d6ec5c5e58001c3c83e8cda82\",\"dweb:/ipfs/Qme83gEQJiLFiLo9LFWSAGmhyrWJxsBw4bzzgFayppdokd\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newReputationAlgo",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "previousAddress",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "DefaultLRAlgoChanged",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "pluginTypeId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "Nova",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "PluginAddedToNova",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "pluginTypeId",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "PluginDefinitionAdded",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "pluginAddress",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "PluginRegistered",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address payable",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "metadataURI",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "canBeStandalone",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "moduleDependencies",
+              "type": "uint256[]"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addPluginDefinition",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "pluginDefinitionId",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "pluginAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pluginDefinitionId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "payable",
+          "type": "function",
+          "name": "addPluginToNova"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "defaultLRAddr",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "pluginDefinitionId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "url",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "editPluginDefinitionMetadata"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "pluginAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getOwnerOfPlugin",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "Nova",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getPluginIdsByNova",
+          "outputs": [
+            {
+              "internalType": "uint256[]",
+              "name": "",
+              "type": "uint256[]"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getPluginInstanceByTokenId",
+          "outputs": [
+            {
+              "internalType": "struct IPluginRegistry.PluginInstance",
+              "name": "",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "pluginAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "pluginDefinitionId",
+                  "type": "uint256"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "modulesRegistry",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "owner",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "Nova",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pluginTypeId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "pluginDefinitionsInstalledByNova",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "LR",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "setDefaulLRAddress"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "pluginAddress_",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "tokenIdFromAddress",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "addPluginToNova(address,uint256)": {
+            "details": "Adds a plugin to a Nova.",
+            "params": {
+              "pluginAddress": "The address of the plugin contract.",
+              "pluginDefinitionId": "The ID of the plugin definition."
+            }
+          },
+          "editPluginDefinitionMetadata(uint256,string)": {
+            "details": "Edits the metadata URI for a given plugin definition.",
+            "params": {
+              "pluginDefinitionId": "The ID of the plugin for which to edit metadata.",
+              "url": "The URL of the new metadata."
+            }
+          },
+          "getOwnerOfPlugin(address)": {
+            "details": "Returns the owner of a given plugin.",
+            "params": {
+              "pluginAddress": "The address of the plugin for which to get the owner."
+            },
+            "returns": {
+              "_0": "The address of the owner of the specified plugin."
+            }
+          },
+          "getPluginIdsByNova(address)": {
+            "details": "Returns an array of token IDs representing the plugins installed for a given Nova.",
+            "params": {
+              "Nova": "The address of the Nova for which to get installed plugins."
+            },
+            "returns": {
+              "_0": "An array of token IDs representing the plugins installed for the specified Nova."
+            }
+          },
+          "getPluginInstanceByTokenId(uint256)": {
+            "details": "Returns the plugin instance associated with a given token ID.",
+            "params": {
+              "tokenId": "The token ID for which to get the plugin instance."
+            },
+            "returns": {
+              "_0": "A `PluginInstance` struct containing the plugin address and plugin definition ID associated with the specified token ID."
+            }
+          },
+          "modulesRegistry()": {
+            "details": "Returns the address of the Modules Registry contract.",
+            "returns": {
+              "_0": "The address of the Modules Registry contract."
+            }
+          },
+          "pluginDefinitionsInstalledByNova(address,uint256)": {
+            "details": "Returns a boolean indicating whether a given plugin definition is installed for a given Nova.",
+            "params": {
+              "Nova": "The address of the Nova for which to check plugin definition installation.",
+              "pluginTypeId": "The ID of the plugin definition for which to check installation."
+            },
+            "returns": {
+              "_0": "A boolean indicating whether the specified plugin definition is installed for the specified Nova."
+            }
+          },
+          "setDefaulLRAddress(address)": {
+            "params": {
+              "LR": "address of new default local reputation state and logic"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "owner()": {
+            "notice": "current owner in ownable"
+          },
+          "setDefaulLRAddress(address)": {
+            "notice": "changes the default local reputation globally"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/plugins/registry/IPluginRegistry.sol": "IPluginRegistry"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/plugins/registry/IPluginRegistry.sol": {
+        "keccak256": "0x62bf007345a349db04d3682ca388de27df70c47f472856db8d1b05906e597074",
+        "urls": [
+          "bzz-raw://d39ad7b6aaca91c0315fa5fc5d2e3c24c9ba752d6ec5c5e58001c3c83e8cda82",
+          "dweb:/ipfs/Qme83gEQJiLFiLo9LFWSAGmhyrWJxsBw4bzzgFayppdokd"
+        ],
+        "license": "UNLICENSED"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/plugins/registry/IPluginRegistry.sol",
+    "id": 11353,
+    "exportedSymbols": {
+      "IPluginRegistry": [
+        11352
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "39:5069:81",
+    "nodes": [
+      {
+        "id": 11206,
+        "nodeType": "PragmaDirective",
+        "src": "39:23:81",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 11352,
+        "nodeType": "ContractDefinition",
+        "src": "210:4897:81",
+        "nodes": [
+          {
+            "id": 11221,
+            "nodeType": "StructDefinition",
+            "src": "393:203:81",
+            "nodes": [],
+            "canonicalName": "IPluginRegistry.PluginDefinition",
+            "members": [
+              {
+                "constant": false,
+                "id": 11209,
+                "mutability": "mutable",
+                "name": "metadataURI",
+                "nameLocation": "434:11:81",
+                "nodeType": "VariableDeclaration",
+                "scope": 11221,
+                "src": "427:18:81",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 11208,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "427:6:81",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 11211,
+                "mutability": "mutable",
+                "name": "price",
+                "nameLocation": "463:5:81",
+                "nodeType": "VariableDeclaration",
+                "scope": 11221,
+                "src": "455:13:81",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 11210,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "455:7:81",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 11213,
+                "mutability": "mutable",
+                "name": "creator",
+                "nameLocation": "494:7:81",
+                "nodeType": "VariableDeclaration",
+                "scope": 11221,
+                "src": "478:23:81",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address_payable",
+                  "typeString": "address payable"
+                },
+                "typeName": {
+                  "id": 11212,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "478:15:81",
+                  "stateMutability": "payable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 11215,
+                "mutability": "mutable",
+                "name": "active",
+                "nameLocation": "516:6:81",
+                "nodeType": "VariableDeclaration",
+                "scope": 11221,
+                "src": "511:11:81",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 11214,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "511:4:81",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 11217,
+                "mutability": "mutable",
+                "name": "canBeStandalone",
+                "nameLocation": "537:15:81",
+                "nodeType": "VariableDeclaration",
+                "scope": 11221,
+                "src": "532:20:81",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 11216,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "532:4:81",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 11220,
+                "mutability": "mutable",
+                "name": "dependencyModules",
+                "nameLocation": "572:17:81",
+                "nodeType": "VariableDeclaration",
+                "scope": 11221,
+                "src": "562:27:81",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                  "typeString": "uint256[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 11218,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "562:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 11219,
+                  "nodeType": "ArrayTypeName",
+                  "src": "562:9:81",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                    "typeString": "uint256[]"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "PluginDefinition",
+            "nameLocation": "400:16:81",
+            "scope": 11352,
+            "visibility": "public"
+          },
+          {
+            "id": 11226,
+            "nodeType": "StructDefinition",
+            "src": "755:96:81",
+            "nodes": [],
+            "canonicalName": "IPluginRegistry.PluginInstance",
+            "members": [
+              {
+                "constant": false,
+                "id": 11223,
+                "mutability": "mutable",
+                "name": "pluginAddress",
+                "nameLocation": "795:13:81",
+                "nodeType": "VariableDeclaration",
+                "scope": 11226,
+                "src": "787:21:81",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 11222,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "787:7:81",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 11225,
+                "mutability": "mutable",
+                "name": "pluginDefinitionId",
+                "nameLocation": "826:18:81",
+                "nodeType": "VariableDeclaration",
+                "scope": 11226,
+                "src": "818:26:81",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 11224,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "818:7:81",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "PluginInstance",
+            "nameLocation": "762:14:81",
+            "scope": 11352,
+            "visibility": "public"
+          },
+          {
+            "id": 11232,
+            "nodeType": "EventDefinition",
+            "src": "857:79:81",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "5306ce2f8e36872437fa0825af321e9ff5ac117d48c602f520dace01c1ac1324",
+            "name": "DefaultLRAlgoChanged",
+            "nameLocation": "863:20:81",
+            "parameters": {
+              "id": 11231,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11228,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "newReputationAlgo",
+                  "nameLocation": "892:17:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11232,
+                  "src": "884:25:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11227,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "884:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11230,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "previousAddress",
+                  "nameLocation": "919:15:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11232,
+                  "src": "911:23:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11229,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "911:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "883:52:81"
+            }
+          },
+          {
+            "id": 11239,
+            "nodeType": "EventDefinition",
+            "src": "1183:79:81",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 11233,
+              "nodeType": "StructuredDocumentation",
+              "src": "942:236:81",
+              "text": " @dev Emitted when a new plugin is registered with the plugin registry.\n @param tokenId The ID of the token associated with the registered plugin.\n @param pluginAddress The address of the registered plugin."
+            },
+            "eventSelector": "91a697a20a7603d919a673d889a6263bca15841c5b84791bea2091bcefff95a8",
+            "name": "PluginRegistered",
+            "nameLocation": "1189:16:81",
+            "parameters": {
+              "id": 11238,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11235,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "1222:7:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11239,
+                  "src": "1206:23:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11234,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1206:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11237,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "pluginAddress",
+                  "nameLocation": "1247:13:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11239,
+                  "src": "1231:29:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11236,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1231:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1205:56:81"
+            }
+          },
+          {
+            "id": 11244,
+            "nodeType": "EventDefinition",
+            "src": "1438:58:81",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 11240,
+              "nodeType": "StructuredDocumentation",
+              "src": "1268:165:81",
+              "text": " @dev Emitted when a new plugin definition is added to the plugin registry.\n @param pluginTypeId The ID of the newly added plugin definition."
+            },
+            "eventSelector": "cbbaf67d68fba51d618db755cf99150d3acd7bad449961ed3118fc81a21e23eb",
+            "name": "PluginDefinitionAdded",
+            "nameLocation": "1444:21:81",
+            "parameters": {
+              "id": 11243,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11242,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "pluginTypeId",
+                  "nameLocation": "1482:12:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11244,
+                  "src": "1466:28:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11241,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1466:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1465:30:81"
+            }
+          },
+          {
+            "id": 11253,
+            "nodeType": "EventDefinition",
+            "src": "1815:101:81",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 11245,
+              "nodeType": "StructuredDocumentation",
+              "src": "1502:308:81",
+              "text": " @dev Emitted when a plugin is added to a Nova.\n @param tokenId The ID of the token associated with the added plugin.\n @param pluginTypeId The ID of the plugin definition associated with the added plugin.\n @param Nova The address of the Nova to which the plugin was added."
+            },
+            "eventSelector": "88cc99a45fb9dd47f06183f6dc5736a1e16fd89647a9c48122aa2e8c40aab90e",
+            "name": "PluginAddedToNova",
+            "nameLocation": "1821:17:81",
+            "parameters": {
+              "id": 11252,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11247,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "1855:7:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11253,
+                  "src": "1839:23:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11246,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1839:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11249,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "pluginTypeId",
+                  "nameLocation": "1880:12:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11253,
+                  "src": "1864:28:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11248,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1864:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11251,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "Nova",
+                  "nameLocation": "1910:4:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11253,
+                  "src": "1894:20:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11250,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1894:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1838:77:81"
+            }
+          },
+          {
+            "id": 11261,
+            "nodeType": "FunctionDefinition",
+            "src": "2134:81:81",
+            "nodes": [],
+            "documentation": {
+              "id": 11254,
+              "nodeType": "StructuredDocumentation",
+              "src": "1922:207:81",
+              "text": " @dev Returns the owner of a given plugin.\n @param pluginAddress The address of the plugin for which to get the owner.\n @return The address of the owner of the specified plugin."
+            },
+            "functionSelector": "235883e3",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getOwnerOfPlugin",
+            "nameLocation": "2143:16:81",
+            "parameters": {
+              "id": 11257,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11256,
+                  "mutability": "mutable",
+                  "name": "pluginAddress",
+                  "nameLocation": "2168:13:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11261,
+                  "src": "2160:21:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11255,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2160:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2159:23:81"
+            },
+            "returnParameters": {
+              "id": 11260,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11259,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11261,
+                  "src": "2206:7:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11258,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2206:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2205:9:81"
+            },
+            "scope": 11352,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11270,
+            "nodeType": "FunctionDefinition",
+            "src": "2520:99:81",
+            "nodes": [],
+            "documentation": {
+              "id": 11262,
+              "nodeType": "StructuredDocumentation",
+              "src": "2221:294:81",
+              "text": " @dev Returns the plugin instance associated with a given token ID.\n @param tokenId The token ID for which to get the plugin instance.\n @return A `PluginInstance` struct containing the plugin address and plugin definition ID associated with the specified token ID."
+            },
+            "functionSelector": "e832df91",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPluginInstanceByTokenId",
+            "nameLocation": "2529:26:81",
+            "parameters": {
+              "id": 11265,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11264,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "2564:7:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11270,
+                  "src": "2556:15:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11263,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2556:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2555:17:81"
+            },
+            "returnParameters": {
+              "id": 11269,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11268,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11270,
+                  "src": "2596:21:81",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_PluginInstance_$11226_memory_ptr",
+                    "typeString": "struct IPluginRegistry.PluginInstance"
+                  },
+                  "typeName": {
+                    "id": 11267,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 11266,
+                      "name": "PluginInstance",
+                      "nameLocations": [
+                        "2596:14:81"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 11226,
+                      "src": "2596:14:81"
+                    },
+                    "referencedDeclaration": 11226,
+                    "src": "2596:14:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_PluginInstance_$11226_storage_ptr",
+                      "typeString": "struct IPluginRegistry.PluginInstance"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2595:23:81"
+            },
+            "scope": 11352,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11280,
+            "nodeType": "FunctionDefinition",
+            "src": "3046:107:81",
+            "nodes": [],
+            "documentation": {
+              "id": 11271,
+              "nodeType": "StructuredDocumentation",
+              "src": "2625:416:81",
+              "text": " @dev Returns a boolean indicating whether a given plugin definition is installed for a given Nova.\n @param Nova The address of the Nova for which to check plugin definition installation.\n @param pluginTypeId The ID of the plugin definition for which to check installation.\n @return A boolean indicating whether the specified plugin definition is installed for the specified Nova."
+            },
+            "functionSelector": "4fc0a0ce",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "pluginDefinitionsInstalledByNova",
+            "nameLocation": "3055:32:81",
+            "parameters": {
+              "id": 11276,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11273,
+                  "mutability": "mutable",
+                  "name": "Nova",
+                  "nameLocation": "3096:4:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11280,
+                  "src": "3088:12:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11272,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3088:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11275,
+                  "mutability": "mutable",
+                  "name": "pluginTypeId",
+                  "nameLocation": "3110:12:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11280,
+                  "src": "3102:20:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11274,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3102:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3087:36:81"
+            },
+            "returnParameters": {
+              "id": 11279,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11278,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11280,
+                  "src": "3147:4:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 11277,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3147:4:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3146:6:81"
+            },
+            "scope": 11352,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11289,
+            "nodeType": "FunctionDefinition",
+            "src": "3445:83:81",
+            "nodes": [],
+            "documentation": {
+              "id": 11281,
+              "nodeType": "StructuredDocumentation",
+              "src": "3159:281:81",
+              "text": " @dev Returns an array of token IDs representing the plugins installed for a given Nova.\n @param Nova The address of the Nova for which to get installed plugins.\n @return An array of token IDs representing the plugins installed for the specified Nova."
+            },
+            "functionSelector": "31d2dd3a",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPluginIdsByNova",
+            "nameLocation": "3454:18:81",
+            "parameters": {
+              "id": 11284,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11283,
+                  "mutability": "mutable",
+                  "name": "Nova",
+                  "nameLocation": "3481:4:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11289,
+                  "src": "3473:12:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11282,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3473:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3472:14:81"
+            },
+            "returnParameters": {
+              "id": 11288,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11287,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11289,
+                  "src": "3510:16:81",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 11285,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "3510:7:81",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 11286,
+                    "nodeType": "ArrayTypeName",
+                    "src": "3510:9:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3509:18:81"
+            },
+            "scope": 11352,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11297,
+            "nodeType": "FunctionDefinition",
+            "src": "3745:94:81",
+            "nodes": [],
+            "documentation": {
+              "id": 11290,
+              "nodeType": "StructuredDocumentation",
+              "src": "3534:206:81",
+              "text": " @dev Edits the metadata URI for a given plugin definition.\n @param pluginDefinitionId The ID of the plugin for which to edit metadata.\n @param url The URL of the new metadata."
+            },
+            "functionSelector": "26b6ee9e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "editPluginDefinitionMetadata",
+            "nameLocation": "3754:28:81",
+            "parameters": {
+              "id": 11295,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11292,
+                  "mutability": "mutable",
+                  "name": "pluginDefinitionId",
+                  "nameLocation": "3791:18:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11297,
+                  "src": "3783:26:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11291,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3783:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11294,
+                  "mutability": "mutable",
+                  "name": "url",
+                  "nameLocation": "3825:3:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11297,
+                  "src": "3811:17:81",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 11293,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3811:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3782:47:81"
+            },
+            "returnParameters": {
+              "id": 11296,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3838:0:81"
+            },
+            "scope": 11352,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11303,
+            "nodeType": "FunctionDefinition",
+            "src": "3988:59:81",
+            "nodes": [],
+            "documentation": {
+              "id": 11298,
+              "nodeType": "StructuredDocumentation",
+              "src": "3845:138:81",
+              "text": " @dev Returns the address of the Modules Registry contract.\n @return The address of the Modules Registry contract."
+            },
+            "functionSelector": "82accae8",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "modulesRegistry",
+            "nameLocation": "3997:15:81",
+            "parameters": {
+              "id": 11299,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4012:2:81"
+            },
+            "returnParameters": {
+              "id": 11302,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11301,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11303,
+                  "src": "4038:7:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11300,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4038:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4037:9:81"
+            },
+            "scope": 11352,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11311,
+            "nodeType": "FunctionDefinition",
+            "src": "4236:93:81",
+            "nodes": [],
+            "documentation": {
+              "id": 11304,
+              "nodeType": "StructuredDocumentation",
+              "src": "4053:178:81",
+              "text": " @dev Adds a plugin to a Nova.\n @param pluginAddress The address of the plugin contract.\n @param pluginDefinitionId The ID of the plugin definition."
+            },
+            "functionSelector": "ac70c99b",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addPluginToNova",
+            "nameLocation": "4245:15:81",
+            "parameters": {
+              "id": 11309,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11306,
+                  "mutability": "mutable",
+                  "name": "pluginAddress",
+                  "nameLocation": "4269:13:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11311,
+                  "src": "4261:21:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11305,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4261:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11308,
+                  "mutability": "mutable",
+                  "name": "pluginDefinitionId",
+                  "nameLocation": "4292:18:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11311,
+                  "src": "4284:26:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11307,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4284:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4260:51:81"
+            },
+            "returnParameters": {
+              "id": 11310,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4328:0:81"
+            },
+            "scope": 11352,
+            "stateMutability": "payable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11318,
+            "nodeType": "FunctionDefinition",
+            "src": "4335:84:81",
+            "nodes": [],
+            "functionSelector": "51c4d95e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "tokenIdFromAddress",
+            "nameLocation": "4344:18:81",
+            "parameters": {
+              "id": 11314,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11313,
+                  "mutability": "mutable",
+                  "name": "pluginAddress_",
+                  "nameLocation": "4371:14:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11318,
+                  "src": "4363:22:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11312,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4363:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4362:24:81"
+            },
+            "returnParameters": {
+              "id": 11317,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11316,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11318,
+                  "src": "4410:7:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11315,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4410:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4409:9:81"
+            },
+            "scope": 11352,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11334,
+            "nodeType": "FunctionDefinition",
+            "src": "4425:247:81",
+            "nodes": [],
+            "functionSelector": "342094ba",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addPluginDefinition",
+            "nameLocation": "4434:19:81",
+            "parameters": {
+              "id": 11330,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11320,
+                  "mutability": "mutable",
+                  "name": "creator",
+                  "nameLocation": "4479:7:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11334,
+                  "src": "4463:23:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  },
+                  "typeName": {
+                    "id": 11319,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4463:15:81",
+                    "stateMutability": "payable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address_payable",
+                      "typeString": "address payable"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11322,
+                  "mutability": "mutable",
+                  "name": "metadataURI",
+                  "nameLocation": "4510:11:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11334,
+                  "src": "4496:25:81",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 11321,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4496:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11324,
+                  "mutability": "mutable",
+                  "name": "price",
+                  "nameLocation": "4539:5:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11334,
+                  "src": "4531:13:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11323,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4531:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11326,
+                  "mutability": "mutable",
+                  "name": "canBeStandalone",
+                  "nameLocation": "4559:15:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11334,
+                  "src": "4554:20:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 11325,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4554:4:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11329,
+                  "mutability": "mutable",
+                  "name": "moduleDependencies",
+                  "nameLocation": "4601:18:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11334,
+                  "src": "4584:35:81",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 11327,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "4584:7:81",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 11328,
+                    "nodeType": "ArrayTypeName",
+                    "src": "4584:9:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4453:172:81"
+            },
+            "returnParameters": {
+              "id": 11333,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11332,
+                  "mutability": "mutable",
+                  "name": "pluginDefinitionId",
+                  "nameLocation": "4652:18:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11334,
+                  "src": "4644:26:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11331,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4644:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4643:28:81"
+            },
+            "scope": 11352,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11339,
+            "nodeType": "FunctionDefinition",
+            "src": "4761:57:81",
+            "nodes": [],
+            "functionSelector": "f0b7832a",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "defaultLRAddr",
+            "nameLocation": "4770:13:81",
+            "parameters": {
+              "id": 11335,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4783:2:81"
+            },
+            "returnParameters": {
+              "id": 11338,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11337,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11339,
+                  "src": "4809:7:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11336,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4809:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4808:9:81"
+            },
+            "scope": 11352,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11345,
+            "nodeType": "FunctionDefinition",
+            "src": "4960:49:81",
+            "nodes": [],
+            "documentation": {
+              "id": 11340,
+              "nodeType": "StructuredDocumentation",
+              "src": "4824:131:81",
+              "text": "@notice changes the default local reputation globally\n @param LR address of new default local reputation state and logic"
+            },
+            "functionSelector": "a9810f45",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setDefaulLRAddress",
+            "nameLocation": "4969:18:81",
+            "parameters": {
+              "id": 11343,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11342,
+                  "mutability": "mutable",
+                  "name": "LR",
+                  "nameLocation": "4996:2:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11345,
+                  "src": "4988:10:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11341,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4988:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4987:12:81"
+            },
+            "returnParameters": {
+              "id": 11344,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "5008:0:81"
+            },
+            "scope": 11352,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 11351,
+            "nodeType": "FunctionDefinition",
+            "src": "5056:49:81",
+            "nodes": [],
+            "documentation": {
+              "id": 11346,
+              "nodeType": "StructuredDocumentation",
+              "src": "5015:36:81",
+              "text": "@notice current owner in ownable"
+            },
+            "functionSelector": "8da5cb5b",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "owner",
+            "nameLocation": "5065:5:81",
+            "parameters": {
+              "id": 11347,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "5070:2:81"
+            },
+            "returnParameters": {
+              "id": 11350,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11349,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11351,
+                  "src": "5096:7:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11348,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5096:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5095:9:81"
+            },
+            "scope": 11352,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IPluginRegistry",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 11207,
+          "nodeType": "StructuredDocumentation",
+          "src": "64:145:81",
+          "text": " @title IPluginRegistry\n @dev Interface for the plugin registry contract, which manages the registration and installation of plugins."
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          11352
+        ],
+        "name": "IPluginRegistry",
+        "nameLocation": "220:15:81",
+        "scope": 11353,
+        "usedErrors": []
+      }
+    ],
+    "license": "UNLICENSED"
+  },
+  "id": 81
+}

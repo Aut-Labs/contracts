@@ -1,0 +1,371 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getURLs",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_url",
+          "type": "string"
+        }
+      ],
+      "name": "isURLListed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getURLs()": "206110db",
+    "isURLListed(string)": "68839d28"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getURLs\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_url\",\"type\":\"string\"}],\"name\":\"isURLListed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"getURLs()\":{\"details\":\"returns an array with all the listed urls\",\"returns\":{\"_0\":\"returns all the urls listed for the Nova\"}},\"isURLListed(string)\":{\"details\":\"a checker if a url has been listed for this Nova\",\"params\":{\"_url\":\"the url that will be listed\"},\"returns\":{\"_0\":\"true if listed, false otherwise\"}}},\"title\":\"INova\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getURLs()\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"},\"isURLListed(string)\":{\"notice\":\"The listed URLs are the only ones that can be used for the DAuth\"}},\"notice\":\"The interface for the extension of each Nova that integrates AutID\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/components/interfaces/get/INovaUrls.sol\":\"INovaUrls\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/components/interfaces/get/INovaUrls.sol\":{\"keccak256\":\"0xeefc294a7c63b0f793e59dfc627402a4fbc4da0e5b20665ae65d2d05786a21c4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://47a608c35b3ff2650a2e95d4670793070c44298c6777ad99ba5d63d6257dc392\",\"dweb:/ipfs/QmZGmxHQEbavXa6hXRmDo8fqc5afpAV17WZdXzyRGq4rd6\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getURLs",
+          "outputs": [
+            {
+              "internalType": "string[]",
+              "name": "",
+              "type": "string[]"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "_url",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isURLListed",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "getURLs()": {
+            "details": "returns an array with all the listed urls",
+            "returns": {
+              "_0": "returns all the urls listed for the Nova"
+            }
+          },
+          "isURLListed(string)": {
+            "details": "a checker if a url has been listed for this Nova",
+            "params": {
+              "_url": "the url that will be listed"
+            },
+            "returns": {
+              "_0": "true if listed, false otherwise"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "getURLs()": {
+            "notice": "The listed URLs are the only ones that can be used for the DAuth"
+          },
+          "isURLListed(string)": {
+            "notice": "The listed URLs are the only ones that can be used for the DAuth"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/components/interfaces/get/INovaUrls.sol": "INovaUrls"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/components/interfaces/get/INovaUrls.sol": {
+        "keccak256": "0xeefc294a7c63b0f793e59dfc627402a4fbc4da0e5b20665ae65d2d05786a21c4",
+        "urls": [
+          "bzz-raw://47a608c35b3ff2650a2e95d4670793070c44298c6777ad99ba5d63d6257dc392",
+          "dweb:/ipfs/QmZGmxHQEbavXa6hXRmDo8fqc5afpAV17WZdXzyRGq4rd6"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/components/interfaces/get/INovaUrls.sol",
+    "id": 4627,
+    "exportedSymbols": {
+      "INovaUrls": [
+        4626
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "31:717:22",
+    "nodes": [
+      {
+        "id": 4609,
+        "nodeType": "PragmaDirective",
+        "src": "31:23:22",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 4626,
+        "nodeType": "ContractDefinition",
+        "src": "152:595:22",
+        "nodes": [
+          {
+            "id": 4617,
+            "nodeType": "FunctionDefinition",
+            "src": "371:59:22",
+            "nodes": [],
+            "documentation": {
+              "id": 4611,
+              "nodeType": "StructuredDocumentation",
+              "src": "178:188:22",
+              "text": "@notice The listed URLs are the only ones that can be used for the DAuth\n @dev returns an array with all the listed urls\n @return returns all the urls listed for the Nova"
+            },
+            "functionSelector": "206110db",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getURLs",
+            "nameLocation": "380:7:22",
+            "parameters": {
+              "id": 4612,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "387:2:22"
+            },
+            "returnParameters": {
+              "id": 4616,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4615,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4617,
+                  "src": "413:15:22",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
+                    "typeString": "string[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 4613,
+                      "name": "string",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "413:6:22",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_storage_ptr",
+                        "typeString": "string"
+                      }
+                    },
+                    "id": 4614,
+                    "nodeType": "ArrayTypeName",
+                    "src": "413:8:22",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                      "typeString": "string[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "412:17:22"
+            },
+            "scope": 4626,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 4625,
+            "nodeType": "FunctionDefinition",
+            "src": "675:70:22",
+            "nodes": [],
+            "documentation": {
+              "id": 4618,
+              "nodeType": "StructuredDocumentation",
+              "src": "436:234:22",
+              "text": "@notice The listed URLs are the only ones that can be used for the DAuth\n @dev a checker if a url has been listed for this Nova\n @param _url the url that will be listed\n @return true if listed, false otherwise"
+            },
+            "functionSelector": "68839d28",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isURLListed",
+            "nameLocation": "684:11:22",
+            "parameters": {
+              "id": 4621,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4620,
+                  "mutability": "mutable",
+                  "name": "_url",
+                  "nameLocation": "710:4:22",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4625,
+                  "src": "696:18:22",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4619,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "696:6:22",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "695:20:22"
+            },
+            "returnParameters": {
+              "id": 4624,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4623,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4625,
+                  "src": "739:4:22",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 4622,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "739:4:22",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "738:6:22"
+            },
+            "scope": 4626,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "INovaUrls",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 4610,
+          "nodeType": "StructuredDocumentation",
+          "src": "56:96:22",
+          "text": "@title INova\n @notice The interface for the extension of each Nova that integrates AutID"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          4626
+        ],
+        "name": "INovaUrls",
+        "nameLocation": "162:9:22",
+        "scope": 4627,
+        "usedErrors": []
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 22
+}

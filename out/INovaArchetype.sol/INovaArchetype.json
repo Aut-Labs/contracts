@@ -1,0 +1,556 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "ArchetypeAlreadySet",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "WrongParameter",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "ArchetypeWeightSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "name": "MainArchetypeSet",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "archetype",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "name": "weightFor",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "archetype()": "0e4b2285",
+    "weightFor(uint8)": "f619e183"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"ArchetypeAlreadySet\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"WrongParameter\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"ArchetypeWeightSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"name\":\"MainArchetypeSet\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"archetype\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"name\":\"weightFor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/components/interfaces/get/INovaArchetype.sol\":\"INovaArchetype\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/components/interfaces/get/INovaArchetype.sol\":{\"keccak256\":\"0xa0066eb8f158380068a1b341cd425d96b20271f0331e0a4dd667d1fc8243ecd9\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://b47259ce11b788e213faec8d2eeb2c01535f698a2da000672d4a1062ab8bc0c1\",\"dweb:/ipfs/QmNMbhAbM4xxEAKHRQdsnDTpbApCqt1GGbhzfyZUCTNSQN\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "ArchetypeAlreadySet"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "WrongParameter"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint8",
+              "name": "",
+              "type": "uint8",
+              "indexed": false
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "ArchetypeWeightSet",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint8",
+              "name": "",
+              "type": "uint8",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "MainArchetypeSet",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "archetype",
+          "outputs": [
+            {
+              "internalType": "uint8",
+              "name": "",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint8",
+              "name": "",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "weightFor",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@ensdomains/=node_modules/@ensdomains/",
+        "@opengsn/=node_modules/@opengsn/",
+        "@openzeppelin/=node_modules/@openzeppelin/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "hardhat/=node_modules/hardhat/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/components/interfaces/get/INovaArchetype.sol": "INovaArchetype"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/components/interfaces/get/INovaArchetype.sol": {
+        "keccak256": "0xa0066eb8f158380068a1b341cd425d96b20271f0331e0a4dd667d1fc8243ecd9",
+        "urls": [
+          "bzz-raw://b47259ce11b788e213faec8d2eeb2c01535f698a2da000672d4a1062ab8bc0c1",
+          "dweb:/ipfs/QmNMbhAbM4xxEAKHRQdsnDTpbApCqt1GGbhzfyZUCTNSQN"
+        ],
+        "license": "UNLICENSED"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/components/interfaces/get/INovaArchetype.sol",
+    "id": 4530,
+    "exportedSymbols": {
+      "INovaArchetype": [
+        4529
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "39:318:16",
+    "nodes": [
+      {
+        "id": 4502,
+        "nodeType": "PragmaDirective",
+        "src": "39:23:16",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 4529,
+        "nodeType": "ContractDefinition",
+        "src": "64:292:16",
+        "nodes": [
+          {
+            "id": 4504,
+            "nodeType": "ErrorDefinition",
+            "src": "95:28:16",
+            "nodes": [],
+            "errorSelector": "5d65b202",
+            "name": "ArchetypeAlreadySet",
+            "nameLocation": "101:19:16",
+            "parameters": {
+              "id": 4503,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "120:2:16"
+            }
+          },
+          {
+            "id": 4506,
+            "nodeType": "ErrorDefinition",
+            "src": "128:23:16",
+            "nodes": [],
+            "errorSelector": "6e4a9ce8",
+            "name": "WrongParameter",
+            "nameLocation": "134:14:16",
+            "parameters": {
+              "id": 4505,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "148:2:16"
+            }
+          },
+          {
+            "id": 4510,
+            "nodeType": "EventDefinition",
+            "src": "157:30:16",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "68b5492d3887bd597122e4409bef849dba97ad4f392f021fe9fb170864e3f484",
+            "name": "MainArchetypeSet",
+            "nameLocation": "163:16:16",
+            "parameters": {
+              "id": 4509,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4508,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4510,
+                  "src": "180:5:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 4507,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "180:5:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "179:7:16"
+            }
+          },
+          {
+            "id": 4516,
+            "nodeType": "EventDefinition",
+            "src": "192:41:16",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "38198cfaef2b67587b1a2c1b7c9fe8cdb404898c33de6d24fb693ebc6b1d670b",
+            "name": "ArchetypeWeightSet",
+            "nameLocation": "198:18:16",
+            "parameters": {
+              "id": 4515,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4512,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4516,
+                  "src": "217:5:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 4511,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "217:5:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4514,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4516,
+                  "src": "224:7:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 4513,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "224:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "216:16:16"
+            }
+          },
+          {
+            "id": 4521,
+            "nodeType": "FunctionDefinition",
+            "src": "239:51:16",
+            "nodes": [],
+            "functionSelector": "0e4b2285",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "archetype",
+            "nameLocation": "248:9:16",
+            "parameters": {
+              "id": 4517,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "257:2:16"
+            },
+            "returnParameters": {
+              "id": 4520,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4519,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4521,
+                  "src": "283:5:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 4518,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "283:5:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "282:7:16"
+            },
+            "scope": 4529,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 4528,
+            "nodeType": "FunctionDefinition",
+            "src": "296:58:16",
+            "nodes": [],
+            "functionSelector": "f619e183",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "weightFor",
+            "nameLocation": "305:9:16",
+            "parameters": {
+              "id": 4524,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4523,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4528,
+                  "src": "315:5:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 4522,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "315:5:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "314:7:16"
+            },
+            "returnParameters": {
+              "id": 4527,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4526,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4528,
+                  "src": "345:7:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 4525,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "345:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "344:9:16"
+            },
+            "scope": 4529,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "INovaArchetype",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          4529
+        ],
+        "name": "INovaArchetype",
+        "nameLocation": "74:14:16",
+        "scope": 4530,
+        "usedErrors": [
+          4504,
+          4506
+        ]
+      }
+    ],
+    "license": "UNLICENSED"
+  },
+  "id": 16
+}
