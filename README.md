@@ -6,6 +6,20 @@ DAOs can be much more than _Smart Treasuries_, Āut introduces native Roles & In
 To read more about Āut, visit our [Docs](https://docs.aut.id).
 Below, you'll find a simple walkthrough to get started using Āut's Smart Contracts.
 
+# Docker Setup
+
+```
+docker network create mainnet
+```
+
+```
+docker-compose up --build
+```
+
+```
+docker-compose -f docker-compose.graph.yml up
+```
+
 # Setup 
 
 ## Install Foundry 
