@@ -88,7 +88,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
 
         INovaMembershipSet(Address).join(_msgSender(), role);
 
-        emit AutIDCreated(_msgSender(), tokenId);
+        emit AutIDCreated(_msgSender(), tokenId, username);
         emit NovaJoined(Address, _msgSender());
     }
 
