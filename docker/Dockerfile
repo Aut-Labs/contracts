@@ -1,7 +1,7 @@
 # ================
 # >> Helper image that buils node_modules
 # todo: move completely to foundry and exclude this build step
-FROM node:16 as node_modules_builder
+FROM node:16.14 as node_modules_builder
 
 WORKDIR /tmp
 
