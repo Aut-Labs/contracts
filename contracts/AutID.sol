@@ -289,4 +289,6 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
 
         return _b1;
     }
+
+    uint256[43] private __gap;
 }

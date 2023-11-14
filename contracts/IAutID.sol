@@ -7,7 +7,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol"
 /// @notice The interface of the IAutID contract
 /// @dev The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a Nova
 interface IAutID is IERC721Upgradeable {
-    event AutIDCreated(address owner, uint256 tokenID);
+    event AutIDCreated(address owner, uint256 tokenID, string username);
     event NovaJoined(address NovaExpanderAddress, address member);
     event NovaWithdrawn(address NovaExpanderAddress, address member);
     event CommitmentUpdated(address NovaExpanderAddress, address member, uint256 newCommitment);
