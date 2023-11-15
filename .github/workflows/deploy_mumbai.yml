@@ -1,0 +1,55 @@
+name: build & test & deploy contracts on mumbai network
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-mumbai:
+    name: Add node_modules with some contract dependencies
+    runs-on: node:16.14
+    env:
+      PVK_A1: ${{ secrets.mumbai_deployer_pk }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: hit yarn cache
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      
+      - name: cache yarn
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      
+      - name: build node modules
+        uses: yarn install --non-interactive 
+
+      - name: install foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      
+      - name: build contracts
+        run: forge build
+
+      - name: test contracts
+        run: forge test
+
+      - name: deploy contracts to mumbai
+        uses: foundry-rs-foundry-toolchain@v1
+        run: |
+          forge build 
+          forge test
+          forge script ./script/DeployAll.s.sol \
+            --rpc-url ${{ secrets.mumbai_rpc_url }} \
+            --etherscan-api-key ${{ secrets.polygonscan_api_key }} \
+            --private-key $PVK_A1 \
+            --broadcast \
+            --verify
