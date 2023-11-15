@@ -5,14 +5,15 @@ on:
       - master
 env:
   CHAIN_ID: "80001"
+  FOUNDRY_PROFILE: "ci"
 
 jobs:
   deploy-mumbai:
-    runs-on: ubuntu:20.04
+    runs-on: ubuntu-latest
     env:
       PVK_A1: ${{ secrets.mumbai_deployer_pk }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
