@@ -1,3 +1,4 @@
+[![deployed on mumbai testnet](https://github.com/Aut-Labs/contracts/actions/workflows/deploy_mumbai.yml/badge.svg)](https://github.com/Aut-Labs/contracts/actions/workflows/deploy_mumbai.yml)
 # Āut Labs - Smart Contracts
 Āut is an expandable protocol for Role-based Membership in Web3 Communities & DAOs.
 
