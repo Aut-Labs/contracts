@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+env:
+  CHAIN_ID: "80001"
 
 jobs:
   deploy-mumbai:
@@ -29,7 +31,7 @@ jobs:
             ${{ runner.os }}-yarn-
       
       - name: build node modules
-        uses: yarn install --non-interactive 
+        run: yarn install --non-interactive 
 
       - name: install foundry
         uses: foundry-rs/foundry-toolchain@v1
@@ -43,7 +45,6 @@ jobs:
         run: forge test
 
       - name: deploy contracts to mumbai
-        uses: foundry-rs-foundry-toolchain@v1
         run: |
           forge build 
           forge test
