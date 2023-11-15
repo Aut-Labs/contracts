@@ -8,14 +8,17 @@ env:
 
 jobs:
   deploy-mumbai:
-    name: Add node_modules with some contract dependencies
-    runs-on: node:16.14
+    runs-on: ubuntu:20.04
     env:
       PVK_A1: ${{ secrets.mumbai_deployer_pk }}
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.17
       
       - name: build node modules
         run: yarn install --non-interactive 
