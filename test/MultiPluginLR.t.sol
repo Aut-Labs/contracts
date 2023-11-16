@@ -118,6 +118,22 @@ contract MultiPluginLR is DeploysInit {
         snap1 = vm.snapshot();
     }
 
+    function testCreatesOffchainTaskWithWeight(uint16 pointsTime) public returns (uint256 snap1, uint256 task) {
+        vm.assume(pointsTime < 999);
+
+        // revert not admin
+        vm.expectRevert();
+        vm.prank(A2);
+        task = offTWR.createOffChainTaskWithWeight(1, "http://", 100, 199999999, 7);
+
+        // revert invalid timestamp
+        vm.expectRevert();
+        vm.prank(A0);
+        task = offTWR.createOffChainTaskWithWeight(1, "http://", 100, 1, 7);
+
+        snap1 = vm.snapshot();
+    }
+
     function testWorksAsRepProvider() public {
         (uint256 taskid, uint256 snap) = testSetsWeightForTask(306);
 
