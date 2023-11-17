@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.17
+          node-version: 16.14
       
       - name: build node modules
         run: yarn install --non-interactive 
@@ -41,3 +41,12 @@ jobs:
               --private-key $PVK_A1 \
               --broadcast \
               --verify
+
+      - uses: actions/checkout@v3
+      
+      - name: commit deployments.txt
+        run: |
+          git config --global user.name 'CI'
+          git config --global user.email 'mikhail@aut.id'
+          git commit -am "Automated report"
+          git push
