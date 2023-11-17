@@ -41,12 +41,11 @@ jobs:
               --private-key $PVK_A1 \
               --broadcast \
               --verify
-
-      - uses: actions/checkout@v3
       
       - name: commit deployments.txt
         run: |
           git config --global user.name 'CI'
           git config --global user.email 'mikhail@aut.id'
-          git commit -am "Automated report"
+          git add -A
+          git commit -am "update deployments.txt"
           git push
