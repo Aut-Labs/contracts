@@ -36,13 +36,12 @@ jobs:
         run: forge test
 
       - name: deploy contracts to mumbai
-        run: forge script ./script/DeployAll.s.sol --rpc-url ${{ secrets.mumbai_rpc_url }} \
-              --etherscan-api-key ${{ secrets.polygonscan_api_key }} \
-              --private-key $PVK_A1 \
-              --broadcast \
-              --verify \
-              --legacy
-      
+        run: forge script ./script/DeployAll.s.sol --rpc-url ${{ secrets.mumbai_rpc_url }} 
+              --etherscan-api-key ${{ secrets.polygonscan_api_key }} 
+              --private-key $PVK_A1 
+              --verify
+              --broadcast
+
       - name: commit deployments.txt
         run: |
           git config --global user.name 'CI'
