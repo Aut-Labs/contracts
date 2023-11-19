@@ -40,7 +40,8 @@ jobs:
               --etherscan-api-key ${{ secrets.polygonscan_api_key }} \
               --private-key $PVK_A1 \
               --broadcast \
-              --verify
+              --verify \
+              --legacy
       
       - name: commit deployments.txt
         run: |
