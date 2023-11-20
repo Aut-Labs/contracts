@@ -10,6 +10,8 @@ import "../plugins/registry/IPluginRegistry.sol";
 import "../components/interfaces/get/INovaAdmin.sol";
 import "../nova/interfaces/INova.sol";
 
+import {ILocalReputation} from "../ILocalReputation.sol";
+
 /// @title PluginRegistry
 /// @notice Stores all plugins available and allows them to be added to a Nova
 contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRegistry {
@@ -50,6 +52,7 @@ contract PluginRegistry is ERC721URIStorage, Ownable, ReentrancyGuard, IPluginRe
         nonReentrant
     {
         address nova = IPlugin(pluginAddress).novaAddress();
+        ILocalReputation(defaultLRAddr).initialize(nova, pluginAddress);
 
         require(INovaAdmin(nova).isAdmin(msg.sender) == true, "Not an admin");
         PluginDefinition memory pluginDefinition = pluginDefinitionsById[pluginDefinitionId];

@@ -22,7 +22,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
 
         super.setUp();
 
-        LocalRepAlgo = new LocalReputation();
+        LocalRepAlgo = new LocalReputation(address(IPR));
         vm.label(address(LocalRepAlgo), "LocalRep");
 
         vm.prank(IPR.owner());

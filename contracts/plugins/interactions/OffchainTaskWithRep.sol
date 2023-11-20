@@ -12,7 +12,6 @@ import {INova} from "../../nova/interfaces/INova.sol";
 contract OffchainTaskWithRep is OpenTaskPlugin, InteractionModifier {
     constructor(address nova_) OpenTaskPlugin(nova_, true) InteractionModifier(nova_) {
         ILR = ILocalReputation(IPluginRegistry(INova(nova_).pluginRegistry()).defaultLRAddr());
-        ILR.initialize(nova_);
     }
 
     function finalizeFor(uint256 taskId, address submitter)

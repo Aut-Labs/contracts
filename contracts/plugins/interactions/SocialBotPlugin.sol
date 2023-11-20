@@ -13,7 +13,6 @@ contract SocialBotPlugin is SimplePlugin, InteractionModifier {
 
     constructor(address nova_) SimplePlugin(nova_, 0) InteractionModifier(nova_) {
         ILR = ILocalReputation(IPluginRegistry(INova(nova_).pluginRegistry()).defaultLRAddr());
-        ILR.initialize(nova_);
     }
 
     struct SocialBotEvent {
@@ -31,8 +30,11 @@ contract SocialBotPlugin is SimplePlugin, InteractionModifier {
     error NotBot();
     error OverMaxPoints();
     error NotAdmin();
-
     event SocialEventRegistered(uint256 EventIndex);
+
+    // function addAdmin function -> NotAmember(); @dev feature request - non-memebr admin flow - problematic: non-member admin powers before AutID
+    // function createEvent(nova_, ); // @dev @todo register event onchain before start
+
 
     function applyEventConsequences(
         address[] memory participants,

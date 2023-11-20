@@ -59,8 +59,10 @@ interface ILocalReputation {
     error ZeroUnallawed();
     error MaxK();
     error k1MaxPointPerInteraction();
+    error UnsanctionedRelation();
+    error UnregisteredInitializer();
 
-    function initialize(address Nova_) external;
+    function initialize(address nova_, address pluginAddress_) external;
 
     function interaction(bytes calldata msgData, address agent) external;
 
