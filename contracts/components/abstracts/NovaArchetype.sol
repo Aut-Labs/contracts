@@ -15,9 +15,6 @@ abstract contract NovaArchetype is INovaArchetype {
     mapping(uint8 => uint256) public weightFor;
 
     function _setArchetype(uint8 parameter) internal {
-        if (archetype != 0) {
-            revert ArchetypeAlreadySet();
-        }
         _validateParameter(parameter);
         archetype = parameter;
     }

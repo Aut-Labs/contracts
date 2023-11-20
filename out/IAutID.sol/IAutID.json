@@ -64,6 +64,12 @@
           "internalType": "uint256",
           "name": "tokenID",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "username",
+          "type": "string"
         }
       ],
       "name": "AutIDCreated",
@@ -760,7 +766,7 @@
     "transferFrom(address,address,uint256)": "23b872dd",
     "withdraw(address)": "51cff8d9"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"approved\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenID\",\"type\":\"uint256\"}],\"name\":\"AutIDCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newCommitment\",\"type\":\"uint256\"}],\"name\":\"CommitmentUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"DiscordIDConnectedToAutID\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"metadataUri\",\"type\":\"string\"}],\"name\":\"MetadataUriSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"NovaJoined\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"NovaWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"discordID\",\"type\":\"string\"}],\"name\":\"addDiscordIDToAutID\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenID\",\"type\":\"uint256\"}],\"name\":\"autIDToDiscordID\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"discordID\",\"type\":\"string\"}],\"name\":\"discordIDToAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"name\":\"editCommitment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"nova_\",\"type\":\"address\"}],\"name\":\"getAllActiveMembers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDOwner\",\"type\":\"address\"}],\"name\":\"getAutIDByOwner\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"username\",\"type\":\"string\"}],\"name\":\"getAutIDHolderByUsername\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"agents\",\"type\":\"address[]\"},{\"internalType\":\"address\",\"name\":\"Nova_\",\"type\":\"address\"}],\"name\":\"getCommitmentsOfFor\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"commitments\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"}],\"name\":\"getHolderNovae\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"Novas\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"getMembershipData\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isActive\",\"type\":\"bool\"}],\"internalType\":\"struct IAutID.NovaMember\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNextTokenID\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"}],\"name\":\"getTotalCommitment\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"joinNova\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"username\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"url\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"mint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"metadataUri\",\"type\":\"string\"}],\"name\":\"setMetadataUri\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a Nova\",\"events\":{\"Approval(address,address,uint256)\":{\"details\":\"Emitted when `owner` enables `approved` to manage the `tokenId` token.\"},\"ApprovalForAll(address,address,bool)\":{\"details\":\"Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.\"},\"Transfer(address,address,uint256)\":{\"details\":\"Emitted when `tokenId` token is transferred from `from` to `to`.\"}},\"kind\":\"dev\",\"methods\":{\"addDiscordIDToAutID(string)\":{\"details\":\"links the discord ID to the AutID token ID passed.\",\"params\":{\"discordID\":\"the discord ID of the AutID holder\"}},\"approve(address,uint256)\":{\"details\":\"Gives permission to `to` to transfer `tokenId` token to another account. The approval is cleared when the token is transferred. Only a single account can be approved at a time, so approving the zero address clears previous approvals. Requirements: - The caller must own the token or be an approved operator. - `tokenId` must exist. Emits an {Approval} event.\"},\"autIDToDiscordID(uint256)\":{\"details\":\"Returns a discord ID for the AutID token ID passed.\",\"params\":{\"tokenID\":\"the AutID token ID\"},\"returns\":{\"_0\":\"discord ID\"}},\"balanceOf(address)\":{\"details\":\"Returns the number of tokens in ``owner``'s account.\"},\"getApproved(uint256)\":{\"details\":\"Returns the account approved for `tokenId` token. Requirements: - `tokenId` must exist.\"},\"getAutIDByOwner(address)\":{\"params\":{\"autIDOwner\":\"the user address\"},\"returns\":{\"_0\":\"the token ID of their NFT ID\"}},\"getCommitmentsOfFor(address[],address)\":{\"params\":{\"Nova_\":\"commitment target\",\"agents\":\"address of agents\"}},\"getHolderNovae(address)\":{\"params\":{\"autIDHolder\":\"the address of the AutID holder\"},\"returns\":{\"Novas\":\"Nova expander addresses that the aut holder is a part of\"}},\"isApprovedForAll(address,address)\":{\"details\":\"Returns if the `operator` is allowed to manage all of the assets of `owner`. See {setApprovalForAll}\"},\"joinNova(uint256,uint256,address)\":{\"details\":\"The commitment of the user can't exceed 10. It fails if the user has already committed to other Novas\",\"params\":{\"NovaExpander\":\"the address of the NovaExpander contract\",\"commitment\":\"the commitment value that the user has selected for this Nova\",\"role\":\"the role that the user has selected within the specified Nova\"}},\"mint(string,string,uint256,uint256,address)\":{\"details\":\"each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the Nova passed.\",\"params\":{\"NovaExpander\":\"the address of the NovaExpander contract\",\"commitment\":\"the commitment value that the user has selected for this Nova\",\"role\":\"the role that the user has selected within the specified Nova\",\"url\":\"the NFT metadata that holds username, avatar\"}},\"ownerOf(uint256)\":{\"details\":\"Returns the owner of the `tokenId` token. Requirements: - `tokenId` must exist.\"},\"safeTransferFrom(address,address,uint256)\":{\"details\":\"Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients are aware of the ERC721 protocol to prevent tokens from being forever locked. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must exist and be owned by `from`. - If the caller is not `from`, it must have been allowed to move this token by either {approve} or {setApprovalForAll}. - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer. Emits a {Transfer} event.\"},\"safeTransferFrom(address,address,uint256,bytes)\":{\"details\":\"Safely transfers `tokenId` token from `from` to `to`. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must exist and be owned by `from`. - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}. - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer. Emits a {Transfer} event.\"},\"setApprovalForAll(address,bool)\":{\"details\":\"Approve or remove `operator` as an operator for the caller. Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller. Requirements: - The `operator` cannot be the caller. Emits an {ApprovalForAll} event.\"},\"supportsInterface(bytes4)\":{\"details\":\"Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.\"},\"transferFrom(address,address,uint256)\":{\"details\":\"Transfers `tokenId` token from `from` to `to`. WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must be owned by `from`. - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}. Emits a {Transfer} event.\"}},\"title\":\"IAutID\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addDiscordIDToAutID(string)\":{\"notice\":\"AutID holders can link their DiscordID to their AutID ID\"},\"autIDToDiscordID(uint256)\":{\"notice\":\"AutID holders can link their DiscordID to their AutID ID\"},\"getAutIDByOwner(address)\":{\"notice\":\"returns NFT ID of the holder\"},\"getCommitmentsOfFor(address[],address)\":{\"notice\":\"returns commitment levels for agents in a Nova\"},\"getHolderNovae(address)\":{\"notice\":\"gets all communities the AutID holder is a member of\"},\"joinNova(uint256,uint256,address)\":{\"notice\":\"associates a AutID to a new Nova\"},\"mint(string,string,uint256,uint256,address)\":{\"notice\":\"mints a new AutID NFT ID\"}},\"notice\":\"The interface of the IAutID contract\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IAutID.sol\":\"IAutID\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/IAutID.sol\":{\"keccak256\":\"0xedd52edf75848f132f2e0006705a52ad72206df3504dd8ca483426725e151bb3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://13bde473149c92d0810353950edb127d00bc8901f5e33b167399efaa61bd77d4\",\"dweb:/ipfs/QmYFd6gfEjwgM4N2Xt7wuaJgwB2kVYZ5LFU7irvvFvEVHu\"]},\"node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol\":{\"keccak256\":\"0x016298e66a5810253c6c905e61966bb31c8775c3f3517bf946ff56ee31d6c005\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1723de5ae414f210db039b19e6487c19c2d643483c9be7c445cf481a80c199d2\",\"dweb:/ipfs/QmcBLbmPdZsNngYhA1KDadNUqQZoGACytFWuUH74RC4AXC\"]},\"node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol\":{\"keccak256\":\"0xc6cef87559d0aeffdf0a99803de655938a7779ec0a3cd5d4383483ad85565a09\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://92ad7e572cf44e6b4b37631b44b62f9eb9fb1cf14d9ce51c1504d5dc7ccaf758\",\"dweb:/ipfs/QmcnbqX85tsWnUXPmtuPLE4SczME2sJaTfmqEFkuAJvWhy\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"approved\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenID\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"username\",\"type\":\"string\"}],\"name\":\"AutIDCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newCommitment\",\"type\":\"uint256\"}],\"name\":\"CommitmentUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"DiscordIDConnectedToAutID\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"metadataUri\",\"type\":\"string\"}],\"name\":\"MetadataUriSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"NovaJoined\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"}],\"name\":\"NovaWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"discordID\",\"type\":\"string\"}],\"name\":\"addDiscordIDToAutID\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenID\",\"type\":\"uint256\"}],\"name\":\"autIDToDiscordID\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"discordID\",\"type\":\"string\"}],\"name\":\"discordIDToAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"}],\"name\":\"editCommitment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"nova_\",\"type\":\"address\"}],\"name\":\"getAllActiveMembers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDOwner\",\"type\":\"address\"}],\"name\":\"getAutIDByOwner\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"username\",\"type\":\"string\"}],\"name\":\"getAutIDHolderByUsername\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"agents\",\"type\":\"address[]\"},{\"internalType\":\"address\",\"name\":\"Nova_\",\"type\":\"address\"}],\"name\":\"getCommitmentsOfFor\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"commitments\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"}],\"name\":\"getHolderNovae\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"Novas\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"getMembershipData\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"NovaExpanderAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isActive\",\"type\":\"bool\"}],\"internalType\":\"struct IAutID.NovaMember\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNextTokenID\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"autIDHolder\",\"type\":\"address\"}],\"name\":\"getTotalCommitment\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"joinNova\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"username\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"url\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"role\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitment\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"mint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"metadataUri\",\"type\":\"string\"}],\"name\":\"setMetadataUri\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"NovaExpander\",\"type\":\"address\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a Nova\",\"events\":{\"Approval(address,address,uint256)\":{\"details\":\"Emitted when `owner` enables `approved` to manage the `tokenId` token.\"},\"ApprovalForAll(address,address,bool)\":{\"details\":\"Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.\"},\"Transfer(address,address,uint256)\":{\"details\":\"Emitted when `tokenId` token is transferred from `from` to `to`.\"}},\"kind\":\"dev\",\"methods\":{\"addDiscordIDToAutID(string)\":{\"details\":\"links the discord ID to the AutID token ID passed.\",\"params\":{\"discordID\":\"the discord ID of the AutID holder\"}},\"approve(address,uint256)\":{\"details\":\"Gives permission to `to` to transfer `tokenId` token to another account. The approval is cleared when the token is transferred. Only a single account can be approved at a time, so approving the zero address clears previous approvals. Requirements: - The caller must own the token or be an approved operator. - `tokenId` must exist. Emits an {Approval} event.\"},\"autIDToDiscordID(uint256)\":{\"details\":\"Returns a discord ID for the AutID token ID passed.\",\"params\":{\"tokenID\":\"the AutID token ID\"},\"returns\":{\"_0\":\"discord ID\"}},\"balanceOf(address)\":{\"details\":\"Returns the number of tokens in ``owner``'s account.\"},\"getApproved(uint256)\":{\"details\":\"Returns the account approved for `tokenId` token. Requirements: - `tokenId` must exist.\"},\"getAutIDByOwner(address)\":{\"params\":{\"autIDOwner\":\"the user address\"},\"returns\":{\"_0\":\"the token ID of their NFT ID\"}},\"getCommitmentsOfFor(address[],address)\":{\"params\":{\"Nova_\":\"commitment target\",\"agents\":\"address of agents\"}},\"getHolderNovae(address)\":{\"params\":{\"autIDHolder\":\"the address of the AutID holder\"},\"returns\":{\"Novas\":\"Nova expander addresses that the aut holder is a part of\"}},\"isApprovedForAll(address,address)\":{\"details\":\"Returns if the `operator` is allowed to manage all of the assets of `owner`. See {setApprovalForAll}\"},\"joinNova(uint256,uint256,address)\":{\"details\":\"The commitment of the user can't exceed 10. It fails if the user has already committed to other Novas\",\"params\":{\"NovaExpander\":\"the address of the NovaExpander contract\",\"commitment\":\"the commitment value that the user has selected for this Nova\",\"role\":\"the role that the user has selected within the specified Nova\"}},\"mint(string,string,uint256,uint256,address)\":{\"details\":\"each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the Nova passed.\",\"params\":{\"NovaExpander\":\"the address of the NovaExpander contract\",\"commitment\":\"the commitment value that the user has selected for this Nova\",\"role\":\"the role that the user has selected within the specified Nova\",\"url\":\"the NFT metadata that holds username, avatar\"}},\"ownerOf(uint256)\":{\"details\":\"Returns the owner of the `tokenId` token. Requirements: - `tokenId` must exist.\"},\"safeTransferFrom(address,address,uint256)\":{\"details\":\"Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients are aware of the ERC721 protocol to prevent tokens from being forever locked. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must exist and be owned by `from`. - If the caller is not `from`, it must have been allowed to move this token by either {approve} or {setApprovalForAll}. - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer. Emits a {Transfer} event.\"},\"safeTransferFrom(address,address,uint256,bytes)\":{\"details\":\"Safely transfers `tokenId` token from `from` to `to`. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must exist and be owned by `from`. - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}. - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer. Emits a {Transfer} event.\"},\"setApprovalForAll(address,bool)\":{\"details\":\"Approve or remove `operator` as an operator for the caller. Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller. Requirements: - The `operator` cannot be the caller. Emits an {ApprovalForAll} event.\"},\"supportsInterface(bytes4)\":{\"details\":\"Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.\"},\"transferFrom(address,address,uint256)\":{\"details\":\"Transfers `tokenId` token from `from` to `to`. WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible. Requirements: - `from` cannot be the zero address. - `to` cannot be the zero address. - `tokenId` token must be owned by `from`. - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}. Emits a {Transfer} event.\"}},\"title\":\"IAutID\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addDiscordIDToAutID(string)\":{\"notice\":\"AutID holders can link their DiscordID to their AutID ID\"},\"autIDToDiscordID(uint256)\":{\"notice\":\"AutID holders can link their DiscordID to their AutID ID\"},\"getAutIDByOwner(address)\":{\"notice\":\"returns NFT ID of the holder\"},\"getCommitmentsOfFor(address[],address)\":{\"notice\":\"returns commitment levels for agents in a Nova\"},\"getHolderNovae(address)\":{\"notice\":\"gets all communities the AutID holder is a member of\"},\"joinNova(uint256,uint256,address)\":{\"notice\":\"associates a AutID to a new Nova\"},\"mint(string,string,uint256,uint256,address)\":{\"notice\":\"mints a new AutID NFT ID\"}},\"notice\":\"The interface of the IAutID contract\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IAutID.sol\":\"IAutID\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@ensdomains/=node_modules/@ensdomains/\",\":@opengsn/=node_modules/@opengsn/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\"]},\"sources\":{\"contracts/IAutID.sol\":{\"keccak256\":\"0x30277e1e60178795893a584cec53de911af4555f6d97f7c3572bd309e44c5b07\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://969cc7cae2f32527c0d069c0ba242ad3d194ea7ca47aea77a1325eb9b53b5bb4\",\"dweb:/ipfs/QmfBWWzDzbYCeggerqSaXgg28W1swSsrBWA1vrfho9eeDM\"]},\"node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol\":{\"keccak256\":\"0x016298e66a5810253c6c905e61966bb31c8775c3f3517bf946ff56ee31d6c005\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1723de5ae414f210db039b19e6487c19c2d643483c9be7c445cf481a80c199d2\",\"dweb:/ipfs/QmcBLbmPdZsNngYhA1KDadNUqQZoGACytFWuUH74RC4AXC\"]},\"node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol\":{\"keccak256\":\"0xc6cef87559d0aeffdf0a99803de655938a7779ec0a3cd5d4383483ad85565a09\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://92ad7e572cf44e6b4b37631b44b62f9eb9fb1cf14d9ce51c1504d5dc7ccaf758\",\"dweb:/ipfs/QmcnbqX85tsWnUXPmtuPLE4SczME2sJaTfmqEFkuAJvWhy\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.19+commit.7dd6d404"
@@ -830,6 +836,12 @@
               "internalType": "uint256",
               "name": "tokenID",
               "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "string",
+              "name": "username",
+              "type": "string",
               "indexed": false
             }
           ],
@@ -1620,10 +1632,10 @@
     },
     "sources": {
       "contracts/IAutID.sol": {
-        "keccak256": "0xedd52edf75848f132f2e0006705a52ad72206df3504dd8ca483426725e151bb3",
+        "keccak256": "0x30277e1e60178795893a584cec53de911af4555f6d97f7c3572bd309e44c5b07",
         "urls": [
-          "bzz-raw://13bde473149c92d0810353950edb127d00bc8901f5e33b167399efaa61bd77d4",
-          "dweb:/ipfs/QmYFd6gfEjwgM4N2Xt7wuaJgwB2kVYZ5LFU7irvvFvEVHu"
+          "bzz-raw://969cc7cae2f32527c0d069c0ba242ad3d194ea7ca47aea77a1325eb9b53b5bb4",
+          "dweb:/ipfs/QmfBWWzDzbYCeggerqSaXgg28W1swSsrBWA1vrfho9eeDM"
         ],
         "license": "MIT"
       },
@@ -1648,23 +1660,23 @@
   },
   "ast": {
     "absolutePath": "contracts/IAutID.sol",
-    "id": 1195,
+    "id": 1202,
     "exportedSymbols": {
       "IAutID": [
-        1194
+        1201
       ],
       "IERC165Upgradeable": [
-        59326
+        59371
       ],
       "IERC721Upgradeable": [
-        58587
+        58632
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "31:4120:1",
+    "src": "31:4137:1",
     "nodes": [
       {
-        "id": 1018,
+        "id": 1023,
         "nodeType": "PragmaDirective",
         "src": "31:23:1",
         "nodes": [],
@@ -1675,45 +1687,45 @@
         ]
       },
       {
-        "id": 1019,
+        "id": 1024,
         "nodeType": "ImportDirective",
         "src": "56:81:1",
         "nodes": [],
         "absolutePath": "node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol",
         "file": "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 1195,
-        "sourceUnit": 58588,
+        "scope": 1202,
+        "sourceUnit": 58633,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 1194,
+        "id": 1201,
         "nodeType": "ContractDefinition",
-        "src": "334:3816:1",
+        "src": "334:3833:1",
         "nodes": [
           {
-            "id": 1028,
+            "id": 1035,
             "nodeType": "EventDefinition",
-            "src": "379:51:1",
+            "src": "379:68:1",
             "nodes": [],
             "anonymous": false,
-            "eventSelector": "d18d4718c9d3e995ccc3faf448a66e5aae275643957aecfff839ae445574e5d3",
+            "eventSelector": "e07408f29b7b833526e35614e2272e3b61a99fcfeaf1b67797a08ed60cc21510",
             "name": "AutIDCreated",
             "nameLocation": "385:12:1",
             "parameters": {
-              "id": 1027,
+              "id": 1034,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1024,
+                  "id": 1029,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "owner",
                   "nameLocation": "406:5:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1028,
+                  "scope": 1035,
                   "src": "398:13:1",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1722,7 +1734,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1023,
+                    "id": 1028,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "398:7:1",
@@ -1736,13 +1748,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1026,
+                  "id": 1031,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "tokenID",
                   "nameLocation": "421:7:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1028,
+                  "scope": 1035,
                   "src": "413:15:1",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1751,7 +1763,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1025,
+                    "id": 1030,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "413:7:1",
@@ -1761,331 +1773,17 @@
                     }
                   },
                   "visibility": "internal"
-                }
-              ],
-              "src": "397:32:1"
-            }
-          },
-          {
-            "id": 1034,
-            "nodeType": "EventDefinition",
-            "src": "435:62:1",
-            "nodes": [],
-            "anonymous": false,
-            "eventSelector": "11f49dc9a23622fcefb8ce53014a211d0b8b75c15e386e4970915b72927cd57d",
-            "name": "NovaJoined",
-            "nameLocation": "441:10:1",
-            "parameters": {
-              "id": 1033,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 1030,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "NovaExpanderAddress",
-                  "nameLocation": "460:19:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1034,
-                  "src": "452:27:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1029,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "452:7:1",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
                 },
                 {
                   "constant": false,
-                  "id": 1032,
+                  "id": 1033,
                   "indexed": false,
                   "mutability": "mutable",
-                  "name": "member",
-                  "nameLocation": "489:6:1",
+                  "name": "username",
+                  "nameLocation": "437:8:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1034,
-                  "src": "481:14:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1031,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "481:7:1",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "451:45:1"
-            }
-          },
-          {
-            "id": 1040,
-            "nodeType": "EventDefinition",
-            "src": "502:65:1",
-            "nodes": [],
-            "anonymous": false,
-            "eventSelector": "746dfa771d4c23edf7e2589349c78f19155011a7154d365b9e49a691ab0458cf",
-            "name": "NovaWithdrawn",
-            "nameLocation": "508:13:1",
-            "parameters": {
-              "id": 1039,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 1036,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "NovaExpanderAddress",
-                  "nameLocation": "530:19:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1040,
-                  "src": "522:27:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1035,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "522:7:1",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 1038,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "member",
-                  "nameLocation": "559:6:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1040,
-                  "src": "551:14:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1037,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "551:7:1",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "521:45:1"
-            }
-          },
-          {
-            "id": 1048,
-            "nodeType": "EventDefinition",
-            "src": "572:92:1",
-            "nodes": [],
-            "anonymous": false,
-            "eventSelector": "d79a2f47c1c734f8660476261fe14c54bb4b004e21643d70f34e76f590df70ba",
-            "name": "CommitmentUpdated",
-            "nameLocation": "578:17:1",
-            "parameters": {
-              "id": 1047,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 1042,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "NovaExpanderAddress",
-                  "nameLocation": "604:19:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1048,
-                  "src": "596:27:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1041,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "596:7:1",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 1044,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "member",
-                  "nameLocation": "633:6:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1048,
-                  "src": "625:14:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1043,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "625:7:1",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 1046,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "newCommitment",
-                  "nameLocation": "649:13:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1048,
-                  "src": "641:21:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 1045,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "641:7:1",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "595:68:1"
-            }
-          },
-          {
-            "id": 1050,
-            "nodeType": "EventDefinition",
-            "src": "669:34:1",
-            "nodes": [],
-            "anonymous": false,
-            "eventSelector": "d751b525f83cb4458bf789d0f717631f3a26d5c70a81ea922690f3cf09f3e6df",
-            "name": "DiscordIDConnectedToAutID",
-            "nameLocation": "675:25:1",
-            "parameters": {
-              "id": 1049,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "700:2:1"
-            }
-          },
-          {
-            "id": 1056,
-            "nodeType": "EventDefinition",
-            "src": "708:58:1",
-            "nodes": [],
-            "anonymous": false,
-            "eventSelector": "8b20b7ba7012e3c6dd7eebc0edcd0b48b7b1baaefa3edd31c7c9fe4600378401",
-            "name": "MetadataUriSet",
-            "nameLocation": "714:14:1",
-            "parameters": {
-              "id": 1055,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 1052,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "tokenId",
-                  "nameLocation": "737:7:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1056,
-                  "src": "729:15:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 1051,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "729:7:1",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 1054,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "metadataUri",
-                  "nameLocation": "753:11:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1056,
-                  "src": "746:18:1",
+                  "scope": 1035,
+                  "src": "430:15:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2093,10 +1791,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1053,
+                    "id": 1032,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "746:6:1",
+                    "src": "430:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2105,25 +1803,367 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "728:37:1"
+              "src": "397:49:1"
             }
           },
           {
-            "id": 1065,
+            "id": 1041,
+            "nodeType": "EventDefinition",
+            "src": "452:62:1",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "11f49dc9a23622fcefb8ce53014a211d0b8b75c15e386e4970915b72927cd57d",
+            "name": "NovaJoined",
+            "nameLocation": "458:10:1",
+            "parameters": {
+              "id": 1040,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1037,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "NovaExpanderAddress",
+                  "nameLocation": "477:19:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1041,
+                  "src": "469:27:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1036,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "469:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1039,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "member",
+                  "nameLocation": "506:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1041,
+                  "src": "498:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1038,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "498:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "468:45:1"
+            }
+          },
+          {
+            "id": 1047,
+            "nodeType": "EventDefinition",
+            "src": "519:65:1",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "746dfa771d4c23edf7e2589349c78f19155011a7154d365b9e49a691ab0458cf",
+            "name": "NovaWithdrawn",
+            "nameLocation": "525:13:1",
+            "parameters": {
+              "id": 1046,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1043,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "NovaExpanderAddress",
+                  "nameLocation": "547:19:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1047,
+                  "src": "539:27:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1042,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "539:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1045,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "member",
+                  "nameLocation": "576:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1047,
+                  "src": "568:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1044,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "568:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "538:45:1"
+            }
+          },
+          {
+            "id": 1055,
+            "nodeType": "EventDefinition",
+            "src": "589:92:1",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "d79a2f47c1c734f8660476261fe14c54bb4b004e21643d70f34e76f590df70ba",
+            "name": "CommitmentUpdated",
+            "nameLocation": "595:17:1",
+            "parameters": {
+              "id": 1054,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1049,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "NovaExpanderAddress",
+                  "nameLocation": "621:19:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1055,
+                  "src": "613:27:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1048,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "613:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1051,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "member",
+                  "nameLocation": "650:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1055,
+                  "src": "642:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1050,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "642:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1053,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "newCommitment",
+                  "nameLocation": "666:13:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1055,
+                  "src": "658:21:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1052,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "658:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "612:68:1"
+            }
+          },
+          {
+            "id": 1057,
+            "nodeType": "EventDefinition",
+            "src": "686:34:1",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "d751b525f83cb4458bf789d0f717631f3a26d5c70a81ea922690f3cf09f3e6df",
+            "name": "DiscordIDConnectedToAutID",
+            "nameLocation": "692:25:1",
+            "parameters": {
+              "id": 1056,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "717:2:1"
+            }
+          },
+          {
+            "id": 1063,
+            "nodeType": "EventDefinition",
+            "src": "725:58:1",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "8b20b7ba7012e3c6dd7eebc0edcd0b48b7b1baaefa3edd31c7c9fe4600378401",
+            "name": "MetadataUriSet",
+            "nameLocation": "731:14:1",
+            "parameters": {
+              "id": 1062,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1059,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "754:7:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1063,
+                  "src": "746:15:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1058,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "746:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1061,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "metadataUri",
+                  "nameLocation": "770:11:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1063,
+                  "src": "763:18:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 1060,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "763:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "745:37:1"
+            }
+          },
+          {
+            "id": 1072,
             "nodeType": "StructDefinition",
-            "src": "772:135:1",
+            "src": "789:135:1",
             "nodes": [],
             "canonicalName": "IAutID.NovaMember",
             "members": [
               {
                 "constant": false,
-                "id": 1058,
+                "id": 1065,
                 "mutability": "mutable",
                 "name": "NovaExpanderAddress",
-                "nameLocation": "808:19:1",
+                "nameLocation": "825:19:1",
                 "nodeType": "VariableDeclaration",
-                "scope": 1065,
-                "src": "800:27:1",
+                "scope": 1072,
+                "src": "817:27:1",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -2131,10 +2171,10 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 1057,
+                  "id": 1064,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "800:7:1",
+                  "src": "817:7:1",
                   "stateMutability": "nonpayable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address",
@@ -2145,13 +2185,13 @@
               },
               {
                 "constant": false,
-                "id": 1060,
+                "id": 1067,
                 "mutability": "mutable",
                 "name": "role",
-                "nameLocation": "845:4:1",
+                "nameLocation": "862:4:1",
                 "nodeType": "VariableDeclaration",
-                "scope": 1065,
-                "src": "837:12:1",
+                "scope": 1072,
+                "src": "854:12:1",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -2159,10 +2199,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1059,
+                  "id": 1066,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "837:7:1",
+                  "src": "854:7:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -2172,13 +2212,13 @@
               },
               {
                 "constant": false,
-                "id": 1062,
+                "id": 1069,
                 "mutability": "mutable",
                 "name": "commitment",
-                "nameLocation": "867:10:1",
+                "nameLocation": "884:10:1",
                 "nodeType": "VariableDeclaration",
-                "scope": 1065,
-                "src": "859:18:1",
+                "scope": 1072,
+                "src": "876:18:1",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -2186,10 +2226,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1061,
+                  "id": 1068,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "859:7:1",
+                  "src": "876:7:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -2199,13 +2239,13 @@
               },
               {
                 "constant": false,
-                "id": 1064,
+                "id": 1071,
                 "mutability": "mutable",
                 "name": "isActive",
-                "nameLocation": "892:8:1",
+                "nameLocation": "909:8:1",
                 "nodeType": "VariableDeclaration",
-                "scope": 1065,
-                "src": "887:13:1",
+                "scope": 1072,
+                "src": "904:13:1",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -2213,10 +2253,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 1063,
+                  "id": 1070,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "887:4:1",
+                  "src": "904:4:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -2226,19 +2266,19 @@
               }
             ],
             "name": "NovaMember",
-            "nameLocation": "779:10:1",
-            "scope": 1194,
+            "nameLocation": "796:10:1",
+            "scope": 1201,
             "visibility": "public"
           },
           {
-            "id": 1079,
+            "id": 1086,
             "nodeType": "FunctionDefinition",
-            "src": "1397:130:1",
+            "src": "1414:130:1",
             "nodes": [],
             "documentation": {
-              "id": 1066,
+              "id": 1073,
               "nodeType": "StructuredDocumentation",
-              "src": "913:479:1",
+              "src": "930:479:1",
               "text": "@notice mints a new AutID NFT ID\n @dev each AutID holder can have only one AutID. It reverts if the AutID already exists. The user must be a part of the Nova passed.\n @param url the NFT metadata that holds username, avatar\n @param role the role that the user has selected within the specified Nova\n @param commitment the commitment value that the user has selected for this Nova\n @param NovaExpander the address of the NovaExpander contract"
             },
             "functionSelector": "5bc4ffdf",
@@ -2246,20 +2286,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "mint",
-            "nameLocation": "1406:4:1",
+            "nameLocation": "1423:4:1",
             "parameters": {
-              "id": 1077,
+              "id": 1084,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1068,
+                  "id": 1075,
                   "mutability": "mutable",
                   "name": "username",
-                  "nameLocation": "1425:8:1",
+                  "nameLocation": "1442:8:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1079,
-                  "src": "1411:22:1",
+                  "scope": 1086,
+                  "src": "1428:22:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2267,10 +2307,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1067,
+                    "id": 1074,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1411:6:1",
+                    "src": "1428:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2280,13 +2320,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1070,
+                  "id": 1077,
                   "mutability": "mutable",
                   "name": "url",
-                  "nameLocation": "1449:3:1",
+                  "nameLocation": "1466:3:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1079,
-                  "src": "1435:17:1",
+                  "scope": 1086,
+                  "src": "1452:17:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2294,10 +2334,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1069,
+                    "id": 1076,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1435:6:1",
+                    "src": "1452:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2307,13 +2347,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1072,
+                  "id": 1079,
                   "mutability": "mutable",
                   "name": "role",
-                  "nameLocation": "1462:4:1",
+                  "nameLocation": "1479:4:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1079,
-                  "src": "1454:12:1",
+                  "scope": 1086,
+                  "src": "1471:12:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2321,10 +2361,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1071,
+                    "id": 1078,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1454:7:1",
+                    "src": "1471:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2334,13 +2374,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1074,
+                  "id": 1081,
                   "mutability": "mutable",
                   "name": "commitment",
-                  "nameLocation": "1476:10:1",
+                  "nameLocation": "1493:10:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1079,
-                  "src": "1468:18:1",
+                  "scope": 1086,
+                  "src": "1485:18:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2348,10 +2388,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1073,
+                    "id": 1080,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1468:7:1",
+                    "src": "1485:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2361,13 +2401,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1076,
+                  "id": 1083,
                   "mutability": "mutable",
                   "name": "NovaExpander",
-                  "nameLocation": "1496:12:1",
+                  "nameLocation": "1513:12:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1079,
-                  "src": "1488:20:1",
+                  "scope": 1086,
+                  "src": "1505:20:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2375,10 +2415,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1075,
+                    "id": 1082,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1488:7:1",
+                    "src": "1505:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2388,28 +2428,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1410:99:1"
+              "src": "1427:99:1"
             },
             "returnParameters": {
-              "id": 1078,
+              "id": 1085,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1526:0:1"
+              "src": "1543:0:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1089,
+            "id": 1096,
             "nodeType": "FunctionDefinition",
-            "src": "1936:83:1",
+            "src": "1953:83:1",
             "nodes": [],
             "documentation": {
-              "id": 1080,
+              "id": 1087,
               "nodeType": "StructuredDocumentation",
-              "src": "1533:398:1",
+              "src": "1550:398:1",
               "text": "@notice associates a AutID to a new Nova\n @dev The commitment of the user can't exceed 10. It fails if the user has already committed to other Novas\n @param role the role that the user has selected within the specified Nova\n @param commitment the commitment value that the user has selected for this Nova\n @param NovaExpander the address of the NovaExpander contract"
             },
             "functionSelector": "daedfed2",
@@ -2417,20 +2457,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "joinNova",
-            "nameLocation": "1945:8:1",
+            "nameLocation": "1962:8:1",
             "parameters": {
-              "id": 1087,
+              "id": 1094,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1082,
+                  "id": 1089,
                   "mutability": "mutable",
                   "name": "role",
-                  "nameLocation": "1962:4:1",
+                  "nameLocation": "1979:4:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1089,
-                  "src": "1954:12:1",
+                  "scope": 1096,
+                  "src": "1971:12:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2438,10 +2478,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1081,
+                    "id": 1088,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1954:7:1",
+                    "src": "1971:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2451,13 +2491,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1084,
+                  "id": 1091,
                   "mutability": "mutable",
                   "name": "commitment",
-                  "nameLocation": "1976:10:1",
+                  "nameLocation": "1993:10:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1089,
-                  "src": "1968:18:1",
+                  "scope": 1096,
+                  "src": "1985:18:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2465,10 +2505,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1083,
+                    "id": 1090,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1968:7:1",
+                    "src": "1985:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2478,13 +2518,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1086,
+                  "id": 1093,
                   "mutability": "mutable",
                   "name": "NovaExpander",
-                  "nameLocation": "1996:12:1",
+                  "nameLocation": "2013:12:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1089,
-                  "src": "1988:20:1",
+                  "scope": 1096,
+                  "src": "2005:20:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2492,10 +2532,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1085,
+                    "id": 1092,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1988:7:1",
+                    "src": "2005:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2505,28 +2545,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1953:56:1"
+              "src": "1970:56:1"
             },
             "returnParameters": {
-              "id": 1088,
+              "id": 1095,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2018:0:1"
+              "src": "2035:0:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1098,
+            "id": 1105,
             "nodeType": "FunctionDefinition",
-            "src": "2232:92:1",
+            "src": "2249:92:1",
             "nodes": [],
             "documentation": {
-              "id": 1090,
+              "id": 1097,
               "nodeType": "StructuredDocumentation",
-              "src": "2025:202:1",
+              "src": "2042:202:1",
               "text": "@notice gets all communities the AutID holder is a member of\n @param autIDHolder the address of the AutID holder\n @return Novas Nova expander addresses that the aut holder is a part of"
             },
             "functionSelector": "89cbf104",
@@ -2534,20 +2574,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "getHolderNovae",
-            "nameLocation": "2241:14:1",
+            "nameLocation": "2258:14:1",
             "parameters": {
-              "id": 1093,
+              "id": 1100,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1092,
+                  "id": 1099,
                   "mutability": "mutable",
                   "name": "autIDHolder",
-                  "nameLocation": "2264:11:1",
+                  "nameLocation": "2281:11:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1098,
-                  "src": "2256:19:1",
+                  "scope": 1105,
+                  "src": "2273:19:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2555,10 +2595,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1091,
+                    "id": 1098,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2256:7:1",
+                    "src": "2273:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2568,21 +2608,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2255:21:1"
+              "src": "2272:21:1"
             },
             "returnParameters": {
-              "id": 1097,
+              "id": 1104,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1096,
+                  "id": 1103,
                   "mutability": "mutable",
                   "name": "Novas",
-                  "nameLocation": "2317:5:1",
+                  "nameLocation": "2334:5:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1098,
-                  "src": "2300:22:1",
+                  "scope": 1105,
+                  "src": "2317:22:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2591,19 +2631,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 1094,
+                      "id": 1101,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2300:7:1",
+                      "src": "2317:7:1",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "id": 1095,
+                    "id": 1102,
                     "nodeType": "ArrayTypeName",
-                    "src": "2300:9:1",
+                    "src": "2317:9:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -2612,22 +2652,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2299:24:1"
+              "src": "2316:24:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1106,
+            "id": 1113,
             "nodeType": "FunctionDefinition",
-            "src": "2463:77:1",
+            "src": "2480:77:1",
             "nodes": [],
             "documentation": {
-              "id": 1099,
+              "id": 1106,
               "nodeType": "StructuredDocumentation",
-              "src": "2330:128:1",
+              "src": "2347:128:1",
               "text": "@notice returns NFT ID of the holder\n @param autIDOwner the user address\n @return the token ID of their NFT ID"
             },
             "functionSelector": "79389510",
@@ -2635,20 +2675,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "getAutIDByOwner",
-            "nameLocation": "2472:15:1",
+            "nameLocation": "2489:15:1",
             "parameters": {
-              "id": 1102,
+              "id": 1109,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1101,
+                  "id": 1108,
                   "mutability": "mutable",
                   "name": "autIDOwner",
-                  "nameLocation": "2496:10:1",
+                  "nameLocation": "2513:10:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1106,
-                  "src": "2488:18:1",
+                  "scope": 1113,
+                  "src": "2505:18:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2656,10 +2696,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1100,
+                    "id": 1107,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2488:7:1",
+                    "src": "2505:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2669,21 +2709,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2487:20:1"
+              "src": "2504:20:1"
             },
             "returnParameters": {
-              "id": 1105,
+              "id": 1112,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1104,
+                  "id": 1111,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1106,
-                  "src": "2531:7:1",
+                  "scope": 1113,
+                  "src": "2548:7:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2691,10 +2731,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1103,
+                    "id": 1110,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2531:7:1",
+                    "src": "2548:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2703,22 +2743,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2530:9:1"
+              "src": "2547:9:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1114,
+            "id": 1121,
             "nodeType": "FunctionDefinition",
-            "src": "2753:81:1",
+            "src": "2770:81:1",
             "nodes": [],
             "documentation": {
-              "id": 1107,
+              "id": 1114,
               "nodeType": "StructuredDocumentation",
-              "src": "2546:202:1",
+              "src": "2563:202:1",
               "text": "@notice AutID holders can link their DiscordID to their AutID ID\n @dev Returns a discord ID for the AutID token ID passed.\n @param tokenID the AutID token ID\n @return discord ID"
             },
             "functionSelector": "fa320285",
@@ -2726,20 +2766,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "autIDToDiscordID",
-            "nameLocation": "2762:16:1",
+            "nameLocation": "2779:16:1",
             "parameters": {
-              "id": 1110,
+              "id": 1117,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1109,
+                  "id": 1116,
                   "mutability": "mutable",
                   "name": "tokenID",
-                  "nameLocation": "2787:7:1",
+                  "nameLocation": "2804:7:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1114,
-                  "src": "2779:15:1",
+                  "scope": 1121,
+                  "src": "2796:15:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2747,10 +2787,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1108,
+                    "id": 1115,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2779:7:1",
+                    "src": "2796:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2759,21 +2799,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2778:17:1"
+              "src": "2795:17:1"
             },
             "returnParameters": {
-              "id": 1113,
+              "id": 1120,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1112,
+                  "id": 1119,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1114,
-                  "src": "2819:13:1",
+                  "scope": 1121,
+                  "src": "2836:13:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2781,10 +2821,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1111,
+                    "id": 1118,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2819:6:1",
+                    "src": "2836:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2793,22 +2833,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2818:15:1"
+              "src": "2835:15:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1120,
+            "id": 1127,
             "nodeType": "FunctionDefinition",
-            "src": "3037:65:1",
+            "src": "3054:65:1",
             "nodes": [],
             "documentation": {
-              "id": 1115,
+              "id": 1122,
               "nodeType": "StructuredDocumentation",
-              "src": "2840:192:1",
+              "src": "2857:192:1",
               "text": "@notice AutID holders can link their DiscordID to their AutID ID\n @dev links the discord ID to the AutID token ID passed.\n @param discordID the discord ID of the AutID holder"
             },
             "functionSelector": "72e4c149",
@@ -2816,20 +2856,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "addDiscordIDToAutID",
-            "nameLocation": "3046:19:1",
+            "nameLocation": "3063:19:1",
             "parameters": {
-              "id": 1118,
+              "id": 1125,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1117,
+                  "id": 1124,
                   "mutability": "mutable",
                   "name": "discordID",
-                  "nameLocation": "3082:9:1",
+                  "nameLocation": "3099:9:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1120,
-                  "src": "3066:25:1",
+                  "scope": 1127,
+                  "src": "3083:25:1",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -2837,10 +2877,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1116,
+                    "id": 1123,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3066:6:1",
+                    "src": "3083:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2849,43 +2889,43 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3065:27:1"
+              "src": "3082:27:1"
             },
             "returnParameters": {
-              "id": 1119,
+              "id": 1126,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3101:0:1"
+              "src": "3118:0:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1130,
+            "id": 1137,
             "nodeType": "FunctionDefinition",
-            "src": "3108:112:1",
+            "src": "3125:112:1",
             "nodes": [],
             "functionSelector": "96259c66",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getMembershipData",
-            "nameLocation": "3117:17:1",
+            "nameLocation": "3134:17:1",
             "parameters": {
-              "id": 1125,
+              "id": 1132,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1122,
+                  "id": 1129,
                   "mutability": "mutable",
                   "name": "autIDHolder",
-                  "nameLocation": "3143:11:1",
+                  "nameLocation": "3160:11:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1130,
-                  "src": "3135:19:1",
+                  "scope": 1137,
+                  "src": "3152:19:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2893,10 +2933,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1121,
+                    "id": 1128,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3135:7:1",
+                    "src": "3152:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2907,108 +2947,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1124,
+                  "id": 1131,
                   "mutability": "mutable",
                   "name": "NovaExpander",
-                  "nameLocation": "3164:12:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1130,
-                  "src": "3156:20:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1123,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "3156:7:1",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3134:43:1"
-            },
-            "returnParameters": {
-              "id": 1129,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 1128,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1130,
-                  "src": "3201:17:1",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_NovaMember_$1065_memory_ptr",
-                    "typeString": "struct IAutID.NovaMember"
-                  },
-                  "typeName": {
-                    "id": 1127,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 1126,
-                      "name": "NovaMember",
-                      "nameLocations": [
-                        "3201:10:1"
-                      ],
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 1065,
-                      "src": "3201:10:1"
-                    },
-                    "referencedDeclaration": 1065,
-                    "src": "3201:10:1",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_NovaMember_$1065_storage_ptr",
-                      "typeString": "struct IAutID.NovaMember"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3200:19:1"
-            },
-            "scope": 1194,
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 1137,
-            "nodeType": "FunctionDefinition",
-            "src": "3226:81:1",
-            "nodes": [],
-            "functionSelector": "da24e8b8",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "getTotalCommitment",
-            "nameLocation": "3235:18:1",
-            "parameters": {
-              "id": 1133,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 1132,
-                  "mutability": "mutable",
-                  "name": "autIDHolder",
-                  "nameLocation": "3262:11:1",
+                  "nameLocation": "3181:12:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1137,
-                  "src": "3254:19:1",
+                  "src": "3173:20:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3016,10 +2961,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1131,
+                    "id": 1130,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3254:7:1",
+                    "src": "3173:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3029,7 +2974,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3253:21:1"
+              "src": "3151:43:1"
             },
             "returnParameters": {
               "id": 1136,
@@ -3043,44 +2988,54 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1137,
-                  "src": "3298:7:1",
+                  "src": "3218:17:1",
                   "stateVariable": false,
-                  "storageLocation": "default",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
+                    "typeIdentifier": "t_struct$_NovaMember_$1072_memory_ptr",
+                    "typeString": "struct IAutID.NovaMember"
                   },
                   "typeName": {
                     "id": 1134,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "3298:7:1",
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 1133,
+                      "name": "NovaMember",
+                      "nameLocations": [
+                        "3218:10:1"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 1072,
+                      "src": "3218:10:1"
+                    },
+                    "referencedDeclaration": 1072,
+                    "src": "3218:10:1",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
+                      "typeIdentifier": "t_struct$_NovaMember_$1072_storage_ptr",
+                      "typeString": "struct IAutID.NovaMember"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "3297:9:1"
+              "src": "3217:19:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1142,
+            "id": 1144,
             "nodeType": "FunctionDefinition",
-            "src": "3313:49:1",
+            "src": "3243:81:1",
             "nodes": [],
-            "functionSelector": "51cff8d9",
+            "functionSelector": "da24e8b8",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "withdraw",
-            "nameLocation": "3322:8:1",
+            "name": "getTotalCommitment",
+            "nameLocation": "3252:18:1",
             "parameters": {
               "id": 1140,
               "nodeType": "ParameterList",
@@ -3089,11 +3044,11 @@
                   "constant": false,
                   "id": 1139,
                   "mutability": "mutable",
-                  "name": "NovaExpander",
-                  "nameLocation": "3339:12:1",
+                  "name": "autIDHolder",
+                  "nameLocation": "3279:11:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1142,
-                  "src": "3331:20:1",
+                  "scope": 1144,
+                  "src": "3271:19:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3104,7 +3059,7 @@
                     "id": 1138,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3331:7:1",
+                    "src": "3271:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3114,43 +3069,71 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3330:22:1"
+              "src": "3270:21:1"
             },
             "returnParameters": {
-              "id": 1141,
+              "id": 1143,
               "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "3361:0:1"
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1142,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1144,
+                  "src": "3315:7:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1141,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3315:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3314:9:1"
             },
-            "scope": 1194,
-            "stateMutability": "nonpayable",
+            "scope": 1201,
+            "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "id": 1149,
             "nodeType": "FunctionDefinition",
-            "src": "3368:75:1",
+            "src": "3330:49:1",
             "nodes": [],
-            "functionSelector": "f359d863",
+            "functionSelector": "51cff8d9",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "editCommitment",
-            "nameLocation": "3377:14:1",
+            "name": "withdraw",
+            "nameLocation": "3339:8:1",
             "parameters": {
               "id": 1147,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1144,
+                  "id": 1146,
                   "mutability": "mutable",
                   "name": "NovaExpander",
-                  "nameLocation": "3400:12:1",
+                  "nameLocation": "3356:12:1",
                   "nodeType": "VariableDeclaration",
                   "scope": 1149,
-                  "src": "3392:20:1",
+                  "src": "3348:20:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3158,10 +3141,67 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1143,
+                    "id": 1145,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3392:7:1",
+                    "src": "3348:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3347:22:1"
+            },
+            "returnParameters": {
+              "id": 1148,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3378:0:1"
+            },
+            "scope": 1201,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 1156,
+            "nodeType": "FunctionDefinition",
+            "src": "3385:75:1",
+            "nodes": [],
+            "functionSelector": "f359d863",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "editCommitment",
+            "nameLocation": "3394:14:1",
+            "parameters": {
+              "id": 1154,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1151,
+                  "mutability": "mutable",
+                  "name": "NovaExpander",
+                  "nameLocation": "3417:12:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1156,
+                  "src": "3409:20:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1150,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3409:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3172,13 +3212,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1146,
+                  "id": 1153,
                   "mutability": "mutable",
                   "name": "commitment",
-                  "nameLocation": "3422:10:1",
+                  "nameLocation": "3439:10:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1149,
-                  "src": "3414:18:1",
+                  "scope": 1156,
+                  "src": "3431:18:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3186,10 +3226,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1145,
+                    "id": 1152,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3414:7:1",
+                    "src": "3431:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -3198,115 +3238,30 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3391:42:1"
+              "src": "3408:42:1"
             },
             "returnParameters": {
-              "id": 1148,
+              "id": 1155,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3442:0:1"
+              "src": "3459:0:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1156,
+            "id": 1163,
             "nodeType": "FunctionDefinition",
-            "src": "3449:87:1",
+            "src": "3466:87:1",
             "nodes": [],
             "functionSelector": "6dc5cc06",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "discordIDToAddress",
-            "nameLocation": "3458:18:1",
-            "parameters": {
-              "id": 1152,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 1151,
-                  "mutability": "mutable",
-                  "name": "discordID",
-                  "nameLocation": "3493:9:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1156,
-                  "src": "3477:25:1",
-                  "stateVariable": false,
-                  "storageLocation": "calldata",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_calldata_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 1150,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "3477:6:1",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3476:27:1"
-            },
-            "returnParameters": {
-              "id": 1155,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 1154,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1156,
-                  "src": "3527:7:1",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1153,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "3527:7:1",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3526:9:1"
-            },
-            "scope": 1194,
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 1161,
-            "nodeType": "FunctionDefinition",
-            "src": "3542:62:1",
-            "nodes": [],
-            "functionSelector": "1130630c",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "setMetadataUri",
-            "nameLocation": "3551:14:1",
+            "nameLocation": "3475:18:1",
             "parameters": {
               "id": 1159,
               "nodeType": "ParameterList",
@@ -3315,11 +3270,11 @@
                   "constant": false,
                   "id": 1158,
                   "mutability": "mutable",
-                  "name": "metadataUri",
-                  "nameLocation": "3582:11:1",
+                  "name": "discordID",
+                  "nameLocation": "3510:9:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1161,
-                  "src": "3566:27:1",
+                  "scope": 1163,
+                  "src": "3494:25:1",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -3330,7 +3285,7 @@
                     "id": 1157,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3566:6:1",
+                    "src": "3494:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -3339,77 +3294,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3565:29:1"
+              "src": "3493:27:1"
             },
             "returnParameters": {
-              "id": 1160,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "3603:0:1"
-            },
-            "scope": 1194,
-            "stateMutability": "nonpayable",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 1168,
-            "nodeType": "FunctionDefinition",
-            "src": "3610:90:1",
-            "nodes": [],
-            "functionSelector": "4e51ea39",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "getAutIDHolderByUsername",
-            "nameLocation": "3619:24:1",
-            "parameters": {
-              "id": 1164,
+              "id": 1162,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1163,
-                  "mutability": "mutable",
-                  "name": "username",
-                  "nameLocation": "3658:8:1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1168,
-                  "src": "3644:22:1",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 1162,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "3644:6:1",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3643:24:1"
-            },
-            "returnParameters": {
-              "id": 1167,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 1166,
+                  "id": 1161,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1168,
-                  "src": "3691:7:1",
+                  "scope": 1163,
+                  "src": "3544:7:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3417,10 +3316,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1165,
+                    "id": 1160,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3691:7:1",
+                    "src": "3544:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3430,43 +3329,184 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3690:9:1"
+              "src": "3543:9:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1173,
+            "id": 1168,
             "nodeType": "FunctionDefinition",
-            "src": "3705:58:1",
+            "src": "3559:62:1",
+            "nodes": [],
+            "functionSelector": "1130630c",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setMetadataUri",
+            "nameLocation": "3568:14:1",
+            "parameters": {
+              "id": 1166,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1165,
+                  "mutability": "mutable",
+                  "name": "metadataUri",
+                  "nameLocation": "3599:11:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1168,
+                  "src": "3583:27:1",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 1164,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3583:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3582:29:1"
+            },
+            "returnParameters": {
+              "id": 1167,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3620:0:1"
+            },
+            "scope": 1201,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 1175,
+            "nodeType": "FunctionDefinition",
+            "src": "3627:90:1",
+            "nodes": [],
+            "functionSelector": "4e51ea39",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getAutIDHolderByUsername",
+            "nameLocation": "3636:24:1",
+            "parameters": {
+              "id": 1171,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1170,
+                  "mutability": "mutable",
+                  "name": "username",
+                  "nameLocation": "3675:8:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1175,
+                  "src": "3661:22:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 1169,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3661:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3660:24:1"
+            },
+            "returnParameters": {
+              "id": 1174,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1173,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1175,
+                  "src": "3708:7:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1172,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3708:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3707:9:1"
+            },
+            "scope": 1201,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 1180,
+            "nodeType": "FunctionDefinition",
+            "src": "3722:58:1",
             "nodes": [],
             "functionSelector": "4a198119",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getNextTokenID",
-            "nameLocation": "3714:14:1",
+            "nameLocation": "3731:14:1",
             "parameters": {
-              "id": 1169,
+              "id": 1176,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3728:2:1"
+              "src": "3745:2:1"
             },
             "returnParameters": {
-              "id": 1172,
+              "id": 1179,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1171,
+                  "id": 1178,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1173,
-                  "src": "3754:7:1",
+                  "scope": 1180,
+                  "src": "3771:7:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3474,10 +3514,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1170,
+                    "id": 1177,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3754:7:1",
+                    "src": "3771:7:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -3486,37 +3526,37 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3753:9:1"
+              "src": "3770:9:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1181,
+            "id": 1188,
             "nodeType": "FunctionDefinition",
-            "src": "3769:85:1",
+            "src": "3786:85:1",
             "nodes": [],
             "functionSelector": "2ca62cd5",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getAllActiveMembers",
-            "nameLocation": "3778:19:1",
+            "nameLocation": "3795:19:1",
             "parameters": {
-              "id": 1176,
+              "id": 1183,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1175,
+                  "id": 1182,
                   "mutability": "mutable",
                   "name": "nova_",
-                  "nameLocation": "3806:5:1",
+                  "nameLocation": "3823:5:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1181,
-                  "src": "3798:13:1",
+                  "scope": 1188,
+                  "src": "3815:13:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3524,10 +3564,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1174,
+                    "id": 1181,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3798:7:1",
+                    "src": "3815:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3537,21 +3577,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3797:15:1"
+              "src": "3814:15:1"
             },
             "returnParameters": {
-              "id": 1180,
+              "id": 1187,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1179,
+                  "id": 1186,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1181,
-                  "src": "3836:16:1",
+                  "scope": 1188,
+                  "src": "3853:16:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3560,19 +3600,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 1177,
+                      "id": 1184,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "3836:7:1",
+                      "src": "3853:7:1",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "id": 1178,
+                    "id": 1185,
                     "nodeType": "ArrayTypeName",
-                    "src": "3836:9:1",
+                    "src": "3853:9:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -3581,22 +3621,22 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3835:18:1"
+              "src": "3852:18:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 1193,
+            "id": 1200,
             "nodeType": "FunctionDefinition",
-            "src": "4002:146:1",
+            "src": "4019:146:1",
             "nodes": [],
             "documentation": {
-              "id": 1182,
+              "id": 1189,
               "nodeType": "StructuredDocumentation",
-              "src": "3860:137:1",
+              "src": "3877:137:1",
               "text": "@notice returns commitment levels for agents in a Nova\n @param agents address of agents\n @param Nova_ commitment target"
             },
             "functionSelector": "ff69a391",
@@ -3604,20 +3644,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "getCommitmentsOfFor",
-            "nameLocation": "4011:19:1",
+            "nameLocation": "4028:19:1",
             "parameters": {
-              "id": 1188,
+              "id": 1195,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1185,
+                  "id": 1192,
                   "mutability": "mutable",
                   "name": "agents",
-                  "nameLocation": "4048:6:1",
+                  "nameLocation": "4065:6:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1193,
-                  "src": "4031:23:1",
+                  "scope": 1200,
+                  "src": "4048:23:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3626,19 +3666,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 1183,
+                      "id": 1190,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "4031:7:1",
+                      "src": "4048:7:1",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "id": 1184,
+                    "id": 1191,
                     "nodeType": "ArrayTypeName",
-                    "src": "4031:9:1",
+                    "src": "4048:9:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -3648,13 +3688,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 1187,
+                  "id": 1194,
                   "mutability": "mutable",
                   "name": "Nova_",
-                  "nameLocation": "4064:5:1",
+                  "nameLocation": "4081:5:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1193,
-                  "src": "4056:13:1",
+                  "scope": 1200,
+                  "src": "4073:13:1",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3662,10 +3702,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1186,
+                    "id": 1193,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4056:7:1",
+                    "src": "4073:7:1",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3675,21 +3715,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4030:40:1"
+              "src": "4047:40:1"
             },
             "returnParameters": {
-              "id": 1192,
+              "id": 1199,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1191,
+                  "id": 1198,
                   "mutability": "mutable",
                   "name": "commitments",
-                  "nameLocation": "4135:11:1",
+                  "nameLocation": "4152:11:1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1193,
-                  "src": "4118:28:1",
+                  "scope": 1200,
+                  "src": "4135:28:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3698,18 +3738,18 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 1189,
+                      "id": 1196,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
-                      "src": "4118:7:1",
+                      "src": "4135:7:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 1190,
+                    "id": 1197,
                     "nodeType": "ArrayTypeName",
-                    "src": "4118:9:1",
+                    "src": "4135:9:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -3718,9 +3758,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4117:30:1"
+              "src": "4134:30:1"
             },
-            "scope": 1194,
+            "scope": 1201,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -3730,16 +3770,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 1021,
+              "id": 1026,
               "name": "IERC721Upgradeable",
               "nameLocations": [
                 "354:18:1"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 58587,
+              "referencedDeclaration": 58632,
               "src": "354:18:1"
             },
-            "id": 1022,
+            "id": 1027,
             "nodeType": "InheritanceSpecifier",
             "src": "354:18:1"
           }
@@ -3748,20 +3788,20 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 1020,
+          "id": 1025,
           "nodeType": "StructuredDocumentation",
           "src": "139:195:1",
           "text": "@title IAutID\n @notice The interface of the IAutID contract\n @dev The contract is a non transferable ERC721 standard. It implements the logic of the role based membership within a Nova"
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          1194,
-          58587,
-          59326
+          1201,
+          58632,
+          59371
         ],
         "name": "IAutID",
         "nameLocation": "344:6:1",
-        "scope": 1195,
+        "scope": 1202,
         "usedErrors": []
       }
     ],

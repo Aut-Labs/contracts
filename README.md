@@ -1,3 +1,4 @@
+[![deployed on mumbai testnet](https://github.com/Aut-Labs/contracts/actions/workflows/deploy_mumbai.yml/badge.svg)](https://github.com/Aut-Labs/contracts/actions/workflows/deploy_mumbai.yml)
 # Āut Labs - Smart Contracts
 Āut is an expandable protocol for Role-based Membership in Web3 Communities & DAOs.
 
@@ -5,6 +6,34 @@ DAOs can be much more than _Smart Treasuries_, Āut introduces native Roles & In
 
 To read more about Āut, visit our [Docs](https://docs.aut.id).
 Below, you'll find a simple walkthrough to get started using Āut's Smart Contracts.
+
+# Docker Setup
+
+Create docker network (once)
+```bash
+docker network create mainnet
+```
+
+Run local blockchain node & deploy contracts. 
+Now the local node is accessable at `http://localhost:8545` (with `chainId=31337`)
+The deployer's PK is specified in `docker-compose.yml`
+```bash
+docker-compose up --build
+```
+
+Run local graph node
+```bash
+docker-compose -f docker-compose.graph.yml up
+```
+
+Deploy subgraphs
+```bash
+(
+    cd subgraphs/aut-id
+    yarn create-local
+    yarn deploy-local
+)
+```
 
 # Setup 
 

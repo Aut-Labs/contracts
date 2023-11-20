@@ -154,20 +154,20 @@
   },
   "ast": {
     "absolutePath": "contracts/mocks/SWLegacyCommunity.sol",
-    "id": 6320,
+    "id": 6319,
     "exportedSymbols": {
       "ISWLegacyDAO": [
-        12643
+        12688
       ],
       "SWLegacyDAO": [
-        6319
+        6318
       ]
     },
     "nodeType": "SourceUnit",
     "src": "31:403:54",
     "nodes": [
       {
-        "id": 6296,
+        "id": 6295,
         "nodeType": "PragmaDirective",
         "src": "31:23:54",
         "nodes": [],
@@ -178,30 +178,30 @@
         ]
       },
       {
-        "id": 6297,
+        "id": 6296,
         "nodeType": "ImportDirective",
         "src": "56:39:54",
         "nodes": [],
         "absolutePath": "contracts/standards/ISWLegacyDAO.sol",
         "file": "../standards/ISWLegacyDAO.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 6320,
-        "sourceUnit": 12644,
+        "scope": 6319,
+        "sourceUnit": 12689,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 6319,
+        "id": 6318,
         "nodeType": "ContractDefinition",
         "src": "163:270:54",
         "nodes": [
           {
-            "id": 6305,
+            "id": 6304,
             "nodeType": "VariableDeclaration",
             "src": "206:49:54",
             "nodes": [],
             "baseFunctions": [
-              12642
+              12687
             ],
             "constant": false,
             "functionSelector": "a230c524",
@@ -209,12 +209,12 @@
             "name": "isMember",
             "nameLocation": "247:8:54",
             "overrides": {
-              "id": 6304,
+              "id": 6303,
               "nodeType": "OverrideSpecifier",
               "overrides": [],
               "src": "238:8:54"
             },
-            "scope": 6319,
+            "scope": 6318,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -222,11 +222,11 @@
               "typeString": "mapping(address => bool)"
             },
             "typeName": {
-              "id": 6303,
+              "id": 6302,
               "keyName": "",
               "keyNameLocation": "-1:-1:-1",
               "keyType": {
-                "id": 6301,
+                "id": 6300,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "214:7:54",
@@ -244,7 +244,7 @@
               "valueName": "",
               "valueNameLocation": "-1:-1:-1",
               "valueType": {
-                "id": 6302,
+                "id": 6301,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "225:4:54",
@@ -257,43 +257,43 @@
             "visibility": "public"
           },
           {
-            "id": 6318,
+            "id": 6317,
             "nodeType": "FunctionDefinition",
             "src": "349:82:54",
             "nodes": [],
             "body": {
-              "id": 6317,
+              "id": 6316,
               "nodeType": "Block",
               "src": "391:40:54",
               "nodes": [],
               "statements": [
                 {
                   "expression": {
-                    "id": 6315,
+                    "id": 6314,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 6311,
+                        "id": 6310,
                         "name": "isMember",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6305,
+                        "referencedDeclaration": 6304,
                         "src": "401:8:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                           "typeString": "mapping(address => bool)"
                         }
                       },
-                      "id": 6313,
+                      "id": 6312,
                       "indexExpression": {
-                        "id": 6312,
+                        "id": 6311,
                         "name": "member",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6308,
+                        "referencedDeclaration": 6307,
                         "src": "410:6:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -315,7 +315,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "74727565",
-                      "id": 6314,
+                      "id": 6313,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -335,14 +335,14 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 6316,
+                  "id": 6315,
                   "nodeType": "ExpressionStatement",
                   "src": "401:23:54"
                 }
               ]
             },
             "documentation": {
-              "id": 6306,
+              "id": 6305,
               "nodeType": "StructuredDocumentation",
               "src": "262:82:54",
               "text": "@notice Adds member to the DAO\n @param member the address of the member"
@@ -354,17 +354,17 @@
             "name": "addMember",
             "nameLocation": "358:9:54",
             "parameters": {
-              "id": 6309,
+              "id": 6308,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6308,
+                  "id": 6307,
                   "mutability": "mutable",
                   "name": "member",
                   "nameLocation": "376:6:54",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6318,
+                  "scope": 6317,
                   "src": "368:14:54",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -373,7 +373,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6307,
+                    "id": 6306,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "368:7:54",
@@ -389,12 +389,12 @@
               "src": "367:16:54"
             },
             "returnParameters": {
-              "id": 6310,
+              "id": 6309,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "391:0:54"
             },
-            "scope": 6319,
+            "scope": 6318,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
@@ -404,16 +404,16 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 6299,
+              "id": 6298,
               "name": "ISWLegacyDAO",
               "nameLocations": [
                 "187:12:54"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 12643,
+              "referencedDeclaration": 12688,
               "src": "187:12:54"
             },
-            "id": 6300,
+            "id": 6299,
             "nodeType": "InheritanceSpecifier",
             "src": "187:12:54"
           }
@@ -422,19 +422,19 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6298,
+          "id": 6297,
           "nodeType": "StructuredDocumentation",
           "src": "97:66:54",
           "text": "@title SWLegacyDAO\n @notice Mock SW Legacy DAO for testing"
         },
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          6319,
-          12643
+          6318,
+          12688
         ],
         "name": "SWLegacyDAO",
         "nameLocation": "172:11:54",
-        "scope": 6320,
+        "scope": 6319,
         "usedErrors": []
       }
     ],
