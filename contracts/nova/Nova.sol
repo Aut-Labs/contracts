@@ -57,6 +57,11 @@ contract Nova is
         _setPluginRegistry(_pluginRegistry);
     }
 
+    function absoluteValue() external pure returns(uint256) {
+        // for the first month
+        return 1;
+    }
+
     function join(address newMember, uint256 role) public override onlyAutID {
         require(this.canJoin(newMember, role), "not allowed");
         super.join(newMember, role);
