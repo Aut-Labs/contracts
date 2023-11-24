@@ -1,0 +1,19 @@
+name: deploy subgraph
+on: workflow_dispatch
+
+jobs:
+  deploy-mumbai-autid:
+    runs-on: ubuntu-latest
+
+    env:
+      DEPLOY_KEY: ${{ secrets.subgraph_deploy_key }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+
+      - name: install node modules
+        run: (cd subgraphs/aut-id/ && yarn install --non-interactive)
+
+      - run: graph auth --studio "${DEPLOY_KEY}"
+      - run: graph deploy --studio autid-test
