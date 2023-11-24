@@ -47,10 +47,6 @@ abstract contract NovaMembers is INovaAdmin, INovaMembership, INovaMembershipSet
     /// @notice adds admins provided a member address. Plugins do not have to be members.
     /// @param member address to add as member.
     function addAdmin(address member) public override onlyAdmin {
-        if (
-            (!isMember[member])
-                && (IPluginRegistry(INovaModules(address(this)).pluginRegistry()).tokenIdFromAddress(member) == 0)
-        ) revert("Not a member");
         isAdmin[member] = true;
         admins.push(member);
         emit AdminMemberAdded(member);
