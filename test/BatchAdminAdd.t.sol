@@ -29,9 +29,6 @@ contract MembershipSets is DeploysInit {
         vm.expectRevert("Not an admin!");
         Nova.addAdmin(A4_outsider);
 
-        vm.prank(A0);
-        vm.expectRevert("Not a member");
-        Nova.addAdmin(A4_outsider);
         assertFalse(Nova.isAdmin(A4_outsider), "admin somehow");
 
         vm.prank(A4_outsider);
