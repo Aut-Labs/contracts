@@ -8,6 +8,7 @@ import "../interfaces/get/INovaModules.sol";
 import "../../plugins/registry/IPluginRegistry.sol";
 import "../interfaces/set/INovaMembershipSet.sol";
 import "../interfaces/set/INovaAdminSet.sol";
+import {IAutID} from "../../IAutID.sol";
 
 /// @title Nova
 /// @notice The extension of each Nova that integrates Aut
@@ -24,6 +25,7 @@ abstract contract NovaMembers is INovaAdmin, INovaMembership, INovaMembershipSet
 
     /// @dev Modifier for check of access of the admin member functions
     modifier onlyAdmin() {
+        // if ( IAutID(getAutIDAddress()).getAutIDByOwner(msg.sender) == 0 ) revert("Has no Aut Id"); 
         require(isAdmin[msg.sender], "Not an admin!");
         _;
     }

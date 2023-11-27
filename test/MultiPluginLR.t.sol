@@ -20,7 +20,7 @@ contract MultiPluginLR is DeploysInit {
 
         vm.startPrank(A0);
 
-        offTWR = new OffchainTaskWithRep(address(Nova));
+        offTWR = new OffchainTaskWithRep(address(Nova), A0);
         openTWR = new OpenTaskWithRep(address(Nova));
         socBotP = new SocialBotPlugin(address(Nova));
 
@@ -68,29 +68,29 @@ contract MultiPluginLR is DeploysInit {
 
     function testCreateCheckTask() public returns (uint256 taskid) {
         vm.warp(1000);
-        taskid = _createOffTasks(A1role);
+        taskid = _createONTasks(A1role);
 
         vm.expectRevert();
-        offTWR.submit(taskid, "urlurl");
-
-        vm.prank(address(34253254));
-        vm.expectRevert();
-        offTWR.finalizeFor(taskid, address(34253254));
+        openTWR.submit(taskid, "urlurl");
 
         vm.prank(address(34253254));
         vm.expectRevert();
-        offTWR.finalizeFor(taskid, address(43256));
+        openTWR.finalizeFor(taskid, address(34253254));
+
+        vm.prank(address(34253254));
+        vm.expectRevert();
+        openTWR.finalizeFor(taskid, address(43256));
 
         vm.warp(1099);
         vm.prank(A1);
         vm.expectRevert();
-        offTWR.submit(taskid, "urlurl");
+        openTWR.submit(taskid, "urlurl");
 
         uint256 snap0 = vm.snapshot();
 
         vm.warp(1002);
         vm.prank(A1);
-        offTWR.submit(taskid, "urlurl");
+        openTWR.submit(taskid, "urlurl");
 
         vm.revertTo(snap0);
     }
@@ -98,22 +98,22 @@ contract MultiPluginLR is DeploysInit {
     function testSetsWeightForTask(uint16 pointsTime) public returns (uint256 snap1, uint256 task) {
         vm.assume(pointsTime < 999);
         task = testCreateCheckTask();
-        assertTrue(offTWR.getRepPointsOfTask(task) == 0, "not what is set");
+        assertTrue(openTWR.getRepPointsOfTask(task) == 0, "not what is set");
 
         vm.expectRevert();
-        offTWR.setWeightForTask(task, pointsTime);
+        openTWR.setWeightForTask(task, pointsTime);
 
         vm.expectRevert();
-        offTWR.setWeightForTask(task, pointsTime);
+        openTWR.setWeightForTask(task, pointsTime);
 
         vm.expectRevert();
         vm.prank(A1);
-        offTWR.setWeightForTask(task, pointsTime);
+        openTWR.setWeightForTask(task, pointsTime);
 
         vm.prank(A0);
-        offTWR.setWeightForTask(task, pointsTime);
+        openTWR.setWeightForTask(task, pointsTime);
 
-        assertTrue(offTWR.getRepPointsOfTask(task) == pointsTime, "not what is set");
+        assertTrue(openTWR.getRepPointsOfTask(task) == pointsTime, "not what is set");
 
         snap1 = vm.snapshot();
     }
@@ -124,12 +124,12 @@ contract MultiPluginLR is DeploysInit {
         // revert not admin
         vm.expectRevert();
         vm.prank(A2);
-        task = offTWR.createOffChainTaskWithWeight(1, "http://", 100, 199999999, 7);
+        task = openTWR.createOpenTaskWithWeight(1, "http://", 100, 199999999, 7);
 
         // revert invalid timestamp
         vm.expectRevert();
         vm.prank(A0);
-        task = offTWR.createOffChainTaskWithWeight(1, "http://", 100, 1, 7);
+        task = openTWR.createOpenTaskWithWeight(1, "http://", 100, 1, 7);
 
         snap1 = vm.snapshot();
     }
@@ -142,20 +142,20 @@ contract MultiPluginLR is DeploysInit {
 
         vm.prank(A2);
         vm.expectRevert();
-        offTWR.submit(taskid, "urlurl2");
+        openTWR.submit(taskid, "urlurl2");
 
         vm.warp(1002);
 
         vm.prank(A2);
-        offTWR.submit(taskid, "urlurl2");
+        openTWR.submit(taskid, "urlurl2");
 
         vm.prank(A0);
-        offTWR.finalizeFor(taskid, A2);
+        openTWR.finalizeFor(taskid, A2);
         individualState memory IA21 = iLR.getIndividualState(A2, address(Nova));
 
         assertTrue(IA21.GC > 0, "default state");
         assertTrue(IA20.GC == 0, "has unexpected contrib");
-        assertTrue((IA20.GC + offTWR.getRepPointsOfTask(taskid)) == IA21.GC, "contrib not registered");
+        assertTrue((IA20.GC + openTWR.getRepPointsOfTask(taskid)) == IA21.GC, "contrib not registered");
     }
 
     function testMulti() public {
@@ -166,26 +166,26 @@ contract MultiPluginLR is DeploysInit {
 
         vm.prank(A2);
         vm.expectRevert();
-        offTWR.submit(taskid, "urlurl2");
+        openTWR.submit(taskid, "urlurl2");
 
         vm.warp(1002);
 
         vm.prank(A2);
-        offTWR.submit(taskid, "urlurl2");
+        openTWR.submit(taskid, "urlurl2");
 
         vm.prank(A0);
-        offTWR.finalizeFor(taskid, A2);
+        openTWR.finalizeFor(taskid, A2);
         individualState memory IA21 = iLR.getIndividualState(A2, address(Nova));
 
         assertTrue(IA21.GC > 0, "default state");
         assertTrue(IA20.GC == 0, "has unexpected contrib");
-        assertTrue((IA20.GC + offTWR.getRepPointsOfTask(taskid)) == IA21.GC, "contrib not registered");
+        assertTrue((IA20.GC + openTWR.getRepPointsOfTask(taskid)) == IA21.GC, "contrib not registered");
     }
 
     function testCreatesWithRepWeight() public {
         vm.prank(A3);
         vm.expectRevert("Only admin.");
-        uint256 returnsID = offTWR.createOffChainTaskWithWeight(
+        uint256 returnsID = openTWR.createOpenTaskWithWeight(
             1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 450
         );
 
@@ -198,21 +198,21 @@ contract MultiPluginLR is DeploysInit {
         assertTrue(Nova.isAdmin(A3), "failed to add admin");
 
         vm.prank(A3);
-        returnsID = offTWR.createOffChainTaskWithWeight(
+        returnsID = openTWR.createOpenTaskWithWeight(
             1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 450
         );
 
         assertTrue(returnsID > 0, "id is 0");
 
         vm.prank(A3);
-        returnsID = offTWR.createOffChainTaskWithWeight(
+        returnsID = openTWR.createOpenTaskWithWeight(
             1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 950
         );
 
         vm.warp(block.timestamp + 13245);
 
         vm.prank(A3);
-        returnsID = offTWR.createOffChainTaskWithWeight(
+        returnsID = openTWR.createOpenTaskWithWeight(
             1, "http://URIOFTASKoff.com", block.timestamp + 1, block.timestamp + 3, 450
         );
     }
