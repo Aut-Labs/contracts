@@ -20,7 +20,6 @@ abstract contract InteractionModifier {
 
     constructor(address nova_) {
         ILR = ILocalReputation(IPluginRegistry(INova(nova_).pluginRegistry()).defaultLRAddr());
-        ILR.initialize(nova_);
     }
 
     event LocalRepALogChangedFor(address nova, address repAlgo);

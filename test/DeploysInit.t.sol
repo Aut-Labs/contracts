@@ -73,7 +73,7 @@ contract DeploysInit is Test {
         IPR = IPluginRegistry(address(new PluginRegistry(address(IMR))));
         vm.label(address(IPR), "PluginRegistryI");
 
-        iLR = ILocalReputation(address(new LocalReputation()));
+        iLR = ILocalReputation(address(new LocalReputation(address(IPR))));
 
         IPR.setDefaulLRAddress(address(iLR));
 

@@ -8,6 +8,7 @@ import "../interfaces/get/INovaModules.sol";
 import "../../plugins/registry/IPluginRegistry.sol";
 import "../interfaces/set/INovaMembershipSet.sol";
 import "../interfaces/set/INovaAdminSet.sol";
+import {IAutID} from "../../IAutID.sol";
 
 /// @title Nova
 /// @notice The extension of each Nova that integrates Aut

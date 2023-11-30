@@ -5,6 +5,8 @@ import {INova} from "./nova/interfaces/INova.sol";
 import {IAutID} from "./IAutID.sol";
 import {IPlugin} from "./plugins/IPlugin.sol";
 
+import {IPluginRegistry} from "./plugins/registry/IPluginRegistry.sol";
+
 import "./ILocalReputation.sol";
 /// @title Local Reputation Framework for ĀutID holders
 
@@ -26,6 +28,8 @@ contract LocalReputation is ILocalReputation {
     uint8 public immutable DEFAULT_CAP_GROWTH = 40;
     uint32 public immutable DEFAULT_PERIOD = 30 days;
 
+    address pluginRegistry;
+
     /////////////////////  Modifiers
     ///////////////////////////////////////////////////////////////
     modifier onlyPlugin() {
@@ -34,27 +38,28 @@ contract LocalReputation is ILocalReputation {
         _;
     }
 
+    constructor(address pluginRegistry_) {
+        pluginRegistry = pluginRegistry_;
+    }
+
     //// @notice executed once
-    function initialize(address nova_) external {
-        uint256 context = getContextID(_msgSender(), nova_);
+    function initialize(address nova_, address pluginAddress_) external {
+        uint256 context = getContextID(nova_, nova_);
+        if ( msg.sender != pluginRegistry ) revert UnregisteredInitializer();
 
-        context = getContextID(nova_, nova_);
+        novaOfPlugin[pluginAddress_] = nova_;
+
         groupState memory Group = getGS[context];
-
         if (Group.lastPeriod != 0) return;
 
         Group.k = DEFAULT_K;
         Group.p = DEFAULT_PERIOD;
         Group.penalty = DEFAULT_PENALTY;
         Group.c = DEFAULT_CAP_GROWTH;
-
         Group.lastPeriod = uint64(block.timestamp);
-
         getGS[context] = Group;
 
         updateCommitmentLevels(nova_);
-
-        novaOfPlugin[_msgSender()] = nova_;
 
         emit LocalRepInit(nova_, _msgSender());
     }

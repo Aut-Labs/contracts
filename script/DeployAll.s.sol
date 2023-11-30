@@ -27,7 +27,6 @@ contract DeployScript is Script {
     string quizUrl = "ipfs://bafkreibs7zxogv4j2acclnliuqbj2rhcpc7xf4fovbe3gu4lta76ie4hsq";
     string socialBotUrl = "ipfs://bafkreifeesdwui5ly2wscrtu5xiztb7mk4gypvu4fjhpu5kyspasld2fze";
     string socialQuizUrl = "ipfs://bafkreibu4wyucyrvb3wkd3blwhc4n2ayg7sugpl7egxrdglsorlvpkekv4";
- 
 
     function setUp() public {
         chainID = block.chainid;
@@ -75,7 +74,6 @@ contract DeployScript is Script {
     function run() public {
         vm.startBroadcast(vm.envUint("PVK_A1"));
 
-
         console.log("---------------------------------------------------");
         console.log("Deploying to network ID:  ", block.chainid);
         console.log("______________________________________________");
@@ -92,20 +90,15 @@ contract DeployScript is Script {
                 "#################################################################### \n"
             )
         );
-        vm.writeLine("deployments.txt",
-        string.concat(
-            "Deployer address: ",
-            vm.toString(vm.addr(vm.envUint("PVK_A1")))
-        )
-        );
+        vm.writeLine("deployments.txt", string.concat("Deployer address: ", vm.toString(vm.addr(vm.envUint("PVK_A1")))));
 
         address NovaLogicAddr = address(new Nova());
-        address LocalReputationAddr = address(new LocalReputation());
         address AUTid = address(new AutID());
 
         address AllowlistAddr = address(new Allowlist());
         address ModuleRegistryAddr = address(new ModuleRegistry(AllowlistAddr));
         address PluginRegistryAddr = address(new PluginRegistry(ModuleRegistryAddr));
+                address LocalReputationAddr = address(new LocalReputation(address(PluginRegistryAddr)));
         address NovaRegistryAddr = address(
             new NovaRegistry(
                     biconomyTrustedForward,
@@ -180,7 +173,7 @@ contract DeployScript is Script {
         );
         pluginDefinitionIds[4] = IPR.addPluginDefinition(
             payable(address(0x303b24d8bB5AED7E55558aEF96B282a84ECfa82a)), socialQuizUrl, 0, true, dependencies
-        ); 
+        );
 
         // vm.writeLine(
         //     "deployments.txt",

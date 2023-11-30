@@ -84,7 +84,7 @@ contract OffchainVerifiedTaskPlugin is TasksModule, SimplePlugin {
         emit TaskEdited(taskId, uri);
     }
 
-    function finalizeFor(uint256 taskId, address submitter) public override onlyOffchainVerifier {
+    function finalizeFor(uint256 taskId, address submitter) public virtual override onlyOffchainVerifier {
         require(tasks[taskId].startDate <= block.timestamp, "Not started yet");
         require(tasks[taskId].endDate >= block.timestamp, "The task has ended");
 

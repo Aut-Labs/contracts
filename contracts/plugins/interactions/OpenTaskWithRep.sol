@@ -12,7 +12,6 @@ import {INova} from "../../nova/interfaces/INova.sol";
 contract OpenTaskWithRep is OpenTaskPlugin, InteractionModifier {
     constructor(address nova_) OpenTaskPlugin(nova_, true) InteractionModifier(nova_) {
         ILR = ILocalReputation(IPluginRegistry(INova(nova_).pluginRegistry()).defaultLRAddr());
-        ILR.initialize(nova_);
     }
 
     /// @dev assigning weights to finalizeFor() should be for keccak256 `abi.encodePacked`

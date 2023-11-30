@@ -22,7 +22,7 @@ contract TestLRFuzz is DeploysInit {
 
         super.setUp();
 
-        LocalRepAlgo = new LocalReputation();
+        LocalRepAlgo = new LocalReputation(address(IPR));
         vm.label(address(LocalRepAlgo), "LocalRep");
 
         iLR = ILocalReputation(address(LocalRepAlgo));
