@@ -25,7 +25,6 @@ abstract contract NovaMembers is INovaAdmin, INovaMembership, INovaMembershipSet
 
     /// @dev Modifier for check of access of the admin member functions
     modifier onlyAdmin() {
-        // if ( IAutID(getAutIDAddress()).getAutIDByOwner(msg.sender) == 0 ) revert("Has no Aut Id"); 
         require(isAdmin[msg.sender], "Not an admin!");
         _;
     }
