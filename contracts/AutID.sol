@@ -5,6 +5,7 @@ pragma solidity 0.8.19;
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
 
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 import "./IAutID.sol";
@@ -18,7 +19,7 @@ import "./nova/interfaces/INova.sol";
 /// @title AutID
 /// @notice
 /// @dev
-contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
+contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, ReentrancyGuard, IAutID {
     using Counters for Counters.Counter;
     /// @notice
 
@@ -61,10 +62,12 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     /// @param commitment the commitment value that the user has selected for this
     /// @param Address the address of the Expender contract
     function mint(string memory username, string memory url, uint256 role, uint256 commitment, address Address)
+        nonReentrant
         external
         override
     {
-        require(bytes(username).length < 17, "Username must be max 16 characters");
+        _validateUsername(username);
+        require(bytes(username).length < 17 && bytes(username).length > 0, "Username must be max 16 characters");
         require(role > 0 && role < 4, "Role must be between 1 and 3");
         require(commitment > 0 && commitment < 11, "AutID: Commitment should be between 1 and 10");
         require(Address != address(0), "AutID: Missing ");
@@ -73,7 +76,6 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
 
         require(INovaMembership(Address).canJoin(_msgSender(), role), "AutID: Not a member of this !");
 
-        string memory lowerCase = _toLower(username);
         uint256 tokenId = _tokenIds.current();
 
         _safeMint(_msgSender(), tokenId);
@@ -83,7 +85,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
         holderTos[_msgSender()].push(Address);
 
         _autIDByOwner[_msgSender()] = tokenId;
-        autIDUsername[lowerCase] = _msgSender();
+        autIDUsername[username] = _msgSender();
         _tokenIds.increment();
 
         INovaMembershipSet(Address).join(_msgSender(), role);
@@ -97,7 +99,7 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     /// @param role the role that the user has selected within the specified
     /// @param commitment the commitment value that the user has selected for this
     /// @param Address the address of the Address contract
-    function joinNova(uint256 role, uint256 commitment, address Address) external override {
+    function joinNova(uint256 role, uint256 commitment, address Address) external override nonReentrant {
         require(role > 0 && role < 4, "Role must be between 1 and 3");
         ///@dev @todo consider if role commitment dependent as initial.
         require(commitment > 0 && commitment < 11, "AutID: Commitment should be between 1 and 10");
@@ -242,27 +244,15 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     }
 
     function getAutIDHolderByUsername(string memory username) public view override returns (address) {
-        return autIDUsername[_toLower(username)];
+        return autIDUsername[username];
     }
 
     function getNextTokenID() public view override returns (uint256) {
         return _tokenIds.current();
     }
 
-    /// ERC 721 s
-
-    /// @notice ERC721 _transfer() Disabled
-    /// @dev _transfer() has been n
-    /// @dev reverts on transferFrom() and safeTransferFrom()
-    function _transfer(address from, address to, uint256 tokenId) internal override {
-        require(false, "AutID: AutID transfer disabled");
-    }
-
-    /// @notice ERC721 _safeTransfer() Disabled
-    /// @dev _safeTransfer() has been n
-    /// @dev reverts on transferFrom() and safeTransferFrom()
-    function _safeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal override {
-        require(false, "AutID: AutID transfer disabled");
+    function _beforeTokenTransfer(address from, address, uint256) internal pure override {
+        require(from == address(0), "AutID: AutID transfer disabled");
     }
 
     function _msgSender() internal view override(ContextUpgradeable, ERC2771Recipient) returns (address) {
@@ -272,22 +262,21 @@ contract AutID is ERC2771Recipient, ERC721URIStorageUpgradeable, IAutID {
     function _msgData() internal view override(ContextUpgradeable, ERC2771Recipient) returns (bytes calldata) {
         return ERC2771Recipient._msgData();
     }
-    // Function used to lowercase a string
 
-    function _toLower(string memory _base) internal pure returns (string memory) {
-        bytes memory _baseBytes = bytes(_base);
-        for (uint256 i = 0; i < _baseBytes.length; i++) {
-            _baseBytes[i] = _lower(_baseBytes[i]);
+    function _validateUsername(string memory username_) private pure {
+        bytes memory subj = bytes(username_);
+        for (uint256 i; i != subj.length; ++i) {
+            if (!(
+                // 'a' <= _ <= 'z'
+                (subj[i] >= 0x61 && subj[i] <= 0x7A) || 
+                // '0' <= _ <= '9'
+                (subj[i] >= 0x30 && subj[i] <= 0x39) ||
+                // _ == '-'
+                subj[i] == 0x2D
+            )) {
+                revert("AutID: username: invalid character");
+            }
         }
-        return string(_baseBytes);
-    }
-
-    function _lower(bytes1 _b1) private pure returns (bytes1) {
-        if (_b1 >= 0x41 && _b1 <= 0x5A) {
-            return bytes1(uint8(_b1) + 32);
-        }
-
-        return _b1;
     }
 
     uint256[43] private __gap;
