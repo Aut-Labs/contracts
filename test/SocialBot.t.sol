@@ -32,13 +32,13 @@ contract TestSocialBotPlugin is DeploysInit {
         vm.label(address(iLR), "LocalReputation");
 
         vm.prank(A1);
-        aID.mint("a Name", "urlll", 1, 4, address(Nova));
+        aID.mint("a-name", "urlll", 1, 4, address(Nova));
 
         vm.prank(A2);
-        aID.mint("a Name", "urlll", 1, 6, address(Nova));
+        aID.mint("a-name", "urlll", 1, 6, address(Nova));
 
         vm.prank(A3);
-        aID.mint("a Name", "urlll", 1, 9, address(Nova));
+        aID.mint("a-name", "urlll", 1, 9, address(Nova));
 
         vm.prank(A0);
         BotPlugin = new SocialBotPlugin(address(Nova) );

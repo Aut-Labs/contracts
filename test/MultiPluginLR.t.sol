@@ -36,9 +36,9 @@ contract MultiPluginLR is DeploysInit {
         vm.stopPrank();
 
         vm.prank(A1);
-        aID.mint("A1USERNAME", "urrrll", 1, 5, address(Nova));
+        aID.mint("a1username", "urrrll", 1, 5, address(Nova));
         vm.prank(A2);
-        aID.mint("A1USERNAME", "urrrll", 1, 5, address(Nova));
+        aID.mint("a1username", "urrrll", 1, 5, address(Nova));
 
         uint256 a1bal = aID.balanceOf(A1);
         uint256 a2bal = aID.balanceOf(A2);
@@ -190,7 +190,7 @@ contract MultiPluginLR is DeploysInit {
         );
 
         vm.prank(A3);
-        aID.mint("AAA333", "a user url", 1, 3, address(Nova));
+        aID.mint("aaa333", "a user url", 1, 3, address(Nova));
         assertTrue(Nova.isMember(A3), "failed to add member");
 
         vm.prank(A0);

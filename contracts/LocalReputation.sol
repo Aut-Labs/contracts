@@ -282,7 +282,7 @@ contract LocalReputation is ILocalReputation {
     /// @param subject_ address of the subject
     /// @param nova_ address of the group
     function getContextID(address subject_, address nova_) public pure returns (uint256) {
-        return uint256(uint160(subject_)) + uint256(uint160(nova_));
+        return uint256(keccak256(abi.encodePacked(subject_, nova_)));
     }
 
     /// @notice context specific ID
@@ -290,7 +290,7 @@ contract LocalReputation is ILocalReputation {
     /// @param data_ function calldata definitory of interaction
     /// @dev data_ is msg.data. encodeWithSignature for consistency
     function interactionID(address plugin_, bytes memory data_) public pure returns (uint256 id) {
-        id = uint256(uint160(plugin_) + uint256(keccak256(data_)));
+        id = uint256(keccak256(abi.encodePacked(plugin_, data_)));
     }
 
     /////////////////////  View

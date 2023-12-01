@@ -15,10 +15,10 @@ contract MembershipSets is DeploysInit {
         super.setUp();
 
         vm.prank(A2);
-        aID.mint("AnnaWannabein", "urlll", 1, 9, address(Nova));
+        aID.mint("annawannabein", "urlll", 1, 9, address(Nova));
 
         vm.prank(A3);
-        aID.mint("AnnaWannabein", "urlll", 1, 9, address(Nova));
+        aID.mint("annawannabein", "urlll", 1, 9, address(Nova));
     }
 
     function testSetupAdminAdd() public {
@@ -35,7 +35,7 @@ contract MembershipSets is DeploysInit {
         assertFalse(Nova.isAdmin(A4_outsider), "admin somehow");
 
         vm.prank(A4_outsider);
-        aID.mint("AnnaWannabein", "urlll", 1, 9, address(Nova));
+        aID.mint("annawannabein", "urlll", 1, 9, address(Nova));
 
         assertTrue(Nova.isMember(A4_outsider), "made member");
         assertFalse(Nova.isAdmin(A4_outsider), "admin somehow2");

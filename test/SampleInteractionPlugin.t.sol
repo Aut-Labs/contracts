@@ -32,7 +32,7 @@ contract TestSampleInteractionPlugin is DeploysInit {
         vm.label(address(iLR), "LocalReputation");
 
         vm.prank(A1);
-        aID.mint("a Name", "urlll", 1, 4, address(Nova));
+        aID.mint("a-name", "urlll", 1, 4, address(Nova));
 
         InteractionPlugin = new SampleInteractionPlugin(address(Nova) );
         vm.label(address(InteractionPlugin), "InteractionPlugin");
