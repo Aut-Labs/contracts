@@ -94,6 +94,7 @@ contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgrad
         _revertForInvalidCommitment(commitment);
         _revertForUncheckedNova(novaRegistryAddress, nova);
         _revertForCanNotJoinNova(nova, account, role);
+        // todo: add min commitment check
 
         INovaMembershipSet(nova).join(account, role);
 

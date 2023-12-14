@@ -7,6 +7,8 @@ contract Nova {
     event AdminGranted(address to);
     event AdminRenounced(address from);
     event MemberGranted(address to, uint256 role);
+    event ArchetypeSet(uint8 parameter);
+    event ParameterSet(uint8 num, uint8 value);
 
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
@@ -48,6 +50,7 @@ contract Nova {
     function canJoin(address who, uint256 role) public view returns(bool result) {
         result = true;
         result = result && !_checkMaskPosition(who, uint8(MEMBER_MASK_POSITION));
+
     }
 
     function addAdmin(address who) public {
@@ -56,12 +59,28 @@ contract Nova {
         _addAdmin(who);
     }
 
+    /// @custom:sdk-legacy-interface-compatibility
     function addAdmins(address[] calldata admins_) external {
         require(_checkMaskPosition(msg.sender, uint8(ADMIN_MASK_POSITION)), "caller not an admin");
 
         for (uint256 i; i != admins_.length; ++i) {
             _addAdmin(admins_[i]);
         }
+    }
+
+    function setArchetypeAndParameters(uint8[] calldata input) external {
+        require(input.length == 6, "Nova: incorrect input length");
+        require(_checkMaskPosition(msg.sender, uint8(ADMIN_MASK_POSITION)), "caller not an admin");
+
+        _validateParameter(input[0]);
+        archetype = input[0];
+        for (uint256 i = 1; i != 6; ++i) {
+            _validateParameter(input[i]);
+            parameterWeight[uint8(i)] = input[i];
+
+            emit ParameterSet(uint8(i), input[i]);
+        }
+        emit ArchetypeSet(input[0]);
     }
 
     function removeAdmin(address from) external {
@@ -80,16 +99,6 @@ contract Nova {
 
     function isAdmin(address who) public view returns(bool) {
         return _checkMaskPosition(who, uint8(ADMIN_MASK_POSITION));
-    }
-
-    function _setArchetype(uint8 parameter) internal {
-        _validateParameter(parameter);
-        archetype = parameter;
-    }
-
-    function _setWeightFor(uint8 parameter, uint256 value) internal {
-        _validateParameter(parameter);
-        parameterWeight[parameter] = value;
     }
 
     function _validateParameter(uint8 parameter) internal pure {

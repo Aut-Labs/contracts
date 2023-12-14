@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.19;
+pragma solidity 0.8.21;
 
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
@@ -19,6 +19,7 @@ contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
     // just for interface compatibility
     // actually there is no need to store it in the contract
     mapping(address => address[]) novaDeployers;
+    mapping(address => bool) checkNova;
     address[] public novas;
 
     address public immutable autIDAddr;
@@ -67,6 +68,7 @@ contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
         nova = address(new BeaconProxy(address(upgradeableBeacon), data));
         novaDeployers[_msgSender()].push(nova);
         novas.push(nova);
+        checkNova[nova] = true;
 
         emit NovaDeployed(nova);
     }
