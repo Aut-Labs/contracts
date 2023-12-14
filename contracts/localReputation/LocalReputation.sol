@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.19;
+pragma solidity ^0.8.20;
 
 import {INova} from "./nova/interfaces/INova.sol";
-import {IAutID} from "./IAutID.sol";
+import {IAutID} from "./autid/IAutID.sol";
 import {IPlugin} from "./plugins/IPlugin.sol";
 
 import {IPluginRegistry} from "./plugins/registry/IPluginRegistry.sol";

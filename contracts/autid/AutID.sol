@@ -101,7 +101,6 @@ contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgrad
     }
 
     function _createRecord(address account, string memory username_, string memory optionalURI) internal {
-        _revertForZeroAddress(account);
         _revertForInvalidUsername(username_);
         bytes32 username;
         assembly {

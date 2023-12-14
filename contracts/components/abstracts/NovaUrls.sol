@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity ^0.8.20;
 
 import "../interfaces/get/INovaUrls.sol";
 
@@ -80,5 +80,5 @@ abstract contract NovaUrls is INovaUrls {
         return false;
     }
 
-    uint256[10 - 2] private __gap;
+    uint256[48] private __gap;
 }
