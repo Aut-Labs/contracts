@@ -80,6 +80,7 @@ contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgrad
     /// @inheritdoc IAutID
     function joinNova(uint256 role, uint256 commitment, address nova) public {
         address account = _msgSender();
+        _revertForZeroAddress(account);
         uint256 tokenId = tokenIdForAccount[account];
         _revertInvalidTokenId(tokenId);
 
@@ -118,7 +119,6 @@ contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgrad
 
         emit RecordCreated(tokenId, account, username_, optionalURI);
     }
-
 
     uint256[45] private __gap;
 }
