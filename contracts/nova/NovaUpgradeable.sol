@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.19;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/StorageSlot.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
