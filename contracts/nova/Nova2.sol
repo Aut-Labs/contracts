@@ -2,13 +2,20 @@
 pragma solidity ^0.8.20;
 
 contract Nova {
+    // error management
     error WrongParameter();
+    error NotAdmin();
 
+    // todo: *granted instead of admingranted or membergranted events
     event AdminGranted(address to);
     event AdminRenounced(address from);
     event MemberGranted(address to, uint256 role);
+
+    //
     event ArchetypeSet(uint8 parameter);
     event ParameterSet(uint8 num, uint8 value);
+    event UrlAdded(string url);
+    event UrlRemoved(string url);
 
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
@@ -37,6 +44,35 @@ contract Nova {
     address[] public members;
     /// @custom:sdk-legacy-interface-compatibility
     address[] public admins;
+    
+    string[] private _urls;
+    mapping(bytes32 => uint256) private _urlHashIndex;
+
+    function initialize() external {
+        _initializeUrlsStorage();
+    }
+
+    function _initializeUrlsStorage() internal {
+        _urls.push("");
+    }
+    
+    function getUrls() external view returns(string[] memory) {
+        return _urls;
+    }
+
+    function isUrlListed(string memory url) external view returns(bool) {
+        return _urlHashIndex[keccak256(abi.encodePacked(url))] != 0;
+    }
+
+    function addUrl(string memory url) external {
+        // only admin
+        _addUrl(url);
+    }
+
+    function removeUrl(string memory url) external {
+        // only admin
+        _removeUrl(url);
+    }
 
     function join(address who, uint256 role) external {
         require(msg.sender == autID, "caller not AutID contract");
@@ -109,7 +145,31 @@ contract Nova {
 
     /// PRIVATE
 
-    function _addAdmin(address who) internal {
+    function _addUrl(string memory url) private {
+        uint256 length = _urls.length;
+        bytes32 urlHash = keccak256(abi.encodePacked(url));
+        _urlHashIndex[urlHash] = length + 1;
+        _urls.push(url);
+    }
+
+    function _removeUrl(string memory url) private {
+        uint256 length = _urls.length;
+        bytes32 urlHash = keccak256(abi.encodePacked(url));
+        uint256 index = _urlHashIndex[urlHash];
+
+        if (index != 0) {
+            if (index != length) {
+                string memory lastUrl = _urls[length - 1];
+                bytes32 lastUrlHash = keccak256(abi.encodePacked(lastUrl));
+                _urls[index - 1] = lastUrl;
+                _urlHashIndex[lastUrlHash] = index;
+            }
+            _urls.pop();
+            delete _urlHashIndex[urlHash];
+        }
+    }
+
+    function _addAdmin(address who) private {
         require(who != address(0), "zero address");
         require(_checkMaskPosition(who, uint8(MEMBER_MASK_POSITION)), "target is not a member");
 
