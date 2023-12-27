@@ -125,6 +125,15 @@ contract Nova is NovaUpgradeable {
         emit MemberGranted(who, role);
     }
 
+    /// @custom:sdk-legacy-interface-compatibility
+    function addAdmins(address[] calldata admins_) external {
+        _revertForNotAdmin(msg.sender);
+
+        for (uint256 i; i != admins_.length; ++i) {
+            _addAdmin(admins_[i]);
+        }
+    }
+
     function canJoin(address who, uint256 role) public view returns(bool) {
         if (_checkMaskPosition(who, MEMBER_MASK_POSITION) != 0) {
             return false;
@@ -140,17 +149,7 @@ contract Nova is NovaUpgradeable {
 
     function addAdmin(address who) public {
         _revertForNotAdmin(msg.sender);
-        
         _addAdmin(who);
-    }
-
-    /// @custom:sdk-legacy-interface-compatibility
-    function addAdmins(address[] calldata admins_) external {
-        _revertForNotAdmin(msg.sender);
-
-        for (uint256 i; i != admins_.length; ++i) {
-            _addAdmin(admins_[i]);
-        }
     }
 
     function setArchetypeAndParameters(uint8[] calldata input) external {
