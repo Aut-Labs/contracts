@@ -1,132 +1,316 @@
-//SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-import "../components/abstracts/NovaUrls.sol";
-import "../components/abstracts/NovaMarket.sol";
-import "../components/abstracts/NovaMembers.sol";
-import "../components/abstracts/NovaModules.sol";
-import "../components/abstracts/NovaMetadata.sol";
-import "../components/abstracts/NovaArchetype.sol";
-import "../components/abstracts/AutIDAddress.sol";
-import "../components/abstracts/NovaCommitment.sol";
-import "./NovaUpgradeable.sol";
+import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
+import {NovaUpgradeable} from "./NovaUpgradeable.sol";
 
-import "../modules/onboarding/OnboardingModule.sol";
-import "./interfaces/INova.sol";
+// todo: admin retro onboarding
+contract Nova is NovaUpgradeable {
+    error WrongParameter();
+    error NotAdmin();
+    error NotMember();
+    error ZeroAddress();
+    error InvalidMarket();
+    error InvalidCommitment();
+    error InvalidMetadataUri();
 
-/// @title Nova
-/// @notice
-/// @dev
-contract Nova is
-    NovaUpgradeable,
-    NovaMembers,
-    NovaMetadata,
-    NovaUrls,
-    NovaMarket,
-    NovaModules,
-    NovaCommitment,
-    NovaArchetype
-{
-    uint256[50] private __basesGap;
+    event AdminGranted(address to);
+    event AdminRenounced(address from);
+    event MemberGranted(address to, uint256 role);
+    event ArchetypeSet(uint8 parameter);
+    event ParameterSet(uint8 num, uint8 value);
+    event UrlAdded(string);
+    event UrlRemoved(string);
+    event MetadataUriSet(string);
+    event OnboardingSet(address);
+    event MarketSet(uint256);
+    event CommitmentSet(uint256);
 
-    address public deployer;
-    address public onboardingAddr;
+    uint256 public constant SIZE_PARAMETER = 1;
+    uint256 public constant REPUTATION_PARAMETER = 2;
+    uint256 public constant CONVICTION_PARAMETER = 3;
+    uint256 public constant PERFORMANCE_PARAMETER = 4;
+    uint256 public constant GROWTH_PARAMETER = 5;
 
-    /// @notice Sets the initial details of the Nova
-    /// @dev all parameters are required.
-    /// @param _deployer the address of the NovaTypes.sol contract
-    /// @param _autAddr the address of the NovaTypes.sol contract
-    /// @param _market one of the 3 markets
-    /// @param _metadata url with metadata of the Nova - name, description, logo
-    /// @param _commitment minimum commitment that the Nova requires
+    uint256 public constant MIN_COMMITMENT = 1;
+    uint256 public constant MAX_COMMITMENT = 10;
+
+    uint8 public constant MEMBER_MASK_POSITION = 0;
+    uint8 public constant ADMIN_MASK_POSITION = 1;
+
+    address public autID;
+    address public pluginRegistry;
+    address public onboarding;
+
+    uint256 public archetype;
+    uint256 public commitment;
+    uint256 public market;
+    string public metadataUri;
+
+    mapping(address => uint256) public roles;
+    mapping(uint256 => uint256) public parameterWeight;
+    mapping(address => uint256) public accountMasks;
+
+    string[] private _urls;
+    mapping(bytes32 => uint256) private _urlHashIndex;
+
+    /// @custom:sdk_legacy_interface_compatibility
+    address[] public members;
+    /// @custom:sdk_legacy_interface_compatibility
+    address[] public admins;
+
     function initialize(
-        address _deployer,
-        IAutID _autAddr,
-        uint256 _market,
-        string memory _metadata,
-        uint256 _commitment,
-        address _pluginRegistry
-    ) external initializer {
-        deployer = _deployer;
-        isAdmin[_deployer] = true;
-        admins.push(_deployer);
-        _setMarket(_market);
-        _setAutIDAddress(_autAddr);
-        _setCommitment(_commitment);
-        _setMetadataUri(_metadata);
-        _setPluginRegistry(_pluginRegistry);
+        address deployer,
+        address autID_,
+        address pluginRegistry_,
+        uint256 market_,
+        uint256 commitment_,
+        string memory metadataUri_
+    )
+        external 
+        initializer 
+    {
+        _setMaskPosition(deployer, MEMBER_MASK_POSITION);
+        _setMaskPosition(deployer, ADMIN_MASK_POSITION);
+        /// @custom:sdk_legacy_interface_compatibility
+        admins.push(deployer);
+        _setMarket(market_);
+        _setCommitment(commitment_);
+        _setMetadataUri(metadataUri_);
+        pluginRegistry = pluginRegistry_;
+        autID = autID_;
     }
 
-    function absoluteValue() external pure returns(uint256) {
-        // for the first month
-        return 1;
+    function setMetadataUri(string memory uri) external {
+        _revertForNotAdmin(msg.sender);
+        _setMetadataUri(uri);
     }
 
-    function join(address newMember, uint256 role) public override onlyAutID {
-        require(this.canJoin(newMember, role), "not allowed");
-        super.join(newMember, role);
+    function setOnboarding(address onboardingAddress) external {
+        _revertForNotAdmin(msg.sender);
+
+        onboarding = onboardingAddress;
+
+        emit OnboardingSet(onboardingAddress);
+
+        // onboardingAddress allowed to be zero
+    }
+    
+    function getUrls() external view returns(string[] memory) {
+        return _urls;
     }
 
-    function setOnboardingStrategy(address onboardingPlugin) public {
-        require(IModule(onboardingPlugin).moduleId() == 1, "Only Onboarding Plugin");
+    function isUrlListed(string memory url) external view returns(bool) {
+        return _urlHashIndex[keccak256(abi.encodePacked(url))] != 0;
+    }
 
-        if (onboardingAddr == address(0)) {
-            require(msg.sender == pluginRegistry, "Only Plugin Registry");
-        } else {
-            require(NovaMembers(this).isAdmin(msg.sender), "Only Admin");
+    function addUrl(string memory url) external {
+        _revertForNotAdmin(msg.sender);
+
+        _addUrl(url);
+    }
+
+    function removeUrl(string memory url) external {
+        _revertForNotAdmin(msg.sender);
+
+        _removeUrl(url);
+    }
+
+    function join(address who, uint256 role) external {
+        require(msg.sender == autID, "caller not AutID contract");
+        require(canJoin(who, role), "can not join");
+
+        roles[who] = role;
+
+        emit MemberGranted(who, role);
+    }
+
+    function canJoin(address who, uint256 role) public view returns(bool) {
+        if (_checkMaskPosition(who, MEMBER_MASK_POSITION) != 0) {
+            return false;
         }
-
-        onboardingAddr = onboardingPlugin;
+        if (onboarding != address(0)) {
+            if (OnboardingModule(onboarding).isActive()) {
+                return OnboardingModule(onboarding).isOnboarded(who, role);
+            }
+            return false;
+        }
+        return true;
     }
 
-    function activateModule(uint256 moduleId) public onlyAdmin {
-        _activateModule(moduleId);
+    function addAdmin(address who) public {
+        _revertForNotAdmin(msg.sender);
+        
+        _addAdmin(who);
     }
 
-    function setMetadataUri(string memory metadata) public onlyAdmin {
-        _setMetadataUri(metadata);
+    /// @custom:sdk-legacy-interface-compatibility
+    function addAdmins(address[] calldata admins_) external {
+        _revertForNotAdmin(msg.sender);
+
+        for (uint256 i; i != admins_.length; ++i) {
+            _addAdmin(admins_[i]);
+        }
     }
 
-    function addURL(string memory url) external onlyAdmin {
-        _addURL(url);
-    }
-
-    function removeURL(string memory url) external onlyAdmin {
-        _removeURL(url);
-    }
-
-    function setCommitment(uint256 commitment) external onlyAdmin {
-        _setCommitment(commitment);
-    }
-
-    /// @dev set archetype and parameter weights simultaneously
-    /// @param input an array of 6 items: 1-st is an archetype, the rest are parameters (size, rep, conviction, perf, growth)
-    function setArchetypeAndParameters(uint8[] memory input) external onlyAdmin {
+    function setArchetypeAndParameters(uint8[] calldata input) external {
         require(input.length == 6, "Nova: incorrect input length");
-        _setArchetype(input[0]);
+        _revertForNotAdmin(msg.sender);
+
+        _validateParameter(input[0]);
+        archetype = input[0];
         for (uint256 i = 1; i != 6; ++i) {
-            _setWeightFor(uint8(i), input[i]);
+            _validateParameter(input[i]);
+            parameterWeight[uint8(i)] = input[i];
+
+            emit ParameterSet(uint8(i), input[i]);
+        }
+
+        emit ArchetypeSet(input[0]);
+    }
+
+    function removeAdmin(address from) external {
+        require(from != address(0), "zero address");
+        require(_checkMaskPosition(msg.sender, ADMIN_MASK_POSITION), "caller not an admin");
+        require(msg.sender != from, "admin can not renounce himself");
+
+        _unsetMaskPosition(from, ADMIN_MASK_POSITION);
+
+        emit AdminRenounced(from);
+    }
+
+    function isMember(address who) public view returns(bool) {
+        return _checkMaskPosition(who, MEMBER_MASK_POSITION);
+    }
+
+    function isAdmin(address who) public view returns(bool) {
+        return _checkMaskPosition(who, ADMIN_MASK_POSITION);
+    }
+
+    /// PRIVATE
+
+    function _validateParameter(uint8 parameter) private pure {
+        if (parameter > 5 || parameter == 0) {
+            revert WrongParameter();
         }
     }
 
-    /// @dev set an archetype (for example, Growth or Performance)
-    function setArchetype(uint8 parameter) external onlyAdmin {
-        _setArchetype(parameter);
+    function _setMarket(uint256 market_) private {
+        _revertForInvalidMarket(market_);
+
+        market = market_;
+
+        emit MarketSet(market_);
     }
 
-    /// @dev set weight for the parameter (for example, Growth or Size)
-    function setWeightFor(uint8 parameter, uint256 value) external onlyAdmin {
-        _setWeightFor(parameter, value);
+    function _setCommitment(uint256 commitment_) private {
+        _revertForInvalidCommitment(commitment_);
+
+        commitment = commitment_;
+
+        emit CommitmentSet(commitment_);
     }
 
-    function canJoin(address member, uint256 role) external view returns (bool) {
-        if (onboardingAddr == address(0)) return true;
-        if (onboardingAddr != address(0) && !OnboardingModule(onboardingAddr).isActive()) return false;
-        else return OnboardingModule(onboardingAddr).isOnboarded(member, role);
+    function _setMetadataUri(string memory metadataUri_) private {
+        _revertForInvalidMetadataUri(metadataUri_);
+
+        metadataUri = metadataUri_;
+
+        emit MetadataUriSet(metadataUri_);
     }
 
-    // 10 total - 2 used slots for this contract itself
-    // 50 more for the future abstract base contracts 10 slots each
-    // https://en.wikipedia.org/wiki/C3_linearization
-    uint256[50 - 2] private __gap;
+    function _addUrl(string memory url) private {
+        uint256 length = _urls.length;
+        bytes32 urlHash = keccak256(abi.encodePacked(url));
+        if (_urlHashIndex[urlHash] == 0) {
+            _urlHashIndex[urlHash] = length + 1;
+            _urls.push(url);
+            
+            emit UrlAdded(url);
+        }
+
+        // makes no effect on adding duplicated elements
+    }
+
+    function _removeUrl(string memory url) private {
+        uint256 length = _urls.length;
+        bytes32 urlHash = keccak256(abi.encodePacked(url));
+        uint256 index = _urlHashIndex[urlHash];
+
+        if (index != 0) {
+            if (index != length) {
+                string memory lastUrl = _urls[length - 1];
+                bytes32 lastUrlHash = keccak256(abi.encodePacked(lastUrl));
+                _urls[index - 1] = lastUrl;
+                _urlHashIndex[lastUrlHash] = index;
+            }
+            _urls.pop();
+            delete _urlHashIndex[urlHash];
+
+            emit UrlRemoved(url);
+        }
+
+        // makes no effect on removing nonexistent elements
+    }
+
+    function _addAdmin(address who) private {
+        _revertForZeroAddress(who);
+        _revertForNotMember(who);
+
+        _setMaskPosition(who, ADMIN_MASK_POSITION);
+        /// @custom:sdk-legacy-interface-compatibility
+        admins.push(who);
+
+        emit AdminGranted(who);
+    }
+    
+    function _checkMaskPosition(address who, uint8 maskPosition) private view returns(bool) {
+        return (accountMasks[who] & (1 << maskPosition)) != 0;
+    }
+
+    function _setMaskPosition(address to, uint8 maskPosition) private {
+        accountMasks[to] |= (1 << maskPosition);
+    }
+
+    function _unsetMaskPosition(address to, uint8 maskPosition) private {
+        accountMasks[to] &= ~(1 << maskPosition);
+    }
+
+    function _revertForNotAdmin(address who) private view {
+        if (!_checkMaskPosition(who, ADMIN_MASK_POSITION)) {
+            revert NotAdmin();
+        }
+    }
+
+    function _revertForNotMember(address who) private view {
+        if (!_checkMaskPosition(who, MEMBER_MASK_POSITION)) {
+            revert NotMember();
+        }
+    }
+
+    function _revertForZeroAddress(address who) private pure {
+        if (who == address(0)) {
+            revert ZeroAddress();
+        }
+    }
+
+    function _revertForInvalidMarket(uint256 market_) private pure {
+        if (market_ == 0 || market_ > 3) {
+            revert InvalidMarket();
+        }
+    }
+
+    function _revertForInvalidCommitment(uint256 commitment_) private pure {
+        if (commitment_ == 0 || commitment_ > 10) {
+            revert InvalidCommitment();
+        }
+    }
+
+    function _revertForInvalidMetadataUri(string memory metadataUri_) private pure {
+        if (bytes(metadataUri_).length == 0) {
+            revert InvalidMetadataUri();
+        }
+    }
+
+    uint256[36] private __gap;
 }
