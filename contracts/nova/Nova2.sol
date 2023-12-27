@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
+
 contract Nova {
     // error management
     error WrongParameter();
     error NotAdmin();
+    error NotMember();
+    error ZeroAddress();
 
-    // todo: *granted instead of admingranted or membergranted events
     event AdminGranted(address to);
     event AdminRenounced(address from);
     event MemberGranted(address to, uint256 role);
@@ -16,6 +19,8 @@ contract Nova {
     event ParameterSet(uint8 num, uint8 value);
     event UrlAdded(string url);
     event UrlRemoved(string url);
+    event MetadataUriSet(string uri);
+    event OnboardingSet(address onboardingAddress);
 
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
@@ -26,34 +31,47 @@ contract Nova {
     uint256 public constant MIN_COMMITMENT = 1;
     uint256 public constant MAX_COMMITMENT = 10;
 
-    uint256 public constant MEMBER_MASK_POSITION = 0;
-    uint256 public constant ADMIN_MASK_POSITION = 1;
+    // todo: make uint8 
+    uint8 public constant MEMBER_MASK_POSITION = 0;
+    uint8 public constant ADMIN_MASK_POSITION = 1;
 
     address public autID;
     address public pluginRegistry;
+    address public onboarding;
+
     uint256 public archetype;
     uint256 public commitment;
     uint256 public market;
-    string public metadataURI;
+    string public metadataUri;
 
     mapping(address => uint256) public roles;
     mapping(uint256 => uint256) public parameterWeight;
     mapping(address => uint256) public accountMasks;
 
+    string[] private _urls;
+    mapping(bytes32 => uint256) private _urlHashIndex;
+
     /// @custom:sdk-legacy-interface-compatibility
     address[] public members;
     /// @custom:sdk-legacy-interface-compatibility
     address[] public admins;
-    
-    string[] private _urls;
-    mapping(bytes32 => uint256) private _urlHashIndex;
 
-    function initialize() external {
-        _initializeUrlsStorage();
+    function setMetadataUri(string memory uri) external {
+        _revertForNotAdmin(msg.sender);
+
+        metadataUri = uri;
+
+        emit MetadataUriSet(uri);
     }
 
-    function _initializeUrlsStorage() internal {
-        _urls.push("");
+    function setOnboarding(address onboardingAddress) external {
+        _revertForNotAdmin(msg.sender);
+
+        onboarding = onboardingAddress;
+
+        emit OnboardingSet(onboardingAddress);
+
+        // onboardingAddress allowed to be zero
     }
     
     function getUrls() external view returns(string[] memory) {
@@ -65,12 +83,14 @@ contract Nova {
     }
 
     function addUrl(string memory url) external {
-        // only admin
+        _revertForNotAdmin(msg.sender);
+
         _addUrl(url);
     }
 
     function removeUrl(string memory url) external {
-        // only admin
+        _revertForNotAdmin(msg.sender);
+
         _removeUrl(url);
     }
 
@@ -83,21 +103,28 @@ contract Nova {
         emit MemberGranted(who, role);
     }
 
-    function canJoin(address who, uint256 role) public view returns(bool result) {
-        result = true;
-        result = result && !_checkMaskPosition(who, uint8(MEMBER_MASK_POSITION));
-
+    function canJoin(address who, uint256 role) public view returns(bool) {
+        if (_checkMaskPosition(who, MEMBER_MASK_POSITION) != 0) {
+            return false;
+        }
+        if (onboarding != address(0)) {
+            if (OnboardingModule(onboarding).isActive()) {
+                return OnboardingModule(onboarding).isOnboarded(who, role);
+            }
+            return false;
+        }
+        return true;
     }
 
     function addAdmin(address who) public {
-        require(_checkMaskPosition(msg.sender, uint8(ADMIN_MASK_POSITION)), "caller not an admin");
+        _revertForNotAdmin(msg.sender);
         
         _addAdmin(who);
     }
 
     /// @custom:sdk-legacy-interface-compatibility
     function addAdmins(address[] calldata admins_) external {
-        require(_checkMaskPosition(msg.sender, uint8(ADMIN_MASK_POSITION)), "caller not an admin");
+        _revertForNotAdmin(msg.sender);
 
         for (uint256 i; i != admins_.length; ++i) {
             _addAdmin(admins_[i]);
@@ -106,7 +133,7 @@ contract Nova {
 
     function setArchetypeAndParameters(uint8[] calldata input) external {
         require(input.length == 6, "Nova: incorrect input length");
-        require(_checkMaskPosition(msg.sender, uint8(ADMIN_MASK_POSITION)), "caller not an admin");
+        _revertForNotAdmin(msg.sender);
 
         _validateParameter(input[0]);
         archetype = input[0];
@@ -116,40 +143,47 @@ contract Nova {
 
             emit ParameterSet(uint8(i), input[i]);
         }
+
         emit ArchetypeSet(input[0]);
     }
 
     function removeAdmin(address from) external {
         require(from != address(0), "zero address");
-        require(_checkMaskPosition(msg.sender, uint8(ADMIN_MASK_POSITION)), "caller not an admin");
+        require(_checkMaskPosition(msg.sender, ADMIN_MASK_POSITION), "caller not an admin");
         require(msg.sender != from, "admin can not renounce himself");
 
-        _unsetMaskPosition(from, uint8(ADMIN_MASK_POSITION));
+        _unsetMaskPosition(from, ADMIN_MASK_POSITION);
 
         emit AdminRenounced(from);
     }
 
     function isMember(address who) public view returns(bool) {
-        return _checkMaskPosition(who, uint8(MEMBER_MASK_POSITION));
+        return _checkMaskPosition(who, MEMBER_MASK_POSITION);
     }
 
     function isAdmin(address who) public view returns(bool) {
-        return _checkMaskPosition(who, uint8(ADMIN_MASK_POSITION));
+        return _checkMaskPosition(who, ADMIN_MASK_POSITION);
     }
 
-    function _validateParameter(uint8 parameter) internal pure {
+    /// PRIVATE
+
+    function _validateParameter(uint8 parameter) private pure {
         if (parameter > 5 || parameter == 0) {
             revert WrongParameter();
         }
     }
 
-    /// PRIVATE
-
     function _addUrl(string memory url) private {
         uint256 length = _urls.length;
         bytes32 urlHash = keccak256(abi.encodePacked(url));
-        _urlHashIndex[urlHash] = length + 1;
-        _urls.push(url);
+        if (_urlHashIndex[urlHash] == 0) {
+            _urlHashIndex[urlHash] = length + 1;
+            _urls.push(url);
+            
+            emit UrlAdded(url);
+        }
+
+        // makes no effect on adding duplicated elements
     }
 
     function _removeUrl(string memory url) private {
@@ -166,14 +200,18 @@ contract Nova {
             }
             _urls.pop();
             delete _urlHashIndex[urlHash];
+
+            emit UrlRemoved(url);
         }
+
+        // makes no effect on removing nonexistent elements
     }
 
     function _addAdmin(address who) private {
-        require(who != address(0), "zero address");
-        require(_checkMaskPosition(who, uint8(MEMBER_MASK_POSITION)), "target is not a member");
+        _revertForZeroAddress(who);
+        _revertForNotMember(who);
 
-        _setMaskPosition(who, uint8(ADMIN_MASK_POSITION));
+        _setMaskPosition(who, ADMIN_MASK_POSITION);
         /// @custom:sdk-legacy-interface-compatibility
         admins.push(who);
 
@@ -189,6 +227,24 @@ contract Nova {
     }
 
     function _unsetMaskPosition(address to, uint8 maskPosition) private {
-        accountMasks[to] |= ~(1 << maskPosition);
+        accountMasks[to] &= ~(1 << maskPosition);
+    }
+
+    function _revertForNotAdmin(address who) private view {
+        if (!_checkMaskPosition(who, ADMIN_MASK_POSITION)) {
+            revert NotAdmin();
+        }
+    }
+
+    function _revertForNotMember(address who) private view {
+        if (!_checkMaskPosition(who, MEMBER_MASK_POSITION)) {
+            revert NotMember();
+        }
+    }
+
+    function _revertForZeroAddress(address who) private pure {
+        if (who == address(0)) {
+            revert ZeroAddress();
+        }
     }
 }
