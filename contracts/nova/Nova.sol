@@ -3,16 +3,12 @@ pragma solidity ^0.8.20;
 
 import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
 import {NovaUpgradeable} from "./NovaUpgradeable.sol";
+import {NovaUtils} from "./NovaUtils.sol";
 
 // todo: admin retro onboarding
-contract Nova is NovaUpgradeable {
-    error WrongParameter();
+contract Nova is NovaUtils, NovaUpgradeable {
     error NotAdmin();
     error NotMember();
-    error ZeroAddress();
-    error InvalidMarket();
-    error InvalidCommitment();
-    error InvalidMetadataUri();
 
     event AdminGranted(address to);
     event AdminRenounced(address from);
@@ -156,10 +152,10 @@ contract Nova is NovaUpgradeable {
         require(input.length == 6, "Nova: incorrect input length");
         _revertForNotAdmin(msg.sender);
 
-        _validateParameter(input[0]);
+        _revertForInvalidParameter(input[0]);
         archetype = input[0];
         for (uint256 i = 1; i != 6; ++i) {
-            _validateParameter(input[i]);
+            _revertForInvalidParameter(input[i]);
             parameterWeight[uint8(i)] = input[i];
 
             emit ParameterSet(uint8(i), input[i]);
@@ -186,15 +182,11 @@ contract Nova is NovaUpgradeable {
         return _checkMaskPosition(who, ADMIN_MASK_POSITION);
     }
 
-    /// PRIVATE
+    /// internal
 
-    function _validateParameter(uint8 parameter) private pure {
-        if (parameter > 5 || parameter == 0) {
-            revert WrongParameter();
-        }
-    }
 
-    function _setMarket(uint256 market_) private {
+
+    function _setMarket(uint256 market_) internal {
         _revertForInvalidMarket(market_);
 
         market = market_;
@@ -202,7 +194,7 @@ contract Nova is NovaUpgradeable {
         emit MarketSet(market_);
     }
 
-    function _setCommitment(uint256 commitment_) private {
+    function _setCommitment(uint256 commitment_) internal {
         _revertForInvalidCommitment(commitment_);
 
         commitment = commitment_;
@@ -210,7 +202,7 @@ contract Nova is NovaUpgradeable {
         emit CommitmentSet(commitment_);
     }
 
-    function _setMetadataUri(string memory metadataUri_) private {
+    function _setMetadataUri(string memory metadataUri_) internal {
         _revertForInvalidMetadataUri(metadataUri_);
 
         metadataUri = metadataUri_;
@@ -218,7 +210,7 @@ contract Nova is NovaUpgradeable {
         emit MetadataUriSet(metadataUri_);
     }
 
-    function _addUrl(string memory url) private {
+    function _addUrl(string memory url) internal {
         uint256 length = _urls.length;
         bytes32 urlHash = keccak256(abi.encodePacked(url));
         if (_urlHashIndex[urlHash] == 0) {
@@ -231,7 +223,7 @@ contract Nova is NovaUpgradeable {
         // makes no effect on adding duplicated elements
     }
 
-    function _removeUrl(string memory url) private {
+    function _removeUrl(string memory url) internal {
         uint256 length = _urls.length;
         bytes32 urlHash = keccak256(abi.encodePacked(url));
         uint256 index = _urlHashIndex[urlHash];
@@ -263,51 +255,27 @@ contract Nova is NovaUpgradeable {
         emit AdminGranted(who);
     }
     
-    function _checkMaskPosition(address who, uint8 maskPosition) private view returns(bool) {
+    function _checkMaskPosition(address who, uint8 maskPosition) internal view returns(bool) {
         return (accountMasks[who] & (1 << maskPosition)) != 0;
     }
 
-    function _setMaskPosition(address to, uint8 maskPosition) private {
+    function _setMaskPosition(address to, uint8 maskPosition) internal {
         accountMasks[to] |= (1 << maskPosition);
     }
 
-    function _unsetMaskPosition(address to, uint8 maskPosition) private {
+    function _unsetMaskPosition(address to, uint8 maskPosition) internal {
         accountMasks[to] &= ~(1 << maskPosition);
     }
 
-    function _revertForNotAdmin(address who) private view {
+    function _revertForNotAdmin(address who) internal view {
         if (!_checkMaskPosition(who, ADMIN_MASK_POSITION)) {
             revert NotAdmin();
         }
     }
 
-    function _revertForNotMember(address who) private view {
+    function _revertForNotMember(address who) internal view {
         if (!_checkMaskPosition(who, MEMBER_MASK_POSITION)) {
             revert NotMember();
-        }
-    }
-
-    function _revertForZeroAddress(address who) private pure {
-        if (who == address(0)) {
-            revert ZeroAddress();
-        }
-    }
-
-    function _revertForInvalidMarket(uint256 market_) private pure {
-        if (market_ == 0 || market_ > 3) {
-            revert InvalidMarket();
-        }
-    }
-
-    function _revertForInvalidCommitment(uint256 commitment_) private pure {
-        if (commitment_ == 0 || commitment_ > 10) {
-            revert InvalidCommitment();
-        }
-    }
-
-    function _revertForInvalidMetadataUri(string memory metadataUri_) private pure {
-        if (bytes(metadataUri_).length == 0) {
-            revert InvalidMetadataUri();
         }
     }
 
