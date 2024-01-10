@@ -15,6 +15,13 @@ import {Nova} from "../nova/Nova.sol";
 /// @title NovaRegistry
 contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
     event NovaDeployed(address);
+    event NovaCreated(
+        address deployer,
+        address novaAddress,
+        uint256 market,
+        uint256 minCommitment,
+        string metadataUri
+    );
 
     // just for interface compatibility
     // actually there is no need to store it in the contract
@@ -70,6 +77,7 @@ contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
         novas.push(nova);
         checkNova[nova] = true;
 
+        emit NovaCreated(_msgSender(), nova, market, commitment, metadata);
         emit NovaDeployed(nova);
     }
 

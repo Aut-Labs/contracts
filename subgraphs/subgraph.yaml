@@ -1,0 +1,66 @@
+specVersion: 0.0.8
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: AutID
+    network: mainnet
+    source:
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+      abi: AutID
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - AutID
+      abis:
+        - name: AutID
+          file: ../volumes/out/AutID.sol/AutID.json
+      eventHandlers:
+        - event: AutIDCreated(address,uint256,string,address,uint256,uint256,string)
+          handler: handleAutIDCreated
+        - event: CommitmentUpdated(address,address,uint256)
+          handler: handleCommitmentUpdated
+        - event: NovaWithdrawn(address,address)
+          handler: handleNovaWithdrawn
+      file: ./src/aut-id.ts
+  - kind: ethereum
+    name: NovaRegistry
+    network: mainnet
+    source:
+      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F"
+      abi: NovaRegistry
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - NovaDAO
+      abis:
+        - name: NovaRegistry
+          file: ../volumes/out/NovaRegistry.sol/NovaRegistry.json
+      eventHandlers:
+        - event: NovaCreated(address,address,uint256,uint256,string)
+          handler: handleNovaCreated
+      file: ./src/nova.ts
+  - kind: ethereum
+    name: Nova
+    network: mainnet
+    source:
+      abi: Nova
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - NovaDAO
+      abis:
+        - name: Nova
+          file: ../volumes/out/Nova.sol/Nova.json
+      eventHandlers:
+        - event: MetadataUriUpdated(address,string)
+          handler: handleMetadataUriUpdated
+        - event: CommitmentUpdated(address,uint256)
+          handler: handleCommitmentUpdated
+      file: ./src/nova.ts

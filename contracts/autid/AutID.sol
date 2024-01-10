@@ -71,6 +71,8 @@ contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgrad
 
         _createRecord(account, username_, optionalURI);
         _joinNova(account, role, commitment, nova);
+
+        emit AutIDCreated(account, _tokenId, username_, nova, role, commitment, optionalURI);
     }
 
     function transferFrom(address, address, uint256) public pure override(ERC721Upgradeable, IERC721) {

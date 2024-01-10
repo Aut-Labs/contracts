@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-node@v3
 
       - name: install node modules
-        run: (cd subgraphs/aut-id/ && yarn install --non-interactive)
+        run: (cd subgraphs/ && yarn install --non-interactive)
 
       - run: graph auth --studio "${DEPLOY_KEY}"
       - run: graph deploy --studio autid-test

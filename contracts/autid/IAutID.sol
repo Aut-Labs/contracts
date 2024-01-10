@@ -7,6 +7,18 @@ interface IAutID {
     event NovaRegistrySet(address);
     event LocalReputationSet(address);
 
+    /// @notice AutIDCreated is emitted when a new AutID NFT is minted and associated with 
+    /// a Nova community. This event is used for subgraph.
+    event AutIDCreated(
+        address owner,
+        uint256 tokenID,
+        string username,
+        address novaAddress,
+        uint256 role,
+        uint256 commitment,
+        string metadataUri
+    );
+
     /// @notice Retrieve NovaRegistry contract address
     function novaRegistry() external view returns(address);
 

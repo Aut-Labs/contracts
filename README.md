@@ -29,7 +29,7 @@ docker-compose -f docker-compose.graph.yml up
 Deploy subgraphs
 ```bash
 (
-    cd subgraphs/aut-id
+    cd subgraphs
     yarn create-local
     yarn deploy-local
 )
