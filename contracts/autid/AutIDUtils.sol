@@ -12,19 +12,19 @@ abstract contract AutIDUtils {
     error CanNotJoinNova();
     error InvalidTokenId();
 
-    function _revertForZeroAddress(address addr) private pure {
+    function _revertForZeroAddress(address addr) internal pure {
         if (addr == address(0)) {
             revert ZeroAddress();
         }
     }
 
-    function _revertForInvalidCommitment(uint256 commitment) private pure {
+    function _revertForInvalidCommitment(uint256 commitment) internal pure {
         if (!(commitment > 0 && commitment < 11)) {
             revert InvalidCommitment();
         }
     }
 
-    function _revertForInvalidUsername(string memory username_) private pure {
+    function _revertForInvalidUsername(string memory username_) internal pure {
         bytes memory username = bytes(username_);
         uint256 i;
         for (; i != username.length; ++i) {
@@ -44,20 +44,20 @@ abstract contract AutIDUtils {
         }
     }
 
-    function _revertForUncheckedNova(address novaRegistry_, address nova) private view {
+    function _revertForUncheckedNova(address novaRegistry_, address nova) internal view {
         if (!INovaRegistry(novaRegistry_).checkNova(nova)) {
             revert UncheckedNova();
         }
     }
 
-    function _revertForCanNotJoinNova(address nova, address account, uint256 role) private view {
+    function _revertForCanNotJoinNova(address nova, address account, uint256 role) internal view {
         if (!INova(nova).canJoin(account, role)) {
             revert CanNotJoinNova();
         }
     }
 
-    function _revertForInvalidTokenId(uint256 tokenId) private view {
-        if (!tokenId) {
+    function _revertForInvalidTokenId(uint256 tokenId) internal pure {
+        if (tokenId == 0) {
             revert InvalidTokenId();
         }
     }

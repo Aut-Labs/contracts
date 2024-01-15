@@ -9,11 +9,12 @@ import {
     ERC721Upgradeable
 } from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {ERC2771ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
+import {ERC2771ContextUpgradeable, ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {AutIDUtils} from "./AutIDUtils.sol";
+import {INova} from "../nova/INova.sol";
 
-contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, ERC2771ContextUpgradeable {
+contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, ERC2771ContextUpgradeable, IAutID {
     error ConflictingRecord();
     error UntransferableToken();
 
@@ -67,7 +68,7 @@ contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgrad
         string memory optionalURI
     ) external {
         address account = _msgSender();
-        _revertForZeroAddress(account);
+        AutIDUtils._revertForZeroAddress(account);
 
         _createRecord(account, username_, optionalURI);
         _joinNova(account, role, commitment, nova);
@@ -82,7 +83,7 @@ contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgrad
         address account = _msgSender();
         _revertForZeroAddress(account);
         uint256 tokenId = tokenIdForAccount[account];
-        _revertInvalidTokenId(tokenId);
+        _revertForInvalidTokenId(tokenId);
 
         _joinNova(account, role, commitment, nova);
     }
@@ -96,7 +97,7 @@ contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgrad
         _revertForCanNotJoinNova(nova, account, role);
         // todo: add min commitment check
 
-        INovaMembershipSet(nova).join(account, role);
+        INova(nova).join(account, role);
 
         emit NovaJoined(account, role, commitment, nova);
     }
@@ -118,6 +119,18 @@ contract AutID is IAutID, AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgrad
         tokenIdForAccount[account] = tokenId;
 
         emit RecordCreated(tokenId, account, username_, optionalURI);
+    }
+
+    function _msgSender() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (address) {
+        return ERC2771ContextUpgradeable._msgSender();
+    }
+
+    function _msgData() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (bytes calldata) {
+        return ERC2771ContextUpgradeable._msgData();
+    }
+
+    function _contextSuffixLength() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns(uint256) {
+        return ERC2771ContextUpgradeable._contextSuffixLength();
     }
 
     uint256[45] private __gap;

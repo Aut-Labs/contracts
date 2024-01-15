@@ -37,9 +37,9 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
 
-    /// @custom:sdk_legacy_interface_compatibility
+    /// @custom:sdk-legacy-interface-compatibility
     address[] public members;
-    /// @custom:sdk_legacy_interface_compatibility
+    /// @custom:sdk-legacy-interface-compatibility
     address[] public admins;
 
     function initialize(
@@ -79,7 +79,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         // onboardingAddress allowed to be zero
     }
     
-    /// @custom:sdk_legacy_interface_compatibility
+    /// @custom:sdk-legacy-interface-compatibility
     function getUrls() external view returns(string[] memory) {
         return _urls;
     }
@@ -119,7 +119,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     function canJoin(address who, uint256 role) public view returns(bool) {
-        if (_checkMaskPosition(who, MEMBER_MASK_POSITION) != 0) {
+        if (_checkMaskPosition(who, MEMBER_MASK_POSITION)) {
             return false;
         }
         if (onboarding != address(0)) {

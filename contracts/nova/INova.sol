@@ -42,6 +42,8 @@ interface INova {
 
     function join(address who, uint256 role) external;
 
+    function canJoin(address who, uint256 role) external view returns(bool);
+
     function setArchetypeAndParameters(uint8[] calldata input) external;
 
     function isMember(address who) external view returns(bool);
