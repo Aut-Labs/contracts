@@ -2,39 +2,10 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "./IGlobalParameters.sol";
 
-
-contract GlobalParameters is OwnableUpgradeable {
-    /// @dev parameters aren't generalised so each parameter is handled separately 
-    /// the reason is that they use multiple data types so 
-    /// it would be painful to manage them without generics
-    /// although errors are generic 
-    error StageFailed(string parameter, string reason);
-    error UnstageFailed(string parameter, string reason);
-    error ReplaceFailed(string parameter, string reason);
-
-    event PeriodDurationStaged(uint32 valueStaged, uint64 delayedUntil);
-    event PeriodDurationUnstaged();
-    event PeriodDurationReplaced();
-
-    event SteepnessDegree3ExpStaged (uint32 valueStaged, uint64 delayedUntil);
-    event SteepnessDegree3ExpUnstaged();
-    event SteepnessDegree3ExpReplaced();
-
-    event PenaltyFactor3ExpStaged (uint16 valueStaged, uint64 delayedUntil);
-    event PenaltyFactor3ExpUnstaged();
-    event PenaltyFactor3ExpReplaced();
-
-
-    event ConstrainingFactor6ExpStaged(uint32 valueStaged, uint64 delayedUntil);
-    event ConstrainingFactor6ExpUnstaged();
-    event ConstrainingFactor6ExpReplaced();
-
-    event CredibleNeutrality6ExpStaged(uint32 valueStaged, uint64 delayedUntil);
-    event CredibleNeutrality6ExpUnstaged();
-    event CredibleNeutrality6ExpReplaced();
-
-    // value pairs, sorted to be aligned with storage layout
+contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
+    // slot 1
     uint16 public steepnessDegree3Exp;
     uint16 public steepnessDegree3ExpStaged;
 
@@ -49,13 +20,16 @@ contract GlobalParameters is OwnableUpgradeable {
 
     uint32 public credibleNeutrality6Exp;
     uint32 public credibleNeutrality6ExpStaged;
+    // end of slot 1
 
     // timestamps 
+    // slots 2-3
     uint64 public steepnessDegree3ExpExpiresAt;
     uint64 public penaltyFactor3ExpExpiresAt;
     uint64 public periodDurationExpiresAt;
     uint64 public constrainingFactor6ExpExpiresAt;
     uint64 public credibleNeutrality6ExpExpiresAt;
+    // slot 3
 
     constructor() {}
 
@@ -96,19 +70,19 @@ contract GlobalParameters is OwnableUpgradeable {
         emit PeriodDurationUnstaged();
     }
 
-    function replacePeriodDuration() external {
+    function commitPeriodDuration() external {
         uint64 delayedUntil = periodDurationExpiresAt;
         if (delayedUntil == 0) {
-            revert ReplaceFailed("periodDuration", "nothing staged");
+            revert CommitFailed("periodDuration", "nothing staged");
         }
         if (uint64(block.timestamp) <= delayedUntil) {
-            revert ReplaceFailed("periodDuration", "delay not expired");
+            revert CommitFailed("periodDuration", "delay not expired");
         }
 
         periodDuration = periodDurationStaged;
         periodDurationExpiresAt = 0;
 
-        emit PeriodDurationReplaced();
+        emit PeriodDurationCommitted();
     }
 
     function stageSteepnessDegree3Exp(uint16 nextSteepnessDegree3Exp) external {
@@ -139,19 +113,19 @@ contract GlobalParameters is OwnableUpgradeable {
         emit SteepnessDegree3ExpUnstaged();
     }
 
-    function replaceSteepnessDegree3Exp() external {
+    function commitSteepnessDegree3Exp() external {
         uint64 delayedUntil = steepnessDegree3ExpExpiresAt;
         if (delayedUntil == 0) {
-            revert ReplaceFailed("steepnessDegree3Exp", "nothing staged");
+            revert CommitFailed("steepnessDegree3Exp", "nothing staged");
         }
         if (uint64(block.timestamp) <= delayedUntil) {
-            revert ReplaceFailed("steepnessDegree3Exp", "delay not expired");
+            revert CommitFailed("steepnessDegree3Exp", "delay not expired");
         }
 
         steepnessDegree3Exp = steepnessDegree3ExpStaged;
         steepnessDegree3ExpExpiresAt = 0;
 
-        emit SteepnessDegree3ExpReplaced();
+        emit SteepnessDegree3ExpCommitted();
     }
     
     function stagePenaltyFactor3Exp(uint16 nextPenaltyFactor3Exp) external {
@@ -182,19 +156,19 @@ contract GlobalParameters is OwnableUpgradeable {
         emit PenaltyFactor3ExpUnstaged();
     }
 
-    function replacePenaltyFactor3Exp() external {
+    function commitPenaltyFactor3Exp() external {
         uint64 delayedUntil = penaltyFactor3ExpExpiresAt;
         if (delayedUntil == 0) {
-            revert ReplaceFailed("penaltyFactor3Exp", "nothing staged");
+            revert CommitFailed("penaltyFactor3Exp", "nothing staged");
         }
         if (uint64(block.timestamp) <= delayedUntil) {
-            revert ReplaceFailed("penaltyFactor3Exp", "delay not expired");
+            revert CommitFailed("penaltyFactor3Exp", "delay not expired");
         }
 
         penaltyFactor3Exp = penaltyFactor3ExpStaged;
         penaltyFactor3ExpExpiresAt = 0;
 
-        emit PenaltyFactor3ExpReplaced();
+        emit PenaltyFactor3ExpCommitted();
     }
 
     function stageConstrainingFactor6Exp(uint32 valueToStage) external {
@@ -225,19 +199,19 @@ contract GlobalParameters is OwnableUpgradeable {
         emit ConstrainingFactor6ExpUnstaged();
     }
 
-    function replaceConstrainingFactor6Exp() external {
+    function commitConstrainingFactor6Exp() external {
         uint64 delayedUntil = constrainingFactor6ExpExpiresAt;
         if (delayedUntil == 0) {
-            revert ReplaceFailed("constrainingFactor6Exp", "nothing staged");
+            revert CommitFailed("constrainingFactor6Exp", "nothing staged");
         }
         if (uint64(block.timestamp) <= delayedUntil) {
-            revert ReplaceFailed("constrainingFactor6Exp", "delay not expired");
+            revert CommitFailed("constrainingFactor6Exp", "delay not expired");
         }
 
         constrainingFactor6Exp = constrainingFactor6ExpStaged;
         constrainingFactor6ExpExpiresAt = 0;
 
-        emit ConstrainingFactor6ExpReplaced();
+        emit ConstrainingFactor6ExpCommitted();
     }
 
     function stageCredibleNeutrality6Exp(uint32 valueToStage) external {
@@ -268,18 +242,20 @@ contract GlobalParameters is OwnableUpgradeable {
         emit CredibleNeutrality6ExpUnstaged();
     }
 
-    function replaceCredibleNeutrality6Exp() external {
+    function commitCredibleNeutrality6Exp() external {
         uint64 delayedUntil = credibleNeutrality6ExpExpiresAt;
         if (delayedUntil == 0) {
-            revert ReplaceFailed("credibleNeutrality6Exp", "nothing staged");
+            revert CommitFailed("credibleNeutrality6Exp", "nothing staged");
         }
         if (uint64(block.timestamp) <= delayedUntil) {
-            revert ReplaceFailed("credibleNeutrality6Exp", "delay not expired");
+            revert CommitFailed("credibleNeutrality6Exp", "delay not expired");
         }
 
         credibleNeutrality6Exp = credibleNeutrality6ExpStaged;
         credibleNeutrality6ExpExpiresAt = 0;
 
-        emit CredibleNeutrality6ExpReplaced();
+        emit CredibleNeutrality6ExpCommitted();
     }
+
+    uint256[47] private __gap;
 }

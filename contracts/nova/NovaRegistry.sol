@@ -3,17 +3,17 @@ pragma solidity ^0.8.20;
 
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
-import {Ownable, Context} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Ownable, Context} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {ERC2771Recipient} from "@opengsn/contracts/src/ERC2771Recipient.sol";
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {IPluginRegistry} from "../plugins/registry/IPluginRegistry.sol";
-import {INovaRegistry} from "./interfaces/INovaRegistry.sol";
+import {INovaRegistry} from "./INovaRegistry.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
 
 /// @title NovaRegistry
-contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
+contract NovaRegistry is INovaRegistry, ERC2771Recipient, OwnableUpgradeable {
     event NovaDeployed(address);
 
     // just for interface compatibility
@@ -22,25 +22,24 @@ contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
     mapping(address => bool) checkNova;
     address[] public novas;
 
-    address public immutable autIDAddr;
-    address public immutable pluginRegistry;
-    UpgradeableBeacon public immutable upgradeableBeacon;
+    address public autIDAddr;
+    address public pluginRegistry;
+    UpgradeableBeacon public upgradeableBeacon;
     IAllowlist public allowlist;
 
-    // don't know why it's here but it was in the previous version
-    address deployerAddress;
-
-    constructor(address trustedForewarder, address autIDAddr_, address novaLogic, address pluginRegistry_) Ownable() {
+    constructor(address trustedForwarder) {
         require(trustedForewarder != address(0), "NovaRegistry: trustedForewarder address zero");
+        _setTrustedForwarder(trustedForewarder);
+    }
+
+    function initialize(address autIDAddr_, address novaLogic, address pluginRegistry_) initializer {
         require(autIDAddr_ != address(0), "NovaRegistry: AutID address zero");
         require(novaLogic != address(0), "NovaRegistry: Nova logic address zero");
         require(pluginRegistry_ != address(0), "NovaRegistry: PluginRegistry address zero");
 
         autIDAddr = autIDAddr_;
         pluginRegistry = pluginRegistry_;
-        deployerAddress = msg.sender;
         upgradeableBeacon = new UpgradeableBeacon(novaLogic);
-        _setTrustedForwarder(trustedForewarder);
         allowlist =
             IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
     }

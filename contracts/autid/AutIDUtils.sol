@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {INovaMembership} from "../components/interfaces/get/INovaMembership.sol";
-import {INovaMembershipSet} from "../components/interfaces/set/INovaMembershipSet.sol";
-import {INovaRegistry} from "../nova/interfaces/INovaRegistry.sol";
+import {INova} from "../nova/INova.sol";
+import {INovaRegistry} from "../nova/INovaRegistry.sol";
 
 abstract contract AutIDUtils {
     error ZeroAddress();
@@ -52,7 +51,7 @@ abstract contract AutIDUtils {
     }
 
     function _revertForCanNotJoinNova(address nova, address account, uint256 role) private view {
-        if (!INovaMembership(nova).canJoin(account, role)) {
+        if (!INova(nova).canJoin(account, role)) {
             revert CanNotJoinNova();
         }
     }

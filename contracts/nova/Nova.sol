@@ -4,23 +4,10 @@ pragma solidity ^0.8.20;
 import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
 import {NovaUpgradeable} from "./NovaUpgradeable.sol";
 import {NovaUtils} from "./NovaUtils.sol";
+import {INova} from "./INova.sol";
 
 // todo: admin retro onboarding
-contract Nova is NovaUtils, NovaUpgradeable {
-    error NotAdmin();
-    error NotMember();
-
-    event AdminGranted(address to);
-    event AdminRenounced(address from);
-    event MemberGranted(address to, uint256 role);
-    event ArchetypeSet(uint8 parameter);
-    event ParameterSet(uint8 num, uint8 value);
-    event UrlAdded(string);
-    event UrlRemoved(string);
-    event MetadataUriSet(string);
-    event OnboardingSet(address);
-    event MarketSet(uint256);
-    event CommitmentSet(uint256);
+contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
@@ -92,6 +79,7 @@ contract Nova is NovaUtils, NovaUpgradeable {
         // onboardingAddress allowed to be zero
     }
     
+    /// @custom:sdk_legacy_interface_compatibility
     function getUrls() external view returns(string[] memory) {
         return _urls;
     }
@@ -279,5 +267,5 @@ contract Nova is NovaUtils, NovaUpgradeable {
         }
     }
 
-    uint256[36] private __gap;
+    uint256[86] private __gap;
 }
