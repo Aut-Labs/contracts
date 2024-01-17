@@ -29,6 +29,7 @@ contract DeployAll is Script {
             owner = address(this);
         } else if (block.chainid == 80001) {
             trustedForwarder = 0x69015912AA33720b842dCD6aC059Ed623F28d9f7;
+            owner = 0x5D45D9C907B26EdE7848Bb9BdD4D08308983d613;
         } else {
             revert("invalid chainid");
         }
