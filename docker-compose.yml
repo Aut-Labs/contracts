@@ -14,6 +14,7 @@ services:
       - type: bind
         target: /usr/src/app/deployments.txt
         source: ./volumes/deployments.txt
+      - ./volumes/broadcast:/usr/src/app/broadcast:wo
     ports:
       - "8545:8545"
     networks:

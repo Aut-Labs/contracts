@@ -23,8 +23,13 @@ contract DeployAll is Script {
     address public trustedForwarder;
     address public owner;
 
+    struct TNamedAddress {
+        address target;
+        string name;
+    }
+
     function setUp() public {
-        if (block.chainid == 31337) {
+        if (block.chainid == 31337) { // todo: replace 31337 by forge constant
             trustedForwarder = address(new TrustedForwarder());
             owner = address(this);
         } else if (block.chainid == 80001) {
@@ -38,6 +43,7 @@ contract DeployAll is Script {
 
     function run() public {
         vm.startBroadcast(vm.envUint("PVK_A1"));
+
         address novaImpl = address(new Nova());
         address novaRegistryImpl = address(new NovaRegistry(trustedForwarder));
         address autIdImpl = address(new AutID(trustedForwarder));
@@ -62,5 +68,24 @@ contract DeployAll is Script {
         ));
 
         console.log("run -- done");
+
+        // todo: convert to helper function
+        string memory filename = "deployments.txt";
+        TNamedAddress[4] memory na;
+        na[0] = TNamedAddress({name: "globalParametersProxy", target: globalParametersProxy});
+        na[1] = TNamedAddress({name: "autIDProxy", target: autIdProxy});
+        na[2] = TNamedAddress({name: "novaRegistryProxy", target: novaRegistryProxy});
+        na[3] = TNamedAddress({name: "pluginRegistryProxy", target: pluginRegistryProxy});
+        vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
+        for (uint i = 0; i != na.length; ++i) {
+            vm.writeLine(filename, string.concat(
+                vm.toString(i),
+                ". ",
+                na[i].name,
+                ": ",
+                vm.toString(na[i].target)
+            ));
+        }
+        vm.writeLine(filename, "\n");
     }
 }
