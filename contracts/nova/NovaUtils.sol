@@ -32,7 +32,7 @@ abstract contract NovaUtils {
         }
     }
 
-    function _revertForInvalidParameter(uint8 parameter) private pure {
+    function _revertForInvalidParameter(uint8 parameter) internal pure {
         if (parameter > 5 || parameter == 0) {
             revert InvalidParameter();
         }

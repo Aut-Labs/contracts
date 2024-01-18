@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity ^0.8.20;
 
 import "./IModuleRegistry.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -9,7 +9,7 @@ contract ModuleRegistry is IModuleRegistry, Ownable {
     ModuleDefinition[] public modules;
     IAllowlist AllowList;
 
-    constructor(address allList) {
+    constructor(address allList) Ownable(msg.sender) {
         _transferOwnership(msg.sender);
         AllowList = IAllowlist(allList);
 

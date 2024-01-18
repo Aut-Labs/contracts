@@ -3,17 +3,17 @@ pragma solidity ^0.8.20;
 
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
-import {Ownable, Context} from "@openzeppelin/contracts/access/Ownable.sol";
-import {ERC2771Recipient} from "@opengsn/contracts/src/ERC2771Recipient.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {ERC2771ContextUpgradeable, ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
-import {IPluginRegistry} from "../plugins/registry/IPluginRegistry.sol";
-import {INovaRegistry} from "./interfaces/INovaRegistry.sol";
+// import {IPluginRegistry} from "../plugins/registry/IPluginRegistry.sol";
+import {INovaRegistry} from "./INovaRegistry.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
 
 /// @title NovaRegistry
-contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
+contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
     event NovaDeployed(address);
     event NovaCreated(
         address deployer,
@@ -25,31 +25,31 @@ contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
 
     // just for interface compatibility
     // actually there is no need to store it in the contract
-    mapping(address => address[]) novaDeployers;
-    mapping(address => bool) checkNova;
+    mapping(address => address[]) public novaDeployers;
+    mapping(address => bool) public checkNova;
     address[] public novas;
 
-    address public immutable autIDAddr;
-    address public immutable pluginRegistry;
-    UpgradeableBeacon public immutable upgradeableBeacon;
+    address public deployerAddress;
+    address public autIDAddr;
+    address public pluginRegistry;
+    UpgradeableBeacon public upgradeableBeacon;
     IAllowlist public allowlist;
 
-    // don't know why it's here but it was in the previous version
-    address deployerAddress;
+    constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
-    constructor(address trustedForewarder, address autIDAddr_, address novaLogic, address pluginRegistry_) Ownable() {
-        require(trustedForewarder != address(0), "NovaRegistry: trustedForewarder address zero");
+    function initialize(address autIDAddr_, address novaLogic, address pluginRegistry_) external initializer {
         require(autIDAddr_ != address(0), "NovaRegistry: AutID address zero");
         require(novaLogic != address(0), "NovaRegistry: Nova logic address zero");
         require(pluginRegistry_ != address(0), "NovaRegistry: PluginRegistry address zero");
 
+        __Ownable_init(msg.sender);
+
+        deployerAddress = msg.sender;
         autIDAddr = autIDAddr_;
         pluginRegistry = pluginRegistry_;
-        deployerAddress = msg.sender;
-        upgradeableBeacon = new UpgradeableBeacon(novaLogic);
-        _setTrustedForwarder(trustedForewarder);
-        allowlist =
-            IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
+        upgradeableBeacon = new UpgradeableBeacon(novaLogic, address(this));
+        // allowlist =
+            // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
     }
 
     // the only reason for this function is to keep interface compatible with sdk
@@ -121,11 +121,15 @@ contract NovaRegistry is INovaRegistry, ERC2771Recipient, Ownable {
         require(commitment > 0 && commitment < 11, "NovaRegistry: invalid commitment value");
     }
 
-    function _msgSender() internal view override(ERC2771Recipient, Context) returns (address) {
-        return ERC2771Recipient._msgSender();
+    function _msgSender() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (address) {
+        return ERC2771ContextUpgradeable._msgSender();
     }
 
-    function _msgData() internal view override(ERC2771Recipient, Context) returns (bytes calldata) {
-        return ERC2771Recipient._msgData();
+    function _msgData() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (bytes calldata) {
+        return ERC2771ContextUpgradeable._msgData();
+    }
+
+    function _contextSuffixLength() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns(uint256) {
+        return ERC2771ContextUpgradeable._contextSuffixLength();
     }
 }
