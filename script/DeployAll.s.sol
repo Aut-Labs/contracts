@@ -55,7 +55,7 @@ contract DeployAll is Script {
         address autIdProxy = address(new AutProxy(
             autIdImpl,
             owner,
-            abi.encodeWithSelector(AutID.initialize.selector, address(this))
+            abi.encodeWithSelector(AutID.initialize.selector, owner)
         ));
         address pluginRegistryProxy = address(new AutProxy(
             pluginRegistryImpl,
@@ -69,7 +69,7 @@ contract DeployAll is Script {
         ));
 
         IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
-        OwnableUpgradeable(autIdProxy).transferOwnership(owner);
+        // OwnableUpgradeable(autIdProxy).transferOwnership(owner);
 
 
         // todo: convert to helper function
