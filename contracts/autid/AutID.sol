@@ -72,8 +72,6 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
 
         _createRecord(account, username_, optionalURI);
         _joinNova(account, role, commitment, nova);
-
-        emit AutIDCreated(account, _tokenId, username_, nova, role, commitment, optionalURI);
     }
 
     function transferFrom(address, address, uint256) public pure override(ERC721Upgradeable, IERC721) {
@@ -98,6 +96,8 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _revertForUncheckedNova(novaRegistryAddress, nova);
         _revertForCanNotJoinNova(nova, account, role);
         // todo: add min commitment check
+
+        revert("Testng");
 
         INova(nova).join(account, role);
 

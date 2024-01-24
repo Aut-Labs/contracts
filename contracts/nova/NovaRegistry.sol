@@ -19,8 +19,8 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         address deployer,
         address novaAddress,
         uint256 market,
-        uint256 minCommitment,
-        string metadataUri
+        uint256 commitment,
+        string metadata
     );
 
     // just for interface compatibility
@@ -70,7 +70,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         _checkAllowlist();
 
         bytes memory data = abi.encodeWithSelector(
-            Nova.initialize.selector, _msgSender(), autIDAddr, market, metadata, commitment, pluginRegistry
+            Nova.initialize.selector, _msgSender(), autIDAddr, pluginRegistry, market, commitment, metadata
         );
         nova = address(new BeaconProxy(address(upgradeableBeacon), data));
         novaDeployers[_msgSender()].push(nova);

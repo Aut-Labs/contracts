@@ -8,10 +8,6 @@ import {INova} from "./INova.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
-
-    event MetadataUriUpdated(address novaAddress, string newMetadataUri);
-    event CommitmentUpdated(address novaAddress, uint256 newCommitment);
-
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
     uint256 public constant CONVICTION_PARAMETER = 3;
@@ -190,7 +186,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
         commitment = commitment_;
 
-        emit CommitmentUpdated(address(this), commitment_);
         emit CommitmentSet(commitment_);
     }
 
@@ -199,7 +194,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
         metadataUri = metadataUri_;
 
-        emit MetadataUriUpdated(address(this), metadataUri_);
         emit MetadataUriSet(metadataUri_);
     }
 
