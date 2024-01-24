@@ -106,10 +106,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         roles[who] = role;
         members.push(who);
 
-        if (!isAdmin(who)) {
-            _setMaskPosition(who, MEMBER_MASK_POSITION);
-        }
-
         emit MemberGranted(who, role);
     }
 
