@@ -54,7 +54,7 @@ contract DeployAll is Script {
         address autIdProxy = address(new AutProxy(
             autIdImpl,
             owner,
-            abi.encodeWithSelector(AutID.initialize.selector, owner)
+            abi.encodeWithSelector(AutID.initialize.selector, address(this))
         ));
         address pluginRegistryProxy = address(new AutProxy(
             pluginRegistryImpl,
@@ -68,6 +68,8 @@ contract DeployAll is Script {
         ));
 
         IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
+        IAutID(autIdProxy).transferOwnership(owner);
+
 
         // todo: convert to helper function
         string memory filename = "deployments.txt";
