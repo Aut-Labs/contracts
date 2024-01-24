@@ -1,0 +1,19 @@
+{
+  "name": "aut",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ aut",
+    "create-local": "graph create --node http://localhost:8020/ aut",
+    "remove-local": "graph remove --node http://localhost:8020/ aut",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 aut",
+    "test": "graph test",
+    "run-all-local": "npm run codegen && npm run build && npm run create-local"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.60.0",
+    "@graphprotocol/graph-ts": "0.30.0"
+  },
+  "devDependencies": { "matchstick-as": "0.5.0" }
+}

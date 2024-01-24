@@ -1,0 +1,25 @@
+type AutID @entity(immutable: true) {
+  id: ID!
+  owner: Bytes! 
+  tokenID: BigInt!
+  username: String!
+  novaAddress: Bytes
+  role: BigInt
+  commitment: BigInt
+  metadataUri: String
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NovaDAO @entity(immutable: true) {
+  id: ID!
+  deployer: Bytes!
+  address: Bytes!
+  market: BigInt!
+  metadataUri: String!
+  minCommitment: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

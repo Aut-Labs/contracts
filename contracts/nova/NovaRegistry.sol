@@ -15,6 +15,13 @@ import {Nova} from "../nova/Nova.sol";
 /// @title NovaRegistry
 contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
     event NovaDeployed(address);
+    event NovaCreated(
+        address deployer,
+        address novaAddress,
+        uint256 market,
+        uint256 commitment,
+        string metadata
+    );
 
     // just for interface compatibility
     // actually there is no need to store it in the contract
@@ -63,13 +70,14 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         _checkAllowlist();
 
         bytes memory data = abi.encodeWithSelector(
-            Nova.initialize.selector, _msgSender(), autIDAddr, market, metadata, commitment, pluginRegistry
+            Nova.initialize.selector, _msgSender(), autIDAddr, pluginRegistry, market, commitment, metadata
         );
         nova = address(new BeaconProxy(address(upgradeableBeacon), data));
         novaDeployers[_msgSender()].push(nova);
         novas.push(nova);
         checkNova[nova] = true;
 
+        emit NovaCreated(_msgSender(), nova, market, commitment, metadata);
         emit NovaDeployed(nova);
     }
 

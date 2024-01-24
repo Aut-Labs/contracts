@@ -8,7 +8,6 @@ import {INova} from "./INova.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
-
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
     uint256 public constant CONVICTION_PARAMETER = 3;
