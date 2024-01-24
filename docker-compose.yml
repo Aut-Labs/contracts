@@ -6,8 +6,8 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     environment:
-      - ADDR_A1=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-      - PVK_A1=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      - ADDR_A1=0x5D45D9C907B26EdE7848Bb9BdD4D08308983d613
+      - PVK_A1=${PVK_A1}
       - RPC_PORT=8545
     volumes:
       - ./volumes/out:/usr/src/app/out:wo

@@ -69,6 +69,8 @@ contract DeployAll is Script {
 
         console.log("run -- done");
 
+        IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
+
         // todo: convert to helper function
         string memory filename = "deployments.txt";
         TNamedAddress[4] memory na;
@@ -87,5 +89,6 @@ contract DeployAll is Script {
             ));
         }
         vm.writeLine(filename, "\n");
+
     }
 }

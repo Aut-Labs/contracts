@@ -59,6 +59,16 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _setTokenURI(tokenId, uri);
     }
 
+    function mint(
+        uint256 role,
+        uint256 commitment,
+        address nova,
+        string memory username_,
+        string memory optionalURI
+    ) external {
+        createRecordAndJoinNova(role, commitment, nova, username_, optionalURI);
+    }
+
     /// @inheritdoc IAutID
     function createRecordAndJoinNova(
         uint256 role,
@@ -66,7 +76,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         address nova,
         string memory username_,
         string memory optionalURI
-    ) external {
+    ) public {
         address account = _msgSender();
         AutIDUtils._revertForZeroAddress(account);
 
