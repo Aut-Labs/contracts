@@ -68,8 +68,8 @@ contract DeployAll is Script {
             abi.encodeWithSelector(NovaRegistry.initialize.selector, autIdProxy, novaImpl, pluginRegistryProxy)
         ));
 
-        IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
-        // OwnableUpgradeable(autIdProxy).transferOwnership(owner);
+        // IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
+        // // OwnableUpgradeable(autIdProxy).transferOwnership(owner);
 
 
         // todo: convert to helper function

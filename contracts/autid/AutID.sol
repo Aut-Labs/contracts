@@ -26,7 +26,10 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
 
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
-    function initialize(address initialOwner) public initializer {
+    function initialize(address initialOwner, address newNovaRegistry) public initializer {
+        _revertForZeroAddress(newNovaRegistry);
+        novaRegistry = newNovaRegistry;
+        emit NovaRegistrySet(newNovaRegistry);
         __ERC721_init("AutID", "AUT");
         __Ownable_init(initialOwner);
     }
