@@ -67,8 +67,6 @@ contract DeployAll is Script {
             abi.encodeWithSelector(NovaRegistry.initialize.selector, autIdProxy, novaImpl, pluginRegistryProxy)
         ));
 
-        console.log("run -- done");
-
         IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
 
         // todo: convert to helper function
