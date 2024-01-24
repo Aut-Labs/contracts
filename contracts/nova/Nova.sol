@@ -52,7 +52,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         external 
         initializer 
     {
-        _setMaskPosition(deployer, MEMBER_MASK_POSITION);
+        // _setMaskPosition(deployer, MEMBER_MASK_POSITION);
         _setMaskPosition(deployer, ADMIN_MASK_POSITION);
         /// @custom:sdk_legacy_interface_compatibility
         admins.push(deployer);
@@ -104,6 +104,11 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         require(canJoin(who, role), "can not join");
 
         roles[who] = role;
+        members.push(who);
+
+        if (!isAdmin(who)) {
+            _setMaskPosition(who, MEMBER_MASK_POSITION);
+        }
 
         emit MemberGranted(who, role);
     }
@@ -118,7 +123,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     function canJoin(address who, uint256 role) public view returns(bool) {
-        if (_checkMaskPosition(who, MEMBER_MASK_POSITION)) {
+        if (roles[who] != 0) {
             return false;
         }
         if (onboarding != address(0)) {
@@ -153,7 +158,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     function removeAdmin(address from) external {
         require(from != address(0), "zero address");
-        require(_checkMaskPosition(msg.sender, ADMIN_MASK_POSITION), "caller not an admin");
+        require(isAdmin(msg.sender), "caller not an admin");
         require(msg.sender != from, "admin can not renounce himself");
 
         _unsetMaskPosition(from, ADMIN_MASK_POSITION);
@@ -255,13 +260,13 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     function _revertForNotAdmin(address who) internal view {
-        if (!_checkMaskPosition(who, ADMIN_MASK_POSITION)) {
+        if (!isAdmin(who)) {
             revert NotAdmin();
         }
     }
 
     function _revertForNotMember(address who) internal view {
-        if (!_checkMaskPosition(who, MEMBER_MASK_POSITION)) {
+        if (!isMember(who)) {
             revert NotMember();
         }
     }

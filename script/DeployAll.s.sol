@@ -16,7 +16,6 @@ import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
 
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
-import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 import "forge-std/Script.sol";
 
@@ -35,7 +34,7 @@ contract DeployAll is Script {
             owner = address(this);
         } else if (block.chainid == 80001) {
             trustedForwarder = 0x69015912AA33720b842dCD6aC059Ed623F28d9f7;
-            owner = 0x5D45D9C907B26EdE7848Bb9BdD4D08308983d613;
+            owner = 0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43;
         } else {
             revert("invalid chainid");
         }
@@ -55,7 +54,7 @@ contract DeployAll is Script {
         address autIdProxy = address(new AutProxy(
             autIdImpl,
             owner,
-            abi.encodeWithSelector(AutID.initialize.selector, owner)
+            abi.encodeWithSelector(AutID.initialize.selector, owner, novaRegistryImpl)
         ));
         address pluginRegistryProxy = address(new AutProxy(
             pluginRegistryImpl,
@@ -68,9 +67,9 @@ contract DeployAll is Script {
             abi.encodeWithSelector(NovaRegistry.initialize.selector, autIdProxy, novaImpl, pluginRegistryProxy)
         ));
 
-        // IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
-        // // OwnableUpgradeable(autIdProxy).transferOwnership(owner);
+        console.log("run -- done");
 
+        IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
 
         // todo: convert to helper function
         string memory filename = "deployments.txt";
