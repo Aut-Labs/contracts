@@ -97,8 +97,6 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _revertForCanNotJoinNova(nova, account, role);
         // todo: add min commitment check
 
-        revert("Testng");
-
         INova(nova).join(account, role);
 
         emit NovaJoined(account, role, commitment, nova);
