@@ -51,6 +51,4 @@ interface IAutID {
     /// @param commitment Commitment to join the Nova
     /// @param nova Address of the Nova to join
     function joinNova(uint256 role, uint256 commitment, address nova) external;
-
-    function transferOwnership(address to) external;
 }

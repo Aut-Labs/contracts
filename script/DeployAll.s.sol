@@ -16,6 +16,7 @@ import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
 
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 import "forge-std/Script.sol";
 
@@ -68,7 +69,7 @@ contract DeployAll is Script {
         ));
 
         IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
-        IAutID(autIdProxy).transferOwnership(owner);
+        OwnableUpgradeable(autIdProxy).transferOwnership(owner);
 
 
         // todo: convert to helper function
