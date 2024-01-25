@@ -5,10 +5,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    environment:
-      - ADDR_A1=0x5D45D9C907B26EdE7848Bb9BdD4D08308983d613
-      - PVK_A1=${PVK_A1}
-      - RPC_PORT=8545
+    env_file:
+      - dev.env
     volumes:
       - ./volumes/out:/usr/src/app/out:wo
       - type: bind
