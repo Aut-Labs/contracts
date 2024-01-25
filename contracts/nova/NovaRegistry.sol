@@ -14,7 +14,6 @@ import {Nova} from "../nova/Nova.sol";
 
 /// @title NovaRegistry
 contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
-    event NovaDeployed(address);
     event NovaCreated(
         address deployer,
         address novaAddress,
@@ -78,7 +77,6 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         checkNova[nova] = true;
 
         emit NovaCreated(_msgSender(), nova, market, commitment, metadata);
-        emit NovaDeployed(nova);
     }
 
     /// @dev upgrades nova beacon to the new logic contract
