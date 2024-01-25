@@ -29,6 +29,10 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
 
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
+    function nextTokenId() external view returns(uint256) {
+        return _tokenId + 1;
+    }
+
     function initialize(address initialOwner) public initializer {
         __ERC721_init("AutID", "AUT");
         __Ownable_init(initialOwner);
