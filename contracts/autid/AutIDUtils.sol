@@ -10,7 +10,11 @@ abstract contract AutIDUtils {
     error InvalidUsername();
     error UncheckedNova();
     error CanNotJoinNova();
+    error MinCommitmentNotReached();
     error InvalidTokenId();
+
+    uint256 private constant MAX_GLOBAL_COMMITMENT = 10;
+    uint256 private constant MIN_GLOBAL_COMMITMENT = 1;
 
     function _revertForZeroAddress(address addr) internal pure {
         if (addr == address(0)) {
@@ -19,7 +23,7 @@ abstract contract AutIDUtils {
     }
 
     function _revertForInvalidCommitment(uint256 commitment) internal pure {
-        if (!(commitment > 0 && commitment < 11)) {
+        if (!(commitment > MIN_GLOBAL_COMMITMENT && commitment < MAX_GLOBAL_COMMITMENT)) {
             revert InvalidCommitment();
         }
     }
@@ -55,6 +59,15 @@ abstract contract AutIDUtils {
             revert CanNotJoinNova();
         }
     }
+
+    function _revertForMinCommitmentNotReached(
+        address nova,
+        uint256 declaredCommitment
+    ) internal view {
+        if (INova(nova).commitment() > declaredCommitment) {
+            revert MinCommitmentNotReached();
+        }
+    } 
 
     function _revertForInvalidTokenId(uint256 tokenId) internal pure {
         if (tokenId == 0) {
