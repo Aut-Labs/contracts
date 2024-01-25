@@ -18,11 +18,14 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     error ConflictingRecord();
     error UntransferableToken();
 
+    uint256 private _tokenId;
+    
     address public novaRegistry;
     address public localReputation;
     mapping(bytes32 => uint256) public tokenIdForUsername;
     mapping(address => uint256) public tokenIdForAccount;
-    uint256 private _tokenId;
+    mapping(address => uint64) public mintedAt;
+    
 
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
@@ -82,6 +85,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     ) public {
         address account = _msgSender();
         AutIDUtils._revertForZeroAddress(account);
+        mintedAt[account] = uint64(block.timestamp);
 
         _createRecord(account, username_, optionalURI);
         _joinNova(account, role, commitment, nova);
@@ -108,7 +112,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _revertForInvalidCommitment(commitment);
         _revertForUncheckedNova(novaRegistryAddress, nova);
         _revertForCanNotJoinNova(nova, account, role);
-        // todo: add min commitment check
+        _revertForMinCommitmentNotReached(nova, commitment);
 
         INova(nova).join(account, role);
 
@@ -146,5 +150,5 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         return ERC2771ContextUpgradeable._contextSuffixLength();
     }
 
-    uint256[45] private __gap;
+    uint256[44] private __gap;
 }
