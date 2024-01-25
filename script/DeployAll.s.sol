@@ -31,7 +31,7 @@ contract DeployAll is Script {
     function setUp() public {
         if (block.chainid == 31337) { // todo: replace 31337 by forge constant
             trustedForwarder = address(new TrustedForwarder());
-            owner = address(this);
+            owner = vm.envAddress("A1");
         } else if (block.chainid == 80001) {
             trustedForwarder = 0x69015912AA33720b842dCD6aC059Ed623F28d9f7;
             owner = 0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43;
@@ -54,7 +54,7 @@ contract DeployAll is Script {
         address autIdProxy = address(new AutProxy(
             autIdImpl,
             owner,
-            abi.encodeWithSelector(AutID.initialize.selector, owner, novaRegistryImpl)
+            abi.encodeWithSelector(AutID.initialize.selector, owner)
         ));
         address pluginRegistryProxy = address(new AutProxy(
             pluginRegistryImpl,
