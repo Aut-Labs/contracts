@@ -96,6 +96,10 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         revert UntransferableToken();
     }
 
+    function setTokenURI(uint256 tokenId, string memory uri) external {
+        _setTokenURI(tokenId, uri);
+    }
+
     /// @inheritdoc IAutID
     function joinNova(uint256 role, uint256 commitment, address nova) public {
         address account = _msgSender();
@@ -138,6 +142,8 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
 
         emit RecordCreated(tokenId, account, username_, optionalURI);
     }
+
+
 
     function _msgSender() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (address) {
         return ERC2771ContextUpgradeable._msgSender();
