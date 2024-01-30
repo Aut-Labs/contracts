@@ -13,6 +13,7 @@ import {ERC2771ContextUpgradeable, ContextUpgradeable} from "@openzeppelin/contr
 
 import {AutIDUtils} from "./AutIDUtils.sol";
 import {INova} from "../nova/INova.sol";
+import {INovaRegistry} from "../nova/INovaRegistry.sol";
 
 contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, ERC2771ContextUpgradeable, IAutID {
     error ConflictingRecord();
@@ -66,6 +67,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _setTokenURI(tokenId, uri);
     }
 
+    /// @inheritdoc IAutID
     function mint(
         uint256 role,
         uint256 commitment,
@@ -90,6 +92,10 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
 
         _createRecord(account, username_, optionalURI);
         _joinNova(account, role, commitment, nova);
+    }
+
+    function listUserNovas(address user) external view returns(address[] memory) {
+        return INovaRegistry(novaRegistry).userNovaList(user);
     }
 
     function transferFrom(address, address, uint256) public pure override(ERC721Upgradeable, IERC721) {
@@ -142,8 +148,6 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
 
         emit RecordCreated(tokenId, account, username_, optionalURI);
     }
-
-
 
     function _msgSender() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (address) {
         return ERC2771ContextUpgradeable._msgSender();

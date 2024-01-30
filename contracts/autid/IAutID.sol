@@ -38,6 +38,20 @@ interface IAutID {
     /// @param nova Address of the Nova to join
     /// @param username_ Username associated with the new AutID NFT
     /// @param optionalURI Metadata URI string associated with the new AutID NFT
+    function mint(
+        uint256 role,
+        uint256 commitment,
+        address nova,
+        string memory username_,
+        string memory optionalURI
+    ) external;
+
+    /// @notice Mint an AutID NFT and join a Nova community (alias to `mint`)
+    /// @param role Role to join the Nova
+    /// @param commitment Commitment to join the Nova
+    /// @param nova Address of the Nova to join
+    /// @param username_ Username associated with the new AutID NFT
+    /// @param optionalURI Metadata URI string associated with the new AutID NFT
     function createRecordAndJoinNova(
         uint256 role,
         uint256 commitment,

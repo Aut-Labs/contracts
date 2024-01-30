@@ -5,6 +5,7 @@ import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
 import {NovaUpgradeable} from "./NovaUpgradeable.sol";
 import {NovaUtils} from "./NovaUtils.sol";
 import {INova} from "./INova.sol";
+import {INovaRegistry} from "./INovaRegistry.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
@@ -21,6 +22,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     uint8 public constant ADMIN_MASK_POSITION = 1;
 
     address public autID;
+    address public novaRegistry;
     address public pluginRegistry;
     address public onboarding;
 
@@ -44,6 +46,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     function initialize(
         address deployer,
         address autID_,
+        address novaRegistry_,
         address pluginRegistry_,
         uint256 market_,
         uint256 commitment_,
@@ -52,15 +55,15 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         external 
         initializer 
     {
-        // _setMaskPosition(deployer, MEMBER_MASK_POSITION);
         _setMaskPosition(deployer, ADMIN_MASK_POSITION);
-        /// @custom:sdk_legacy_interface_compatibility
+        /// @custom:sdk-legacy-interface-compatibility
         admins.push(deployer);
         _setMarket(market_);
         _setCommitment(commitment_);
         _setMetadataUri(metadataUri_);
         pluginRegistry = pluginRegistry_;
         autID = autID_;
+        novaRegistry = novaRegistry_;
     }
 
     function setMetadataUri(string memory uri) external {
@@ -105,6 +108,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
         roles[who] = role;
         members.push(who);
+
+        INovaRegistry(novaRegistry).joinNovaHook(who);
 
         emit MemberGranted(who, role);
     }

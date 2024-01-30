@@ -7,7 +7,6 @@ import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Own
 import {ERC2771ContextUpgradeable, ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
-// import {IPluginRegistry} from "../plugins/registry/IPluginRegistry.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
@@ -25,6 +24,8 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     // just for interface compatibility
     // actually there is no need to store it in the contract
     mapping(address => address[]) public novaDeployers;
+    mapping(address => address[]) public userNovaList;
+    mapping(address => mapping(address => uint256)) internal _userNovaListIds;
     mapping(address => bool) public checkNova;
     address[] public novas;
 
@@ -79,8 +80,17 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         emit NovaCreated(_msgSender(), nova, market, commitment, metadata);
     }
 
+    function joinNovaHook(address member) external {
+        address nova = msg.sender;
+        require(checkNova[nova], "NovaRegistry: sender not a nova");
+        uint256 position = userNovaList[member].length;
+        userNovaList[member].push(nova);
+        _userNovaListIds[member][nova] = position;
+    }
+
     /// @dev upgrades nova beacon to the new logic contract
-    function upgradeNova(address newLogic) external onlyOwner {
+    function upgradeNova(address newLogic) external {
+        _checkOwner();
         require(newLogic != address(0), "NovaRegistry: address zero");
         upgradeableBeacon.upgradeTo(newLogic);
     }
@@ -111,8 +121,6 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         }
     }
 
-    // no idea why `autIDAddr` and `pluginRegistrty` are passed
-    // i'm leavin it as it is in order to maintain compativility with sdk
     function _validateNovaDeploymentParams(uint256 market, string memory metadata, uint256 commitment) internal pure {
         require(market > 0 && market < 4, "NovaRegistry: invalid market value");
         require(bytes(metadata).length != 0, "NovaRegistry: metadata empty");
