@@ -20,15 +20,15 @@ contract NovaRegistryTest is Test, NovaRegistryDeployHelper {
         deploy();
     }
 
-    function testFail_novaRegistry() public {
+    function testFail_novaRegistryEmpty() public {
         assertEq(address(novaRegistry()), address(0));
     }
 
-    function testFail_autID() public {
+    function testFail_autIDEmpty() public {
         assertEq(address(autID()), address(0));
     }
 
-    function testFaild_pluginRegistryEmpty() public {
+    function testFail_pluginRegistryEmpty() public {
         assertEq(address(pluginRegistry()), address(0));
         console2.log(vm.toString(address(pluginRegistry())));
     }

@@ -109,6 +109,5 @@ abstract contract NovaRegistryDeployHelper is AutIDDeployHelper, PluginRegistryD
             )
         ));
         _novaRegistry = INovaRegistry(proxy);
-        console.log("kek");
     }
 }
