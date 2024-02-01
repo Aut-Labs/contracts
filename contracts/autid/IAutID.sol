@@ -6,6 +6,7 @@ interface IAutID {
     event NovaJoined(address account, uint256 role, uint256 commitment, address nova);
     event NovaRegistrySet(address);
     event LocalReputationSet(address);
+    event TokenMetadataUpdated(uint256 tokenId, address account, string uri);
 
     /// @notice Retrieve NovaRegistry contract address
     function novaRegistry() external view returns(address);
