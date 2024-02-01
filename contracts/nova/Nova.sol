@@ -104,6 +104,15 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         _removeUrl(url);
     }
 
+    function setCommitmentLevel(address user, uint256 commitmentLevel) external {
+        require(msg.sender == autID, "caller not AutID contract");
+        require(isMember(user), "user not a member");
+
+        commitmentLevels[user] = commitmentLevel;
+
+        emit CommitmentLevelSet(user, commitmentLevel);
+    }
+
     function join(address who, uint256 role, uint256 commitmentLevel) external {
         require(msg.sender == autID, "caller not AutID contract");
         require(canJoin(who, role), "can not join");

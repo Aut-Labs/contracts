@@ -12,6 +12,7 @@ abstract contract AutIDUtils {
     error CanNotJoinNova();
     error MinCommitmentNotReached();
     error InvalidTokenId();
+    error NovaUserMissmatch();
 
     uint256 private constant MAX_GLOBAL_COMMITMENT = 10;
     uint256 private constant MIN_GLOBAL_COMMITMENT = 1;
@@ -72,6 +73,12 @@ abstract contract AutIDUtils {
     function _revertForInvalidTokenId(uint256 tokenId) internal pure {
         if (tokenId == 0) {
             revert InvalidTokenId();
+        }
+    }
+
+    function _revertForNovaUserMissmatch(address account, address user) internal pure {
+        if (account != user) {
+            revert NovaUserMissmatch();
         }
     }
 }

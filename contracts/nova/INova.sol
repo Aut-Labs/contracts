@@ -16,6 +16,7 @@ interface INova {
     event OnboardingSet(address);
     event MarketSet(uint256);
     event CommitmentSet(uint256);
+    event CommitmentLevelSet(address, uint256);
 
     function autID() external view returns(address);
     function pluginRegistry() external view returns(address);
@@ -41,6 +42,8 @@ interface INova {
     function addUrl(string memory) external;
 
     function removeUrl(string memory) external;
+
+    function setCommitmentLevel(address user, uint256 commitmentLevel) external;
 
     function join(address who, uint256 role, uint256 commitmentLevel) external;
 

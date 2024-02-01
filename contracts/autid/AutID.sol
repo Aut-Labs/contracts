@@ -98,6 +98,20 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         return INovaRegistry(novaRegistry).listUserNovas(user);
     }
 
+    function setUserNovaCommitmentLevel(address nova, address user, uint256 commitmentLevel) external {
+        address account = _msgSender();
+        _revertForZeroAddress(account);
+        _revertForNovaUserMissmatch(account, user);
+        uint256 tokenId = tokenIdForAccount[account];
+        _revertForInvalidTokenId(tokenId);
+        _revertForUncheckedNova(novaRegistry, nova);
+        _revertForInvalidCommitment(commitmentLevel);
+        _revertForMinCommitmentNotReached(nova, commitmentLevel);
+
+        INova(nova).setCommitmentLevel(user, commitmentLevel);
+        // event is emitted from the nova contract
+    }
+
     function userNovaRole(address nova, address user) external view returns(uint256) {
         return INova(nova).roles(user);
     }
