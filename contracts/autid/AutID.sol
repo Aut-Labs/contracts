@@ -95,7 +95,19 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     function listUserNovas(address user) external view returns(address[] memory) {
-        return INovaRegistry(novaRegistry).userNovaList(user);
+        return INovaRegistry(novaRegistry).listUserNovas(user);
+    }
+
+    function userNovaRole(address nova, address user) external view returns(uint256) {
+        return INova(nova).roles(user);
+    }
+
+    function userNovaCommitmentLevel(address nova, address user) external view returns(uint256) {
+        return INova(nova).commitmentLevels(user);
+    }
+
+    function userNovaJoinedAt(address nova, address user) external view returns(uint256) {
+        return INova(nova).joinedAt(user);
     }
 
     function transferFrom(address, address, uint256) public pure override(ERC721Upgradeable, IERC721) {
@@ -125,7 +137,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _revertForCanNotJoinNova(nova, account, role);
         _revertForMinCommitmentNotReached(nova, commitment);
 
-        INova(nova).join(account, role);
+        INova(nova).join(account, role, commitment);
 
         emit NovaJoined(account, role, commitment, nova);
     }

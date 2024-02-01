@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {NovaRegistryDeployHelper} from "./DeployHelpers.sol";
 import "forge-std/Test.sol";
 import "forge-std/Vm.sol";
 import "forge-std/console2.sol";
 
+import {NovaRegistryDeployHelper} from "./helpers/DeployHelpers.sol";
 
 contract NovaRegistryTest is Test, NovaRegistryDeployHelper {
-    function owner() internal override returns(address) {
+    function owner() internal view override returns(address) {
         return address(this);
     }
 
-    function trustedForwarder() internal override returns(address) {
+    function trustedForwarder() internal view override returns(address) {
         return owner();
     }
 
@@ -30,6 +30,5 @@ contract NovaRegistryTest is Test, NovaRegistryDeployHelper {
 
     function testFail_pluginRegistryEmpty() public {
         assertEq(address(pluginRegistry()), address(0));
-        console2.log(vm.toString(address(pluginRegistry())));
     }
 }

@@ -3,25 +3,25 @@ pragma solidity ^0.8.20;
 
 import "hardhat/console.sol";
 
-import {IAutID} from "../contracts/autid/IAutID.sol";
-import {IGlobalParameters} from "../contracts/globalParameters/IGlobalParameters.sol";
-import {IPluginRegistry} from "../contracts/pluginRegistry/IPluginRegistry.sol";
-import {INovaRegistry} from "../contracts/nova/INovaRegistry.sol";
-import {GlobalParameters} from "../contracts/globalParameters/GlobalParameters.sol";
-import {AutID} from "../contracts/autid/AutID.sol";
-import {NovaRegistry} from "../contracts/nova/NovaRegistry.sol";
-import {Nova} from "../contracts/nova/Nova.sol";
-import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
-import {AutProxy} from "../contracts/proxy/AutProxy.sol";
+import {IAutID} from "../../contracts/autid/IAutID.sol";
+import {IGlobalParameters} from "../../contracts/globalParameters/IGlobalParameters.sol";
+import {IPluginRegistry} from "../../contracts/pluginRegistry/IPluginRegistry.sol";
+import {INovaRegistry} from "../../contracts/nova/INovaRegistry.sol";
+import {GlobalParameters} from "../../contracts/globalParameters/GlobalParameters.sol";
+import {AutID} from "../../contracts/autid/AutID.sol";
+import {NovaRegistry} from "../../contracts/nova/NovaRegistry.sol";
+import {Nova} from "../../contracts/nova/Nova.sol";
+import {PluginRegistry} from "../../contracts/pluginRegistry/PluginRegistry.sol";
+import {AutProxy} from "../../contracts/proxy/AutProxy.sol";
 
 abstract contract DeployHelper {
     error NotImplemented();
 
-    function owner() internal virtual returns(address) {
+    function owner() internal view virtual returns(address) {
         revert NotImplemented();
     }
 
-    function trustedForwarder() internal virtual returns(address) {
+    function trustedForwarder() internal view virtual returns(address) {
         revert NotImplemented(); 
     }
 
@@ -67,7 +67,7 @@ abstract contract AutIDDeployHelper is DeployHelper {
 abstract contract PluginRegistryDeployHelper is DeployHelper {
     IPluginRegistry private _pluginRegistry;
 
-    function pluginRegistry() internal returns(IPluginRegistry) {
+    function pluginRegistry() internal view returns(IPluginRegistry) {
         return _pluginRegistry;
     }
 

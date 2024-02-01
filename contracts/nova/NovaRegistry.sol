@@ -24,7 +24,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     // just for interface compatibility
     // actually there is no need to store it in the contract
     mapping(address => address[]) public novaDeployers;
-    mapping(address => address[]) public userNovaList;
+    mapping(address => address[]) internal _userNovaList;
     mapping(address => mapping(address => uint256)) internal _userNovaListIds;
     mapping(address => bool) public checkNova;
     address[] public novas;
@@ -80,11 +80,15 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         emit NovaCreated(_msgSender(), nova, market, commitment, metadata);
     }
 
+    function listUserNovas(address user) external view returns(address[] memory) {
+        return _userNovaList[user];
+    }
+
     function joinNovaHook(address member) external {
         address nova = msg.sender;
         require(checkNova[nova], "NovaRegistry: sender not a nova");
-        uint256 position = userNovaList[member].length;
-        userNovaList[member].push(nova);
+        uint256 position = _userNovaList[member].length;
+        _userNovaList[member].push(nova);
         _userNovaListIds[member][nova] = position;
     }
 

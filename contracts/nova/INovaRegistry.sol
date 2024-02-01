@@ -10,5 +10,5 @@ interface INovaRegistry {
 
     function joinNovaHook(address user) external;
 
-    function userNovaList(address user) external view returns(address[] memory novas);
+    function listUserNovas(address user) external view returns(address[] memory);
 }

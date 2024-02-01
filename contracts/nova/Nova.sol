@@ -32,6 +32,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     string public metadataUri;
 
     mapping(address => uint256) public roles;
+    mapping(address => uint256) public joinedAt;
+    mapping(address => uint256) public commitmentLevels;
     mapping(uint256 => uint256) public parameterWeight;
     mapping(address => uint256) public accountMasks;
 
@@ -102,12 +104,14 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         _removeUrl(url);
     }
 
-    function join(address who, uint256 role) external {
+    function join(address who, uint256 role, uint256 commitmentLevel) external {
         require(msg.sender == autID, "caller not AutID contract");
         require(canJoin(who, role), "can not join");
 
         roles[who] = role;
+        commitmentLevels[who] = commitmentLevel;
         members.push(who);
+        joinedAt[who] = block.timestamp;
 
         INovaRegistry(novaRegistry).joinNovaHook(who);
 
@@ -176,8 +180,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     /// internal
-
-
 
     function _setMarket(uint256 market_) internal {
         _revertForInvalidMarket(market_);
