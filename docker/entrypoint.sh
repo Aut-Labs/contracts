@@ -16,3 +16,4 @@ forge script ./script/DeployAll.s.sol --rpc-url "http://localhost:${RPC_PORT}" \
     --legacy
 
 wait $!
+
