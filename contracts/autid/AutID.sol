@@ -114,8 +114,14 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         revert UntransferableToken();
     }
 
-    function setTokenURI(uint256 tokenId, string memory uri) external {
+    function setTokenURI(string memory uri) external {
+        address account = _msgSender();
+        _revertForZeroAddress(account);
+        uint256 tokenId = tokenIdForAccount[account];
+        _revertForInvalidTokenId(tokenId);
         _setTokenURI(tokenId, uri);
+
+        emit TokenMetadataUpdated(tokenId, account, uri);
     }
 
     /// @inheritdoc IAutID
