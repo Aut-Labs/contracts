@@ -7,19 +7,17 @@
     "/contracts/**/*.sol",
     "/contracts/**/**/*.sol"
   ],
-  "scripts": {
-    "compile": "hardhat compile",
-    "test": "hardhat --network localhost test",
-    "deployAll": "node ./scripts/deployAll",
-    "addPluginDefinition": "node ./scripts/addPluginDefinition",
-    "deployDAOTypes": "node ./scripts/deployDAOTypes"
-  },
+  "scripts": {},
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@opengsn/contracts": "^3.0.0-beta.1",
     "@openzeppelin/contracts": "^5.0.1",
     "@openzeppelin/contracts-upgradeable": "^5.0.1",
-    "@opengsn/contracts": "^3.0.0-beta.1"
+    "husky": "8"
+  },
+  "husky": {
+    "pre-commit": "forge fmt"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-foundry": "^1.0.2",

@@ -29,7 +29,8 @@ contract DeployAll is Script {
     }
 
     function setUp() public {
-        if (block.chainid == 31337) { // todo: replace 31337 by forge constant
+        if (block.chainid == 31337) {
+            // todo: replace 31337 by forge constant
             trustedForwarder = address(new TrustedForwarder());
             owner = vm.envAddress("A1");
         } else if (block.chainid == 80001) {
@@ -52,21 +53,18 @@ contract DeployAll is Script {
         address pluginRegistryImpl = address(new PluginRegistry());
 
         address globalParametersProxy = address(new AutProxy(globalParametersImpl, owner, ""));
-        address autIdProxy = address(new AutProxy(
-            autIdImpl,
-            owner,
-            abi.encodeWithSelector(AutID.initialize.selector, owner)
-        ));
-        address pluginRegistryProxy = address(new AutProxy(
-            pluginRegistryImpl,
-            owner,
-            abi.encodeWithSelector(PluginRegistry.initialize.selector, owner)
-        ));
-        address novaRegistryProxy = address(new AutProxy(
-            novaRegistryImpl,
-            owner,
-            abi.encodeWithSelector(NovaRegistry.initialize.selector, autIdProxy, novaImpl, pluginRegistryProxy)
-        ));
+        address autIdProxy =
+            address(new AutProxy(autIdImpl, owner, abi.encodeWithSelector(AutID.initialize.selector, owner)));
+        address pluginRegistryProxy = address(
+            new AutProxy(pluginRegistryImpl, owner, abi.encodeWithSelector(PluginRegistry.initialize.selector, owner))
+        );
+        address novaRegistryProxy = address(
+            new AutProxy(
+                novaRegistryImpl,
+                owner,
+                abi.encodeWithSelector(NovaRegistry.initialize.selector, autIdProxy, novaImpl, pluginRegistryProxy)
+            )
+        );
 
         IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
         console.log("run -- done");
@@ -79,17 +77,9 @@ contract DeployAll is Script {
         na[2] = TNamedAddress({name: "novaRegistryProxy", target: novaRegistryProxy});
         na[3] = TNamedAddress({name: "pluginRegistryProxy", target: pluginRegistryProxy});
         vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
-        for (uint i = 0; i != na.length; ++i) {
-            vm.writeLine(filename, string.concat(
-                vm.toString(i),
-                ". ",
-                na[i].name,
-                ": ",
-                vm.toString(na[i].target)
-            ));
+        for (uint256 i = 0; i != na.length; ++i) {
+            vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));
         }
         vm.writeLine(filename, "\n");
-
     }
 }
-

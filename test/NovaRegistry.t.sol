@@ -8,11 +8,11 @@ import "forge-std/console2.sol";
 import {NovaRegistryDeployHelper} from "./helpers/DeployHelpers.sol";
 
 contract NovaRegistryTest is Test, NovaRegistryDeployHelper {
-    function owner() internal view override returns(address) {
+    function owner() internal view override returns (address) {
         return address(this);
     }
 
-    function trustedForwarder() internal view override returns(address) {
+    function trustedForwarder() internal view override returns (address) {
         return owner();
     }
 

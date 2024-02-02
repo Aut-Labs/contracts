@@ -7,11 +7,11 @@ import "@openzeppelin/contracts/utils/Multicall.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 
 interface IOnboarding {
-    function isOnboarded(address who, uint256 role) external view returns(bool);
+    function isOnboarded(address who, uint256 role) external view returns (bool);
 }
 
 interface IRoleOnboarding {
-    function isOnboarded(address who) external view returns(bool);
+    function isOnboarded(address who) external view returns (bool);
 }
 
 contract BasicScoreOnboarding is IOnboarding {
@@ -24,7 +24,7 @@ contract BasicScoreOnboarding is IOnboarding {
         }
     }
 
-    function isOnboarded(address who, uint256 roleId) external view returns(bool) {
+    function isOnboarded(address who, uint256 roleId) external view returns (bool) {
         address callee = roles[roleId];
         if (roleId < roles.length) {
             return IRoleOnboarding(callee).isOnboarded(who);
@@ -34,19 +34,18 @@ contract BasicScoreOnboarding is IOnboarding {
 }
 
 interface IERC1155OnboardingScoreCalculator {
-    function calcScoreStatic(
-        uint256[] memory ids,
-        uint256[] memory params,
-        uint256[] memory values
-    ) external pure returns(uint256);
+    function calcScoreStatic(uint256[] memory ids, uint256[] memory params, uint256[] memory values)
+        external
+        pure
+        returns (uint256);
 }
 
 contract BasicStaticScoreCalculator {
-    function calcScoreStatic(
-        uint256[] memory,
-        uint256[] memory params,
-        uint256[] memory values
-    ) external pure returns(uint256 result) {
+    function calcScoreStatic(uint256[] memory, uint256[] memory params, uint256[] memory values)
+        external
+        pure
+        returns (uint256 result)
+    {
         for (uint256 i; i != values.length; ++i) {
             result += values[i] * params[i];
         }
@@ -73,7 +72,7 @@ contract ERC1155RoleScoreOnboarding is IRoleOnboarding, Ownable {
         scoreCalculator = IERC1155OnboardingScoreCalculator(scoreCalculator_);
     }
 
-    function isOnboarded(address account) external view returns(bool) {
+    function isOnboarded(address account) external view returns (bool) {
         if (!isActive) {
             return false;
         }
@@ -92,17 +91,13 @@ contract ERC1155RoleScoreOnboarding is IRoleOnboarding, Ownable {
     function switchActivityStatus() external {
         _checkOwner();
         bool toStatus = !isActive;
-        require(
-            !toStatus || (
-                qualifyThreshold != 0 && 
-                interactionIds.length != 0
-            ), "unable to activate");
+        require(!toStatus || (qualifyThreshold != 0 && interactionIds.length != 0), "unable to activate");
         isActive = toStatus;
         emit ActivityStatusSwitched(toStatus);
     }
 
     function setQualifyThreshold(uint256 newThreshold) external {
-        _checkOwner(); 
+        _checkOwner();
         require(newThreshold != 0, "zero");
         qualifyThreshold = newThreshold;
         emit QualifyThresholdSet(newThreshold);

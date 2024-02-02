@@ -22,4 +22,3 @@ interface IAllowlist {
     function isOwner(address subject) external view returns (bool);
     function isAllowListed(address subject) external view returns (bool);
 }
-

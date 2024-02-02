@@ -17,12 +17,12 @@ import {AutProxy} from "../../contracts/proxy/AutProxy.sol";
 abstract contract DeployHelper {
     error NotImplemented();
 
-    function owner() internal view virtual returns(address) {
+    function owner() internal view virtual returns (address) {
         revert NotImplemented();
     }
 
-    function trustedForwarder() internal view virtual returns(address) {
-        revert NotImplemented(); 
+    function trustedForwarder() internal view virtual returns (address) {
+        revert NotImplemented();
     }
 
     function deploy() internal virtual {
@@ -33,7 +33,7 @@ abstract contract DeployHelper {
 abstract contract GlobalParametersDeployHelper is DeployHelper {
     IGlobalParameters private _globalParameters;
 
-    function globalParameters() internal view returns(IGlobalParameters) {
+    function globalParameters() internal view returns (IGlobalParameters) {
         return _globalParameters;
     }
 
@@ -47,19 +47,13 @@ abstract contract GlobalParametersDeployHelper is DeployHelper {
 abstract contract AutIDDeployHelper is DeployHelper {
     IAutID private _autID;
 
-    function autID() internal view returns(IAutID) {
+    function autID() internal view returns (IAutID) {
         return _autID;
     }
 
     function deploy() internal virtual override {
         address impl = address(new AutID(trustedForwarder()));
-        address proxy = address(new AutProxy(
-            impl,
-            owner(),
-            abi.encodeWithSelector(
-                AutID.initialize.selector, owner()
-            )
-        ));
+        address proxy = address(new AutProxy(impl, owner(), abi.encodeWithSelector(AutID.initialize.selector, owner())));
         _autID = IAutID(proxy);
     }
 }
@@ -67,20 +61,14 @@ abstract contract AutIDDeployHelper is DeployHelper {
 abstract contract PluginRegistryDeployHelper is DeployHelper {
     IPluginRegistry private _pluginRegistry;
 
-    function pluginRegistry() internal view returns(IPluginRegistry) {
+    function pluginRegistry() internal view returns (IPluginRegistry) {
         return _pluginRegistry;
     }
 
     function deploy() internal virtual override {
         address impl = address(new PluginRegistry());
-        address proxy = address(new AutProxy(
-            impl,
-            owner(),
-            abi.encodeWithSelector(
-                IPluginRegistry.initialize.selector,
-                owner()
-            )
-        ));
+        address proxy =
+            address(new AutProxy(impl, owner(), abi.encodeWithSelector(IPluginRegistry.initialize.selector, owner())));
         _pluginRegistry = IPluginRegistry(proxy);
     }
 }
@@ -88,7 +76,7 @@ abstract contract PluginRegistryDeployHelper is DeployHelper {
 abstract contract NovaRegistryDeployHelper is AutIDDeployHelper, PluginRegistryDeployHelper {
     INovaRegistry private _novaRegistry;
 
-    function novaRegistry() internal view returns(INovaRegistry) {
+    function novaRegistry() internal view returns (INovaRegistry) {
         return _novaRegistry;
     }
 
@@ -98,17 +86,13 @@ abstract contract NovaRegistryDeployHelper is AutIDDeployHelper, PluginRegistryD
 
         address novaImpl = address(new Nova());
         address impl = address(new NovaRegistry(trustedForwarder()));
-        address proxy = address(new AutProxy(
-            impl,
-            owner(),
-            abi.encodeWithSelector(
-                INovaRegistry.initialize.selector,
-                autID(),
-                novaImpl,
-                pluginRegistry()
+        address proxy = address(
+            new AutProxy(
+                impl,
+                owner(),
+                abi.encodeWithSelector(INovaRegistry.initialize.selector, autID(), novaImpl, pluginRegistry())
             )
-        ));
+        );
         _novaRegistry = INovaRegistry(proxy);
     }
 }
-

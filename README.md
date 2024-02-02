@@ -16,7 +16,8 @@ docker network create mainnet
 
 Run local blockchain node & deploy contracts. 
 Now the local node is accessable at `http://localhost:8545` (with `chainId=31337`)
-The deployer's PK is specified in `docker-compose.yml`
+The deployer's PK is specified in `dev.env`
+
 ```bash
 docker-compose up --build
 ```
@@ -73,13 +74,6 @@ Simulate the deployment locally first by running the command without the `--broa
 
 `forge build`
 Now all artefacts are stored in the `out/` folder (repository root)
-
-### 
-    
-> **_Tip:_** If you're expanding the DAO Types that the product supports, for testing purposes, you can add it to /scripts/deployDAOTypes.js
-
-----
-Happy hacking on āut contracts 🤓 🤓 🤓 !! 
  
 ## Useful commands
 Foundry
@@ -88,16 +82,4 @@ forge b #build
 forge t #test
 forge fmt #format
 forge help
-```
-
-
-Hardhat
-```shell
-npm run compile
-npm run test
-npx hardhat clean
-npx hardhat accounts
-npx hardhat compile
-npx hardhat node
-npx hardhat help
 ```

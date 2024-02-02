@@ -4,7 +4,10 @@ pragma solidity ^0.8.20;
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {ERC2771ContextUpgradeable, ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
+import {
+    ERC2771ContextUpgradeable,
+    ContextUpgradeable
+} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
@@ -13,13 +16,7 @@ import {Nova} from "../nova/Nova.sol";
 
 /// @title NovaRegistry
 contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
-    event NovaCreated(
-        address deployer,
-        address novaAddress,
-        uint256 market,
-        uint256 commitment,
-        string metadata
-    );
+    event NovaCreated(address deployer, address novaAddress, uint256 market, uint256 commitment, string metadata);
 
     // just for interface compatibility
     // actually there is no need to store it in the contract
@@ -49,7 +46,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         pluginRegistry = pluginRegistry_;
         upgradeableBeacon = new UpgradeableBeacon(novaLogic, address(this));
         // allowlist =
-            // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
+        // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
     }
 
     // the only reason for this function is to keep interface compatible with sdk
@@ -80,7 +77,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         emit NovaCreated(_msgSender(), nova, market, commitment, metadata);
     }
 
-    function listUserNovas(address user) external view returns(address[] memory) {
+    function listUserNovas(address user) external view returns (address[] memory) {
         return _userNovaList[user];
     }
 
@@ -135,11 +132,21 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         return ERC2771ContextUpgradeable._msgSender();
     }
 
-    function _msgData() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (bytes calldata) {
+    function _msgData()
+        internal
+        view
+        override(ERC2771ContextUpgradeable, ContextUpgradeable)
+        returns (bytes calldata)
+    {
         return ERC2771ContextUpgradeable._msgData();
     }
 
-    function _contextSuffixLength() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns(uint256) {
+    function _contextSuffixLength()
+        internal
+        view
+        override(ERC2771ContextUpgradeable, ContextUpgradeable)
+        returns (uint256)
+    {
         return ERC2771ContextUpgradeable._contextSuffixLength();
     }
 }

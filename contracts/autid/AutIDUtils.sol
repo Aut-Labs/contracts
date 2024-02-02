@@ -32,14 +32,15 @@ abstract contract AutIDUtils {
         bytes memory username = bytes(username_);
         uint256 i;
         for (; i != username.length; ++i) {
-            if (!(
+            if (
                 // 'a' <= ... <= 'z'
-                (username[i] >= 0x61 && username[i] <= 0x7A) || 
                 // '0' <= ... <= '9'
-                (username[i] >= 0x30 && username[i] <= 0x39) ||
                 // '-' == ...
-                username[i] == 0x2D
-            )) {
+                !(
+                    (username[i] >= 0x61 && username[i] <= 0x7A) || (username[i] >= 0x30 && username[i] <= 0x39)
+                        || username[i] == 0x2D
+                )
+            ) {
                 revert InvalidUsername();
             }
         }
@@ -60,14 +61,11 @@ abstract contract AutIDUtils {
         }
     }
 
-    function _revertForMinCommitmentNotReached(
-        address nova,
-        uint256 declaredCommitment
-    ) internal view {
+    function _revertForMinCommitmentNotReached(address nova, uint256 declaredCommitment) internal view {
         if (INova(nova).commitment() > declaredCommitment) {
             revert MinCommitmentNotReached();
         }
-    } 
+    }
 
     function _revertForInvalidTokenId(uint256 tokenId) internal pure {
         if (tokenId == 0) {

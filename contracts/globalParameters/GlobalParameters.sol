@@ -22,7 +22,7 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
     uint32 public credibleNeutrality6ExpStaged;
     // end of slot 1
 
-    // timestamps 
+    // timestamps
     // slots 2-3
     uint64 public steepnessDegree3ExpExpiresAt;
     uint64 public penaltyFactor3ExpExpiresAt;
@@ -62,7 +62,7 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
             revert UnstageFailed("periodDuration", "nothing staged");
         }
         if (block.timestamp > periodDurationExpiresAt) {
-            revert UnstageFailed("periodDuration", "too late");  
+            revert UnstageFailed("periodDuration", "too late");
         }
 
         periodDurationExpiresAt = 0;
@@ -127,7 +127,7 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
 
         emit SteepnessDegree3ExpCommitted();
     }
-    
+
     function stagePenaltyFactor3Exp(uint16 nextPenaltyFactor3Exp) external {
         _checkOwner();
         if (penaltyFactor3ExpExpiresAt != 0) {
@@ -176,7 +176,7 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
         if (constrainingFactor6ExpExpiresAt != 0) {
             revert StageFailed("constrainingFactor6Exp", "already staged");
         }
-        
+
         constrainingFactor6ExpStaged = valueToStage;
         uint64 delayedUntil = uint64(block.timestamp) + periodDuration;
         constrainingFactor6ExpExpiresAt = delayedUntil;

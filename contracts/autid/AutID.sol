@@ -9,7 +9,10 @@ import {
     ERC721Upgradeable
 } from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {ERC2771ContextUpgradeable, ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
+import {
+    ERC2771ContextUpgradeable,
+    ContextUpgradeable
+} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {AutIDUtils} from "./AutIDUtils.sol";
 import {INova} from "../nova/INova.sol";
@@ -20,17 +23,16 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     error UntransferableToken();
 
     uint256 private _tokenId;
-    
+
     address public novaRegistry;
     address public localReputation;
     mapping(bytes32 => uint256) public tokenIdForUsername;
     mapping(address => uint256) public tokenIdForAccount;
     mapping(address => uint64) public mintedAt;
-    
 
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
-    function nextTokenId() external view returns(uint256) {
+    function nextTokenId() external view returns (uint256) {
         return _tokenId + 1;
     }
 
@@ -68,13 +70,9 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     /// @inheritdoc IAutID
-    function mint(
-        uint256 role,
-        uint256 commitment,
-        address nova,
-        string memory username_,
-        string memory optionalURI
-    ) external {
+    function mint(uint256 role, uint256 commitment, address nova, string memory username_, string memory optionalURI)
+        external
+    {
         createRecordAndJoinNova(role, commitment, nova, username_, optionalURI);
     }
 
@@ -94,19 +92,19 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _joinNova(account, role, commitment, nova);
     }
 
-    function listUserNovas(address user) external view returns(address[] memory) {
+    function listUserNovas(address user) external view returns (address[] memory) {
         return INovaRegistry(novaRegistry).listUserNovas(user);
     }
 
-    function userNovaRole(address nova, address user) external view returns(uint256) {
+    function userNovaRole(address nova, address user) external view returns (uint256) {
         return INova(nova).roles(user);
     }
 
-    function userNovaCommitmentLevel(address nova, address user) external view returns(uint256) {
+    function userNovaCommitmentLevel(address nova, address user) external view returns (uint256) {
         return INova(nova).commitmentLevels(user);
     }
 
-    function userNovaJoinedAt(address nova, address user) external view returns(uint256) {
+    function userNovaJoinedAt(address nova, address user) external view returns (uint256) {
         return INova(nova).joinedAt(user);
     }
 
@@ -171,11 +169,21 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         return ERC2771ContextUpgradeable._msgSender();
     }
 
-    function _msgData() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (bytes calldata) {
+    function _msgData()
+        internal
+        view
+        override(ERC2771ContextUpgradeable, ContextUpgradeable)
+        returns (bytes calldata)
+    {
         return ERC2771ContextUpgradeable._msgData();
     }
 
-    function _contextSuffixLength() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns(uint256) {
+    function _contextSuffixLength()
+        internal
+        view
+        override(ERC2771ContextUpgradeable, ContextUpgradeable)
+        returns (uint256)
+    {
         return ERC2771ContextUpgradeable._contextSuffixLength();
     }
 
