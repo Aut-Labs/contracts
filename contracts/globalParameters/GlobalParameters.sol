@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
@@ -188,7 +188,10 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
         _checkOwner();
         uint64 delayedUntil = constrainingFactor6ExpExpiresAt;
         if (delayedUntil == 0) {
-            revert UnstageFailed("constrainingFactor6Exp", "nothing to unstage");
+            revert UnstageFailed(
+                "constrainingFactor6Exp",
+                "nothing to unstage"
+            );
         }
         if (uint64(block.timestamp) > delayedUntil) {
             revert UnstageFailed("constrainingFactor6Exp", "too late");

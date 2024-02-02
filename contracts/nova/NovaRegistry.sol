@@ -4,10 +4,7 @@ pragma solidity ^0.8.20;
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {
-    ERC2771ContextUpgradeable,
-    ContextUpgradeable
-} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
+import {ERC2771ContextUpgradeable, ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
@@ -15,8 +12,18 @@ import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
 
 /// @title NovaRegistry
-contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
-    event NovaCreated(address deployer, address novaAddress, uint256 market, uint256 commitment, string metadata);
+contract NovaRegistry is
+    INovaRegistry,
+    ERC2771ContextUpgradeable,
+    OwnableUpgradeable
+{
+    event NovaCreated(
+        address deployer,
+        address novaAddress,
+        uint256 market,
+        uint256 commitment,
+        string metadata
+    );
 
     // just for interface compatibility
     // actually there is no need to store it in the contract
@@ -32,12 +39,24 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     UpgradeableBeacon public upgradeableBeacon;
     IAllowlist public allowlist;
 
-    constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
+    constructor(
+        address trustedForwarder_
+    ) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
-    function initialize(address autIDAddr_, address novaLogic, address pluginRegistry_) external initializer {
+    function initialize(
+        address autIDAddr_,
+        address novaLogic,
+        address pluginRegistry_
+    ) external initializer {
         require(autIDAddr_ != address(0), "NovaRegistry: AutID address zero");
-        require(novaLogic != address(0), "NovaRegistry: Nova logic address zero");
-        require(pluginRegistry_ != address(0), "NovaRegistry: PluginRegistry address zero");
+        require(
+            novaLogic != address(0),
+            "NovaRegistry: Nova logic address zero"
+        );
+        require(
+            pluginRegistry_ != address(0),
+            "NovaRegistry: PluginRegistry address zero"
+        );
 
         __Ownable_init(msg.sender);
 
@@ -57,17 +76,29 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     }
 
     // the same comment as for `getNovas` method
-    function getNovaByDeployer(address deployer) public view returns (address[] memory) {
+    function getNovaByDeployer(
+        address deployer
+    ) public view returns (address[] memory) {
         return novaDeployers[deployer];
     }
 
     /// @dev depoloy beacon proxy for a new nova
-    function deployNova(uint256 market, string memory metadata, uint256 commitment) external returns (address nova) {
+    function deployNova(
+        uint256 market,
+        string memory metadata,
+        uint256 commitment
+    ) external returns (address nova) {
         _validateNovaDeploymentParams(market, metadata, commitment);
         _checkAllowlist();
 
         bytes memory data = abi.encodeWithSelector(
-            Nova.initialize.selector, _msgSender(), autIDAddr, pluginRegistry, market, commitment, metadata
+            Nova.initialize.selector,
+            _msgSender(),
+            autIDAddr,
+            pluginRegistry,
+            market,
+            commitment,
+            metadata
         );
         nova = address(new BeaconProxy(address(upgradeableBeacon), data));
         novaDeployers[_msgSender()].push(nova);
@@ -77,7 +108,9 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         emit NovaCreated(_msgSender(), nova, market, commitment, metadata);
     }
 
-    function listUserNovas(address user) external view returns (address[] memory) {
+    function listUserNovas(
+        address user
+    ) external view returns (address[] memory) {
         return _userNovaList[user];
     }
 
@@ -109,7 +142,10 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     }
 
     function _checkAllowlist() internal view {
-        if (_msgSender() == deployerAddress || _msgSender() == upgradeableBeacon.owner()) return;
+        if (
+            _msgSender() == deployerAddress ||
+            _msgSender() == upgradeableBeacon.owner()
+        ) return;
         if (address(allowlist) != address(0)) {
             if (!allowlist.isAllowed(_msgSender())) {
                 revert IAllowlist.Unallowed();
@@ -122,13 +158,25 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         }
     }
 
-    function _validateNovaDeploymentParams(uint256 market, string memory metadata, uint256 commitment) internal pure {
+    function _validateNovaDeploymentParams(
+        uint256 market,
+        string memory metadata,
+        uint256 commitment
+    ) internal pure {
         require(market > 0 && market < 4, "NovaRegistry: invalid market value");
         require(bytes(metadata).length != 0, "NovaRegistry: metadata empty");
-        require(commitment > 0 && commitment < 11, "NovaRegistry: invalid commitment value");
+        require(
+            commitment > 0 && commitment < 11,
+            "NovaRegistry: invalid commitment value"
+        );
     }
 
-    function _msgSender() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (address) {
+    function _msgSender()
+        internal
+        view
+        override(ERC2771ContextUpgradeable, ContextUpgradeable)
+        returns (address)
+    {
         return ERC2771ContextUpgradeable._msgSender();
     }
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
@@ -85,7 +85,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         return _urls;
     }
 
-    function isUrlListed(string memory url) external view returns(bool) {
+    function isUrlListed(string memory url) external view returns (bool) {
         return _urlHashIndex[keccak256(abi.encodePacked(url))] != 0;
     }
 
@@ -247,7 +247,10 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         emit AdminGranted(who);
     }
 
-    function _checkMaskPosition(address who, uint8 maskPosition) internal view returns (bool) {
+    function _checkMaskPosition(
+        address who,
+        uint8 maskPosition
+    ) internal view returns (bool) {
         return (accountMasks[who] & (1 << maskPosition)) != 0;
     }
 

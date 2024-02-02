@@ -7,17 +7,16 @@
     "/contracts/**/*.sol",
     "/contracts/**/**/*.sol"
   ],
-  "scripts": {},
+  "scripts": {
+    "prettier": "prettier --write ./contracts/**",
+    "prettier:check": "prettier --check ./contracts/**"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@opengsn/contracts": "^3.0.0-beta.1",
     "@openzeppelin/contracts": "^5.0.1",
-    "@openzeppelin/contracts-upgradeable": "^5.0.1",
-    "husky": "8"
-  },
-  "husky": {
-    "pre-commit": "forge fmt"
+    "@openzeppelin/contracts-upgradeable": "^5.0.1"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-foundry": "^1.0.2",
@@ -31,6 +30,8 @@
     "ethereum-waffle": "^3.4.4",
     "ethers": "5.7.0",
     "hardhat": "^2.9.5",
-    "hardhat-contract-sizer": "^2.1.1"
+    "hardhat-contract-sizer": "^2.1.1",
+    "prettier": "^3.2.4",
+    "prettier-plugin-solidity": "^1.3.1"
   }
 }
