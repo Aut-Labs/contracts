@@ -6,13 +6,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Multicall.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 
-interface IOnboarding {
-    function isOnboarded(address who, uint256 role) external view returns(bool);
-}
-
-interface IRoleOnboarding {
-    function isOnboarded(address who) external view returns(bool);
-}
+import {IOnboarding, IRoleOnboarding} from "./IOnboarding.sol";
 
 contract BasicScoreOnboarding is IOnboarding {
     address[] public roles;
