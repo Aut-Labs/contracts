@@ -85,7 +85,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         return _urls;
     }
 
-    function isUrlListed(string memory url) external view returns (bool) {
+    function isUrlListed(string memory url) external view returns(bool) {
         return _urlHashIndex[keccak256(abi.encodePacked(url))] != 0;
     }
 
