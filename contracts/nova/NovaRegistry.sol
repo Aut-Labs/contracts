@@ -95,6 +95,7 @@ contract NovaRegistry is
             Nova.initialize.selector,
             _msgSender(),
             autIDAddr,
+            address(this),
             pluginRegistry,
             market,
             commitment,
