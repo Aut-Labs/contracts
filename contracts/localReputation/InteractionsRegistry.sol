@@ -1,6 +1,5 @@
-// // SPDX-License-Identifier: MIT
+// //SPDX-License-Identifier: MIT
 // pragma solidity ^0.8.20;
-
 
 // interface IInteractionCallArgsDecoder {
 //     function decodeCallArgs(bytes memory callArgs) external returns(uint128 scenario, uint128 weight);
@@ -15,7 +14,6 @@
 //         return quantity;
 //     }
 // }
-
 
 // interface IInteractionDecoder {
 //     function decodeInteraction(address sender, address targetContract, bytes4 targetSelector, bytes calldata args) external view returns(bytes32, uint128) {
@@ -37,7 +35,6 @@
 //     function isNovaApplication(address nova, address app) external view returns(bool);
 // }
 
-
 // interface INovaBase {
 //     function applicationRegistry() external view returns(IApplicationRegistry);
 // }
@@ -45,12 +42,11 @@
 // contract InteractionTracker {
 //     // interactions are independent from each other
 //     // interactions are quantified (and act as integers with + operation further on)
-//     // (so given contribution points can't depend on previous interactions and so on (exception -- interaction limiter))  
+//     // (so given contribution points can't depend on previous interactions and so on (exception -- interaction limiter))
 //     address nova;
 
 //     address interactionDecoder;
 //     address interactionLimiter;
-
 
 //     function processInteraction(
 //         address caller,
@@ -198,7 +194,7 @@
 // // contract NovaInteractionsSetupAndRuntime {
 
 // //     // static interaction weight
-// //     // non-dependent interaction weight (single tx) 
+// //     // non-dependent interaction weight (single tx)
 
 // //     uint128 internal constant _SECONDS_PER_ANNUM = 60 * 60 * 24 * 30 * 12;
 
@@ -217,12 +213,10 @@
 // //         uint128 lastInvocationTimestamp;
 // //     }
 
-
 // //     mapping(bytes32 => TInteractionSetupData) internal _setupDataByHash;
 // //     mapping(bytes32 => TInteractionProcessData) internal _processDataByHash;
 // //     mapping(address => uint128) internal _pendingScoreBySender;
 // //     mapping(bytes24 => address) internal _callArgsDecoderByTarget;
-
 
 // //     function calcInteractionHash(
 // //         address targetContract,
@@ -231,7 +225,7 @@
 // //     )
 // //         public
 // //         view
-// //         returns(bytes32) 
+// //         returns(bytes32)
 // //     {
 // //         address decoder = _callArgsDecoderByTarget[bytes24(abi.encodePacked(targetContract, targetSelector))];
 // //         if (decoder == address(0)) {
@@ -243,10 +237,8 @@
 // //             );
 // //         }
 // //         uint128 scenario, uint128 weigh IInteractionCallArgsDecoder(decoder).decodeCallArgs(targetCallArgs)
-        
+
 // //     }
-
-
 
 // //     function setupInteraction(
 // //         uint128 assignedWeight,
@@ -291,7 +283,7 @@
 // //             uint128 invocationsCount = processData.invocationsCount + 1;
 // //             uint128 countToYear = invocationsCount * _SECONDS_PER_ANNUM / (uint128(block.timestamp) - setupData.processingEnabledAt);
 // //             if (countToYear > setupData.invocationsCountAnnualThreshold) {
-// //                 // raise 
+// //                 // raise
 // //                 revert();
 // //             }
 // //             if (processData.lastInvocationTimestamp != 0 && uint128(block.timestamp) - processData.lastInvocationTimestamp < setupData.cooldownDuration) {

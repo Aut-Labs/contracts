@@ -31,7 +31,9 @@ interface IModuleRegistry {
      * @param metadataURI the metadata URI for the module being added
      * @return the ID of the newly added module definition
      */
-    function addModuleDefinition(string calldata metadataURI) external returns (uint256);
+    function addModuleDefinition(
+        string calldata metadataURI
+    ) external returns (uint256);
 
     /**
      * @notice Returns an array of all module definitions in the registry
@@ -44,7 +46,9 @@ interface IModuleRegistry {
      * @param moduleID the ID of the module
      * @return the ModuleDefinition struct for the given module ID
      */
-    function getModuleById(uint256 moduleID) external view returns (ModuleDefinition memory);
+    function getModuleById(
+        uint256 moduleID
+    ) external view returns (ModuleDefinition memory);
 
     /**
      * @notice Updates the metadata URI for a given module ID

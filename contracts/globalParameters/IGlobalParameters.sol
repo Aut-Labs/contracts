@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 interface IGlobalParameters {
@@ -26,23 +26,23 @@ interface IGlobalParameters {
     event CredibleNeutrality6ExpUnstaged();
     event CredibleNeutrality6ExpCommitted();
 
-    function steepnessDegree3Exp() external view returns(uint16);
-    function penaltyFactor3Exp() external view returns(uint16);
-    function periodDuration() external view returns(uint32);
-    function constrainingFactor6Exp() external view returns(uint32);
-    function credibleNeutrality6Exp() external view returns(uint32);
+    function steepnessDegree3Exp() external view returns (uint16);
+    function penaltyFactor3Exp() external view returns (uint16);
+    function periodDuration() external view returns (uint32);
+    function constrainingFactor6Exp() external view returns (uint32);
+    function credibleNeutrality6Exp() external view returns (uint32);
 
-    function steepnessDegree3ExpStaged() external view returns(uint16);
-    function penaltyFactor3ExpStaged() external view returns(uint16);
-    function periodDurationStaged() external view returns(uint32);
-    function constrainingFactor6ExpStaged() external view returns(uint32);
-    function credibleNeutrality6ExpStaged() external view returns(uint32);
+    function steepnessDegree3ExpStaged() external view returns (uint16);
+    function penaltyFactor3ExpStaged() external view returns (uint16);
+    function periodDurationStaged() external view returns (uint32);
+    function constrainingFactor6ExpStaged() external view returns (uint32);
+    function credibleNeutrality6ExpStaged() external view returns (uint32);
 
-    function steepnessDegree3ExpExpiresAt() external view returns(uint64);
-    function penaltyFactor3ExpExpiresAt() external view returns(uint64);
-    function periodDurationExpiresAt() external view returns(uint64);
-    function constrainingFactor6ExpExpiresAt() external view returns(uint64);
-    function credibleNeutrality6ExpExpiresAt() external view returns(uint64);
+    function steepnessDegree3ExpExpiresAt() external view returns (uint64);
+    function penaltyFactor3ExpExpiresAt() external view returns (uint64);
+    function periodDurationExpiresAt() external view returns (uint64);
+    function constrainingFactor6ExpExpiresAt() external view returns (uint64);
+    function credibleNeutrality6ExpExpiresAt() external view returns (uint64);
 
     function stageSteepnessDegree3Exp(uint16) external;
     function stagePenaltyFactor3Exp(uint16) external;

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import {INova} from "../nova/INova.sol";
@@ -23,7 +23,10 @@ abstract contract AutIDUtils {
     }
 
     function _revertForInvalidCommitment(uint256 commitment) internal pure {
-        if (!(commitment > MIN_GLOBAL_COMMITMENT && commitment < MAX_GLOBAL_COMMITMENT)) {
+        if (
+            !(commitment > MIN_GLOBAL_COMMITMENT &&
+                commitment < MAX_GLOBAL_COMMITMENT)
+        ) {
             revert InvalidCommitment();
         }
     }
@@ -32,14 +35,14 @@ abstract contract AutIDUtils {
         bytes memory username = bytes(username_);
         uint256 i;
         for (; i != username.length; ++i) {
-            if (!(
+            if (
                 // 'a' <= ... <= 'z'
-                (username[i] >= 0x61 && username[i] <= 0x7A) || 
                 // '0' <= ... <= '9'
-                (username[i] >= 0x30 && username[i] <= 0x39) ||
                 // '-' == ...
-                username[i] == 0x2D
-            )) {
+                !((username[i] >= 0x61 && username[i] <= 0x7A) ||
+                    (username[i] >= 0x30 && username[i] <= 0x39) ||
+                    username[i] == 0x2D)
+            ) {
                 revert InvalidUsername();
             }
         }
@@ -48,13 +51,20 @@ abstract contract AutIDUtils {
         }
     }
 
-    function _revertForUncheckedNova(address novaRegistry_, address nova) internal view {
+    function _revertForUncheckedNova(
+        address novaRegistry_,
+        address nova
+    ) internal view {
         if (!INovaRegistry(novaRegistry_).checkNova(nova)) {
             revert UncheckedNova();
         }
     }
 
-    function _revertForCanNotJoinNova(address nova, address account, uint256 role) internal view {
+    function _revertForCanNotJoinNova(
+        address nova,
+        address account,
+        uint256 role
+    ) internal view {
         if (!INova(nova).canJoin(account, role)) {
             revert CanNotJoinNova();
         }
@@ -67,7 +77,7 @@ abstract contract AutIDUtils {
         if (INova(nova).commitment() > declaredCommitment) {
             revert MinCommitmentNotReached();
         }
-    } 
+    }
 
     function _revertForInvalidTokenId(uint256 tokenId) internal pure {
         if (tokenId == 0) {

@@ -1,4 +1,4 @@
- // SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
@@ -53,10 +53,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint256 market_,
         uint256 commitment_,
         string memory metadataUri_
-    )
-        external 
-        initializer 
-    {
+    ) external initializer {
         _setMaskPosition(deployer, ADMIN_MASK_POSITION);
         /// @custom:sdk-legacy-interface-compatibility
         admins.push(deployer);
@@ -82,13 +79,13 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
         // onboardingAddress allowed to be zero
     }
-    
+
     /// @custom:sdk-legacy-interface-compatibility
-    function getUrls() external view returns(string[] memory) {
+    function getUrls() external view returns (string[] memory) {
         return _urls;
     }
 
-    function isUrlListed(string memory url) external view returns(bool) {
+    function isUrlListed(string memory url) external view returns (bool) {
         return _urlHashIndex[keccak256(abi.encodePacked(url))] != 0;
     }
 
@@ -127,7 +124,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         }
     }
 
-    function canJoin(address who, uint256 role) public view returns(bool) {
+    function canJoin(address who, uint256 role) public view returns (bool) {
         if (roles[who] != 0) {
             return false;
         }
@@ -171,11 +168,11 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         emit AdminRenounced(from);
     }
 
-    function isMember(address who) public view returns(bool) {
+    function isMember(address who) public view returns (bool) {
         return _checkMaskPosition(who, MEMBER_MASK_POSITION);
     }
 
-    function isAdmin(address who) public view returns(bool) {
+    function isAdmin(address who) public view returns (bool) {
         return _checkMaskPosition(who, ADMIN_MASK_POSITION);
     }
 
@@ -211,7 +208,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         if (_urlHashIndex[urlHash] == 0) {
             _urlHashIndex[urlHash] = length + 1;
             _urls.push(url);
-            
+
             emit UrlAdded(url);
         }
 
@@ -249,8 +246,11 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
         emit AdminGranted(who);
     }
-    
-    function _checkMaskPosition(address who, uint8 maskPosition) internal view returns(bool) {
+
+    function _checkMaskPosition(
+        address who,
+        uint8 maskPosition
+    ) internal view returns (bool) {
         return (accountMasks[who] & (1 << maskPosition)) != 0;
     }
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 interface IAllowlist {
@@ -22,4 +22,3 @@ interface IAllowlist {
     function isOwner(address subject) external view returns (bool);
     function isAllowListed(address subject) external view returns (bool);
 }
-

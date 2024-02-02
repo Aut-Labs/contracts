@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 abstract contract NovaUtils {
@@ -26,7 +26,9 @@ abstract contract NovaUtils {
         }
     }
 
-    function _revertForInvalidMetadataUri(string memory metadataUri_) internal pure {
+    function _revertForInvalidMetadataUri(
+        string memory metadataUri_
+    ) internal pure {
         if (bytes(metadataUri_).length == 0) {
             revert InvalidMetadataUri();
         }

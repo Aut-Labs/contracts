@@ -1,4 +1,4 @@
 # To Do
 
-- strict compiler version (8.21? 8.23?)
+- strict compiler version (8.23)
 - 
