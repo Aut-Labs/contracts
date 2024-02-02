@@ -7,7 +7,6 @@ import {NovaUtils} from "./NovaUtils.sol";
 import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 
-// todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
@@ -128,9 +127,15 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     function canJoin(address who, uint256 role) public view returns(bool) {
+        // already joined
         if (roles[who] != 0) {
             return false;
         }
+        // invited admins are able to bypass onboarding
+        if (isAdmin(who) && !isMember(who)) {
+            return true;
+        }
+        // check onboarding, if configured
         if (onboarding != address(0)) {
             if (OnboardingModule(onboarding).isActive()) {
                 return OnboardingModule(onboarding).isOnboarded(who, role);
