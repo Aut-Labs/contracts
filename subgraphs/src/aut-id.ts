@@ -1,7 +1,7 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
   NovaJoined,
   RecordCreated,
+  TokenMetadataUpdated
   // CommitmentUpdated,
   // MetadataUriSet,
   // NovaWithdrawn,
@@ -52,15 +52,18 @@ export function handleNovaJoined(event: NovaJoined): void {
 //   }
 // }
 
-// export function handleMetadataUriSet(event: MetadataUriSet): void {
-//   let id = event.params.member.toHexString();
-//   let autID = AutID.load(id);
-
-//   if (autID) {
-//     autID.metadataUri = event.params.metadataUri;
-//     autID.save();
-//   }
-// }
+export function handleTokenMetadataUpdated(event: TokenMetadataUpdated): void {
+  let txFrom = event.transaction.from; // novaAddress
+  
+  if (txFrom) {
+    let id = txFrom.toHexString();
+    let autID = AutID.load(id);
+    if (autID) {
+      autID.metadataUri = event.params.uri;
+      autID.save();
+    }
+  }
+}
 
 // export function handleNovaWithdrawn(event: NovaWithdrawn): void {
 //   let id = event.params.member.toHexString();
