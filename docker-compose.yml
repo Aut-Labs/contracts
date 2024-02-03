@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     env_file:
-      - dev.env
+      - .env
     volumes:
       - ./volumes/out:/usr/src/app/out:wo
       - type: bind

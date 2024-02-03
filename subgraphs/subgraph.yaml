@@ -6,8 +6,8 @@ dataSources:
     name: AutID
     network: mumbai
     source:
-      # address: "0x69ea8728A82A1f260b756a048A2B762165B406Ad"
-      startBlock: 45087145
+      address: "0x0F035777B4185EdF877cc35f236459Ddd6A8CF62"
+      startBlock: 45470506
       abi: AutID
     mapping:
       kind: ethereum/events
@@ -23,6 +23,8 @@ dataSources:
           handler: handleRecordCreated
         - event: NovaJoined(address,uint256,uint256,address)
           handler: handleNovaJoined
+        - event: TokenMetadataUpdated(uint256,address,string)
+          handler: handleTokenMetadataUpdated
         # - event: CommitmentUpdated(address,address,uint256)
         #   handler: handleCommitmentUpdated
         # - event: NovaWithdrawn(address,address)
@@ -32,9 +34,9 @@ dataSources:
     name: NovaRegistry
     network: mumbai
     source:
-      # address: "0xC6990D967D0969428E745C5599610b09609c05EE"
+      address: "0x741e75061183A3AB5d32910892A660f124D60A1b"
       abi: NovaRegistry
-      startBlock: 45087145
+      startBlock: 45470506
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -53,7 +55,7 @@ dataSources:
     network: mumbai
     source:
       abi: Nova
-      startBlock: 45087145
+      startBlock: 45470506
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
