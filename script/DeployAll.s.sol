@@ -67,15 +67,18 @@ contract DeployAll is Script {
         );
 
         IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
+        address allowlistImpl = address(new Allowlist());
+        INovaRegistry(novaRegistryProxy).setAllowlistAddress(allowlistImpl);
         console.log("run -- done");
 
         // todo: convert to helper function
         string memory filename = "deployments.txt";
-        TNamedAddress[4] memory na;
+        TNamedAddress[5] memory na;
         na[0] = TNamedAddress({name: "globalParametersProxy", target: globalParametersProxy});
         na[1] = TNamedAddress({name: "autIDProxy", target: autIdProxy});
         na[2] = TNamedAddress({name: "novaRegistryProxy", target: novaRegistryProxy});
         na[3] = TNamedAddress({name: "pluginRegistryProxy", target: pluginRegistryProxy});
+        na[4] = TNamedAddress({name: "allowlist", target: allowlistImpl});
         vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
         for (uint256 i = 0; i != na.length; ++i) {
             vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));

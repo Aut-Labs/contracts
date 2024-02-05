@@ -21,4 +21,6 @@ interface INovaRegistry {
     function listUserNovas(
         address user
     ) external view returns (address[] memory);
+
+    function setAllowlistAddress(address) external;
 }

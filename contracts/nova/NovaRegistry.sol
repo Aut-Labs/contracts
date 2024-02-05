@@ -24,6 +24,7 @@ contract NovaRegistry is
         uint256 commitment,
         string metadata
     );
+    event AllowlistSet(address allowlist);
 
     // just for interface compatibility
     // actually there is no need to store it in the contract
@@ -134,6 +135,8 @@ contract NovaRegistry is
     function setAllowlistAddress(address newAllowlist) external onlyOwner {
         // inactive, if set to `address(0)`
         allowlist = IAllowlist(newAllowlist);
+
+        emit AllowlistSet(newAllowlist);
     }
 
     /// @dev transfer beacon ownership (hopefuly to a new and better-implemented registry)
