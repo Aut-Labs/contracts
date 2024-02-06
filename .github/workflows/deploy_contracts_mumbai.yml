@@ -25,7 +25,10 @@ jobs:
           node-version: 16.14
       
       - name: build node modules
-        run: yarn install --non-interactive 
+        run: yarn install --non-interactive
+
+      - name: lint contracts
+        run: yarn prettier:check
 
       - name: install foundry
         uses: foundry-rs/foundry-toolchain@v1

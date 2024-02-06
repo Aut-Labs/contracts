@@ -2,18 +2,8 @@
 pragma solidity ^0.8.20;
 
 interface IAutID {
-    event RecordCreated(
-        uint256 tokenId,
-        address account,
-        string username,
-        string uri
-    );
-    event NovaJoined(
-        address account,
-        uint256 role,
-        uint256 commitment,
-        address nova
-    );
+    event RecordCreated(uint256 tokenId, address account, string username, string uri);
+    event NovaJoined(address account, uint256 role, uint256 commitment, address nova);
     event NovaRegistrySet(address);
     event LocalReputationSet(address);
     event TokenMetadataUpdated(uint256 tokenId, address account, string uri);
@@ -27,16 +17,12 @@ interface IAutID {
     /// @notice Retrieve AutID NFT tokenId for the given holder username
     /// @param usernameBytes32 AutID NFT holder username (converted to `bytes32`)
     /// @return tokenId AutID NFT tokenId
-    function tokenIdForUsername(
-        bytes32 usernameBytes32
-    ) external view returns (uint256 tokenId);
+    function tokenIdForUsername(bytes32 usernameBytes32) external view returns (uint256 tokenId);
 
     /// @notice Retrieve AutID NFT tokenId for the given holder address
     /// @param account AutID NFT holder address
     /// @return tokenId AutID NFT tokenId
-    function tokenIdForAccount(
-        address account
-    ) external view returns (uint256 tokenId);
+    function tokenIdForAccount(address account) external view returns (uint256 tokenId);
 
     /// @notice Set NovaRegistry contract address
     function setNovaRegistry(address) external;

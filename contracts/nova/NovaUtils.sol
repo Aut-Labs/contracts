@@ -26,9 +26,7 @@ abstract contract NovaUtils {
         }
     }
 
-    function _revertForInvalidMetadataUri(
-        string memory metadataUri_
-    ) internal pure {
+    function _revertForInvalidMetadataUri(string memory metadataUri_) internal pure {
         if (bytes(metadataUri_).length == 0) {
             revert InvalidMetadataUri();
         }

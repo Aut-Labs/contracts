@@ -22,9 +22,7 @@ contract Allowlist is IAllowlist {
     /////////// Modifiers
     //////////////////////////////////////
     modifier isSenderOwner() {
-        if (
-            msg.sig == this.addToAllowlist.selector && isAllowListed[msg.sender]
-        ) {
+        if (msg.sig == this.addToAllowlist.selector && isAllowListed[msg.sender]) {
             if (plusOne[msg.sender] != address(0)) revert AlreadyPlusOne();
             _;
         } else {
@@ -59,9 +57,7 @@ contract Allowlist is IAllowlist {
 
     //// @notice adds addresses to allowlist if sender is owner
     //// @param addrsToAdd_ addresses to add
-    function addBatchToAllowlist(
-        address[] memory addrsToAdd_
-    ) external isSenderOwner {
+    function addBatchToAllowlist(address[] memory addrsToAdd_) external isSenderOwner {
         uint256 i;
         for (i; i < addrsToAdd_.length; ) {
             unchecked {
@@ -75,9 +71,7 @@ contract Allowlist is IAllowlist {
 
     //// @notice removes addresses from allowlist if sender is owner
     //// @param addrs_ addresses to remove
-    function removeBatchFromAllowlist(
-        address[] memory addrs_
-    ) external isSenderOwner {
+    function removeBatchFromAllowlist(address[] memory addrs_) external isSenderOwner {
         uint256 i;
         for (i; i < addrs_.length; ) {
             isAllowListed[addrs_[i]] = false;
@@ -104,7 +98,6 @@ contract Allowlist is IAllowlist {
     /// @notice checks if subject can allowlist another address. It can do so if owner or on allowlist and not already allowlisted another address
     /// @param subject address to check if it can allowlist
     function canAllowList(address subject) external view returns (bool) {
-        return (isOwner[subject] ||
-            (isAllowListed[subject] && (plusOne[subject] == address(0))));
+        return (isOwner[subject] || (isAllowListed[subject] && (plusOne[subject] == address(0))));
     }
 }
