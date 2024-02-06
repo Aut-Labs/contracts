@@ -23,10 +23,7 @@ abstract contract AutIDUtils {
     }
 
     function _revertForInvalidCommitment(uint256 commitment) internal pure {
-        if (
-            !(commitment > MIN_GLOBAL_COMMITMENT &&
-                commitment < MAX_GLOBAL_COMMITMENT)
-        ) {
+        if (!(commitment > MIN_GLOBAL_COMMITMENT && commitment < MAX_GLOBAL_COMMITMENT)) {
             revert InvalidCommitment();
         }
     }
@@ -51,29 +48,19 @@ abstract contract AutIDUtils {
         }
     }
 
-    function _revertForUncheckedNova(
-        address novaRegistry_,
-        address nova
-    ) internal view {
+    function _revertForUncheckedNova(address novaRegistry_, address nova) internal view {
         if (!INovaRegistry(novaRegistry_).checkNova(nova)) {
             revert UncheckedNova();
         }
     }
 
-    function _revertForCanNotJoinNova(
-        address nova,
-        address account,
-        uint256 role
-    ) internal view {
+    function _revertForCanNotJoinNova(address nova, address account, uint256 role) internal view {
         if (!INova(nova).canJoin(account, role)) {
             revert CanNotJoinNova();
         }
     }
 
-    function _revertForMinCommitmentNotReached(
-        address nova,
-        uint256 declaredCommitment
-    ) internal view {
+    function _revertForMinCommitmentNotReached(address nova, uint256 declaredCommitment) internal view {
         if (INova(nova).commitment() > declaredCommitment) {
             revert MinCommitmentNotReached();
         }

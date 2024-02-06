@@ -188,10 +188,7 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
         _checkOwner();
         uint64 delayedUntil = constrainingFactor6ExpExpiresAt;
         if (delayedUntil == 0) {
-            revert UnstageFailed(
-                "constrainingFactor6Exp",
-                "nothing to unstage"
-            );
+            revert UnstageFailed("constrainingFactor6Exp", "nothing to unstage");
         }
         if (uint64(block.timestamp) > delayedUntil) {
             revert UnstageFailed("constrainingFactor6Exp", "too late");

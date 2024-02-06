@@ -19,10 +19,7 @@ interface OnboardingModule is IModule {
     /// @param member The address for whom the check is made
     /// @param role The role for which the member is checked
     /// @return Returns bool, true if the member is onboarded, false - otherwise
-    function isOnboarded(
-        address member,
-        uint256 role
-    ) external view returns (bool);
+    function isOnboarded(address member, uint256 role) external view returns (bool);
 
     /* 
         The onboard function, marks a member of the community as onboarded. 

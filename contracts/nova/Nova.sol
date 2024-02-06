@@ -247,10 +247,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         emit AdminGranted(who);
     }
 
-    function _checkMaskPosition(
-        address who,
-        uint8 maskPosition
-    ) internal view returns (bool) {
+    function _checkMaskPosition(address who, uint8 maskPosition) internal view returns (bool) {
         return (accountMasks[who] & (1 << maskPosition)) != 0;
     }
 

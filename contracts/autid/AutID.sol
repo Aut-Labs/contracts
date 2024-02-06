@@ -4,21 +4,21 @@ pragma solidity ^0.8.20;
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IAutID} from "./IAutID.sol";
 
-import {ERC721URIStorageUpgradeable, ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+import {
+    ERC721URIStorageUpgradeable,
+    ERC721Upgradeable
+} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {ERC2771ContextUpgradeable, ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
+import {
+    ERC2771ContextUpgradeable,
+    ContextUpgradeable
+} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {AutIDUtils} from "./AutIDUtils.sol";
 import {INova} from "../nova/INova.sol";
 import {INovaRegistry} from "../nova/INovaRegistry.sol";
 
-contract AutID is
-    AutIDUtils,
-    ERC721URIStorageUpgradeable,
-    OwnableUpgradeable,
-    ERC2771ContextUpgradeable,
-    IAutID
-{
+contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, ERC2771ContextUpgradeable, IAutID {
     error ConflictingRecord();
     error UntransferableToken();
 
@@ -30,9 +30,7 @@ contract AutID is
     mapping(address => uint256) public tokenIdForAccount;
     mapping(address => uint64) public mintedAt;
 
-    constructor(
-        address trustedForwarder_
-    ) ERC2771ContextUpgradeable(trustedForwarder_) {}
+    constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
     function nextTokenId() external view returns (uint256) {
         return _tokenId + 1;
@@ -98,38 +96,23 @@ contract AutID is
         _joinNova(account, role, commitment, nova);
     }
 
-    function listUserNovas(
-        address user
-    ) external view returns (address[] memory) {
+    function listUserNovas(address user) external view returns (address[] memory) {
         return INovaRegistry(novaRegistry).listUserNovas(user);
     }
 
-    function userNovaRole(
-        address nova,
-        address user
-    ) external view returns (uint256) {
+    function userNovaRole(address nova, address user) external view returns (uint256) {
         return INova(nova).roles(user);
     }
 
-    function userNovaCommitmentLevel(
-        address nova,
-        address user
-    ) external view returns (uint256) {
+    function userNovaCommitmentLevel(address nova, address user) external view returns (uint256) {
         return INova(nova).commitmentLevels(user);
     }
 
-    function userNovaJoinedAt(
-        address nova,
-        address user
-    ) external view returns (uint256) {
+    function userNovaJoinedAt(address nova, address user) external view returns (uint256) {
         return INova(nova).joinedAt(user);
     }
 
-    function transferFrom(
-        address,
-        address,
-        uint256
-    ) public pure override(ERC721Upgradeable, IERC721) {
+    function transferFrom(address, address, uint256) public pure override(ERC721Upgradeable, IERC721) {
         revert UntransferableToken();
     }
 
@@ -153,12 +136,7 @@ contract AutID is
         _joinNova(account, role, commitment, nova);
     }
 
-    function _joinNova(
-        address account,
-        uint256 role,
-        uint256 commitment,
-        address nova
-    ) internal {
+    function _joinNova(address account, uint256 role, uint256 commitment, address nova) internal {
         address novaRegistryAddress = novaRegistry;
         _revertForZeroAddress(novaRegistryAddress);
         _revertForZeroAddress(nova);
@@ -172,19 +150,13 @@ contract AutID is
         emit NovaJoined(account, role, commitment, nova);
     }
 
-    function _createRecord(
-        address account,
-        string memory username_,
-        string memory optionalURI
-    ) internal {
+    function _createRecord(address account, string memory username_, string memory optionalURI) internal {
         _revertForInvalidUsername(username_);
         bytes32 username;
         assembly {
             username := mload(add(username_, 32))
         }
-        if (
-            tokenIdForUsername[username] != 0 || tokenIdForAccount[account] != 0
-        ) {
+        if (tokenIdForUsername[username] != 0 || tokenIdForAccount[account] != 0) {
             revert ConflictingRecord();
         }
 
@@ -197,21 +169,11 @@ contract AutID is
         emit RecordCreated(tokenId, account, username_, optionalURI);
     }
 
-    function _msgSender()
-        internal
-        view
-        override(ERC2771ContextUpgradeable, ContextUpgradeable)
-        returns (address)
-    {
+    function _msgSender() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (address) {
         return ERC2771ContextUpgradeable._msgSender();
     }
 
-    function _msgData()
-        internal
-        view
-        override(ERC2771ContextUpgradeable, ContextUpgradeable)
-        returns (bytes calldata)
-    {
+    function _msgData() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (bytes calldata) {
         return ERC2771ContextUpgradeable._msgData();
     }
 
