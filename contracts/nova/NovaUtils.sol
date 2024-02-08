@@ -7,6 +7,13 @@ abstract contract NovaUtils {
     error InvalidParameter();
     error InvalidCommitment();
     error InvalidMetadataUri();
+    error AdminSelfRenounce();
+
+    function _revertForAdminSelfRenounce(address sender, address from) internal pure {
+        if (sender == from) {
+            revert AdminSelfRenounce();
+        }
+    }
 
     function _revertForZeroAddress(address who) internal pure {
         if (who == address(0)) {
