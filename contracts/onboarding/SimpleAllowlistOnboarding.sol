@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract SimpleAllowlistOnboarding is IRoleOnboarding, Ownable {
     mapping(address => bool) internal _allowset;
 
-    constructor() Ownable(msg.sender) {}
+    constructor(address initialOwner) Ownable(initialOwner) {}
 
     function isOnboarded(address who) external view returns (bool) {
         return _allowset[who];
