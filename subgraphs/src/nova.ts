@@ -1,5 +1,10 @@
 import { NovaCreated } from "../generated/NovaRegistry/NovaRegistry";
-import { CommitmentSet, MarketSet, MetadataUriSet, ArchetypeSet } from "../generated/Nova/Nova";
+import {
+  CommitmentSet,
+  MarketSet,
+  MetadataUriSet,
+  ArchetypeSet,
+} from "../generated/Nova/Nova";
 import { NovaDAO } from "../generated/schema";
 
 export function handleNovaCreated(event: NovaCreated): void {
@@ -67,7 +72,7 @@ export function handleArchetypeSet(event: ArchetypeSet): void {
   let txTo = event.transaction.to;
 
   if (txTo) {
-    let id= txTo.toHexString();
+    let id = txTo.toHexString();
     let nova = NovaDAO.load(id);
 
     if (nova) {
