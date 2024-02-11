@@ -7,8 +7,7 @@ nohup anvil --port "${RPC_PORT}" \
     --accounts 1 \
     1>&2 &
 
-# todo: until $(curl ...) healthcheck
-sleep 1
+while ! nc -z localhost ${RPC_PORT}; do sleep 1; done;
 
 forge script ./script/DeployAll.s.sol --rpc-url "http://localhost:${RPC_PORT}" \
     --private-key "${PVK_A1}" \
