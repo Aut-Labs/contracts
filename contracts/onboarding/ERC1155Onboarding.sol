@@ -5,33 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Multicall.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
-
-interface IOnboarding {
-    function isOnboarded(address who, uint256 role) external view returns (bool);
-}
-
-interface IRoleOnboarding {
-    function isOnboarded(address who) external view returns (bool);
-}
-
-contract BasicScoreOnboarding is IOnboarding {
-    address[] public roles;
-
-    constructor(address[] memory byRole) {
-        for (uint256 i; i != byRole.length; ++i) {
-            require(byRole[i] != address(0), "zero address");
-            roles.push(byRole[i]);
-        }
-    }
-
-    function isOnboarded(address who, uint256 roleId) external view returns (bool) {
-        address callee = roles[roleId];
-        if (roleId < roles.length) {
-            return IRoleOnboarding(callee).isOnboarded(who);
-        }
-        return false;
-    }
-}
+import "./IOnboarding.sol";
 
 interface IERC1155OnboardingScoreCalculator {
     function calcScoreStatic(
