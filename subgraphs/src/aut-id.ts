@@ -1,7 +1,7 @@
 import {
   NovaJoined,
   RecordCreated,
-  TokenMetadataUpdated
+  TokenMetadataUpdated,
   // CommitmentUpdated,
   // MetadataUriSet,
   // NovaWithdrawn,
@@ -54,7 +54,7 @@ export function handleNovaJoined(event: NovaJoined): void {
 
 export function handleTokenMetadataUpdated(event: TokenMetadataUpdated): void {
   let txFrom = event.transaction.from; // novaAddress
-  
+
   if (txFrom) {
     let id = txFrom.toHexString();
     let autID = AutID.load(id);

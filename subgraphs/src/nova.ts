@@ -1,5 +1,10 @@
 import { NovaCreated } from "../generated/NovaRegistry/NovaRegistry";
-import { CommitmentSet, MarketSet, MetadataUriSet } from "../generated/Nova/Nova";
+import {
+  CommitmentSet,
+  MarketSet,
+  MetadataUriSet,
+  ArchetypeSet,
+} from "../generated/Nova/Nova";
 import { NovaDAO } from "../generated/schema";
 
 export function handleNovaCreated(event: NovaCreated): void {
@@ -59,6 +64,19 @@ export function handleCommitmentSet(event: CommitmentSet): void {
     if (nova) {
       nova.minCommitment = event.params.param0;
       nova.save();
+    }
+  }
+}
+
+export function handleArchetypeSet(event: ArchetypeSet): void {
+  let txTo = event.transaction.to;
+
+  if (txTo) {
+    let id = txTo.toHexString();
+    let nova = NovaDAO.load(id);
+
+    if (nova) {
+      nova.archetype = event.params.param0;
     }
   }
 }
