@@ -1,4 +1,4 @@
-type AutID @entity(immutable: true) {
+type AutID @entity(immutable: false) {
   id: ID!
   owner: Bytes! 
   tokenID: BigInt!
@@ -12,7 +12,7 @@ type AutID @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type NovaDAO @entity(immutable: true) {
+type NovaDAO @entity(immutable: false) {
   id: ID!
   deployer: Bytes!
   address: Bytes!

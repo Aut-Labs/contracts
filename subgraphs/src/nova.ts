@@ -6,6 +6,7 @@ import {
   ArchetypeSet,
 } from "../generated/Nova/Nova";
 import { NovaDAO } from "../generated/schema";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 export function handleNovaCreated(event: NovaCreated): void {
   let id = event.params.novaAddress.toHexString();
@@ -76,7 +77,7 @@ export function handleArchetypeSet(event: ArchetypeSet): void {
     let nova = NovaDAO.load(id);
 
     if (nova) {
-      nova.archetype = event.params.param0;
+      nova.archetype = new BigInt(event.params.parameter);
     }
   }
 }

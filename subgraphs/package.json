@@ -5,11 +5,11 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ aut",
-    "create-local": "graph create --node http://localhost:8020/ aut",
-    "remove-local": "graph remove --node http://localhost:8020/ aut",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 aut",
+    "create-local": "graph create --node http://localhost:8020 aut",
+    "remove-local": "graph remove --node http://localhost:8020 aut",
+    "deploy-local": "graph deploy --node http://localhost:8020 --ipfs http://localhost:5001 aut",
     "test": "graph test",
-    "run-all-local": "npm run codegen && npm run build && npm run create-local"
+    "run-all-local": "npm run codegen && npm run build && npm run create-local && npm run deploy-local"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.60.0",
