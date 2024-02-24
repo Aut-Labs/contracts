@@ -5,13 +5,13 @@ import {INova} from "../contracts/nova/INova.sol";
 import {IAutID} from "../contracts/autid/IAutID.sol";
 import {INovaRegistry} from "../contracts/nova/INovaRegistry.sol";
 import {IAllowlist} from "../contracts/utils/IAllowlist.sol";
-import {IGlobalParameters} from "../contracts/globalParameters/IGlobalParameters.sol";
+import {IGlobalParametersAlpha} from "../contracts/globalParameters/IGlobalParametersAlpha.sol";
 
 import {Nova} from "../contracts/nova/Nova.sol";
 import {AutID} from "../contracts/autid/AutID.sol";
 import {NovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {Allowlist} from "../contracts/utils/Allowlist.sol";
-import {GlobalParameters} from "../contracts/globalParameters/GlobalParameters.sol";
+import {GlobalParametersAlpha} from "../contracts/globalParameters/GlobalParametersAlpha.sol";
 import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
 
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
@@ -49,7 +49,7 @@ contract DeployAll is Script {
         address novaImpl = address(new Nova());
         address novaRegistryImpl = address(new NovaRegistry(trustedForwarder));
         address autIdImpl = address(new AutID(trustedForwarder));
-        address globalParametersImpl = address(new GlobalParameters());
+        address globalParametersImpl = address(new GlobalParametersAlpha());
         address pluginRegistryImpl = address(new PluginRegistry());
 
         address globalParametersProxy = address(new AutProxy(globalParametersImpl, owner, ""));

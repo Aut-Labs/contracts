@@ -4,10 +4,10 @@ pragma solidity ^0.8.20;
 import "hardhat/console.sol";
 
 import {IAutID} from "../../contracts/autid/IAutID.sol";
-import {IGlobalParameters} from "../../contracts/globalParameters/IGlobalParameters.sol";
+import {IGlobalParametersAlpha} from "../../contracts/globalParameters/IGlobalParametersAlpha.sol";
 import {IPluginRegistry} from "../../contracts/pluginRegistry/IPluginRegistry.sol";
 import {INovaRegistry} from "../../contracts/nova/INovaRegistry.sol";
-import {GlobalParameters} from "../../contracts/globalParameters/GlobalParameters.sol";
+import {GlobalParametersAlpha} from "../../contracts/globalParameters/GlobalParametersAlpha.sol";
 import {AutID} from "../../contracts/autid/AutID.sol";
 import {NovaRegistry} from "../../contracts/nova/NovaRegistry.sol";
 import {Nova} from "../../contracts/nova/Nova.sol";
@@ -31,16 +31,16 @@ abstract contract DeployHelper {
 }
 
 abstract contract GlobalParametersDeployHelper is DeployHelper {
-    IGlobalParameters private _globalParameters;
+    IGlobalParametersAlpha private _globalParameters;
 
-    function globalParameters() internal view returns (IGlobalParameters) {
+    function globalParameters() internal view returns (IGlobalParametersAlpha) {
         return _globalParameters;
     }
 
     function deploy() internal virtual override {
-        address impl = address(new GlobalParameters());
+        address impl = address(new GlobalParametersAlpha());
         address proxy = address(new AutProxy(impl, owner(), ""));
-        _globalParameters = IGlobalParameters(proxy);
+        _globalParameters = IGlobalParametersAlpha(proxy);
     }
 }
 
