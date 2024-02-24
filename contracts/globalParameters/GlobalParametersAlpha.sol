@@ -2,9 +2,9 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "./IGlobalParameters.sol";
+import "./IGlobalParametersAlpha.sol";
 
-contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
+contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
     // slot 1
     uint16 public steepnessDegree3Exp;
     uint16 public steepnessDegree3ExpStaged;
@@ -30,6 +30,14 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
     uint64 public constrainingFactor6ExpExpiresAt;
     uint64 public credibleNeutrality6ExpExpiresAt;
     // slot 3
+
+    uint256 public localReputationForPeriod0;
+    uint256 public localReputationForPeriod0Staged;
+    uint256 public prestigeForPeriod0;
+    uint256 public prestigeForPeriod0Staged;
+
+    uint64 public localReputationForPeriod0ExpiresAt;
+    uint64 public prestigeForPeriod0ExpiresAt;
 
     constructor() {}
 
@@ -245,7 +253,7 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
     function commitCredibleNeutrality6Exp() external {
         uint64 delayedUntil = credibleNeutrality6ExpExpiresAt;
         if (delayedUntil == 0) {
-            revert CommitFailed("credibleNeutrality6Exp", "nothing staged");
+            revert CommitFailed("credibleNeutrality6Exp", "nothing stage");
         }
         if (uint64(block.timestamp) <= delayedUntil) {
             revert CommitFailed("credibleNeutrality6Exp", "delay not expired");
@@ -257,5 +265,73 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
         emit CredibleNeutrality6ExpCommitted();
     }
 
-    uint256[47] private __gap;
+
+    // function stageCredibleNeutrality6Exp(uint32 valueToStage) external {
+    //     _checkOwner();
+    //     if (credibleNeutrality6ExpExpiresAt != 0) {
+    //         revert StageFailed("credibleNeutrality6Exp", "already staged");
+    //     }
+
+    //     credibleNeutrality6ExpStaged = valueToStage;
+    //     uint64 delayedUntil = uint64(block.timestamp) + periodDuration;
+    //     credibleNeutrality6ExpExpiresAt = delayedUntil;
+
+    //     emit CredibleNeutrality6ExpStaged(valueToStage, delayedUntil);
+    // }
+
+    function stagePrestigeForPeriod0(uint256 valueToStage) external {
+        _checkOwner();
+        if (prestigeForPeriod0ExpiresAt != 0) {
+            revert StageFailed("prestigeForPeriod0", "already staged");
+        }
+
+        prestigeForPeriod0Staged = valueToStage;
+        uint64 delayedUntil = uint64(block.timestamp) + periodDuration;
+
+        emit PrestigeForPeriod0Staged(valueToStage, delayedUntil);
+    }
+
+    function stageLocalReputationForPeriod0(uint256 valueToStage) external {
+        _checkOwner();
+        if (localReputationForPeriod0ExpiresAt != 0) {
+            revert StageFailed("localReputationForPeriod0", "already staged");
+        }
+
+        localReputationForPeriod0Staged = valueToStage;
+        uint64 delayedUntil = uint64(block.timestamp) + periodDuration;
+
+        emit LocalReputationForPeriod0Staged(valueToStage, delayedUntil);
+    }
+
+    function unstageLocalReputationForPeriod0() external {
+        _checkOwner();
+        uint64 delayedUntil = localReputationForPeriod0ExpiresAt;
+        if (delayedUntil == 0) {
+            revert UnstageFailed("localReputationForPeriod0", "nothing staged");
+        }
+        if (uint64(block.timestamp) > delayedUntil) {
+            revert UnstageFailed("localReputationForPeriod0", "too late");
+        }
+
+        localReputationForPeriod0ExpiresAt = 0;
+
+        emit LocalReputationForPeriod0Unstaged();
+    }
+
+    function commitLocalReputationForPeriod0() external {
+        uint64 delayedUntil = localReputationForPeriod0ExpiresAt;
+        if (delayedUntil == 0) {
+            revert CommitFailed("localReputationForPeriod0", "nothing staged");
+        }
+        if (uint64(block.timestamp) <= delayedUntil) {
+            revert CommitFailed("localReputationForPeriod0", "delay not expired");
+        }
+
+        localReputationForPeriod0 = localReputationForPeriod0Staged;
+        localReputationForPeriod0ExpiresAt = 0;
+
+        emit LocalReputationForPeriod0Committed();
+    }
+
+    uint256[42] private __gap;
 }

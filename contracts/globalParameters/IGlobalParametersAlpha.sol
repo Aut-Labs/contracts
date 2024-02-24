@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IGlobalParameters {
+interface IGlobalParametersAlpha {
     error StageFailed(string parameter, string reason);
     error UnstageFailed(string parameter, string reason);
     error CommitFailed(string parameter, string reason);
@@ -25,6 +25,14 @@ interface IGlobalParameters {
     event CredibleNeutrality6ExpStaged(uint32 valueStaged, uint64 delayedUntil);
     event CredibleNeutrality6ExpUnstaged();
     event CredibleNeutrality6ExpCommitted();
+
+    event LocalReputationForPeriod0Staged(uint256 valueStaged, uint64 delayedUntil);
+    event LocalReputationForPeriod0Unstaged();
+    event LocalReputationForPeriod0Committed();
+
+    event PrestigeForPeriod0Staged(uint256 valueStaged, uint64 delayedUntil);
+    event PrestigeForPeriod0Unstaged();
+    event PrestiveForPeriod0Committed();
 
     function steepnessDegree3Exp() external view returns (uint16);
     function penaltyFactor3Exp() external view returns (uint16);
