@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./IGlobalParametersAlpha.sol";
 
-contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
+contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
     // slot 1
     uint16 public steepnessDegree3Exp;
     uint16 public steepnessDegree3ExpStaged;
@@ -264,7 +264,6 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
 
         emit CredibleNeutrality6ExpCommitted();
     }
-
 
     // function stageCredibleNeutrality6Exp(uint32 valueToStage) external {
     //     _checkOwner();
