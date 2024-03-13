@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IGlobalParametersAlpha {
+interface IGlobalParameters {
     error StageFailed(string parameter, string reason);
     error UnstageFailed(string parameter, string reason);
     error CommitFailed(string parameter, string reason);
