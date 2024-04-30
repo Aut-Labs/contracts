@@ -24,7 +24,7 @@ services:
       GRAPH_LOG: info
       ethereum_polling_interval: 3000
     networks:
-      - mumbai
+      - amoy
   ipfs:
     image: ipfs/go-ipfs:v0.17.0
     container_name: ipfs
@@ -33,7 +33,7 @@ services:
     volumes:
       - ./volumes/ipfs:/data/ipfs
     networks:
-      - mumbai
+      - amoy
   postgres:
     image: postgres:14
     container_name: postgres
@@ -59,7 +59,7 @@ services:
     volumes:
       - ./volumes/postgres:/var/lib/postgresql/data
     networks:
-      - mumbai
+      - amoy
   pgadmin:
     image: dpage/pgadmin4:4.23
     container_name: pgadmin
@@ -75,9 +75,9 @@ services:
     depends_on:
       - postgres
     networks:
-      - mumbai
+      - amoy
 
 networks:
-  mumbai:
-    name: mumbai
+  amoy:
+    name: amoy
     external: true

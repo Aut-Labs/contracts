@@ -15,7 +15,7 @@ abstract contract NovaUtils {
     }
 
     function _revertForInvalidMarket(uint256 market_) internal pure {
-        if (market_ == 0 || market_ > 3) {
+        if (market_ == 0 || market_ > 5) {
             revert InvalidMarket();
         }
     }

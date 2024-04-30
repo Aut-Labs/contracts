@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum
     name: AutID
-    network: mumbai
+    network: polygon-amoy
     source:
-      address: "0x0F035777B4185EdF877cc35f236459Ddd6A8CF62"
-      startBlock: 45470506
+      address: "0x756c46D22E3b4321C0276B0CBA12100844eD7158"
+      startBlock: 6486436
       abi: AutID
     mapping:
       kind: ethereum/events
@@ -32,11 +32,11 @@ dataSources:
       file: ./src/aut-id.ts
   - kind: ethereum
     name: NovaRegistry
-    network: mumbai
+    network: polygon-amoy
     source:
-      address: "0x741e75061183A3AB5d32910892A660f124D60A1b"
+      address: "0x247A64058EB78CDf2cB83d19aA8d3Eb32A5273c7"
       abi: NovaRegistry
-      startBlock: 45470506
+      startBlock: 6486436
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -52,10 +52,10 @@ dataSources:
       file: ./src/nova.ts
   - kind: ethereum
     name: Nova
-    network: mumbai
+    network: polygon-amoy
     source:
       abi: Nova
-      startBlock: 45470506
+      startBlock: 6486436
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
