@@ -133,7 +133,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     }
 
     function _validateNovaDeploymentParams(uint256 market, string memory metadata, uint256 commitment) internal pure {
-        require(market > 0 && market < 4, "NovaRegistry: invalid market value");
+        require(market > 0 && market < 6, "NovaRegistry: invalid market value");
         require(bytes(metadata).length != 0, "NovaRegistry: metadata empty");
         require(commitment > 0 && commitment < 11, "NovaRegistry: invalid commitment value");
     }

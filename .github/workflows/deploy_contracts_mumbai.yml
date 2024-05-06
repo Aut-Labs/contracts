@@ -1,4 +1,4 @@
-name: build & test & deploy contracts on mumbai network
+name: build & test & deploy contracts on amoy network
 on:
   push:
     branches:
@@ -7,14 +7,14 @@ on:
       - '**.sol'
 
 env:
-  CHAIN_ID: "80001"
+  CHAIN_ID: "80002"
   FOUNDRY_PROFILE: "ci"
 
 jobs:
-  deploy-mumbai:
+  deploy-amoy:
     runs-on: ubuntu-latest
     env:
-      PVK_A1: ${{ secrets.mumbai_deployer_pk }}
+      PVK_A1: ${{ secrets.amoy_deployer_pk }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -41,8 +41,8 @@ jobs:
       - name: test contracts
         run: forge test
 
-      - name: deploy contracts to mumbai
-        run: forge script ./script/DeployAll.s.sol --rpc-url ${{ secrets.mumbai_rpc_url }} 
+      - name: deploy contracts to amoy
+        run: forge script ./script/DeployAll.s.sol --rpc-url ${{ secrets.amoy_rpc_url }} 
               --etherscan-api-key ${{ secrets.polygonscan_api_key }} 
               --private-key $PVK_A1 
               --verify

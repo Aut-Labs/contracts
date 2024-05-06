@@ -46,7 +46,7 @@ contract AutDeployedSetup is DSTest {
 
     function testDeployNovaAndCreateRecord() public {
         vm.startPrank(owner);
-        uint256 market = 1;
+        uint256 market = 4;
         string memory metadata = "novaMetadata";
         uint256 minCommitment = 5;
 

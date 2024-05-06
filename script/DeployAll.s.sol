@@ -6,7 +6,8 @@ import {IAutID} from "../contracts/autid/IAutID.sol";
 import {INovaRegistry} from "../contracts/nova/INovaRegistry.sol";
 import {IAllowlist} from "../contracts/utils/IAllowlist.sol";
 import {IGlobalParametersAlpha} from "../contracts/globalParameters/IGlobalParametersAlpha.sol";
-
+import {SimpleAllowlistOnboarding} from "../contracts/onboarding/SimpleAllowlistOnboarding.sol";
+import {BasicOnboarding} from "../contracts/onboarding/BasicOnboarding.sol";
 import {Nova} from "../contracts/nova/Nova.sol";
 import {AutID} from "../contracts/autid/AutID.sol";
 import {NovaRegistry} from "../contracts/nova/NovaRegistry.sol";
@@ -33,10 +34,9 @@ contract DeployAll is Script {
             // todo: replace 31337 by forge constant
             trustedForwarder = address(new TrustedForwarder());
             owner = vm.envAddress("A1");
-        } else if (block.chainid == 80001) {
-            trustedForwarder = 0x69015912AA33720b842dCD6aC059Ed623F28d9f7;
-            owner = 0x5D45D9C907B26EdE7848Bb9BdD4D08308983d613;
-            // owner = 0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43;
+        } else if (block.chainid == 80002) {
+            trustedForwarder = address(new TrustedForwarder());
+            owner = 0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43;
         } else {
             revert("invalid chainid");
         }
@@ -71,14 +71,28 @@ contract DeployAll is Script {
         INovaRegistry(novaRegistryProxy).setAllowlistAddress(allowlistImpl);
         console.log("run -- done");
 
+        address onboardingRole1 = address(new SimpleAllowlistOnboarding(owner));
+        address onboardingRole2 = address(new SimpleAllowlistOnboarding(owner));
+        address onboardingRole3 = address(new SimpleAllowlistOnboarding(owner));
+
+        address[] memory addresses = new address[](3);
+        addresses[0] = onboardingRole1;
+        addresses[1] = onboardingRole2;
+        addresses[2] = onboardingRole3;
+        address basicOnboarding = address(new BasicOnboarding(addresses));
+
         // todo: convert to helper function
         string memory filename = "deployments.txt";
-        TNamedAddress[5] memory na;
+        TNamedAddress[9] memory na;
         na[0] = TNamedAddress({name: "globalParametersProxy", target: globalParametersProxy});
         na[1] = TNamedAddress({name: "autIDProxy", target: autIdProxy});
         na[2] = TNamedAddress({name: "novaRegistryProxy", target: novaRegistryProxy});
         na[3] = TNamedAddress({name: "pluginRegistryProxy", target: pluginRegistryProxy});
         na[4] = TNamedAddress({name: "allowlist", target: allowlistImpl});
+        na[5] = TNamedAddress({name: "basicOnboarding", target: basicOnboarding});
+        na[6] = TNamedAddress({name: "onboardingRole1", target: onboardingRole1});
+        na[7] = TNamedAddress({name: "onboardingRole2", target: onboardingRole2});
+        na[8] = TNamedAddress({name: "onboardingRole3", target: onboardingRole3});
         vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
         for (uint256 i = 0; i != na.length; ++i) {
             vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));
