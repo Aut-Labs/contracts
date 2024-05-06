@@ -23,7 +23,7 @@ abstract contract AutIDUtils {
     }
 
     function _revertForInvalidCommitment(uint256 commitment) internal pure {
-        if (!(commitment > MIN_GLOBAL_COMMITMENT && commitment < MAX_GLOBAL_COMMITMENT)) {
+        if (!(commitment >= MIN_GLOBAL_COMMITMENT && commitment <= MAX_GLOBAL_COMMITMENT)) {
             revert InvalidCommitment();
         }
     }
@@ -61,7 +61,7 @@ abstract contract AutIDUtils {
     }
 
     function _revertForMinCommitmentNotReached(address nova, uint256 declaredCommitment) internal view {
-        if (INova(nova).commitment() > declaredCommitment) {
+        if (INova(nova).commitment() >= declaredCommitment) {
             revert MinCommitmentNotReached();
         }
     }

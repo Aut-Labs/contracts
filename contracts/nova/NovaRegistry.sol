@@ -121,9 +121,9 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     function _checkAllowlist() internal view {
         if (_msgSender() == deployerAddress || _msgSender() == upgradeableBeacon.owner()) return;
         if (address(allowlist) != address(0)) {
-            if (!allowlist.isAllowed(_msgSender())) {
-                revert IAllowlist.Unallowed();
-            }
+            // if (!allowlist.isAllowed(_msgSender())) {
+            //     revert IAllowlist.Unallowed();
+            // }
             if ((novaDeployers[_msgSender()].length != 0)) {
                 revert IAllowlist.AlreadyDeployedANova();
                 // `novaDeployers` state is not stored within allowlist,
