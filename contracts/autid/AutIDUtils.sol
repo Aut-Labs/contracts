@@ -61,7 +61,7 @@ abstract contract AutIDUtils {
     }
 
     function _revertForMinCommitmentNotReached(address nova, uint256 declaredCommitment) internal view {
-        if (INova(nova).commitment() >= declaredCommitment) {
+        if (INova(nova).commitment() > declaredCommitment) {
             revert MinCommitmentNotReached();
         }
     }
