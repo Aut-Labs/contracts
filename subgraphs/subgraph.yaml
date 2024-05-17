@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum
     name: AutID
-    network: matic
+    network: polygon-amoy
     source:
-      address: "0xA8D2eaa40C7cc0Ed6A6B0e85B50767b82715d7bD"
-      startBlock: 57002848
+      address: "0xDf8610E895094Be04A206bE2eBa16B8749799499"
+      startBlock: 6486436
       abi: AutID
     mapping:
       kind: ethereum/events
@@ -25,18 +25,14 @@ dataSources:
           handler: handleNovaJoined
         - event: TokenMetadataUpdated(uint256,address,string)
           handler: handleTokenMetadataUpdated
-        # - event: CommitmentUpdated(address,address,uint256)
-        #   handler: handleCommitmentUpdated
-        # - event: NovaWithdrawn(address,address)
-        #   handler: handleNovaWithdrawn
       file: ./src/aut-id.ts
   - kind: ethereum
     name: NovaRegistry
-    network: matic
+    network: polygon-amoy
     source:
-      address: "0xF3954e1d1152f64592E8E7ECD1c0DCca5f1de427"
+      address: "0x5f57801530CeF74703424cc5FaB09bF4F003E181"
       abi: NovaRegistry
-      startBlock: 57002848
+      startBlock: 6486436
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -52,10 +48,10 @@ dataSources:
       file: ./src/nova.ts
   - kind: ethereum
     name: Nova
-    network: matic
+    network: polygon-amoy
     source:
       abi: Nova
-      startBlock: 57002848
+      startBlock: 6486436
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
