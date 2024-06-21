@@ -6,6 +6,10 @@ import {NovaUpgradeable} from "./NovaUpgradeable.sol";
 import {NovaUtils} from "./NovaUtils.sol";
 import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
+import "../hub-contracts/HubDomainsRegistry.sol";
+import "../hub-contracts/IHubDomainsRegistry.sol";
+import "../hub-contracts/IHubDomains.sol";
+import "../hub-contracts/PublicResolver.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
@@ -31,6 +35,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     uint256 public market;
     string public metadataUri;
 
+    IHubDomainsRegistry public hubDomainsRegistry;
+
     mapping(address => uint256) public roles;
     mapping(address => uint256) public joinedAt;
     mapping(address => uint256) public commitmentLevels;
@@ -53,6 +59,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint256 market_,
         uint256 commitment_,
         string memory metadataUri_
+        address hubDomainsRegistryAddress
+
     ) external initializer {
         _setMaskPosition(deployer, ADMIN_MASK_POSITION);
         /// @custom:sdk-legacy-interface-compatibility
@@ -63,6 +71,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         pluginRegistry = pluginRegistry_;
         autID = autID_;
         novaRegistry = novaRegistry_;
+        hubDomainsRegistry = IHubDomainsRegistry(hubDomainsRegistryAddress);
     }
 
     function setMetadataUri(string memory uri) external {
@@ -174,6 +183,15 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     function isAdmin(address who) public view returns (bool) {
         return _checkMaskPosition(who, ADMIN_MASK_POSITION);
+    }
+
+    // this function registers a new .hub domain through the Nova contract.
+    // It's called when the user submits their custom domain part and metadata URI.
+    // It forwards the request to the HubDomainsRegistry.
+
+    function registerDomain(string calldata domain, string calldata metadataUri) external override {
+        hubDomainsRegistry.registerDomain(domain, metadataUri);
+        _revertForNotAdmin(msg.sender);
     }
 
     /// internal

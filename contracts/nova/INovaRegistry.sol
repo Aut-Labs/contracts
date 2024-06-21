@@ -1,6 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "../hub-contracts/IHubDomainsRegistry.sol";
+import "../hub-contracts/IHubDomains.sol";
+import "../hub-contracts/PublicResolver.sol";
+
 interface INovaRegistry {
     function checkNova(address) external view returns (bool);
 

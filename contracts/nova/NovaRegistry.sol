@@ -13,9 +13,11 @@ import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
+import {Domain} from "../hub-contracts/HubDomainsRegistry.sol";
 
 /// @title NovaRegistry
 contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
+    HubDomainsRegistry public hubDomainsRegistry;
     event NovaCreated(address deployer, address novaAddress, uint256 market, uint256 commitment, string metadata);
     event AllowlistSet(address allowlist);
 
@@ -39,6 +41,10 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         require(autIDAddr_ != address(0), "NovaRegistry: AutID address zero");
         require(novaLogic != address(0), "NovaRegistry: Nova logic address zero");
         require(pluginRegistry_ != address(0), "NovaRegistry: PluginRegistry address zero");
+  }
+    function initialize(address hubDomainsRegistryAddress) external initializer {
+                hubDomainsRegistry = HubDomainsRegistry(hubDomainsRegistryAddress);
+  }
 
         __Ownable_init(msg.sender);
 
@@ -96,6 +102,15 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         _userNovaList[member].push(nova);
         _userNovaListIds[member][nova] = position;
     }
+
+    function resolveDomain(string calldata domain) external view override returns (address) {
+        return hubDomainsRegistry.resolveDomain(domain);
+    }
+
+        function getDomainMetadata(string calldata domain) external view override returns (string memory) {
+        return hubDomainsRegistry.getDomainMetadata(domain);
+    }
+
 
     /// @dev upgrades nova beacon to the new logic contract
     function upgradeNova(address newLogic) external {
