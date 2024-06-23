@@ -1,11 +1,12 @@
 type AutID @entity(immutable: false) {
   id: ID!
-  owner: Bytes! 
+  owner: Bytes!
   tokenID: BigInt!
   username: String!
   novaAddress: Bytes
   role: BigInt
   commitment: BigInt
+  joinedNovas: [Bytes!] @default(value: [])
   metadataUri: String
   blockNumber: BigInt!
   blockTimestamp: BigInt!
