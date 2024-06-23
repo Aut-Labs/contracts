@@ -9,39 +9,39 @@ import "./IHubDomainsRegistry.sol";
 contract HubDomainsRegistry is IHubDomains, IHubDomainsRegistry, Ownable {
     struct Domain {
         string name;
-        address owner;
+        address verifier;
         string metadataUri;
     }
 
     mapping(string => Domain) private domains;
-    mapping(address => string[]) private ownerToDomains;
+    mapping(address => string[]) private verifierToDomains;
     mapping(uint256 => string) private tokenIdToDomain;
     uint256 private tokenIdCounter;
 
-    event DomainRegistered(address indexed owner, string domain, uint256 tokenId);
+    event DomainRegistered(address indexed verifier, string domain, uint256 tokenId);
 
     function registerDomain(string calldata domain, string calldata metadataUri) external override(IHubDomains, IHubDomainsRegistry) {
-        require(domains[domain].owner == address(0), "Domain already registered");
+        require(domains[domain].verifier == address(0), "Domain already registered");
         require(_isValidDomain(domain), "Invalid domain format");
 
         tokenIdCounter++;
         domains[domain] = Domain(domain, msg.sender, metadataUri);
-        ownerToDomains[msg.sender].push(domain);
+        verifierToDomains[msg.sender].push(domain);
         tokenIdToDomain[tokenIdCounter] = domain;
 
         emit DomainRegistered(msg.sender, domain, tokenIdCounter);
     }
 
     function resolveDomain(string calldata domain) external view override(IHubDomains, IHubDomainsRegistry) returns (address) {
-        return domains[domain].owner;
+        return domains[domain].verifier;
     }
 
     function getDomainMetadata(string calldata domain) external view override(IHubDomains, IHubDomainsRegistry) returns (string memory) {
         return domains[domain].metadataUri;
     }
 
-    function ownerOf(uint256 tokenId) external view override(IHubDomains, IHubDomainsRegistry) returns (address owner) {
-        return domains[tokenIdToDomain[tokenId]].owner;
+    function verifierOf(uint256 tokenId) external view override(IHubDomains, IHubDomainsRegistry) returns (address verifier) {
+        return domains[tokenIdToDomain[tokenId]].verifier;
     }
 
     function _isValidDomain(string memory domain) internal pure returns (bool) {
