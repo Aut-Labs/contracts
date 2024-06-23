@@ -23,6 +23,7 @@ import "forge-std/Script.sol";
 contract DeployAll is Script {
     address public trustedForwarder;
     address public owner;
+    uint256 public privateKey;
 
     struct TNamedAddress {
         address target;
@@ -30,13 +31,14 @@ contract DeployAll is Script {
     }
 
     function setUp() public {
-        if (block.chainid == 31337) {
-            // todo: replace 31337 by forge constant
+        if (block.chainid == 137) {
             trustedForwarder = address(new TrustedForwarder());
-            owner = vm.envAddress("A1");
+            owner = vm.envAddress("MAINNET_OWNER_ADDRESS");
+            privateKey = vm.envUint("MAINNET_PRIVATE_KEY");
         } else if (block.chainid == 80002) {
             trustedForwarder = address(new TrustedForwarder());
-            owner = 0x09Ed23BB6F9Ccc3Fd9b3BC4C859D049bf4AB4D43;
+            owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
+            privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
         } else {
             revert("invalid chainid");
         }
@@ -44,7 +46,7 @@ contract DeployAll is Script {
     }
 
     function run() public {
-        vm.startBroadcast(vm.envUint("PVK_A1"));
+        vm.startBroadcast(privateKey);
 
         address novaImpl = address(new Nova());
         address novaRegistryImpl = address(new NovaRegistry(trustedForwarder));
