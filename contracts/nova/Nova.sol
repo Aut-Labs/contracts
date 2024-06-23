@@ -190,7 +190,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     // It forwards the request to the HubDomainsRegistry.
 
     function registerDomain(string calldata domain, string calldata metadataUri) external override {
-        hubDomainsRegistry.registerDomain(domain, metadataUri);
+        hubDomainsRegistry.registerDomain(domain, metadataUri, address(this));
         _revertForNotAdmin(msg.sender);
     }
 
