@@ -4,12 +4,6 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IHubDomainsRegistry.sol";
-import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-
-import {
-    ERC2771ContextUpgradeable,
-    ContextUpgradeable
-} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
     struct Domain {
