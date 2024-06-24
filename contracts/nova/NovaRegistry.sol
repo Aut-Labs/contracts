@@ -13,11 +13,10 @@ import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
-import {Domain} from "../hub-contracts/HubDomainsRegistry.sol";
+import "../hub-contracts/IHubDomainsRegistry.sol";
 
 /// @title NovaRegistry
 contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
-    HubDomainsRegistry public hubDomainsRegistry;
     event NovaCreated(address deployer, address novaAddress, uint256 market, uint256 commitment, string metadata);
     event AllowlistSet(address allowlist);
 
@@ -32,25 +31,23 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     address public deployerAddress;
     address public autIDAddr;
     address public pluginRegistry;
+    address public hubDomainsRegistry;
     UpgradeableBeacon public upgradeableBeacon;
     IAllowlist public allowlist;
 
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
-    function initialize(address autIDAddr_, address novaLogic, address pluginRegistry_) external initializer {
+    function initialize(address autIDAddr_, address novaLogic, address pluginRegistry_, address hubDomainsRegistry_) external initializer {
         require(autIDAddr_ != address(0), "NovaRegistry: AutID address zero");
         require(novaLogic != address(0), "NovaRegistry: Nova logic address zero");
         require(pluginRegistry_ != address(0), "NovaRegistry: PluginRegistry address zero");
-  }
-    function initialize(address hubDomainsRegistryAddress) external initializer {
-                hubDomainsRegistry = HubDomainsRegistry(hubDomainsRegistryAddress);
-  }
-
+        require(hubDomainsRegistry_ != address(0), "NovaRegistry: HubDomainsRegistry address zero");
         __Ownable_init(msg.sender);
 
         deployerAddress = msg.sender;
         autIDAddr = autIDAddr_;
         pluginRegistry = pluginRegistry_;
+        hubDomainsRegistry = hubDomainsRegistry_;
         upgradeableBeacon = new UpgradeableBeacon(novaLogic, address(this));
         // allowlist =
         // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
@@ -103,12 +100,8 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         _userNovaListIds[member][nova] = position;
     }
 
-    function resolveDomain(string calldata domain) external view override returns (address) {
-        return hubDomainsRegistry.resolveDomain(domain);
-    }
-
-        function getDomainMetadata(string calldata domain) external view override returns (string memory) {
-        return hubDomainsRegistry.getDomainMetadata(domain);
+    function getDomain(string calldata domain) external view returns (address, string memory) {
+        return IHubDomainsRegistry(hubDomainsRegistry).getDomain(domain);
     }
 
 

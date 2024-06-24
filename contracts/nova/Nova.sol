@@ -6,10 +6,7 @@ import {NovaUpgradeable} from "./NovaUpgradeable.sol";
 import {NovaUtils} from "./NovaUtils.sol";
 import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
-import "../hub-contracts/HubDomainsRegistry.sol";
 import "../hub-contracts/IHubDomainsRegistry.sol";
-import "../hub-contracts/IHubDomains.sol";
-import "../hub-contracts/PublicResolver.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
@@ -27,6 +24,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     address public autID;
     address public novaRegistry;
+    address public hubDomainsRegistry;
     address public pluginRegistry;
     address public onboarding;
 
@@ -34,8 +32,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     uint256 public commitment;
     uint256 public market;
     string public metadataUri;
-
-    IHubDomainsRegistry public hubDomainsRegistry;
 
     mapping(address => uint256) public roles;
     mapping(address => uint256) public joinedAt;
@@ -58,8 +54,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         address pluginRegistry_,
         uint256 market_,
         uint256 commitment_,
-        string memory metadataUri_
-        address hubDomainsRegistryAddress
+        string memory metadataUri_,
+        address hubDomainsRegistry_
 
     ) external initializer {
         _setMaskPosition(deployer, ADMIN_MASK_POSITION);
@@ -71,7 +67,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         pluginRegistry = pluginRegistry_;
         autID = autID_;
         novaRegistry = novaRegistry_;
-        hubDomainsRegistry = IHubDomainsRegistry(hubDomainsRegistryAddress);
+        hubDomainsRegistry = hubDomainsRegistry_;
     }
 
     function setMetadataUri(string memory uri) external {
@@ -188,10 +184,13 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     // this function registers a new .hub domain through the Nova contract.
     // It's called when the user submits their custom domain part and metadata URI.
     // It forwards the request to the HubDomainsRegistry.
-
-    function registerDomain(string calldata domain, string calldata metadataUri) external override {
-        hubDomainsRegistry.registerDomain(domain, metadataUri, address(this));
+    function registerDomain(string calldata domain_, string calldata metadataUri_) external override {
         _revertForNotAdmin(msg.sender);
+        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, metadataUri_);
+    }
+
+    function getDomain(string calldata domain) external view returns (address, string memory) {
+        return IHubDomainsRegistry(hubDomainsRegistry).getDomain(domain);
     }
 
     /// internal

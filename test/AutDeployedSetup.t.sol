@@ -5,11 +5,14 @@ import "ds-test/test.sol";
 import "forge-std/Vm.sol";
 import "../contracts/autid/AutID.sol";
 import "../contracts/nova/NovaRegistry.sol";
+import "../contracts/hub-contracts/HubDomainsRegistry.sol";
 
 contract AutDeployedSetup is DSTest {
     Vm vm = Vm(HEVM_ADDRESS);
     AutID autID;
     NovaRegistry novaRegistry;
+    HubDomainsRegistry hubDomainsRegistry;
+    Nova novaLogic;
     UpgradeableBeacon upgradeableBeacon;
     address owner = address(this);
     address pluginRegistry = address(1);
@@ -18,11 +21,13 @@ contract AutDeployedSetup is DSTest {
     function setUp() public {
         autID = new AutID(trustedForwarder);
         novaRegistry = new NovaRegistry(trustedForwarder);
-        Nova novaLogic = new Nova();
+        novaLogic = new Nova();
+        hubDomainsRegistry = new HubDomainsRegistry(address(novaLogic));
 
         address autIdAddress = address(autID);
         address novaRegistryAddress = address(novaRegistry);
         address novaAddress = address(novaLogic);
+        address hubDomainsRegistryAddress = address(hubDomainsRegistry);
 
         autID.initialize(owner);
         novaLogic.initialize(
@@ -32,13 +37,15 @@ contract AutDeployedSetup is DSTest {
             pluginRegistry, // plugin registry address
             1, // Market
             1, // Commitment
-            "metadata" // Metadata Uri
+            "metadata", // Metadata Uri
+            hubDomainsRegistryAddress
         );
 
         novaRegistry.initialize(
             autIdAddress,
             novaAddress,
-            pluginRegistry
+            pluginRegistry,
+            hubDomainsRegistryAddress
         );
 
         autID.setNovaRegistry(novaRegistryAddress);
@@ -86,6 +93,33 @@ contract AutDeployedSetup is DSTest {
             tokenId != 0,
             "Token ID should be non-zero after record creation"
         );
+
+        // register domain from nova
+        string memory domain = "testdomain.hub";
+        string memory domainMetadata = "testdomainmetadata";
+        novaLogic.registerDomain(domain, domainMetadata);
+        (address domainOwnerAddress, string memory domainMetadataResult) = hubDomainsRegistry.getDomain(
+            domain
+        );
+
+        assertEq(
+            domainOwnerAddress,
+            address(novaLogic),
+            "Domain owner should be the nova contract"
+        );
+
+        assertEq(
+            domainMetadataResult,
+            domainMetadata,
+            "Domain metadata should match the input metadata"
+        );
+
+        // try register directly from hubDomainsRegistry
+        string memory domain2 = "testdomain2.hub";
+        string memory domainMetadata2 = "testdomainmetadata2";
+        vm.expectRevert("Caller is not the permitted contract");
+        hubDomainsRegistry.registerDomain(domain2, domainMetadata2);
+
         vm.stopPrank();
     }
 }

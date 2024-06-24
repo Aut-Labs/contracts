@@ -10,11 +10,7 @@ contract PublicResolver {
         hubDomainsRegistry = HubDomainsRegistry(_hubDomainsRegistry);
     }
 
-    function resolveDomain(string calldata domain) external view returns (address) {
-        return hubDomainsRegistry.resolveDomain(domain);
-    }
-
-    function getDomainMetadata(string calldata domain) external view returns (string memory) {
-        return hubDomainsRegistry.getDomainMetadata(domain);
+    function getDomain(string calldata domain) external view returns (address, string memory) {
+        return hubDomainsRegistry.getDomain(domain);
     }
 }
