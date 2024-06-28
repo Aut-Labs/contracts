@@ -14,7 +14,7 @@ import {NovaRegistry} from "../contracts/nova/NovaRegistry.sol";
 import {Allowlist} from "../contracts/utils/Allowlist.sol";
 import {GlobalParametersAlpha} from "../contracts/globalParameters/GlobalParametersAlpha.sol";
 import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
-
+import {HubDomainsRegistry} from "../contracts/hubContracts/HubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 
@@ -54,6 +54,8 @@ contract DeployAll is Script {
         address globalParametersImpl = address(new GlobalParametersAlpha());
         address pluginRegistryImpl = address(new PluginRegistry());
 
+        address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
+
         address globalParametersProxy = address(new AutProxy(globalParametersImpl, owner, ""));
         address autIdProxy =
             address(new AutProxy(autIdImpl, owner, abi.encodeWithSelector(AutID.initialize.selector, owner)));
@@ -64,7 +66,7 @@ contract DeployAll is Script {
             new AutProxy(
                 novaRegistryImpl,
                 owner,
-                abi.encodeWithSelector(NovaRegistry.initialize.selector, autIdProxy, novaImpl, pluginRegistryProxy)
+                abi.encodeWithSelector(NovaRegistry.initialize.selector, autIdProxy, novaImpl, pluginRegistryProxy, hubDomainsRegistry)
             )
         );
 
@@ -85,7 +87,7 @@ contract DeployAll is Script {
 
         // todo: convert to helper function
         string memory filename = "deployments.txt";
-        TNamedAddress[9] memory na;
+        TNamedAddress[10] memory na;
         na[0] = TNamedAddress({name: "globalParametersProxy", target: globalParametersProxy});
         na[1] = TNamedAddress({name: "autIDProxy", target: autIdProxy});
         na[2] = TNamedAddress({name: "novaRegistryProxy", target: novaRegistryProxy});
@@ -95,6 +97,7 @@ contract DeployAll is Script {
         na[6] = TNamedAddress({name: "onboardingRole1", target: onboardingRole1});
         na[7] = TNamedAddress({name: "onboardingRole2", target: onboardingRole2});
         na[8] = TNamedAddress({name: "onboardingRole3", target: onboardingRole3});
+        na[9] = TNamedAddress({name: "hubDomainsRegistry", target: hubDomainsRegistry});
         vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
         for (uint256 i = 0; i != na.length; ++i) {
             vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));

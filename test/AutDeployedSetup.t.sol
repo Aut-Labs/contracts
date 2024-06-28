@@ -5,7 +5,7 @@ import "ds-test/test.sol";
 import "forge-std/Vm.sol";
 import "../contracts/autid/AutID.sol";
 import "../contracts/nova/NovaRegistry.sol";
-import "../contracts/hub-contracts/HubDomainsRegistry.sol";
+import "../contracts/hubContracts/HubDomainsRegistry.sol";
 
 contract AutDeployedSetup is DSTest {
     Vm vm = Vm(HEVM_ADDRESS);
@@ -97,14 +97,14 @@ contract AutDeployedSetup is DSTest {
         // register domain from nova
         string memory domain = "testdomain.hub";
         string memory domainMetadata = "testdomainmetadata";
-        novaLogic.registerDomain(domain, domainMetadata);
-        (address domainOwnerAddress, string memory domainMetadataResult) = hubDomainsRegistry.getDomain(
+        novaLogic.registerDomain(domain, novaAddress, domainMetadata);
+        (address domainNovaAddress, string memory domainMetadataResult) = hubDomainsRegistry.getDomain(
             domain
         );
 
         assertEq(
-            domainOwnerAddress,
-            address(novaLogic),
+            domainNovaAddress,
+            novaAddress,
             "Domain owner should be the nova contract"
         );
 
@@ -118,7 +118,7 @@ contract AutDeployedSetup is DSTest {
         string memory domain2 = "testdomain2.hub";
         string memory domainMetadata2 = "testdomainmetadata2";
         vm.expectRevert("Caller is not the permitted contract");
-        hubDomainsRegistry.registerDomain(domain2, domainMetadata2);
+        hubDomainsRegistry.registerDomain(domain2, novaAddress, domainMetadata2);
 
         vm.stopPrank();
     }

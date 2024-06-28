@@ -13,7 +13,6 @@ import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
-import "../hub-contracts/IHubDomainsRegistry.sol";
 
 /// @title NovaRegistry
 contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
@@ -41,7 +40,6 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         require(autIDAddr_ != address(0), "NovaRegistry: AutID address zero");
         require(novaLogic != address(0), "NovaRegistry: Nova logic address zero");
         require(pluginRegistry_ != address(0), "NovaRegistry: PluginRegistry address zero");
-        require(hubDomainsRegistry_ != address(0), "NovaRegistry: HubDomainsRegistry address zero");
         __Ownable_init(msg.sender);
 
         deployerAddress = msg.sender;
@@ -78,7 +76,8 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
             pluginRegistry,
             market,
             commitment,
-            metadata
+            metadata,
+            hubDomainsRegistry
         );
         nova = address(new BeaconProxy(address(upgradeableBeacon), data));
         novaDeployers[_msgSender()].push(nova);
@@ -99,11 +98,6 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         _userNovaList[member].push(nova);
         _userNovaListIds[member][nova] = position;
     }
-
-    function getDomain(string calldata domain) external view returns (address, string memory) {
-        return IHubDomainsRegistry(hubDomainsRegistry).getDomain(domain);
-    }
-
 
     /// @dev upgrades nova beacon to the new logic contract
     function upgradeNova(address newLogic) external {
