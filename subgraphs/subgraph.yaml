@@ -38,7 +38,7 @@ dataSources:
       apiVersion: 0.0.8
       language: wasm/assemblyscript
       entities:
-        - NovaDAO
+        - Hub
       abis:
         - name: NovaRegistry
           file: ../volumes/out/NovaRegistry.sol/NovaRegistry.json
@@ -57,7 +57,7 @@ dataSources:
       apiVersion: 0.0.8
       language: wasm/assemblyscript
       entities:
-        - NovaDAO
+        - Hub
       abis:
         - name: Nova
           file: ../volumes/out/Nova.sol/Nova.json
@@ -69,3 +69,23 @@ dataSources:
         - event: MarketSet(uint256)
           handler: handleMarketSet
       file: ./src/nova.ts
+  - kind: ethereum
+    name: HubDomainsRegistry
+    network: polygon-amoy
+    source:
+      abi: HubDomainsRegistry
+      startBlock: 6486436
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - Domain
+        - Hub
+      abis:
+        - name: HubDomainsRegistry
+          file: ../volumes/out/HubDomainsRegistry.sol/HubDomainsRegistry.json
+      eventHandlers:
+        - event: DomainRegistered(indexed address,address,string,uint256,string)
+          handler: handleDomainRegistered
+      file: ./src/hubDomainsRegistry.ts

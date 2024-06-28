@@ -1,11 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "../hub-contracts/IHubDomainsRegistry.sol";
-import "../hub-contracts/IHubDomains.sol";
-import "../hub-contracts/PublicResolver.sol";
+import "../hubContracts/IHubDomainsRegistry.sol";
 
 interface INova {
+    error NotDeployer();
     error NotAdmin();
     error NotMember();
 
@@ -21,7 +20,8 @@ interface INova {
     event MarketSet(uint256);
     event CommitmentSet(uint256);
 
-    function registerDomain(string calldata domain, string calldata metadataUri) external;
+    function registerDomain(string calldata domain, address novaAddress, string calldata metadataUri) external;
+    function getDomain(string calldata domain) external view returns (address, string memory);
     function autID() external view returns (address);
     function pluginRegistry() external view returns (address);
     function onboarding() external view returns (address);

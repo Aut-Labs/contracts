@@ -13,15 +13,25 @@ type AutID @entity(immutable: false) {
   transactionHash: Bytes!
 }
 
-type NovaDAO @entity(immutable: false) {
+type Hub @entity(immutable: false) {
   id: ID!
   deployer: Bytes!
   address: Bytes!
   market: BigInt!
   metadataUri: String!
+  domain: String!
   minCommitment: BigInt!
   archetype: BigInt
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
+}
+
+
+type Domain @entity {
+  id: ID!
+  novaAddress: Bytes!
+  owner: Bytes!
+  metadataUri: String!
+  tokenId: BigInt!
 }

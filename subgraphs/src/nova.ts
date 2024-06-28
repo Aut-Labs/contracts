@@ -5,26 +5,26 @@ import {
   MetadataUriSet,
   ArchetypeSet,
 } from "../generated/Nova/Nova";
-import { NovaDAO } from "../generated/schema";
+import { Hub } from "../generated/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
 
 export function handleNovaCreated(event: NovaCreated): void {
   let id = event.params.novaAddress.toHexString();
-  let nova = NovaDAO.load(id);
-  if (nova == null) {
-    nova = new NovaDAO(id);
+  let hub = Hub.load(id);
+  if (hub == null) {
+    hub = new Hub(id);
   }
-  nova.deployer = event.params.deployer;
-  nova.address = event.params.novaAddress;
-  nova.market = event.params.market;
-  nova.metadataUri = event.params.metadata;
-  nova.minCommitment = event.params.commitment;
+  hub.deployer = event.params.deployer;
+  hub.address = event.params.novaAddress;
+  hub.market = event.params.market;
+  hub.metadataUri = event.params.metadata;
+  hub.minCommitment = event.params.commitment;
 
   // system
-  nova.blockNumber = event.block.number;
-  nova.blockTimestamp = event.block.timestamp;
-  nova.transactionHash = event.transaction.hash;
-  nova.save();
+  hub.blockNumber = event.block.number;
+  hub.blockTimestamp = event.block.timestamp;
+  hub.transactionHash = event.transaction.hash;
+  hub.save();
 }
 
 export function handleMarketSet(event: MarketSet): void {
@@ -32,11 +32,11 @@ export function handleMarketSet(event: MarketSet): void {
 
   if (txTo) {
     let id = txTo.toHexString();
-    let nova = NovaDAO.load(id);
+    let hub = Hub.load(id);
 
-    if (nova) {
-      nova.market = event.params.param0;
-      nova.save();
+    if (hub) {
+      hub.market = event.params.param0;
+      hub.save();
     }
   }
 }
@@ -46,11 +46,11 @@ export function handleMetadataUriSet(event: MetadataUriSet): void {
 
   if (txTo) {
     let id = txTo.toHexString();
-    let nova = NovaDAO.load(id);
+    let hub = Hub.load(id);
 
-    if (nova) {
-      nova.metadataUri = event.params.param0;
-      nova.save();
+    if (hub) {
+      hub.metadataUri = event.params.param0;
+      hub.save();
     }
   }
 }
@@ -60,11 +60,11 @@ export function handleCommitmentSet(event: CommitmentSet): void {
 
   if (txTo) {
     let id = txTo.toHexString();
-    let nova = NovaDAO.load(id);
+    let hub = Hub.load(id);
 
-    if (nova) {
-      nova.minCommitment = event.params.param0;
-      nova.save();
+    if (hub) {
+      hub.minCommitment = event.params.param0;
+      hub.save();
     }
   }
 }
@@ -74,10 +74,10 @@ export function handleArchetypeSet(event: ArchetypeSet): void {
 
   if (txTo) {
     let id = txTo.toHexString();
-    let nova = NovaDAO.load(id);
+    let hub = Hub.load(id);
 
-    if (nova) {
-      nova.archetype = new BigInt(event.params.parameter);
+    if (hub) {
+      hub.archetype = new BigInt(event.params.parameter);
     }
   }
 }

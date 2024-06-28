@@ -6,10 +6,7 @@ import {NovaUpgradeable} from "./NovaUpgradeable.sol";
 import {NovaUtils} from "./NovaUtils.sol";
 import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
-import "../hub-contracts/HubDomainsRegistry.sol";
-import "../hub-contracts/IHubDomainsRegistry.sol";
-import "../hub-contracts/IHubDomains.sol";
-import "../hub-contracts/PublicResolver.sol";
+import "../hubContracts/IHubDomainsRegistry.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
@@ -27,15 +24,15 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     address public autID;
     address public novaRegistry;
+    address public hubDomainsRegistry;
     address public pluginRegistry;
     address public onboarding;
+    address public deployer;
 
     uint256 public archetype;
     uint256 public commitment;
     uint256 public market;
     string public metadataUri;
-
-    IHubDomainsRegistry public hubDomainsRegistry;
 
     mapping(address => uint256) public roles;
     mapping(address => uint256) public joinedAt;
@@ -52,26 +49,27 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     address[] public admins;
 
     function initialize(
-        address deployer,
+        address deployer_,
         address autID_,
         address novaRegistry_,
         address pluginRegistry_,
         uint256 market_,
         uint256 commitment_,
-        string memory metadataUri_
-        address hubDomainsRegistryAddress
+        string memory metadataUri_,
+        address hubDomainsRegistry_
 
     ) external initializer {
-        _setMaskPosition(deployer, ADMIN_MASK_POSITION);
+        _setMaskPosition(deployer_, ADMIN_MASK_POSITION);
         /// @custom:sdk-legacy-interface-compatibility
-        admins.push(deployer);
+        admins.push(deployer_);
         _setMarket(market_);
         _setCommitment(commitment_);
         _setMetadataUri(metadataUri_);
         pluginRegistry = pluginRegistry_;
         autID = autID_;
         novaRegistry = novaRegistry_;
-        hubDomainsRegistry = IHubDomainsRegistry(hubDomainsRegistryAddress);
+        hubDomainsRegistry = hubDomainsRegistry_;
+        deployer = deployer_;
     }
 
     function setMetadataUri(string memory uri) external {
@@ -177,6 +175,10 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         emit AdminRenounced(from);
     }
 
+    function isDeployer(address who) public view returns (bool) {
+        return deployer == who;
+    }
+
     function isMember(address who) public view returns (bool) {
         return _checkMaskPosition(who, MEMBER_MASK_POSITION);
     }
@@ -188,10 +190,14 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     // this function registers a new .hub domain through the Nova contract.
     // It's called when the user submits their custom domain part and metadata URI.
     // It forwards the request to the HubDomainsRegistry.
+    function registerDomain(string calldata domain_, address novaAddress_, string calldata metadataUri_) external override {
+        _revertForNotDeployer(msg.sender);
+        // also revert if not deployer
+        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);
+    }
 
-    function registerDomain(string calldata domain, string calldata metadataUri) external override {
-        hubDomainsRegistry.registerDomain(domain, metadataUri, address(this));
-        _revertForNotAdmin(msg.sender);
+    function getDomain(string calldata domain) external view returns (address, string memory) {
+        return IHubDomainsRegistry(hubDomainsRegistry).getDomain(domain);
     }
 
     /// internal
@@ -280,6 +286,12 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     function _revertForNotAdmin(address who) internal view {
         if (!isAdmin(who)) {
             revert NotAdmin();
+        }
+    }
+
+    function _revertForNotDeployer(address who) internal view {
+        if (!isDeployer(who)) {
+            revert NotDeployer();
         }
     }
 
