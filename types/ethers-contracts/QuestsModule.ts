@@ -77,7 +77,7 @@ export interface QuestsModuleInterface extends utils.Interface {
     "isOngoing(uint256)": FunctionFragment;
     "isPending(uint256)": FunctionFragment;
     "moduleId()": FunctionFragment;
-    "novaAddress()": FunctionFragment;
+    "hubAddress()": FunctionFragment;
     "removeTasks(uint256,(uint256,uint256)[])": FunctionFragment;
     "setActiveQuestPerRole(uint256,uint256)": FunctionFragment;
   };
@@ -96,7 +96,7 @@ export interface QuestsModuleInterface extends utils.Interface {
       | "isOngoing"
       | "isPending"
       | "moduleId"
-      | "novaAddress"
+      | "hubAddress"
       | "removeTasks"
       | "setActiveQuestPerRole"
   ): FunctionFragment;
@@ -144,7 +144,7 @@ export interface QuestsModuleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "moduleId", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -181,7 +181,7 @@ export interface QuestsModuleInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "isPending", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moduleId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -367,7 +367,7 @@ export interface QuestsModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    novaAddress(overrides?: CallOverrides): Promise<[string]>;
+    hubAddress(overrides?: CallOverrides): Promise<[string]>;
 
     removeTasks(
       questId: BigNumberish,
@@ -438,7 +438,7 @@ export interface QuestsModule extends BaseContract {
 
   moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  novaAddress(overrides?: CallOverrides): Promise<string>;
+  hubAddress(overrides?: CallOverrides): Promise<string>;
 
   removeTasks(
     questId: BigNumberish,
@@ -515,7 +515,7 @@ export interface QuestsModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<string>;
+    hubAddress(overrides?: CallOverrides): Promise<string>;
 
     removeTasks(
       questId: BigNumberish,
@@ -628,7 +628,7 @@ export interface QuestsModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    hubAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     removeTasks(
       questId: BigNumberish,
@@ -706,7 +706,7 @@ export interface QuestsModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    novaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    hubAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     removeTasks(
       questId: BigNumberish,

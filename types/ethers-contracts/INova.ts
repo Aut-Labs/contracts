@@ -26,7 +26,7 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface INovaInterface extends utils.Interface {
+export interface IHubInterface extends utils.Interface {
   functions: {
     "activateModule(uint256)": FunctionFragment;
     "activatedModules()": FunctionFragment;
@@ -323,12 +323,12 @@ export type OnboardedEvent = TypedEvent<[string, string], OnboardedEventObject>;
 
 export type OnboardedEventFilter = TypedEventFilter<OnboardedEvent>;
 
-export interface INova extends BaseContract {
+export interface IHub extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: INovaInterface;
+  interface: IHubInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

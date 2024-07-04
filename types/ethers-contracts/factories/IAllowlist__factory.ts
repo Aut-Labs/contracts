@@ -9,7 +9,7 @@ import type { IAllowlist, IAllowlistInterface } from "../IAllowlist";
 const _abi = [
   {
     inputs: [],
-    name: "AlreadyDeployedANova",
+    name: "AlreadyDeployedAHub",
     type: "error",
   },
   {

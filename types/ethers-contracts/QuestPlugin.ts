@@ -81,7 +81,7 @@ export interface QuestPluginInterface extends utils.Interface {
     "isOngoing(uint256)": FunctionFragment;
     "isPending(uint256)": FunctionFragment;
     "moduleId()": FunctionFragment;
-    "novaAddress()": FunctionFragment;
+    "hubAddress()": FunctionFragment;
     "onboardingPlugin()": FunctionFragment;
     "owner()": FunctionFragment;
     "pluginId()": FunctionFragment;
@@ -112,7 +112,7 @@ export interface QuestPluginInterface extends utils.Interface {
       | "isOngoing"
       | "isPending"
       | "moduleId"
-      | "novaAddress"
+      | "hubAddress"
       | "onboardingPlugin"
       | "owner"
       | "pluginId"
@@ -181,7 +181,7 @@ export interface QuestPluginInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "moduleId", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -257,7 +257,7 @@ export interface QuestPluginInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "isPending", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moduleId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -486,7 +486,7 @@ export interface QuestPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    novaAddress(overrides?: CallOverrides): Promise<[string]>;
+    hubAddress(overrides?: CallOverrides): Promise<[string]>;
 
     onboardingPlugin(overrides?: CallOverrides): Promise<[string]>;
 
@@ -604,7 +604,7 @@ export interface QuestPlugin extends BaseContract {
 
   moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  novaAddress(overrides?: CallOverrides): Promise<string>;
+  hubAddress(overrides?: CallOverrides): Promise<string>;
 
   onboardingPlugin(overrides?: CallOverrides): Promise<string>;
 
@@ -728,7 +728,7 @@ export interface QuestPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<string>;
+    hubAddress(overrides?: CallOverrides): Promise<string>;
 
     onboardingPlugin(overrides?: CallOverrides): Promise<string>;
 
@@ -888,7 +888,7 @@ export interface QuestPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    hubAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     onboardingPlugin(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1013,7 +1013,7 @@ export interface QuestPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    novaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    hubAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     onboardingPlugin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

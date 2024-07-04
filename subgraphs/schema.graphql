@@ -3,10 +3,10 @@ type AutID @entity(immutable: false) {
   owner: Bytes!
   tokenID: BigInt!
   username: String!
-  novaAddress: Bytes
+  hubAddress: Bytes
   role: BigInt
   commitment: BigInt
-  joinedNovas: [Bytes!] @default(value: [])
+  joinedHubs: [Bytes!] @default(value: [])
   metadataUri: String
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -30,7 +30,7 @@ type Hub @entity(immutable: false) {
 
 type Domain @entity {
   id: ID!
-  novaAddress: Bytes!
+  hubAddress: Bytes!
   owner: Bytes!
   metadataUri: String!
   tokenId: BigInt!

@@ -58,7 +58,7 @@ export type GroupStateStruct = {
   p: BigNumberish;
   commitHash: BytesLike;
   lrUpdatesPerPeriod: BigNumberish;
-  periodNovaParameters: PeriodDataStruct;
+  periodHubParameters: PeriodDataStruct;
 };
 
 export type GroupStateStructOutput = [
@@ -82,7 +82,7 @@ export type GroupStateStructOutput = [
   p: number;
   commitHash: string;
   lrUpdatesPerPeriod: BigNumber;
-  periodNovaParameters: PeriodDataStructOutput;
+  periodHubParameters: PeriodDataStructOutput;
 };
 
 export type IndividualStateStruct = {
@@ -111,7 +111,7 @@ export interface ILocalReputationInterface extends utils.Interface {
     "getAvReputationAndCommitment(address)": FunctionFragment;
     "getGroupState(address)": FunctionFragment;
     "getIndividualState(address,address)": FunctionFragment;
-    "getPeriodNovaParameters(address)": FunctionFragment;
+    "getPeriodHubParameters(address)": FunctionFragment;
     "initialize(address)": FunctionFragment;
     "interaction(bytes,address)": FunctionFragment;
     "periodicGroupStateUpdate(address)": FunctionFragment;
@@ -128,7 +128,7 @@ export interface ILocalReputationInterface extends utils.Interface {
       | "getAvReputationAndCommitment"
       | "getGroupState"
       | "getIndividualState"
-      | "getPeriodNovaParameters"
+      | "getPeriodHubParameters"
       | "initialize"
       | "interaction"
       | "periodicGroupStateUpdate"
@@ -167,7 +167,7 @@ export interface ILocalReputationInterface extends utils.Interface {
     values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getPeriodNovaParameters",
+    functionFragment: "getPeriodHubParameters",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "initialize", values: [string]): string;
@@ -217,7 +217,7 @@ export interface ILocalReputationInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getPeriodNovaParameters",
+    functionFragment: "getPeriodHubParameters",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
@@ -275,7 +275,7 @@ export type InteractionEvent = TypedEvent<
 export type InteractionEventFilter = TypedEventFilter<InteractionEvent>;
 
 export interface LocalRepInitEventObject {
-  Nova: string;
+  Hub: string;
   PluginAddr: string;
 }
 export type LocalRepInitEvent = TypedEvent<
@@ -347,25 +347,25 @@ export interface ILocalReputation extends BaseContract {
     ): Promise<[BigNumber] & { score: BigNumber }>;
 
     getAvReputationAndCommitment(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & { sumCommit: BigNumber; sumRep: BigNumber }
     >;
 
     getGroupState(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<[GroupStateStructOutput]>;
 
     getIndividualState(
       agent_: string,
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<[IndividualStateStructOutput]>;
 
-    getPeriodNovaParameters(
-      nova_: string,
+    getPeriodHubParameters(
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<[PeriodDataStructOutput]>;
 
@@ -401,7 +401,7 @@ export interface ILocalReputation extends BaseContract {
     ): Promise<ContractTransaction>;
 
     updateCommitmentLevels(
-      nova_: string,
+      hub_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -429,25 +429,25 @@ export interface ILocalReputation extends BaseContract {
   ): Promise<BigNumber>;
 
   getAvReputationAndCommitment(
-    nova_: string,
+    hub_: string,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & { sumCommit: BigNumber; sumRep: BigNumber }
   >;
 
   getGroupState(
-    nova_: string,
+    hub_: string,
     overrides?: CallOverrides
   ): Promise<GroupStateStructOutput>;
 
   getIndividualState(
     agent_: string,
-    nova_: string,
+    hub_: string,
     overrides?: CallOverrides
   ): Promise<IndividualStateStructOutput>;
 
-  getPeriodNovaParameters(
-    nova_: string,
+  getPeriodHubParameters(
+    hub_: string,
     overrides?: CallOverrides
   ): Promise<PeriodDataStructOutput>;
 
@@ -483,7 +483,7 @@ export interface ILocalReputation extends BaseContract {
   ): Promise<ContractTransaction>;
 
   updateCommitmentLevels(
-    nova_: string,
+    hub_: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -511,25 +511,25 @@ export interface ILocalReputation extends BaseContract {
     ): Promise<BigNumber>;
 
     getAvReputationAndCommitment(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & { sumCommit: BigNumber; sumRep: BigNumber }
     >;
 
     getGroupState(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<GroupStateStructOutput>;
 
     getIndividualState(
       agent_: string,
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<IndividualStateStructOutput>;
 
-    getPeriodNovaParameters(
-      nova_: string,
+    getPeriodHubParameters(
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<PeriodDataStructOutput>;
 
@@ -562,7 +562,7 @@ export interface ILocalReputation extends BaseContract {
     ): Promise<void>;
 
     updateCommitmentLevels(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
@@ -584,10 +584,10 @@ export interface ILocalReputation extends BaseContract {
     Interaction(InteractionID?: null, agent?: null): InteractionEventFilter;
 
     "LocalRepInit(address,address)"(
-      Nova?: null,
+      Hub?: null,
       PluginAddr?: null
     ): LocalRepInitEventFilter;
-    LocalRepInit(Nova?: null, PluginAddr?: null): LocalRepInitEventFilter;
+    LocalRepInit(Hub?: null, PluginAddr?: null): LocalRepInitEventFilter;
 
     "SetWeightsFor(address,uint256)"(
       plugin?: null,
@@ -620,20 +620,20 @@ export interface ILocalReputation extends BaseContract {
     ): Promise<BigNumber>;
 
     getAvReputationAndCommitment(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getGroupState(nova_: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getGroupState(hub_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getIndividualState(
       agent_: string,
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getPeriodNovaParameters(
-      nova_: string,
+    getPeriodHubParameters(
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -669,7 +669,7 @@ export interface ILocalReputation extends BaseContract {
     ): Promise<BigNumber>;
 
     updateCommitmentLevels(
-      nova_: string,
+      hub_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -698,23 +698,23 @@ export interface ILocalReputation extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getAvReputationAndCommitment(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getGroupState(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getIndividualState(
       agent_: string,
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getPeriodNovaParameters(
-      nova_: string,
+    getPeriodHubParameters(
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -750,7 +750,7 @@ export interface ILocalReputation extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     updateCommitmentLevels(
-      nova_: string,
+      hub_: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

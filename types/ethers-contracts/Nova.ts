@@ -26,7 +26,7 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface NovaInterface extends utils.Interface {
+export interface HubInterface extends utils.Interface {
   functions: {
     "activateModule(uint256)": FunctionFragment;
     "addAdmin(address)": FunctionFragment;
@@ -331,12 +331,12 @@ export type UrlRemovedEvent = TypedEvent<[string], UrlRemovedEventObject>;
 
 export type UrlRemovedEventFilter = TypedEventFilter<UrlRemovedEvent>;
 
-export interface Nova extends BaseContract {
+export interface Hub extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: NovaInterface;
+  interface: HubInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

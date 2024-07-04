@@ -1,16 +1,16 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {INova} from "../contracts/nova/INova.sol";
+import {IHub} from "../contracts/hub/IHub.sol";
 import {IAutID} from "../contracts/autid/IAutID.sol";
-import {INovaRegistry} from "../contracts/nova/INovaRegistry.sol";
+import {IHubRegistry} from "../contracts/hub/IHubRegistry.sol";
 import {IAllowlist} from "../contracts/utils/IAllowlist.sol";
 import {IGlobalParametersAlpha} from "../contracts/globalParameters/IGlobalParametersAlpha.sol";
 import {SimpleAllowlistOnboarding} from "../contracts/onboarding/SimpleAllowlistOnboarding.sol";
 import {BasicOnboarding} from "../contracts/onboarding/BasicOnboarding.sol";
-import {Nova} from "../contracts/nova/Nova.sol";
+import {Hub} from "../contracts/hub/Hub.sol";
 import {AutID} from "../contracts/autid/AutID.sol";
-import {NovaRegistry} from "../contracts/nova/NovaRegistry.sol";
+import {HubRegistry} from "../contracts/hub/HubRegistry.sol";
 import {Allowlist} from "../contracts/utils/Allowlist.sol";
 import {GlobalParametersAlpha} from "../contracts/globalParameters/GlobalParametersAlpha.sol";
 import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
@@ -48,13 +48,13 @@ contract DeployAll is Script {
     function run() public {
         vm.startBroadcast(privateKey);
 
-        address novaImpl = address(new Nova());
-        address novaRegistryImpl = address(new NovaRegistry(trustedForwarder));
+        address hubImpl = address(new Hub());
+        address hubRegistryImpl = address(new HubRegistry(trustedForwarder));
         address autIdImpl = address(new AutID(trustedForwarder));
         address globalParametersImpl = address(new GlobalParametersAlpha());
         address pluginRegistryImpl = address(new PluginRegistry());
 
-        address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
+        address hubDomainsRegistry = address(new HubDomainsRegistry(hubImpl));
 
         address globalParametersProxy = address(new AutProxy(globalParametersImpl, owner, ""));
         address autIdProxy =
@@ -62,17 +62,17 @@ contract DeployAll is Script {
         address pluginRegistryProxy = address(
             new AutProxy(pluginRegistryImpl, owner, abi.encodeWithSelector(PluginRegistry.initialize.selector, owner))
         );
-        address novaRegistryProxy = address(
+        address hubRegistryProxy = address(
             new AutProxy(
-                novaRegistryImpl,
+                hubRegistryImpl,
                 owner,
-                abi.encodeWithSelector(NovaRegistry.initialize.selector, autIdProxy, novaImpl, pluginRegistryProxy, hubDomainsRegistry)
+                abi.encodeWithSelector(HubRegistry.initialize.selector, autIdProxy, hubImpl, pluginRegistryProxy, hubDomainsRegistry)
             )
         );
 
-        IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
+        IAutID(autIdProxy).setHubRegistry(hubRegistryProxy);
         address allowlistImpl = address(new Allowlist());
-        INovaRegistry(novaRegistryProxy).setAllowlistAddress(allowlistImpl);
+        IHubRegistry(hubRegistryProxy).setAllowlistAddress(allowlistImpl);
         console.log("run -- done");
 
         address onboardingRole1 = address(new SimpleAllowlistOnboarding(owner));
@@ -90,7 +90,7 @@ contract DeployAll is Script {
         TNamedAddress[10] memory na;
         na[0] = TNamedAddress({name: "globalParametersProxy", target: globalParametersProxy});
         na[1] = TNamedAddress({name: "autIDProxy", target: autIdProxy});
-        na[2] = TNamedAddress({name: "novaRegistryProxy", target: novaRegistryProxy});
+        na[2] = TNamedAddress({name: "hubRegistryProxy", target: hubRegistryProxy});
         na[3] = TNamedAddress({name: "pluginRegistryProxy", target: pluginRegistryProxy});
         na[4] = TNamedAddress({name: "allowlist", target: allowlistImpl});
         na[5] = TNamedAddress({name: "basicOnboarding", target: basicOnboarding});

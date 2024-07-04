@@ -475,7 +475,7 @@ export interface IAutID extends BaseContract {
     ): Promise<ContractTransaction>;
 
     getAllActiveMembers(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
@@ -619,7 +619,7 @@ export interface IAutID extends BaseContract {
   ): Promise<ContractTransaction>;
 
   getAllActiveMembers(
-    nova_: string,
+    hub_: string,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
@@ -760,7 +760,7 @@ export interface IAutID extends BaseContract {
     ): Promise<void>;
 
     getAllActiveMembers(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
@@ -978,7 +978,7 @@ export interface IAutID extends BaseContract {
     ): Promise<BigNumber>;
 
     getAllActiveMembers(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1126,7 +1126,7 @@ export interface IAutID extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getAllActiveMembers(
-      nova_: string,
+      hub_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

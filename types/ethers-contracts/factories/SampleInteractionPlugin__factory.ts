@@ -36,7 +36,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "address",
-        name: "nova",
+        name: "hub",
         type: "address",
       },
       {
@@ -161,7 +161,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "novaAddress",
+    name: "hubAddress",
     outputs: [
       {
         internalType: "address",

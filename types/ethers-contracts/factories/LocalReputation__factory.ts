@@ -100,7 +100,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "address",
-        name: "Nova",
+        name: "Hub",
         type: "address",
       },
       {
@@ -201,7 +201,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -269,7 +269,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -298,7 +298,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -317,7 +317,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -399,7 +399,7 @@ const _abi = [
               },
             ],
             internalType: "struct periodData",
-            name: "periodNovaParameters",
+            name: "periodHubParameters",
             type: "tuple",
           },
         ],
@@ -420,7 +420,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -466,7 +466,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -512,7 +512,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -531,11 +531,11 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
-    name: "getPeriodNovaParameters",
+    name: "getPeriodHubParameters",
     outputs: [
       {
         components: [
@@ -577,7 +577,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -636,11 +636,11 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "novaOfPlugin",
+    name: "hubOfPlugin",
     outputs: [
       {
         internalType: "address",
-        name: "nova",
+        name: "hub",
         type: "address",
       },
     ],
@@ -651,7 +651,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -740,7 +740,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -764,7 +764,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],

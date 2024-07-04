@@ -22,29 +22,29 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface INovaFactoryInterface extends utils.Interface {
+export interface IHubFactoryInterface extends utils.Interface {
   functions: {
-    "deployNova(address,address,uint256,string,uint256,address)": FunctionFragment;
+    "deployHub(address,address,uint256,string,uint256,address)": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: "deployNova"): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: "deployHub"): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "deployNova",
+    functionFragment: "deployHub",
     values: [string, string, BigNumberish, string, BigNumberish, string]
   ): string;
 
-  decodeFunctionResult(functionFragment: "deployNova", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "deployHub", data: BytesLike): Result;
 
   events: {};
 }
 
-export interface INovaFactory extends BaseContract {
+export interface IHubFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: INovaFactoryInterface;
+  interface: IHubFactoryInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -66,7 +66,7 @@ export interface INovaFactory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    deployNova(
+    deployHub(
       deployer: string,
       autIDAddr: string,
       market: BigNumberish,
@@ -77,7 +77,7 @@ export interface INovaFactory extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  deployNova(
+  deployHub(
     deployer: string,
     autIDAddr: string,
     market: BigNumberish,
@@ -88,7 +88,7 @@ export interface INovaFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    deployNova(
+    deployHub(
       deployer: string,
       autIDAddr: string,
       market: BigNumberish,
@@ -102,7 +102,7 @@ export interface INovaFactory extends BaseContract {
   filters: {};
 
   estimateGas: {
-    deployNova(
+    deployHub(
       deployer: string,
       autIDAddr: string,
       market: BigNumberish,
@@ -114,7 +114,7 @@ export interface INovaFactory extends BaseContract {
   };
 
   populateTransaction: {
-    deployNova(
+    deployHub(
       deployer: string,
       autIDAddr: string,
       market: BigNumberish,

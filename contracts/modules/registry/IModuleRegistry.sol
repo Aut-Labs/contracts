@@ -3,9 +3,9 @@ pragma solidity ^0.8.20;
 
 /**
  * @title IModuleRegistry
- * @notice Interface for the ModuleRegistry contract, which is responsible for managing the modules available for Aut Novas.
+ * @notice Interface for the ModuleRegistry contract, which is responsible for managing the modules available for Aut Hubs.
  * Modules are represented by metadata and an ID and can only be added by the Aut Team.
- * Novae can activate and install specific plugins from the available modules.
+ * Hubs can activate and install specific plugins from the available modules.
  *
  */
 interface IModuleRegistry {

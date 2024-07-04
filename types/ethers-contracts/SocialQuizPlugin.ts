@@ -61,7 +61,7 @@ export interface SocialQuizPluginInterface extends utils.Interface {
     "isActive()": FunctionFragment;
     "lastReputationAddr()": FunctionFragment;
     "moduleId()": FunctionFragment;
-    "novaAddress()": FunctionFragment;
+    "hubAddress()": FunctionFragment;
     "owner()": FunctionFragment;
     "pluginId()": FunctionFragment;
     "pluginRegistry()": FunctionFragment;
@@ -79,7 +79,7 @@ export interface SocialQuizPluginInterface extends utils.Interface {
       | "isActive"
       | "lastReputationAddr"
       | "moduleId"
-      | "novaAddress"
+      | "hubAddress"
       | "owner"
       | "pluginId"
       | "pluginRegistry"
@@ -114,7 +114,7 @@ export interface SocialQuizPluginInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "moduleId", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -156,7 +156,7 @@ export interface SocialQuizPluginInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "moduleId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -180,7 +180,7 @@ export interface SocialQuizPluginInterface extends utils.Interface {
 }
 
 export interface LocalRepALogChangedForEventObject {
-  nova: string;
+  hub: string;
   repAlgo: string;
 }
 export type LocalRepALogChangedForEvent = TypedEvent<
@@ -258,7 +258,7 @@ export interface SocialQuizPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    novaAddress(overrides?: CallOverrides): Promise<[string]>;
+    hubAddress(overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -301,7 +301,7 @@ export interface SocialQuizPlugin extends BaseContract {
 
   moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  novaAddress(overrides?: CallOverrides): Promise<string>;
+  hubAddress(overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -344,7 +344,7 @@ export interface SocialQuizPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<string>;
+    hubAddress(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -360,11 +360,11 @@ export interface SocialQuizPlugin extends BaseContract {
 
   filters: {
     "LocalRepALogChangedFor(address,address)"(
-      nova?: null,
+      hub?: null,
       repAlgo?: null
     ): LocalRepALogChangedForEventFilter;
     LocalRepALogChangedFor(
-      nova?: null,
+      hub?: null,
       repAlgo?: null
     ): LocalRepALogChangedForEventFilter;
 
@@ -402,7 +402,7 @@ export interface SocialQuizPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    hubAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -450,7 +450,7 @@ export interface SocialQuizPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    novaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    hubAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

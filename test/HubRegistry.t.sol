@@ -5,9 +5,9 @@ import "forge-std/Test.sol";
 import "forge-std/Vm.sol";
 import "forge-std/console2.sol";
 
-import {NovaRegistryDeployHelper} from "./helpers/DeployHelpers.sol";
+import {HubRegistryDeployHelper} from "./helpers/DeployHelpers.sol";
 
-contract NovaRegistryTest is Test, NovaRegistryDeployHelper {
+contract HubRegistryTest is Test, HubRegistryDeployHelper {
     function owner() internal view override returns (address) {
         return address(this);
     }
@@ -20,8 +20,8 @@ contract NovaRegistryTest is Test, NovaRegistryDeployHelper {
         deploy();
     }
 
-    function testFail_novaRegistryEmpty() public {
-        assertEq(address(novaRegistry()), address(0));
+    function testFail_hubRegistryEmpty() public {
+        assertEq(address(hubRegistry()), address(0));
     }
 
     function testFail_autIDEmpty() public {

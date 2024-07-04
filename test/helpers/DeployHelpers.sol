@@ -6,11 +6,11 @@ import "hardhat/console.sol";
 import {IAutID} from "../../contracts/autid/IAutID.sol";
 import {IGlobalParametersAlpha} from "../../contracts/globalParameters/IGlobalParametersAlpha.sol";
 import {IPluginRegistry} from "../../contracts/pluginRegistry/IPluginRegistry.sol";
-import {INovaRegistry} from "../../contracts/nova/INovaRegistry.sol";
+import {IHubRegistry} from "../../contracts/hub/IHubRegistry.sol";
 import {GlobalParametersAlpha} from "../../contracts/globalParameters/GlobalParametersAlpha.sol";
 import {AutID} from "../../contracts/autid/AutID.sol";
-import {NovaRegistry} from "../../contracts/nova/NovaRegistry.sol";
-import {Nova} from "../../contracts/nova/Nova.sol";
+import {HubRegistry} from "../../contracts/hub/HubRegistry.sol";
+import {Hub} from "../../contracts/hub/Hub.sol";
 import {PluginRegistry} from "../../contracts/pluginRegistry/PluginRegistry.sol";
 import {AutProxy} from "../../contracts/proxy/AutProxy.sol";
 
@@ -73,26 +73,26 @@ abstract contract PluginRegistryDeployHelper is DeployHelper {
     }
 }
 
-abstract contract NovaRegistryDeployHelper is AutIDDeployHelper, PluginRegistryDeployHelper {
-    INovaRegistry private _novaRegistry;
+abstract contract HubRegistryDeployHelper is AutIDDeployHelper, PluginRegistryDeployHelper {
+    IHubRegistry private _hubRegistry;
 
-    function novaRegistry() internal view returns (INovaRegistry) {
-        return _novaRegistry;
+    function hubRegistry() internal view returns (IHubRegistry) {
+        return _hubRegistry;
     }
 
     function deploy() internal virtual override(AutIDDeployHelper, PluginRegistryDeployHelper) {
         AutIDDeployHelper.deploy();
         PluginRegistryDeployHelper.deploy();
 
-        address novaImpl = address(new Nova());
-        address impl = address(new NovaRegistry(trustedForwarder()));
+        address hubImpl = address(new Hub());
+        address impl = address(new HubRegistry(trustedForwarder()));
         address proxy = address(
             new AutProxy(
                 impl,
                 owner(),
-                abi.encodeWithSelector(INovaRegistry.initialize.selector, autID(), novaImpl, pluginRegistry())
+                abi.encodeWithSelector(IHubRegistry.initialize.selector, autID(), hubImpl, pluginRegistry())
             )
         );
-        _novaRegistry = INovaRegistry(proxy);
+        _hubRegistry = IHubRegistry(proxy);
     }
 }
