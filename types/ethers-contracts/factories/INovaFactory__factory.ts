@@ -4,7 +4,7 @@
 
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
-import type { INovaFactory, INovaFactoryInterface } from "../INovaFactory";
+import type { IHubFactory, IHubFactoryInterface } from "../IHubFactory";
 
 const _abi = [
   {
@@ -40,11 +40,11 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "deployNova",
+    name: "deployHub",
     outputs: [
       {
         internalType: "address",
-        name: "_nova",
+        name: "_hub",
         type: "address",
       },
     ],
@@ -53,15 +53,15 @@ const _abi = [
   },
 ] as const;
 
-export class INovaFactory__factory {
+export class IHubFactory__factory {
   static readonly abi = _abi;
-  static createInterface(): INovaFactoryInterface {
-    return new utils.Interface(_abi) as INovaFactoryInterface;
+  static createInterface(): IHubFactoryInterface {
+    return new utils.Interface(_abi) as IHubFactoryInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): INovaFactory {
-    return new Contract(address, _abi, signerOrProvider) as INovaFactory;
+  ): IHubFactory {
+    return new Contract(address, _abi, signerOrProvider) as IHubFactory;
   }
 }

@@ -1,6 +1,6 @@
 import { Bytes } from "@graphprotocol/graph-ts";
 import {
-  NovaJoined,
+  HubJoined,
   RecordCreated,
   TokenMetadataUpdated,
 } from "../generated/AutID/AutID";
@@ -25,27 +25,27 @@ export function handleRecordCreated(event: RecordCreated): void {
 
   autID.save();
 }
-export function handleNovaJoined(event: NovaJoined): void {
+export function handleHubJoined(event: HubJoined): void {
   let id = event.params.account.toHexString();
 
   let autID = AutID.load(id);
   if (autID == null) {
     autID = new AutID(id);
-    autID.joinedNovas = [];
+    autID.joinedHubs = [];
   }
 
   autID.role = event.params.role;
   autID.commitment = event.params.commitment;
-  autID.novaAddress = event.params.nova as Bytes;
+  autID.hubAddress = event.params.hub as Bytes;
 
-  if (autID.joinedNovas == null) {
-    autID.joinedNovas = [];
+  if (autID.joinedHubs == null) {
+    autID.joinedHubs = [];
   }
 
-  let novaAddress = event.params.nova as Bytes;
-  let novas = autID.joinedNovas as Array<Bytes>;
-  novas.push(novaAddress);
-  autID.joinedNovas = novas;
+  let hubAddress = event.params.hub as Bytes;
+  let hubs = autID.joinedHubs as Array<Bytes>;
+  hubs.push(hubAddress);
+  autID.joinedHubs = hubs;
 
   autID.save();
 }
@@ -60,7 +60,7 @@ export function handleNovaJoined(event: NovaJoined): void {
 // }
 
 export function handleTokenMetadataUpdated(event: TokenMetadataUpdated): void {
-  let txFrom = event.transaction.from; // novaAddress
+  let txFrom = event.transaction.from; // hubAddress
 
   if (txFrom) {
     let id = txFrom.toHexString();
@@ -72,13 +72,13 @@ export function handleTokenMetadataUpdated(event: TokenMetadataUpdated): void {
   }
 }
 
-// export function handleNovaWithdrawn(event: NovaWithdrawn): void {
+// export function handleHubWithdrawn(event: HubWithdrawn): void {
 //   let id = event.params.member.toHexString();
 //   let autID = AutID.load(id);
 
 //   if (autID) {
 //     autID.commitment = BigInt.fromI32(0);
-//     autID.novaAddress = Address.zero();
+//     autID.hubAddress = Address.zero();
 //     autID.save();
 //   }
 // }

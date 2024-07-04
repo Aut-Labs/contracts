@@ -31,7 +31,7 @@ export interface OnboardingModuleInterface extends utils.Interface {
     "isActive()": FunctionFragment;
     "isOnboarded(address,uint256)": FunctionFragment;
     "moduleId()": FunctionFragment;
-    "novaAddress()": FunctionFragment;
+    "hubAddress()": FunctionFragment;
     "onboard(address,uint256)": FunctionFragment;
   };
 
@@ -40,7 +40,7 @@ export interface OnboardingModuleInterface extends utils.Interface {
       | "isActive"
       | "isOnboarded"
       | "moduleId"
-      | "novaAddress"
+      | "hubAddress"
       | "onboard"
   ): FunctionFragment;
 
@@ -51,7 +51,7 @@ export interface OnboardingModuleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "moduleId", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -66,7 +66,7 @@ export interface OnboardingModuleInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "moduleId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "onboard", data: BytesLike): Result;
@@ -123,7 +123,7 @@ export interface OnboardingModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    novaAddress(overrides?: CallOverrides): Promise<[string]>;
+    hubAddress(overrides?: CallOverrides): Promise<[string]>;
 
     onboard(
       member: string,
@@ -142,7 +142,7 @@ export interface OnboardingModule extends BaseContract {
 
   moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  novaAddress(overrides?: CallOverrides): Promise<string>;
+  hubAddress(overrides?: CallOverrides): Promise<string>;
 
   onboard(
     member: string,
@@ -161,7 +161,7 @@ export interface OnboardingModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<string>;
+    hubAddress(overrides?: CallOverrides): Promise<string>;
 
     onboard(
       member: string,
@@ -189,7 +189,7 @@ export interface OnboardingModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    hubAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     onboard(
       member: string,
@@ -209,7 +209,7 @@ export interface OnboardingModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    novaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    hubAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     onboard(
       member: string,

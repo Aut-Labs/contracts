@@ -4,7 +4,7 @@
 
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
-import type { INovaRegistry, INovaRegistryInterface } from "../INovaRegistry";
+import type { IHubRegistry, IHubRegistryInterface } from "../IHubRegistry";
 
 const _abi = [
   {
@@ -43,11 +43,11 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "deployNova",
+    name: "deployHub",
     outputs: [
       {
         internalType: "address",
-        name: "_nova",
+        name: "_hub",
         type: "address",
       },
     ],
@@ -62,7 +62,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "getNovaByDeployer",
+    name: "getHubByDeployer",
     outputs: [
       {
         internalType: "address[]",
@@ -75,7 +75,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getNovas",
+    name: "getHubs",
     outputs: [
       {
         internalType: "address[]",
@@ -101,15 +101,15 @@ const _abi = [
   },
 ] as const;
 
-export class INovaRegistry__factory {
+export class IHubRegistry__factory {
   static readonly abi = _abi;
-  static createInterface(): INovaRegistryInterface {
-    return new utils.Interface(_abi) as INovaRegistryInterface;
+  static createInterface(): IHubRegistryInterface {
+    return new utils.Interface(_abi) as IHubRegistryInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): INovaRegistry {
-    return new Contract(address, _abi, signerOrProvider) as INovaRegistry;
+  ): IHubRegistry {
+    return new Contract(address, _abi, signerOrProvider) as IHubRegistry;
   }
 }

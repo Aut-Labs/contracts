@@ -13,7 +13,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "AlreadyDeployedANova",
+    name: "AlreadyDeployedAHub",
     type: "error",
   },
   {

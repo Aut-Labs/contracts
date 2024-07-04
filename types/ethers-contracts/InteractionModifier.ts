@@ -73,7 +73,7 @@ export interface InteractionModifierInterface extends utils.Interface {
 }
 
 export interface LocalRepALogChangedForEventObject {
-  nova: string;
+  hub: string;
   repAlgo: string;
 }
 export type LocalRepALogChangedForEvent = TypedEvent<
@@ -143,11 +143,11 @@ export interface InteractionModifier extends BaseContract {
 
   filters: {
     "LocalRepALogChangedFor(address,address)"(
-      nova?: null,
+      hub?: null,
       repAlgo?: null
     ): LocalRepALogChangedForEventFilter;
     LocalRepALogChangedFor(
-      nova?: null,
+      hub?: null,
       repAlgo?: null
     ): LocalRepALogChangedForEventFilter;
   };

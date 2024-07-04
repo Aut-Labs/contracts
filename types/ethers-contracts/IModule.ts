@@ -23,24 +23,24 @@ export interface IModuleInterface extends utils.Interface {
   functions: {
     "isActive()": FunctionFragment;
     "moduleId()": FunctionFragment;
-    "novaAddress()": FunctionFragment;
+    "hubAddress()": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "isActive" | "moduleId" | "novaAddress"
+    nameOrSignatureOrTopic: "isActive" | "moduleId" | "hubAddress"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "isActive", values?: undefined): string;
   encodeFunctionData(functionFragment: "moduleId", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     values?: undefined
   ): string;
 
   decodeFunctionResult(functionFragment: "isActive", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moduleId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     data: BytesLike
   ): Result;
 
@@ -78,21 +78,21 @@ export interface IModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    novaAddress(overrides?: CallOverrides): Promise<[string]>;
+    hubAddress(overrides?: CallOverrides): Promise<[string]>;
   };
 
   isActive(overrides?: CallOverrides): Promise<boolean>;
 
   moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  novaAddress(overrides?: CallOverrides): Promise<string>;
+  hubAddress(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     isActive(overrides?: CallOverrides): Promise<boolean>;
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<string>;
+    hubAddress(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -102,7 +102,7 @@ export interface IModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    hubAddress(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -110,6 +110,6 @@ export interface IModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    novaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    hubAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

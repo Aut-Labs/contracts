@@ -15,8 +15,8 @@ import {
 } from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {AutIDUtils} from "./AutIDUtils.sol";
-import {INova} from "../nova/INova.sol";
-import {INovaRegistry} from "../nova/INovaRegistry.sol";
+import {IHub} from "../hub/IHub.sol";
+import {IHubRegistry} from "../hub/IHubRegistry.sol";
 
 contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, ERC2771ContextUpgradeable, IAutID {
     error ConflictingRecord();
@@ -24,7 +24,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
 
     uint256 private _tokenId;
 
-    address public novaRegistry;
+    address public hubRegistry;
     address public localReputation;
     mapping(bytes32 => uint256) public tokenIdForUsername;
     mapping(address => uint256) public tokenIdForAccount;
@@ -42,12 +42,12 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     /// @inheritdoc IAutID
-    function setNovaRegistry(address newNovaRegistry) external onlyOwner {
-        _revertForZeroAddress(newNovaRegistry);
+    function setHubRegistry(address newHubRegistry) external onlyOwner {
+        _revertForZeroAddress(newHubRegistry);
 
-        novaRegistry = newNovaRegistry;
+        hubRegistry = newHubRegistry;
 
-        emit NovaRegistrySet(newNovaRegistry);
+        emit HubRegistrySet(newHubRegistry);
     }
 
     /// @inheritdoc IAutID
@@ -73,18 +73,18 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     function mint(
         uint256 role,
         uint256 commitment,
-        address nova,
+        address hub,
         string memory username_,
         string memory optionalURI
     ) external {
-        createRecordAndJoinNova(role, commitment, nova, username_, optionalURI);
+        createRecordAndJoinHub(role, commitment, hub, username_, optionalURI);
     }
 
     /// @inheritdoc IAutID
-    function createRecordAndJoinNova(
+    function createRecordAndJoinHub(
         uint256 role,
         uint256 commitment,
-        address nova,
+        address hub,
         string memory username_,
         string memory optionalURI
     ) public {
@@ -93,23 +93,23 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         mintedAt[account] = uint64(block.timestamp);
 
         _createRecord(account, username_, optionalURI);
-        _joinNova(account, role, commitment, nova);
+        _joinHub(account, role, commitment, hub);
     }
 
-    function listUserNovas(address user) external view returns (address[] memory) {
-        return INovaRegistry(novaRegistry).listUserNovas(user);
+    function listUserHubs(address user) external view returns (address[] memory) {
+        return IHubRegistry(hubRegistry).listUserHubs(user);
     }
 
-    function userNovaRole(address nova, address user) external view returns (uint256) {
-        return INova(nova).roles(user);
+    function userHubRole(address hub, address user) external view returns (uint256) {
+        return IHub(hub).roles(user);
     }
 
-    function userNovaCommitmentLevel(address nova, address user) external view returns (uint256) {
-        return INova(nova).commitmentLevels(user);
+    function userHubCommitmentLevel(address hub, address user) external view returns (uint256) {
+        return IHub(hub).commitmentLevels(user);
     }
 
-    function userNovaJoinedAt(address nova, address user) external view returns (uint256) {
-        return INova(nova).joinedAt(user);
+    function userHubJoinedAt(address hub, address user) external view returns (uint256) {
+        return IHub(hub).joinedAt(user);
     }
 
     function transferFrom(address, address, uint256) public pure override(ERC721Upgradeable, IERC721) {
@@ -127,27 +127,27 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     /// @inheritdoc IAutID
-    function joinNova(uint256 role, uint256 commitment, address nova) public {
+    function joinHub(uint256 role, uint256 commitment, address hub) public {
         address account = _msgSender();
         _revertForZeroAddress(account);
         uint256 tokenId = tokenIdForAccount[account];
         _revertForInvalidTokenId(tokenId);
 
-        _joinNova(account, role, commitment, nova);
+        _joinHub(account, role, commitment, hub);
     }
 
-    function _joinNova(address account, uint256 role, uint256 commitment, address nova) internal {
-        address novaRegistryAddress = novaRegistry;
-        _revertForZeroAddress(novaRegistryAddress);
-        _revertForZeroAddress(nova);
+    function _joinHub(address account, uint256 role, uint256 commitment, address hub) internal {
+        address hubRegistryAddress = hubRegistry;
+        _revertForZeroAddress(hubRegistryAddress);
+        _revertForZeroAddress(hub);
         _revertForInvalidCommitment(commitment);
-        _revertForUncheckedNova(novaRegistryAddress, nova);
-        _revertForCanNotJoinNova(nova, account, role);
-        _revertForMinCommitmentNotReached(nova, commitment);
+        _revertForUncheckedHub(hubRegistryAddress, hub);
+        _revertForCanNotJoinHub(hub, account, role);
+        _revertForMinCommitmentNotReached(hub, commitment);
 
-        INova(nova).join(account, role, commitment);
+        IHub(hub).join(account, role, commitment);
 
-        emit NovaJoined(account, role, commitment, nova);
+        emit HubJoined(account, role, commitment, hub);
     }
 
     function _createRecord(address account, string memory username_, string memory optionalURI) internal {

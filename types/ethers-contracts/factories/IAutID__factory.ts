@@ -299,7 +299,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],

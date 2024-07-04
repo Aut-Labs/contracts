@@ -3,13 +3,13 @@ pragma solidity ^0.8.20;
 
 interface IAutID {
     event RecordCreated(uint256 tokenId, address account, string username, string uri);
-    event NovaJoined(address account, uint256 role, uint256 commitment, address nova);
-    event NovaRegistrySet(address);
+    event HubJoined(address account, uint256 role, uint256 commitment, address hub);
+    event HubRegistrySet(address);
     event LocalReputationSet(address);
     event TokenMetadataUpdated(uint256 tokenId, address account, string uri);
 
-    /// @notice Retrieve NovaRegistry contract address
-    function novaRegistry() external view returns (address);
+    /// @notice Retrieve HubRegistry contract address
+    function hubRegistry() external view returns (address);
 
     /// @notice Retrieve LocalReputation contract address
     function localReputation() external view returns (address);
@@ -24,8 +24,8 @@ interface IAutID {
     /// @return tokenId AutID NFT tokenId
     function tokenIdForAccount(address account) external view returns (uint256 tokenId);
 
-    /// @notice Set NovaRegistry contract address
-    function setNovaRegistry(address) external;
+    /// @notice Set HubRegistry contract address
+    function setHubRegistry(address) external;
 
     /// @notice Set LocalReputation contract address
     function setLocalReputation(address) external;
@@ -33,37 +33,37 @@ interface IAutID {
     /// @notice Update a metadata URI string associated with the sender's AutID NFT
     function updateTokenURI(string memory uri) external;
 
-    /// @notice Mint an AutID NFT and join a Nova community
-    /// @param role Role to join the Nova
-    /// @param commitment Commitment to join the Nova
-    /// @param nova Address of the Nova to join
+    /// @notice Mint an AutID NFT and join a Hub community
+    /// @param role Role to join the Hub
+    /// @param commitment Commitment to join the Hub
+    /// @param hub Address of the Hub to join
     /// @param username_ Username associated with the new AutID NFT
     /// @param optionalURI Metadata URI string associated with the new AutID NFT
     function mint(
         uint256 role,
         uint256 commitment,
-        address nova,
+        address hub,
         string memory username_,
         string memory optionalURI
     ) external;
 
-    /// @notice Mint an AutID NFT and join a Nova community (alias to `mint`)
-    /// @param role Role to join the Nova
-    /// @param commitment Commitment to join the Nova
-    /// @param nova Address of the Nova to join
+    /// @notice Mint an AutID NFT and join a Hub community (alias to `mint`)
+    /// @param role Role to join the Hub
+    /// @param commitment Commitment to join the Hub
+    /// @param hub Address of the Hub to join
     /// @param username_ Username associated with the new AutID NFT
     /// @param optionalURI Metadata URI string associated with the new AutID NFT
-    function createRecordAndJoinNova(
+    function createRecordAndJoinHub(
         uint256 role,
         uint256 commitment,
-        address nova,
+        address hub,
         string memory username_,
         string memory optionalURI
     ) external;
 
-    /// @notice Join a Nova community as an AutID NFT holder
-    /// @param role Role to join the Nova
-    /// @param commitment Commitment to join the Nova
-    /// @param nova Address of the Nova to join
-    function joinNova(uint256 role, uint256 commitment, address nova) external;
+    /// @notice Join a Hub community as an AutID NFT holder
+    /// @param role Role to join the Hub
+    /// @param commitment Commitment to join the Hub
+    /// @param hub Address of the Hub to join
+    function joinHub(uint256 role, uint256 commitment, address hub) external;
 }

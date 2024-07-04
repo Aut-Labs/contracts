@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 interface IAllowlist {
     error Unallowed();
     error AlreadyPlusOne();
-    error AlreadyDeployedANova();
+    error AlreadyDeployedAHub();
     error isAlreadyAllowed();
 
     event AddedToAllowList(address who);

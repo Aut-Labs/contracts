@@ -36,7 +36,7 @@ export interface SampleInteractionPluginInterface extends utils.Interface {
     "isActive()": FunctionFragment;
     "lastReputationAddr()": FunctionFragment;
     "moduleId()": FunctionFragment;
-    "novaAddress()": FunctionFragment;
+    "hubAddress()": FunctionFragment;
     "number()": FunctionFragment;
     "owner()": FunctionFragment;
     "pluginId()": FunctionFragment;
@@ -54,7 +54,7 @@ export interface SampleInteractionPluginInterface extends utils.Interface {
       | "isActive"
       | "lastReputationAddr"
       | "moduleId"
-      | "novaAddress"
+      | "hubAddress"
       | "number"
       | "owner"
       | "pluginId"
@@ -86,7 +86,7 @@ export interface SampleInteractionPluginInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "moduleId", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "number", values?: undefined): string;
@@ -125,7 +125,7 @@ export interface SampleInteractionPluginInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "moduleId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "number", data: BytesLike): Result;
@@ -148,7 +148,7 @@ export interface SampleInteractionPluginInterface extends utils.Interface {
 }
 
 export interface LocalRepALogChangedForEventObject {
-  nova: string;
+  hub: string;
   repAlgo: string;
 }
 export type LocalRepALogChangedForEvent = TypedEvent<
@@ -210,7 +210,7 @@ export interface SampleInteractionPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    novaAddress(overrides?: CallOverrides): Promise<[string]>;
+    hubAddress(overrides?: CallOverrides): Promise<[string]>;
 
     number(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -250,7 +250,7 @@ export interface SampleInteractionPlugin extends BaseContract {
 
   moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  novaAddress(overrides?: CallOverrides): Promise<string>;
+  hubAddress(overrides?: CallOverrides): Promise<string>;
 
   number(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -285,7 +285,7 @@ export interface SampleInteractionPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<string>;
+    hubAddress(overrides?: CallOverrides): Promise<string>;
 
     number(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -303,11 +303,11 @@ export interface SampleInteractionPlugin extends BaseContract {
 
   filters: {
     "LocalRepALogChangedFor(address,address)"(
-      nova?: null,
+      hub?: null,
       repAlgo?: null
     ): LocalRepALogChangedForEventFilter;
     LocalRepALogChangedFor(
-      nova?: null,
+      hub?: null,
       repAlgo?: null
     ): LocalRepALogChangedForEventFilter;
   };
@@ -337,7 +337,7 @@ export interface SampleInteractionPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    hubAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     number(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -382,7 +382,7 @@ export interface SampleInteractionPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    novaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    hubAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     number(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

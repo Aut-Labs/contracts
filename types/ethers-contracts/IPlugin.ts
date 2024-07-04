@@ -27,7 +27,7 @@ export interface IPluginInterface extends utils.Interface {
     "deployer()": FunctionFragment;
     "isActive()": FunctionFragment;
     "moduleId()": FunctionFragment;
-    "novaAddress()": FunctionFragment;
+    "hubAddress()": FunctionFragment;
     "pluginId()": FunctionFragment;
     "pluginRegistry()": FunctionFragment;
     "setPluginId(uint256)": FunctionFragment;
@@ -38,7 +38,7 @@ export interface IPluginInterface extends utils.Interface {
       | "deployer"
       | "isActive"
       | "moduleId"
-      | "novaAddress"
+      | "hubAddress"
       | "pluginId"
       | "pluginRegistry"
       | "setPluginId"
@@ -48,7 +48,7 @@ export interface IPluginInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "isActive", values?: undefined): string;
   encodeFunctionData(functionFragment: "moduleId", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "pluginId", values?: undefined): string;
@@ -65,7 +65,7 @@ export interface IPluginInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "isActive", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moduleId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "pluginId", data: BytesLike): Result;
@@ -114,7 +114,7 @@ export interface IPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    novaAddress(overrides?: CallOverrides): Promise<[string]>;
+    hubAddress(overrides?: CallOverrides): Promise<[string]>;
 
     pluginId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -132,7 +132,7 @@ export interface IPlugin extends BaseContract {
 
   moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  novaAddress(overrides?: CallOverrides): Promise<string>;
+  hubAddress(overrides?: CallOverrides): Promise<string>;
 
   pluginId(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -150,7 +150,7 @@ export interface IPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<string>;
+    hubAddress(overrides?: CallOverrides): Promise<string>;
 
     pluginId(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -171,7 +171,7 @@ export interface IPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    hubAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     pluginId(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -190,7 +190,7 @@ export interface IPlugin extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    novaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    hubAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pluginId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

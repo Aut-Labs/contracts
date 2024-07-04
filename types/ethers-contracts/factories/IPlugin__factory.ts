@@ -53,7 +53,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "novaAddress",
+    name: "hubAddress",
     outputs: [
       {
         internalType: "address",

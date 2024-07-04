@@ -66,7 +66,7 @@ export interface TasksModuleInterface extends utils.Interface {
     "hasCompletedTheTask(address,uint256)": FunctionFragment;
     "isActive()": FunctionFragment;
     "moduleId()": FunctionFragment;
-    "novaAddress()": FunctionFragment;
+    "hubAddress()": FunctionFragment;
     "submit(uint256,string)": FunctionFragment;
     "take(uint256)": FunctionFragment;
   };
@@ -84,7 +84,7 @@ export interface TasksModuleInterface extends utils.Interface {
       | "hasCompletedTheTask"
       | "isActive"
       | "moduleId"
-      | "novaAddress"
+      | "hubAddress"
       | "submit"
       | "take"
   ): FunctionFragment;
@@ -128,7 +128,7 @@ export interface TasksModuleInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "isActive", values?: undefined): string;
   encodeFunctionData(functionFragment: "moduleId", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -161,7 +161,7 @@ export interface TasksModuleInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "isActive", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moduleId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "novaAddress",
+    functionFragment: "hubAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "submit", data: BytesLike): Result;
@@ -328,7 +328,7 @@ export interface TasksModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    novaAddress(overrides?: CallOverrides): Promise<[string]>;
+    hubAddress(overrides?: CallOverrides): Promise<[string]>;
 
     submit(
       taskID: BigNumberish,
@@ -406,7 +406,7 @@ export interface TasksModule extends BaseContract {
 
   moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  novaAddress(overrides?: CallOverrides): Promise<string>;
+  hubAddress(overrides?: CallOverrides): Promise<string>;
 
   submit(
     taskID: BigNumberish,
@@ -481,7 +481,7 @@ export interface TasksModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<string>;
+    hubAddress(overrides?: CallOverrides): Promise<string>;
 
     submit(
       taskID: BigNumberish,
@@ -589,7 +589,7 @@ export interface TasksModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    novaAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    hubAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     submit(
       taskID: BigNumberish,
@@ -668,7 +668,7 @@ export interface TasksModule extends BaseContract {
 
     moduleId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    novaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    hubAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     submit(
       taskID: BigNumberish,

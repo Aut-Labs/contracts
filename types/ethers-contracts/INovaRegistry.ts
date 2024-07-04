@@ -22,46 +22,46 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface INovaRegistryInterface extends utils.Interface {
+export interface IHubRegistryInterface extends utils.Interface {
   functions: {
     "autIDAddr()": FunctionFragment;
-    "deployNova(uint256,string,uint256)": FunctionFragment;
-    "getNovaByDeployer(address)": FunctionFragment;
-    "getNovas()": FunctionFragment;
+    "deployHub(uint256,string,uint256)": FunctionFragment;
+    "getHubByDeployer(address)": FunctionFragment;
+    "getHubs()": FunctionFragment;
     "pluginRegistry()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "autIDAddr"
-      | "deployNova"
-      | "getNovaByDeployer"
-      | "getNovas"
+      | "deployHub"
+      | "getHubByDeployer"
+      | "getHubs"
       | "pluginRegistry"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "autIDAddr", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "deployNova",
+    functionFragment: "deployHub",
     values: [BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getNovaByDeployer",
+    functionFragment: "getHubByDeployer",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "getNovas", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getHubs", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "pluginRegistry",
     values?: undefined
   ): string;
 
   decodeFunctionResult(functionFragment: "autIDAddr", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "deployNova", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "deployHub", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getNovaByDeployer",
+    functionFragment: "getHubByDeployer",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getNovas", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getHubs", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "pluginRegistry",
     data: BytesLike
@@ -70,12 +70,12 @@ export interface INovaRegistryInterface extends utils.Interface {
   events: {};
 }
 
-export interface INovaRegistry extends BaseContract {
+export interface IHubRegistry extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: INovaRegistryInterface;
+  interface: IHubRegistryInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -99,57 +99,57 @@ export interface INovaRegistry extends BaseContract {
   functions: {
     autIDAddr(overrides?: CallOverrides): Promise<[string]>;
 
-    deployNova(
+    deployHub(
       market: BigNumberish,
       metadata: string,
       commitment: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    getNovaByDeployer(
+    getHubByDeployer(
       deployer: string,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
-    getNovas(overrides?: CallOverrides): Promise<[string[]]>;
+    getHubs(overrides?: CallOverrides): Promise<[string[]]>;
 
     pluginRegistry(overrides?: CallOverrides): Promise<[string]>;
   };
 
   autIDAddr(overrides?: CallOverrides): Promise<string>;
 
-  deployNova(
+  deployHub(
     market: BigNumberish,
     metadata: string,
     commitment: BigNumberish,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  getNovaByDeployer(
+  getHubByDeployer(
     deployer: string,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
-  getNovas(overrides?: CallOverrides): Promise<string[]>;
+  getHubs(overrides?: CallOverrides): Promise<string[]>;
 
   pluginRegistry(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     autIDAddr(overrides?: CallOverrides): Promise<string>;
 
-    deployNova(
+    deployHub(
       market: BigNumberish,
       metadata: string,
       commitment: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getNovaByDeployer(
+    getHubByDeployer(
       deployer: string,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
-    getNovas(overrides?: CallOverrides): Promise<string[]>;
+    getHubs(overrides?: CallOverrides): Promise<string[]>;
 
     pluginRegistry(overrides?: CallOverrides): Promise<string>;
   };
@@ -159,19 +159,19 @@ export interface INovaRegistry extends BaseContract {
   estimateGas: {
     autIDAddr(overrides?: CallOverrides): Promise<BigNumber>;
 
-    deployNova(
+    deployHub(
       market: BigNumberish,
       metadata: string,
       commitment: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
-    getNovaByDeployer(
+    getHubByDeployer(
       deployer: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getNovas(overrides?: CallOverrides): Promise<BigNumber>;
+    getHubs(overrides?: CallOverrides): Promise<BigNumber>;
 
     pluginRegistry(overrides?: CallOverrides): Promise<BigNumber>;
   };
@@ -179,19 +179,19 @@ export interface INovaRegistry extends BaseContract {
   populateTransaction: {
     autIDAddr(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    deployNova(
+    deployHub(
       market: BigNumberish,
       metadata: string,
       commitment: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    getNovaByDeployer(
+    getHubByDeployer(
       deployer: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getNovas(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getHubs(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pluginRegistry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };

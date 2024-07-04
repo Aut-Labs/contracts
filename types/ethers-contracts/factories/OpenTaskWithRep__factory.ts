@@ -13,7 +13,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nova_",
+        name: "hub_",
         type: "address",
       },
     ],
@@ -41,7 +41,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "address",
-        name: "nova",
+        name: "hub",
         type: "address",
       },
       {
@@ -558,7 +558,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "novaAddress",
+    name: "hubAddress",
     outputs: [
       {
         internalType: "address",
@@ -790,16 +790,16 @@ export class OpenTaskWithRep__factory extends ContractFactory {
   }
 
   override deploy(
-    nova_: string,
+    hub_: string,
     overrides?: Overrides & { from?: string }
   ): Promise<OpenTaskWithRep> {
-    return super.deploy(nova_, overrides || {}) as Promise<OpenTaskWithRep>;
+    return super.deploy(hub_, overrides || {}) as Promise<OpenTaskWithRep>;
   }
   override getDeployTransaction(
-    nova_: string,
+    hub_: string,
     overrides?: Overrides & { from?: string }
   ): TransactionRequest {
-    return super.getDeployTransaction(nova_, overrides || {});
+    return super.getDeployTransaction(hub_, overrides || {});
   }
   override attach(address: string): OpenTaskWithRep {
     return super.attach(address) as OpenTaskWithRep;

@@ -2,14 +2,14 @@
 pragma solidity ^0.8.20;
 
 import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
-import {NovaUpgradeable} from "./NovaUpgradeable.sol";
-import {NovaUtils} from "./NovaUtils.sol";
-import {INova} from "./INova.sol";
-import {INovaRegistry} from "./INovaRegistry.sol";
+import {HubUpgradeable} from "./HubUpgradeable.sol";
+import {HubUtils} from "./HubUtils.sol";
+import {IHub} from "./IHub.sol";
+import {IHubRegistry} from "./IHubRegistry.sol";
 import "../hubContracts/IHubDomainsRegistry.sol";
 
 // todo: admin retro onboarding
-contract Nova is INova, NovaUtils, NovaUpgradeable {
+contract Hub is IHub, HubUtils, HubUpgradeable {
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
     uint256 public constant CONVICTION_PARAMETER = 3;
@@ -23,7 +23,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     uint8 public constant ADMIN_MASK_POSITION = 1;
 
     address public autID;
-    address public novaRegistry;
+    address public hubRegistry;
     address public hubDomainsRegistry;
     address public pluginRegistry;
     address public onboarding;
@@ -51,7 +51,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     function initialize(
         address deployer_,
         address autID_,
-        address novaRegistry_,
+        address hubRegistry_,
         address pluginRegistry_,
         uint256 market_,
         uint256 commitment_,
@@ -67,7 +67,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         _setMetadataUri(metadataUri_);
         pluginRegistry = pluginRegistry_;
         autID = autID_;
-        novaRegistry = novaRegistry_;
+        hubRegistry = hubRegistry_;
         hubDomainsRegistry = hubDomainsRegistry_;
         deployer = deployer_;
     }
@@ -117,7 +117,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         members.push(who);
         joinedAt[who] = block.timestamp;
 
-        INovaRegistry(novaRegistry).joinNovaHook(who);
+        IHubRegistry(hubRegistry).joinHubHook(who);
 
         emit MemberGranted(who, role);
     }
@@ -150,7 +150,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     function setArchetypeAndParameters(uint8[] calldata input) external {
-        require(input.length == 6, "Nova: incorrect input length");
+        require(input.length == 6, "Hub: incorrect input length");
         _revertForNotAdmin(msg.sender);
 
         _revertForInvalidParameter(input[0]);
@@ -187,13 +187,13 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         return _checkMaskPosition(who, ADMIN_MASK_POSITION);
     }
 
-    // this function registers a new .hub domain through the Nova contract.
+    // this function registers a new .hub domain through the Hub contract.
     // It's called when the user submits their custom domain part and metadata URI.
     // It forwards the request to the HubDomainsRegistry.
-    function registerDomain(string calldata domain_, address novaAddress_, string calldata metadataUri_) external override {
+    function registerDomain(string calldata domain_, address hubAddress_, string calldata metadataUri_) external override {
         _revertForNotDeployer(msg.sender);
         // also revert if not deployer
-        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);
+        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, hubAddress_, metadataUri_);
     }
 
     function getDomain(string calldata domain) external view returns (address, string memory) {

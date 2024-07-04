@@ -26,15 +26,15 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface NovaRegistryInterface extends utils.Interface {
+export interface HubRegistryInterface extends utils.Interface {
   functions: {
     "autIDAddr()": FunctionFragment;
-    "deployNova(uint256,string,uint256)": FunctionFragment;
-    "getNovaByDeployer(address)": FunctionFragment;
-    "getNovas()": FunctionFragment;
+    "deployHub(uint256,string,uint256)": FunctionFragment;
+    "getHubByDeployer(address)": FunctionFragment;
+    "getHubs()": FunctionFragment;
     "getTrustedForwarder()": FunctionFragment;
     "isTrustedForwarder(address)": FunctionFragment;
-    "novas(uint256)": FunctionFragment;
+    "hubs(uint256)": FunctionFragment;
     "pluginRegistry()": FunctionFragment;
     "setAllowListAddress(address)": FunctionFragment;
   };
@@ -42,26 +42,26 @@ export interface NovaRegistryInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "autIDAddr"
-      | "deployNova"
-      | "getNovaByDeployer"
-      | "getNovas"
+      | "deployHub"
+      | "getHubByDeployer"
+      | "getHubs"
       | "getTrustedForwarder"
       | "isTrustedForwarder"
-      | "novas"
+      | "hubs"
       | "pluginRegistry"
       | "setAllowListAddress"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "autIDAddr", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "deployNova",
+    functionFragment: "deployHub",
     values: [BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getNovaByDeployer",
+    functionFragment: "getHubByDeployer",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "getNovas", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getHubs", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getTrustedForwarder",
     values?: undefined
@@ -70,7 +70,7 @@ export interface NovaRegistryInterface extends utils.Interface {
     functionFragment: "isTrustedForwarder",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "novas", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "hubs", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "pluginRegistry",
     values?: undefined
@@ -81,12 +81,12 @@ export interface NovaRegistryInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "autIDAddr", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "deployNova", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "deployHub", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getNovaByDeployer",
+    functionFragment: "getHubByDeployer",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getNovas", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getHubs", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getTrustedForwarder",
     data: BytesLike
@@ -95,7 +95,7 @@ export interface NovaRegistryInterface extends utils.Interface {
     functionFragment: "isTrustedForwarder",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "novas", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hubs", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "pluginRegistry",
     data: BytesLike
@@ -106,25 +106,25 @@ export interface NovaRegistryInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "NovaDeployed(address)": EventFragment;
+    "HubDeployed(address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "NovaDeployed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "HubDeployed"): EventFragment;
 }
 
-export interface NovaDeployedEventObject {
-  nova: string;
+export interface HubDeployedEventObject {
+  hub: string;
 }
-export type NovaDeployedEvent = TypedEvent<[string], NovaDeployedEventObject>;
+export type HubDeployedEvent = TypedEvent<[string], HubDeployedEventObject>;
 
-export type NovaDeployedEventFilter = TypedEventFilter<NovaDeployedEvent>;
+export type HubDeployedEventFilter = TypedEventFilter<HubDeployedEvent>;
 
-export interface NovaRegistry extends BaseContract {
+export interface HubRegistry extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: NovaRegistryInterface;
+  interface: HubRegistryInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -148,19 +148,19 @@ export interface NovaRegistry extends BaseContract {
   functions: {
     autIDAddr(overrides?: CallOverrides): Promise<[string]>;
 
-    deployNova(
+    deployHub(
       market: BigNumberish,
       metadata: string,
       commitment: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    getNovaByDeployer(
+    getHubByDeployer(
       deployer: string,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
-    getNovas(overrides?: CallOverrides): Promise<[string[]]>;
+    getHubs(overrides?: CallOverrides): Promise<[string[]]>;
 
     getTrustedForwarder(
       overrides?: CallOverrides
@@ -171,7 +171,7 @@ export interface NovaRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    novas(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+    hubs(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
     pluginRegistry(overrides?: CallOverrides): Promise<[string]>;
 
@@ -183,19 +183,19 @@ export interface NovaRegistry extends BaseContract {
 
   autIDAddr(overrides?: CallOverrides): Promise<string>;
 
-  deployNova(
+  deployHub(
     market: BigNumberish,
     metadata: string,
     commitment: BigNumberish,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  getNovaByDeployer(
+  getHubByDeployer(
     deployer: string,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
-  getNovas(overrides?: CallOverrides): Promise<string[]>;
+  getHubs(overrides?: CallOverrides): Promise<string[]>;
 
   getTrustedForwarder(overrides?: CallOverrides): Promise<string>;
 
@@ -204,7 +204,7 @@ export interface NovaRegistry extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  novas(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  hubs(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   pluginRegistry(overrides?: CallOverrides): Promise<string>;
 
@@ -216,19 +216,19 @@ export interface NovaRegistry extends BaseContract {
   callStatic: {
     autIDAddr(overrides?: CallOverrides): Promise<string>;
 
-    deployNova(
+    deployHub(
       market: BigNumberish,
       metadata: string,
       commitment: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getNovaByDeployer(
+    getHubByDeployer(
       deployer: string,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
-    getNovas(overrides?: CallOverrides): Promise<string[]>;
+    getHubs(overrides?: CallOverrides): Promise<string[]>;
 
     getTrustedForwarder(overrides?: CallOverrides): Promise<string>;
 
@@ -237,7 +237,7 @@ export interface NovaRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    novas(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    hubs(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     pluginRegistry(overrides?: CallOverrides): Promise<string>;
 
@@ -248,26 +248,26 @@ export interface NovaRegistry extends BaseContract {
   };
 
   filters: {
-    "NovaDeployed(address)"(nova?: null): NovaDeployedEventFilter;
-    NovaDeployed(nova?: null): NovaDeployedEventFilter;
+    "HubDeployed(address)"(hub?: null): HubDeployedEventFilter;
+    HubDeployed(hub?: null): HubDeployedEventFilter;
   };
 
   estimateGas: {
     autIDAddr(overrides?: CallOverrides): Promise<BigNumber>;
 
-    deployNova(
+    deployHub(
       market: BigNumberish,
       metadata: string,
       commitment: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
-    getNovaByDeployer(
+    getHubByDeployer(
       deployer: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getNovas(overrides?: CallOverrides): Promise<BigNumber>;
+    getHubs(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTrustedForwarder(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -276,7 +276,7 @@ export interface NovaRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    novas(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    hubs(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     pluginRegistry(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -289,19 +289,19 @@ export interface NovaRegistry extends BaseContract {
   populateTransaction: {
     autIDAddr(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    deployNova(
+    deployHub(
       market: BigNumberish,
       metadata: string,
       commitment: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    getNovaByDeployer(
+    getHubByDeployer(
       deployer: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getNovas(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getHubs(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTrustedForwarder(
       overrides?: CallOverrides
@@ -312,7 +312,7 @@ export interface NovaRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    novas(
+    hubs(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
