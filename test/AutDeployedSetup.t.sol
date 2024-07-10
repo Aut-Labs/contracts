@@ -22,7 +22,7 @@ contract AutDeployedSetup is DSTest {
         autID = new AutID(trustedForwarder);
         novaRegistry = new NovaRegistry(trustedForwarder);
         novaLogic = new Nova();
-        hubDomainsRegistry = new HubDomainsRegistry(address(novaLogic));
+        hubDomainsRegistry = new HubDomainsRegistry(address(novaRegistry));
 
         address autIdAddress = address(autID);
         address novaRegistryAddress = address(novaRegistry);
@@ -37,8 +37,7 @@ contract AutDeployedSetup is DSTest {
             pluginRegistry, // plugin registry address
             1, // Market
             1, // Commitment
-            "metadata", // Metadata Uri
-            hubDomainsRegistryAddress
+            "metadata" // Metadata Uri
         );
 
         novaRegistry.initialize(
@@ -97,7 +96,7 @@ contract AutDeployedSetup is DSTest {
         // register domain from nova
         string memory domain = "testdomain.hub";
         string memory domainMetadata = "testdomainmetadata";
-        novaLogic.registerDomain(domain, novaAddress, domainMetadata);
+        novaRegistry.registerDomain(domain, novaAddress, domainMetadata);
         (address domainNovaAddress, string memory domainMetadataResult) = hubDomainsRegistry.getDomain(
             domain
         );
@@ -105,7 +104,7 @@ contract AutDeployedSetup is DSTest {
         assertEq(
             domainNovaAddress,
             novaAddress,
-            "Domain owner should be the nova contract"
+            "Domain nova address should match the input nova address"
         );
 
         assertEq(

@@ -13,6 +13,8 @@ import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
+import "../hubContracts/IHubDomainsRegistry.sol";
+
 
 /// @title NovaRegistry
 contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
@@ -118,6 +120,21 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     function tranferBeaconOwnership(address newOwner) external onlyOwner {
         require(newOwner != address(0), "NovaRegistry: address zero");
         upgradeableBeacon.transferOwnership(newOwner);
+    }
+
+    // this function registers a new .hub domain through the Nova contract.
+    // It's called when the user submits their custom domain part and metadata URI.
+    // It forwards the request to the HubDomainsRegistry.
+    function registerDomain(string calldata domain_, address novaAddress_, string calldata metadataUri_) external override {
+        require(checkNova[novaAddress_], "NovaRegistry: novaAddress not a nova");
+        require(novaDeployers[_msgSender()].length != 0, "NovaRegistry: sender not a deployer");
+        require(novaDeployers[_msgSender()][_userNovaListIds[_msgSender()][novaAddress_]] == novaAddress_, "NovaRegistry: sender not a deployer of novaAddress");
+
+        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);
+    }
+
+    function getDomain(string calldata domain) external view returns (address, string memory) {
+        return IHubDomainsRegistry(hubDomainsRegistry).getDomain(domain);
     }
 
     function _checkAllowlist() internal view {

@@ -54,7 +54,7 @@ contract DeployAll is Script {
         address globalParametersImpl = address(new GlobalParametersAlpha());
         address pluginRegistryImpl = address(new PluginRegistry());
 
-        address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
+        address hubDomainsRegistry = address(new HubDomainsRegistry(novaRegistryImpl));
 
         address globalParametersProxy = address(new AutProxy(globalParametersImpl, owner, ""));
         address autIdProxy =

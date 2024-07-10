@@ -6,7 +6,6 @@ import {NovaUpgradeable} from "./NovaUpgradeable.sol";
 import {NovaUtils} from "./NovaUtils.sol";
 import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
-import "../hubContracts/IHubDomainsRegistry.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
@@ -24,7 +23,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     address public autID;
     address public novaRegistry;
-    address public hubDomainsRegistry;
     address public pluginRegistry;
     address public onboarding;
     address public deployer;
@@ -55,8 +53,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         address pluginRegistry_,
         uint256 market_,
         uint256 commitment_,
-        string memory metadataUri_,
-        address hubDomainsRegistry_
+        string memory metadataUri_
 
     ) external initializer {
         _setMaskPosition(deployer_, ADMIN_MASK_POSITION);
@@ -68,7 +65,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         pluginRegistry = pluginRegistry_;
         autID = autID_;
         novaRegistry = novaRegistry_;
-        hubDomainsRegistry = hubDomainsRegistry_;
         deployer = deployer_;
     }
 
@@ -187,21 +183,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         return _checkMaskPosition(who, ADMIN_MASK_POSITION);
     }
 
-    // this function registers a new .hub domain through the Nova contract.
-    // It's called when the user submits their custom domain part and metadata URI.
-    // It forwards the request to the HubDomainsRegistry.
-    function registerDomain(string calldata domain_, address novaAddress_, string calldata metadataUri_) external override {
-        _revertForNotDeployer(msg.sender);
-        // also revert if not deployer
-        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);
-    }
-
-    function getDomain(string calldata domain) external view returns (address, string memory) {
-        return IHubDomainsRegistry(hubDomainsRegistry).getDomain(domain);
-    }
-
     /// internal
-
     function _setMarket(uint256 market_) internal {
         _revertForInvalidMarket(market_);
 
