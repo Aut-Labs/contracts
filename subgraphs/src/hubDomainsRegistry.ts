@@ -7,6 +7,7 @@ export function handleDomainRegistered(event: DomainRegistered): void {
   domain.novaAddress = event.params.novaAddress
   domain.metadataUri = event.params.metadataUri
   domain.tokenId = event.params.tokenId
+  domain.owner = event.params.verifier
   domain.save()
 
   // Update the NovaDAO entity

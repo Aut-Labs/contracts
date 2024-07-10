@@ -22,7 +22,7 @@ contract AutDeployedSetup is DSTest {
         autID = new AutID(trustedForwarder);
         novaRegistry = new NovaRegistry(trustedForwarder);
         novaLogic = new Nova();
-        hubDomainsRegistry = new HubDomainsRegistry(address(novaRegistry));
+        hubDomainsRegistry = new HubDomainsRegistry();
 
         address autIdAddress = address(autID);
         address novaRegistryAddress = address(novaRegistry);
@@ -47,6 +47,8 @@ contract AutDeployedSetup is DSTest {
             hubDomainsRegistryAddress
         );
 
+
+        hubDomainsRegistry.setPermittedContract(novaRegistryAddress);
         autID.setNovaRegistry(novaRegistryAddress);
     }
 

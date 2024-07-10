@@ -15,6 +15,7 @@ import {Allowlist} from "../contracts/utils/Allowlist.sol";
 import {GlobalParametersAlpha} from "../contracts/globalParameters/GlobalParametersAlpha.sol";
 import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
 import {HubDomainsRegistry} from "../contracts/hubContracts/HubDomainsRegistry.sol";
+import {IHubDomainsRegistry} from "../contracts/hubContracts/IHubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 
@@ -53,8 +54,7 @@ contract DeployAll is Script {
         address autIdImpl = address(new AutID(trustedForwarder));
         address globalParametersImpl = address(new GlobalParametersAlpha());
         address pluginRegistryImpl = address(new PluginRegistry());
-
-        address hubDomainsRegistry = address(new HubDomainsRegistry(novaRegistryImpl));
+        address hubDomainsRegistry = address(new HubDomainsRegistry());
 
         address globalParametersProxy = address(new AutProxy(globalParametersImpl, owner, ""));
         address autIdProxy =
@@ -70,6 +70,7 @@ contract DeployAll is Script {
             )
         );
 
+        IHubDomainsRegistry(hubDomainsRegistry).setPermittedContract(novaRegistryProxy);
         IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
         address allowlistImpl = address(new Allowlist());
         INovaRegistry(novaRegistryProxy).setAllowlistAddress(allowlistImpl);

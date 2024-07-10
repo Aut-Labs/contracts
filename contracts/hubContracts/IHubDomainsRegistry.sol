@@ -5,4 +5,5 @@ interface IHubDomainsRegistry {
     function registerDomain(string calldata domain, address novaAddress, string calldata metadataUri) external;
     function getDomain(string calldata domain) external view returns (address, string memory);
     function verifierOf(uint256 tokenId) external view returns (address verifier);
+    function setPermittedContract(address _permittedContract) external;
 }
