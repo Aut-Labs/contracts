@@ -21,10 +21,8 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
 
     event DomainRegistered(address indexed novaAddress, address verifier, string domain, uint256 tokenId, string metadataUri);
 
-    constructor(address _permittedContract) Ownable(msg.sender) {
-        require(_permittedContract != address(0), "Permitted contract address cannot be zero");
+    constructor() Ownable(msg.sender) {
         tokenIdCounter = 0;
-        permittedContract = _permittedContract;
     }
 
     modifier onlyPermittedContract() {
@@ -51,6 +49,11 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
 
     function getDomain(string calldata domain) external view returns (address, string memory) {
         return (domains[domain].novaAddress, domains[domain].metadataUri);
+    }
+
+    function setPermittedContract(address _permittedContract) external onlyOwner {
+        require(_permittedContract != address(0), "Permitted contract address cannot be zero");
+        permittedContract = _permittedContract;
     }
 
     function verifierOf(uint256 tokenId) external view returns (address verifier) {

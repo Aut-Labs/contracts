@@ -19,6 +19,7 @@ export function handleNovaCreated(event: NovaCreated): void {
   hub.market = event.params.market;
   hub.metadataUri = event.params.metadata;
   hub.minCommitment = event.params.commitment;
+  hub.domain = "";
 
   // system
   hub.blockNumber = event.block.number;
