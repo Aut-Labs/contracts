@@ -7,6 +7,7 @@ import {NovaUtils} from "./NovaUtils.sol";
 import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import "../hubContracts/IHubDomainsRegistry.sol";
+import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
@@ -39,6 +40,23 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     mapping(address => uint256) public commitmentLevels;
     mapping(uint256 => uint256) public parameterWeight;
     mapping(address => uint256) public accountMasks;
+
+    struct Participation {
+        uint32 commitmentLevel;
+        uint32 givenContributionPoints;
+    }
+
+    mapping(
+        address who => mapping(
+            uint32 periodId =>
+                Participation participation
+        )
+    ) public participations;
+
+    mapping(
+        address who => 
+            uint32 periodId
+    ) public lastPeriodIdCommitmentLevelChanged;
 
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
@@ -116,10 +134,70 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         commitmentLevels[who] = commitmentLevel;
         members.push(who);
         joinedAt[who] = block.timestamp;
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        partipications[msg.sender][currentPeriodId].commitmentLevel = commitmentLevel;
+        lastPeriodIdCommitmentLevelChanged[msg.sender] = currentPeriodId;
 
         INovaRegistry(novaRegistry).joinNovaHook(who);
 
         emit MemberGranted(who, role);
+    }
+
+    /// @notice get the commitment level of a member at a particular period id
+    function getCommitmentLevel(address who, uint32 periodId) external view returns (uint32) {
+        if (periodId < getPeriodIdJoined(who)) revert UserHasNotYetCommited();
+
+        Participation memory p = ;
+        if (lastPeriodIdCommitmentLevelChanged[who] < periodId) {
+            // User has the same commitment level as previously set
+            return getCurrentCommitmentLevel(who);
+        } else {
+            // User has changed their commitment level more recently than the periodId,
+            // meaning we have written to storage their previous commitment level
+            return participations[who][period].commitmentLevel;
+        }
+    }
+
+    /// @notice return the period id the member joined the hub
+    function getPeriodIdJoined(address who) public view returns (uint32) {
+        uint32 periodIdJoined = TimeLibrary.periodId({
+            period0Start: IGlobalParametersAlpha(novaRegistry).period0Start(),
+            timestamp: joinedAt[who]
+        });
+        if (periodIdJoined == 0) revert MemberHasNotJoinedHub();
+        return periodIdJoined;
+    }
+
+    /// @notice get the most recently set commitment level
+    function getCurrentCommitmentLevel(address who) public view returns (uint32) {
+        uint32 lastPeriodIdChanged = lastPeriodIdCommitmentLevelChanged[who];
+        if (lastPeriodIdChanged == 0) revert MemberHasNotJoinedHub();
+        
+        return participations[who][lastPeriodIdChanged].commitmentLevel;
+    }
+
+    function changeCommitmentLevel(uint32 newCommitmentLevel) external {
+        uint32 lastPeriodIdChanged = lastPeriodIdCommitmentLevelChanged[who];
+        if (lastPeriodIdChanged == 0) revert MemberHasNotJoinedHub();
+        
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).getCurrentPeriodId();
+
+        uint32 oldCommitmentLevel = participations[msg.sender][lastPeriodIdChanged].commitmentLevel;
+        if (newCommitmentLevel == oldCommitmentLevel) revert SameCommitmentLevel();
+
+        // Write to storage for all zero values up to the current period with the old commitment level
+        for (uint256 i=lastPeriodIdChanged+1; i<currentPeriodId+1; i++) {
+            participations[msg.sender][i].commitmentLevel = oldCommitmentLevel;
+        }
+
+        // Store the new commitment level in the next period id
+        partipications[msg.sender][currentPeriodId + 1] = newCommitmentLevel;
+
+        emit ChangeCommitmentLevel({
+            who: msg.sender,
+            oldCommitmentLevel: oldCommitmentLevel,
+            newCommitmentLevel: newCommitmentLevel
+        });
     }
 
     /// @custom:sdk-legacy-interface-compatibility
