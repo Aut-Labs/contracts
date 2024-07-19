@@ -5,6 +5,10 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./IGlobalParametersAlpha.sol";
 
 contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
+
+    uint32 public constant WEEK = 7 days;
+    uint32 public constant FOUR_WEEKS = 28 days;
+
     // slot 1
     uint16 public steepnessDegree3Exp;
     uint16 public steepnessDegree3ExpStaged;
@@ -43,7 +47,7 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
 
     /// @dev fill with default values
     function initialize() external initializer {
-        periodDuration = 30 * 24 * 60 * 60;
+        periodDuration = 28 days;
         steepnessDegree3Exp = 300;
         penaltyFactor3Exp = 500;
         constrainingFactor6Exp = 1_400_000;
