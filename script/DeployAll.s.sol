@@ -73,7 +73,7 @@ contract DeployAll is Script {
         globalParameters = deployGlobalParameters(owner);
         basicOnboarding = deployBasicOnboarding();
 
-        // set novaRegistry to autId (assumes msg.sender == owner)
+        // set novaRegistry to autId (assumes msg.sender == owner [TODO: change this])
         autId.setNovaRegistry(address(novaRegistry));
 
         // Create and set the allowlist
