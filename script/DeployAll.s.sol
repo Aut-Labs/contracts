@@ -21,87 +21,160 @@ import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 import "forge-std/Script.sol";
 
 contract DeployAll is Script {
-    address public trustedForwarder;
     address public owner;
     uint256 public privateKey;
+    bool public deploying;
+
+    // state variables
+    AutID public autId;
+    NovaRegistry public novaRegistry;
+    GlobalParametersAlpha public globalParameters;
+    HubDomainsRegistry public hubDomainsRegistry;
+    BasicOnboarding public basicOnboarding;
 
     struct TNamedAddress {
         address target;
         string name;
     }
 
+    function setUpTest(address _owner) public {
+        owner = _owner;
+    }
+
     function setUp() public {
         if (block.chainid == 137) {
-            trustedForwarder = address(new TrustedForwarder());
             owner = vm.envAddress("MAINNET_OWNER_ADDRESS");
             privateKey = vm.envUint("MAINNET_PRIVATE_KEY");
         } else if (block.chainid == 80002) {
-            trustedForwarder = address(new TrustedForwarder());
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
         } else {
             revert("invalid chainid");
         }
         console.log("setUp -- done");
+
+        deploying = true;
+        vm.startBroadcast(privateKey);
     }
 
     function run() public {
-        vm.startBroadcast(privateKey);
+        address trustedForwarder = address(new TrustedForwarder());
 
-        address novaImpl = address(new Nova());
-        address novaRegistryImpl = address(new NovaRegistry(trustedForwarder));
-        address autIdImpl = address(new AutID(trustedForwarder));
-        address globalParametersImpl = address(new GlobalParametersAlpha());
-        address pluginRegistryImpl = address(new PluginRegistry());
+        // Deploy AutID
+        autId = deployAutId(owner);
+        pluginRegistry = deployPluginRegistry(owner);
+        hubDomainsRegistry = deployHubDomainsRegistry(owner);
+        novaRegistry = deployNovaRegistry({
+            _owner: owner,
+            _autIdAddress: address(autId),
+            _pluginRegistryAddress: address(pluginRegistry),
+            _hubDomainsRegistryAddress: address(hubDomainsRegistry)
+        });
+        globalParameters = deployGlobalParameters(owner);
+        basicOnboarding = deployBasicOnboarding();
 
-        address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
+        // set novaRegistry to autId (assumes msg.sender == owner)
+        autId.setNovaRegistry(address(novaRegistry));
 
-        address globalParametersProxy = address(new AutProxy(globalParametersImpl, owner, ""));
-        address autIdProxy =
-            address(new AutProxy(autIdImpl, owner, abi.encodeWithSelector(AutID.initialize.selector, owner)));
-        address pluginRegistryProxy = address(
-            new AutProxy(pluginRegistryImpl, owner, abi.encodeWithSelector(PluginRegistry.initialize.selector, owner))
-        );
-        address novaRegistryProxy = address(
-            new AutProxy(
-                novaRegistryImpl,
-                owner,
-                abi.encodeWithSelector(NovaRegistry.initialize.selector, autIdProxy, novaImpl, pluginRegistryProxy, hubDomainsRegistry)
-            )
-        );
-
-        IAutID(autIdProxy).setNovaRegistry(novaRegistryProxy);
-        address allowlistImpl = address(new Allowlist());
-        INovaRegistry(novaRegistryProxy).setAllowlistAddress(allowlistImpl);
-        console.log("run -- done");
-
-        address onboardingRole1 = address(new SimpleAllowlistOnboarding(owner));
-        address onboardingRole2 = address(new SimpleAllowlistOnboarding(owner));
-        address onboardingRole3 = address(new SimpleAllowlistOnboarding(owner));
-
-        address[] memory addresses = new address[](3);
-        addresses[0] = onboardingRole1;
-        addresses[1] = onboardingRole2;
-        addresses[2] = onboardingRole3;
-        address basicOnboarding = address(new BasicOnboarding(addresses));
+        // Create and set the allowlist
+        Allowlist allowlist = new Allowlist();
+        novaRegistry.setAllowlistAddress(address(allowlist));
 
         // todo: convert to helper function
-        string memory filename = "deployments.txt";
-        TNamedAddress[10] memory na;
-        na[0] = TNamedAddress({name: "globalParametersProxy", target: globalParametersProxy});
-        na[1] = TNamedAddress({name: "autIDProxy", target: autIdProxy});
-        na[2] = TNamedAddress({name: "novaRegistryProxy", target: novaRegistryProxy});
-        na[3] = TNamedAddress({name: "pluginRegistryProxy", target: pluginRegistryProxy});
-        na[4] = TNamedAddress({name: "allowlist", target: allowlistImpl});
-        na[5] = TNamedAddress({name: "basicOnboarding", target: basicOnboarding});
-        na[6] = TNamedAddress({name: "onboardingRole1", target: onboardingRole1});
-        na[7] = TNamedAddress({name: "onboardingRole2", target: onboardingRole2});
-        na[8] = TNamedAddress({name: "onboardingRole3", target: onboardingRole3});
-        na[9] = TNamedAddress({name: "hubDomainsRegistry", target: hubDomainsRegistry});
-        vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
-        for (uint256 i = 0; i != na.length; ++i) {
-            vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));
+        if (deploying) {
+            string memory filename = "deployments.txt";
+            TNamedAddress[10] memory na;
+            na[0] = TNamedAddress({name: "globalParametersProxy", target: address(globalParameters)});
+            na[1] = TNamedAddress({name: "autIDProxy", target: address(autId)});
+            na[2] = TNamedAddress({name: "novaRegistryProxy", target: address(novaRegistry)});
+            na[3] = TNamedAddress({name: "pluginRegistryProxy", target: address(pluginRegistry)});
+            na[4] = TNamedAddress({name: "allowlist", target: address(allowlist)});
+            na[5] = TNamedAddress({name: "basicOnboarding", target: basicOnboarding});
+            na[9] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
+            vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
+            for (uint256 i = 0; i != na.length; ++i) {
+                vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));
+            }
+            vm.writeLine(filename, "\n");
         }
-        vm.writeLine(filename, "\n");
     }
+}
+
+function deployAutId(address _owner) returns (AutID) {
+    AutID autIdImplementation = new AutID(trustedForwarder);
+    AutProxy autIdProxy = new AutProxy(
+        address(autIdImplementation),
+        _owner,
+        abi.encodeWithSelector(
+            AutID.initialize.selector,
+            _owner
+        )
+    );
+    return AutID(address(autIdProxy));
+}
+
+function deployPluginRegistry(address _owner) returns (PluginRegistry) {
+    PluginRegistry pluginRegistryImplementation = new PluginRegistry();
+    AutProxy pluginRegistryProxy = new AutProxy(
+        address(pluginRegistryImplementation),
+        _owner,
+        abi.encodeWithSelector(
+            PluginRegistry.initialize.selector,
+            _owner
+        )
+    );
+    return PluginRegistry(address(pluginRegistryProxy));
+}
+
+function deployHubDomainsRegistry(
+    address _owner
+) returns (HubDomainsRegistry) {
+    // address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
+    HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(address(0)); // TODO
+    return hubDomainsRegistry;
+}
+
+function deployGlobalParameters(address _owner) returns (GlobalParametersAlpha) {
+    GlobalParametersAlpha globalParametersImplementation = new GlobalParametersAlpha();
+    AutProxy globalParametersProxy = new AutProxy(
+        globalParametersImplementation,
+        _owner,
+        ""
+    );
+    return GlobalParametersAlpha(address(globalParametersProxy));
+}
+
+function deployNovaRegistry(
+    address _owner
+    address _autIdAddress,
+    address _pluginRegistryAddress,
+    address _hubDomainsRegistryAddress
+) returns (NovaRegistry) {
+    address novaImplementation = address(new Nova());
+    address novaRegistryImplementation = address(new NovaRegistry(trustedForwarder));
+    AutProxy novaRegistryProxy = new AutProxy(
+        novaRegistryImpl,
+        _owner,
+        abi.encodeWithSelector(
+            NovaRegistry.initialize.selector,
+            autIdProxy,
+            novaImpl,
+            pluginRegistryProxy,
+            hubDomainsRegistry
+        )
+    );
+}
+
+function deployBasicOnboarding() returns (BasicOnboarding) {
+    address onboardingRole1 = address(new SimpleAllowlistOnboarding(owner));
+    address onboardingRole2 = address(new SimpleAllowlistOnboarding(owner));
+    address onboardingRole3 = address(new SimpleAllowlistOnboarding(owner));
+
+    address[] memory addresses = new address[](3);
+    addresses[0] = onboardingRole1;
+    addresses[1] = onboardingRole2;
+    addresses[2] = onboardingRole3;
+    BasicOnboarding basicOnboarding = new BasicOnboarding(addresses);
+
+    return basicOnboarding;
 }
