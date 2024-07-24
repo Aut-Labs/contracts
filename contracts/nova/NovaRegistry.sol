@@ -11,6 +11,7 @@ import {
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
+import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
 
@@ -31,12 +32,19 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     address public autIDAddr;
     address public pluginRegistry;
     address public hubDomainsRegistry;
+    address public glogalParameters;
     UpgradeableBeacon public upgradeableBeacon;
     IAllowlist public allowlist;
 
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
-    function initialize(address autIDAddr_, address novaLogic, address pluginRegistry_, address hubDomainsRegistry_) external initializer {
+    function initialize(
+        address autIDAddr_,
+        address novaLogic,
+        address pluginRegistry_,
+        address hubDomainsRegistry_,
+        address globalParameters_
+    ) external initializer {
         require(autIDAddr_ != address(0), "NovaRegistry: AutID address zero");
         require(novaLogic != address(0), "NovaRegistry: Nova logic address zero");
         require(pluginRegistry_ != address(0), "NovaRegistry: PluginRegistry address zero");
@@ -46,9 +54,18 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         autIDAddr = autIDAddr_;
         pluginRegistry = pluginRegistry_;
         hubDomainsRegistry = hubDomainsRegistry_;
+        globalParameters = globalParameters_;
         upgradeableBeacon = new UpgradeableBeacon(novaLogic, address(this));
         // allowlist =
         // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
+    }
+
+    function currentPeriodId() external view returns (uint32) {
+        return IGlobalParametersAlpha(globalParameters).currentPeriodId();
+    }
+
+    function period0Start() external view returns (uint32) {
+        return IGlobalParametersAlpha(globalParameters).period0Start();
     }
 
     // the only reason for this function is to keep interface compatible with sdk

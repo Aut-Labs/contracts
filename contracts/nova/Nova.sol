@@ -7,6 +7,7 @@ import {NovaUtils} from "./NovaUtils.sol";
 import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import "../hubContracts/IHubDomainsRegistry.sol";
+import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
@@ -34,11 +35,26 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     uint256 public market;
     string public metadataUri;
 
+    uint32 public initTimestamp;
+    uint32 public initPeriodId;
+
     mapping(address => uint256) public roles;
     mapping(address => uint256) public joinedAt;
-    mapping(address => uint256) public commitmentLevels;
+    mapping(address => uint256) public currentCommitmentLevel;
     mapping(uint256 => uint256) public parameterWeight;
     mapping(address => uint256) public accountMasks;
+
+    struct Participation {
+        uint32 commitmentLevel;
+        uint32 givenContributionPoints;
+    }
+
+    mapping(
+        address who => mapping(
+            uint32 periodId =>
+                Participation participation
+        )
+    ) public participations;
 
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
@@ -57,7 +73,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint256 commitment_,
         string memory metadataUri_,
         address hubDomainsRegistry_
-
     ) external initializer {
         _setMaskPosition(deployer_, ADMIN_MASK_POSITION);
         /// @custom:sdk-legacy-interface-compatibility
@@ -70,6 +85,9 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         novaRegistry = novaRegistry_;
         hubDomainsRegistry = hubDomainsRegistry_;
         deployer = deployer_;
+
+        initTimestamp = block.timestamp;
+        initPeriodId = IGlobalParametersAlpha(novaRegistry_).currentPeriodId();
     }
 
     function setMetadataUri(string memory uri) external {
@@ -117,9 +135,68 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         members.push(who);
         joinedAt[who] = block.timestamp;
 
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        partipications[msg.sender][currentPeriodId].commitmentLevel = commitmentLevel;
+        currentCommitmentLevel[msg.sender] = currentPeriodId;
+
         INovaRegistry(novaRegistry).joinNovaHook(who);
 
         emit MemberGranted(who, role);
+    }
+
+    /// @notice get the commitment level of a member at a particular period id
+    function getCommitmentLevel(address who, uint32 periodId) external view returns (uint32) {
+        if (periodId < getPeriodIdJoined(who)) revert UserHasNotYetCommited();
+
+        Participation memory participation = participations[who];
+        if (participation.commitmentLevel != 0) {
+            // user has changed their commitmentLevel in a period following `periodId`.  We know this becuase
+            // participation.commitmentLevel state is non-zero as it is written following a commitmentLevel change.
+            return participation.commitmentLevel;
+        } else {
+            // User has *not* changed their commitment level: meaning their commitLevel is sync to current
+            return currentCommitmentLevel[who];
+        }
+    }
+
+    /// @notice return the period id the member joined the hub
+    function getPeriodIdJoined(address who) public view returns (uint32) {
+        uint32 periodIdJoined = TimeLibrary.periodId({
+            period0Start: IGlobalParametersAlpha(novaRegistry).period0Start(),
+            timestamp: joinedAt[who]
+        });
+        if (periodIdJoined == 0) revert MemberHasNotJoinedHub();
+        return periodIdJoined;
+    }
+
+    function changeCommitmentLevel(uint32 newCommitmentLevel) external {
+        uint32 oldCommitmentLevel = currentCommitmentLevel[msg.sender];
+        if (newCommitmentLevel == oldCommitmentLevel) revert SameCommitmentLevel();
+
+        // TODO: globalParam
+        if (newCommitmentLevel == 0 || newCommitmentLevel > 10) revert InvalidCommitmentLevel();
+
+        uint32 periodIdJoined = getPeriodIdJoined(msg.sender);
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+
+        // write to storage for all 0 values- as the currentCommitmentLevel is now different
+        for (uint256 i=currentPeriodId; i>periodIdJoined - 1; i--) {
+            Participation storage participation = participations[msg.sender][i];
+            if (participation.commitmentLevel == 0) {
+                participation.commitmentLevel = oldCommitmentLevel;
+            } else {
+                // we have reached the end of zero values
+                break;
+            }
+        }
+
+        currentCommitmentLevel[msg.sender] = newCommitmentLevel;
+
+        emit ChangeCommitmentLevel({
+            who: msg.sender,
+            oldCommitmentLevel: oldCommitmentLevel,
+            newCommitmentLevel: newCommitmentLevel
+        });
     }
 
     /// @custom:sdk-legacy-interface-compatibility

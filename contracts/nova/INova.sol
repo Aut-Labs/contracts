@@ -7,6 +7,9 @@ interface INova {
     error NotDeployer();
     error NotAdmin();
     error NotMember();
+    error MemberHasNotYetCommitted();
+    error MemberHasNotJoinedHub();
+    error SameCommitmentLevel();
 
     event AdminGranted(address to);
     event AdminRenounced(address from);
@@ -19,6 +22,7 @@ interface INova {
     event OnboardingSet(address);
     event MarketSet(uint256);
     event CommitmentSet(uint256);
+    event ChangeCommitmentLevel(address indexed who, uint32 oldCommitmentLevel, uint32 newCommitmentLevel);
 
     function registerDomain(string calldata domain, address novaAddress, string calldata metadataUri) external;
     function getDomain(string calldata domain) external view returns (address, string memory);
