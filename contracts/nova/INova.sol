@@ -10,6 +10,7 @@ interface INova {
     error MemberHasNotYetCommitted();
     error MemberHasNotJoinedHub();
     error SameCommitmentLevel();
+    error InvalidCommitmentLevel();
 
     event AdminGranted(address to);
     event AdminRenounced(address from);

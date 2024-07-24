@@ -40,7 +40,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     mapping(address => uint256) public roles;
     mapping(address => uint256) public joinedAt;
-    mapping(address => uint256) public currentCommitmentLevel;
+    mapping(address => uint256) public currentCommitmentLevels;
     mapping(uint256 => uint256) public parameterWeight;
     mapping(address => uint256) public accountMasks;
 
@@ -48,13 +48,18 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint32 commitmentLevel;
         uint32 givenContributionPoints;
     }
-
     mapping(
         address who => mapping(
             uint32 periodId =>
                 Participation participation
         )
     ) public participations;
+    
+    mapping(
+        uint32 periodId =>
+            uint128 sumCommitmentLevel
+    ) public historicalSumCommitmentLevel;
+    uint128 currentSumCommitmentLevel;
 
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
@@ -137,7 +142,10 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
         partipications[msg.sender][currentPeriodId].commitmentLevel = commitmentLevel;
-        currentCommitmentLevel[msg.sender] = currentPeriodId;
+        currentCommitmentLevels[msg.sender] = commitmentLevel;
+
+        _writeHistoricalSumCommitmentLevel(currentPeriodId);
+        currentSumCommitmentLevel += commitmentLevel;
 
         INovaRegistry(novaRegistry).joinNovaHook(who);
 
@@ -155,7 +163,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             return participation.commitmentLevel;
         } else {
             // User has *not* changed their commitment level: meaning their commitLevel is sync to current
-            return currentCommitmentLevel[who];
+            return currentCommitmentLevels[who];
         }
     }
 
@@ -170,7 +178,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     function changeCommitmentLevel(uint32 newCommitmentLevel) external {
-        uint32 oldCommitmentLevel = currentCommitmentLevel[msg.sender];
+        uint32 oldCommitmentLevel = currentCommitmentLevels[msg.sender];
         if (newCommitmentLevel == oldCommitmentLevel) revert SameCommitmentLevel();
 
         // TODO: globalParam
@@ -179,7 +187,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint32 periodIdJoined = getPeriodIdJoined(msg.sender);
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
 
-        // write to storage for all 0 values- as the currentCommitmentLevel is now different
+        // write to storage for all 0 values- as the currentCommitmentLevels is now different
         for (uint256 i=currentPeriodId; i>periodIdJoined - 1; i--) {
             Participation storage participation = participations[msg.sender][i];
             if (participation.commitmentLevel == 0) {
@@ -190,13 +198,36 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             }
         }
 
-        currentCommitmentLevel[msg.sender] = newCommitmentLevel;
+        currentCommitmentLevels[msg.sender] = newCommitmentLevel;
+        
+        _writeHistoricalSumCommitmentLevel(currentPeriodId);
+        currentSumCommitmentLevel = currentSumCommitmentLevel - oldCommitmentLevel + newCommitmentLevel;
 
         emit ChangeCommitmentLevel({
             who: msg.sender,
             oldCommitmentLevel: oldCommitmentLevel,
             newCommitmentLevel: newCommitmentLevel
         });
+    }
+
+
+    /// @notice write sumCommitmentLevel to history when needed
+    function writeHistoricalSumCommitmentLevel() public {
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry_).currentPeriodId();
+        _writeHistoricalSumCommitmentLevel(currentPeriodId);
+    }
+
+    function _writeHistoricalSumCommitmentLevel(uint32 _currentPeriodId) internal {
+        uint32 initPeriodId_ = initPeriodId; // gas
+        for (uint256 i=currentPeriodId - 1; i>initPeriodId_ - 1; i--) {
+            if (historicalSumCommitmentLevel[i] == 0) {
+                // write current sum of commitment to storage as there is currently no stored value
+                historicalSumCommitmentLevel[i] = sumCommitmentLevel;
+            } else {
+                // historical commitment levels are up to date- do nothing
+                break;
+            }
+        }
     }
 
     /// @custom:sdk-legacy-interface-compatibility
