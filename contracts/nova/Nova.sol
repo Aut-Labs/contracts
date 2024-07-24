@@ -55,11 +55,17 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         )
     ) public participations;
     
+    struct PeriodSummary {
+        uint128 sumCommitmentLevel;
+        uint128 sumContributionPoints;
+    }
     mapping(
         uint32 periodId =>
-            uint128 sumCommitmentLevel
-    ) public historicalSumCommitmentLevel;
+            uint128 PeriodSummary
+    ) public periodSummaries;
+
     uint128 currentSumCommitmentLevel;
+    uint128 currentSumContributionPoints;
 
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
@@ -144,7 +150,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         partipications[msg.sender][currentPeriodId].commitmentLevel = commitmentLevel;
         currentCommitmentLevels[msg.sender] = commitmentLevel;
 
-        _writeHistoricalSumCommitmentLevel(currentPeriodId);
+        _writePeriodSummary(currentPeriodId);
         currentSumCommitmentLevel += commitmentLevel;
 
         INovaRegistry(novaRegistry).joinNovaHook(who);
@@ -200,7 +206,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
         currentCommitmentLevels[msg.sender] = newCommitmentLevel;
         
-        _writeHistoricalSumCommitmentLevel(currentPeriodId);
+        _writePeriodSummary(currentPeriodId);
         currentSumCommitmentLevel = currentSumCommitmentLevel - oldCommitmentLevel + newCommitmentLevel;
 
         emit ChangeCommitmentLevel({
@@ -211,18 +217,21 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
 
-    /// @notice write sumCommitmentLevel to history when needed
-    function writeHistoricalSumCommitmentLevel() public {
+    /// @notice write sums to history when needed
+    function writePeriodSummary() public {
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry_).currentPeriodId();
-        _writeHistoricalSumCommitmentLevel(currentPeriodId);
+        _writePeriodSummary(currentPeriodId);
     }
 
-    function _writeHistoricalSumCommitmentLevel(uint32 _currentPeriodId) internal {
+    function _writePeriodSummary(uint32 _currentPeriodId) internal {
         uint32 initPeriodId_ = initPeriodId; // gas
         for (uint256 i=currentPeriodId - 1; i>initPeriodId_ - 1; i--) {
-            if (historicalSumCommitmentLevel[i] == 0) {
-                // write current sum of commitment to storage as there is currently no stored value
-                historicalSumCommitmentLevel[i] = sumCommitmentLevel;
+            if (periodSummaries[i].sumCommitmentLevel == 0) {
+                // write current sums to storage as there is currently no stored value
+                periodSummaries[i] = PeriodSummary({
+                    sumCommitmentLevel: currentSumCommitmentLevel,
+                    sumContributionPoints: currentSumContributionPoints
+                });
             } else {
                 // historical commitment levels are up to date- do nothing
                 break;
