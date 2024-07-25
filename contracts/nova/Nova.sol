@@ -46,6 +46,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     struct Task {
         uint32 contributionPoints;
+        uint128 quantity;
         // TODO: further identifiers
     }
     Task[] public tasks;
@@ -269,9 +270,10 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     function _addTask(Task memory _task) internal {
-        if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidContributionPoints();
+        if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
+        if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
         tasks.push(_task);
-        sumContributionPoints += _task.contributionPoints;
+        sumContributionPoints += (_task.contributionPoints * _task.quantity);
         // TODO: events
     }
 
