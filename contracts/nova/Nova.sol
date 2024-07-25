@@ -44,9 +44,17 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     mapping(uint256 => uint256) public parameterWeight;
     mapping(address => uint256) public accountMasks;
 
+    struct Task {
+        uint32 contributionPoints;
+        // TODO: further identifiers
+    }
+    Task[] public tasks;
+
+
     struct Participation {
         uint32 commitmentLevel;
-        uint32 givenContributionPoints;
+        uint128 givenContributionPoints;
+        // TODO: array of completed tasks
     }
     mapping(
         address who => mapping(
@@ -237,6 +245,48 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
                 break;
             }
         }
+    }
+
+    function currentTaskId() public view returns (uint256) {
+        return tasks.length - 1;
+    }
+
+    function addTasks(Task[] calldata _tasks) external {
+        _revertForNotAdmin(msg.sender);
+        _writePeriodSummary();
+
+        uint256 length = _tasks.length;
+        for (uint256 i=0; i<length; i++) {
+            _addTask(_tasks[i]);
+        }
+    }
+
+    function addTask(Task calldata _task) public {
+        _revertForNotAdmin(msg.sender);
+        _writePeriodSummary();
+
+        _addTask(_task);
+    }
+
+    function _addTask(Task memory _task) internal {
+        if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidContributionPoints();
+        tasks.push(_task);
+        sumContributionPoints += _task.contributionPoints;
+        // TODO: events
+    }
+
+    function submitTask(address who, uint256 taskId) public {
+        // TODO: access control
+        Task storage task = tasks[taskId];
+        currentPeriodId_ = currentPeriodId();
+        Participation storage participation = participations[who][currentPeriodId_];
+
+        if (taskId > currentTaskId()) revert InvalidTaskId();
+        if (task.contributionPoints == 0) revert TaskIdDead();
+        // TODO: validate member status
+
+        // TODO: update points
+
     }
 
     /// @custom:sdk-legacy-interface-compatibility

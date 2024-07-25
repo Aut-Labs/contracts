@@ -11,6 +11,8 @@ interface INova {
     error MemberHasNotJoinedHub();
     error SameCommitmentLevel();
     error InvalidCommitmentLevel();
+    error InvalidContributionPoints();
+    error InvalidTaskId();
 
     event AdminGranted(address to);
     event AdminRenounced(address from);
