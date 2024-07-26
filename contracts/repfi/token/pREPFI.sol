@@ -2,10 +2,13 @@
 pragma solidity ^0.8.20;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import {IRepFiRegistry} from "../repFiRegistry/IRepFiRegistry.sol";
 
-contract PREPFI is ERC20 {
+contract PREPFI is ERC20, AccessControl {
     IRepFiRegistry repFiRegistry;
+
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER");
 
     constructor(address _pluginRegistry) ERC20("Promised Reputation Finance", "pREPFI") {
         repFiRegistry = IRepFiRegistry(_pluginRegistry);
@@ -32,5 +35,10 @@ contract PREPFI is ERC20 {
         address owner = _msgSender();
         _approve(owner, spender, value);
         return true;
+    }
+
+    function burn(address account, uint256 value) external {
+        require(hasRole(BURNER_ROLE, msg.sender), "Burn not allowed");
+        _burn(account, value);
     }
 }
