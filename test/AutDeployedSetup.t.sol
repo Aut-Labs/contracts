@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
-import "ds-test/test.sol";
+import "forge-std/Test.sol";
 import "forge-std/Vm.sol";
 import "../contracts/autid/AutID.sol";
 import "../contracts/nova/NovaRegistry.sol";
@@ -41,12 +41,7 @@ contract AutDeployedSetup is DSTest {
             hubDomainsRegistryAddress
         );
 
-        novaRegistry.initialize(
-            autIdAddress,
-            novaAddress,
-            pluginRegistry,
-            hubDomainsRegistryAddress
-        );
+        novaRegistry.initialize(autIdAddress, novaAddress, pluginRegistry, hubDomainsRegistryAddress);
 
         autID.setNovaRegistry(novaRegistryAddress);
     }
@@ -57,62 +52,31 @@ contract AutDeployedSetup is DSTest {
         string memory metadata = "novaMetadata";
         uint256 minCommitment = 5;
 
-        address novaAddress = novaRegistry.deployNova(
-            market,
-            metadata,
-            minCommitment
-        );
-        assertEq(
-            Nova(novaAddress).market(),
-            market,
-            "Nova market should match the input market"
-        );
-        assertEq(
-            Nova(novaAddress).metadataUri(),
-            metadata,
-            "Nova metadataUri should match the input metadataUri"
-        );
+        address novaAddress = novaRegistry.deployNova(market, metadata, minCommitment);
+        assertEq(Nova(novaAddress).market(), market, "Nova market should match the input market");
+        assertEq(Nova(novaAddress).metadataUri(), metadata, "Nova metadataUri should match the input metadataUri");
         string memory username = "testuser";
         string memory optionalUri = "testuri";
         uint256 role = 1;
         uint256 commitment = 5;
-        autID.createRecordAndJoinNova(
-            role,
-            commitment,
-            novaAddress,
-            username,
-            optionalUri
-        );
+        autID.createRecordAndJoinNova(role, commitment, novaAddress, username, optionalUri);
 
         bytes32 usernameHash;
         assembly {
             usernameHash := mload(add(username, 32))
         }
         uint256 tokenId = autID.tokenIdForUsername(usernameHash);
-        assertTrue(
-            tokenId != 0,
-            "Token ID should be non-zero after record creation"
-        );
+        assertTrue(tokenId != 0, "Token ID should be non-zero after record creation");
 
         // register domain from nova
         string memory domain = "testdomain.hub";
         string memory domainMetadata = "testdomainmetadata";
         novaLogic.registerDomain(domain, novaAddress, domainMetadata);
-        (address domainNovaAddress, string memory domainMetadataResult) = hubDomainsRegistry.getDomain(
-            domain
-        );
+        (address domainNovaAddress, string memory domainMetadataResult) = hubDomainsRegistry.getDomain(domain);
 
-        assertEq(
-            domainNovaAddress,
-            novaAddress,
-            "Domain owner should be the nova contract"
-        );
+        assertEq(domainNovaAddress, novaAddress, "Domain owner should be the nova contract");
 
-        assertEq(
-            domainMetadataResult,
-            domainMetadata,
-            "Domain metadata should match the input metadata"
-        );
+        assertEq(domainMetadataResult, domainMetadata, "Domain metadata should match the input metadata");
 
         // try register directly from hubDomainsRegistry
         string memory domain2 = "testdomain2.hub";
