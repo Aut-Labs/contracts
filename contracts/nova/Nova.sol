@@ -51,7 +51,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
     Task[] public tasks;
 
-
     struct Participation {
         uint32 commitmentLevel;
         uint128 givenContributionPoints;
@@ -65,8 +64,10 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     ) public participations;
     
     struct PeriodSummary {
+        bool inactive;
         uint128 sumCommitmentLevel;
-        uint128 sumContributionPoints;
+        uint128 sumActiveContributionPoints;
+        uint128 sumGivenContributionPoints;
     }
     mapping(
         uint32 periodId =>
@@ -74,7 +75,9 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     ) public periodSummaries;
 
     uint128 currentSumCommitmentLevel;
-    uint128 currentSumContributionPoints;
+    uint128 currentSumActiveContributionPoints;
+    uint128 currentSumCreatedContributionPoints;
+    uint128 currentSumGivenContributionPoints;
 
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
@@ -234,17 +237,47 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     function _writePeriodSummary(uint32 _currentPeriodId) internal {
         uint32 initPeriodId_ = initPeriodId; // gas
-        for (uint256 i=currentPeriodId - 1; i>initPeriodId_ - 1; i--) {
-            if (periodSummaries[i].sumCommitmentLevel == 0) {
-                // write current sums to storage as there is currently no stored value
-                periodSummaries[i] = PeriodSummary({
-                    sumCommitmentLevel: currentSumCommitmentLevel,
-                    sumContributionPoints: currentSumContributionPoints
-                });
+        uint1287 lastPeriodId = _currentPeriodId - 1;
+
+        // What happens if a period passes which doesn't write to storage?
+        // It means in period n there was activity, period n + 1 => current period there is no activity
+        uint256 i;
+        bool writeToHistory;
+        for (i=lastPeriodId; i>initPeriodId_ - 1; i--) {
+            if (periodSummaries[i].sumCommitmentLevel != 0) {
+                writeToHistory = true;
             } else {
                 // historical commitment levels are up to date- do nothing
                 break;
             }
+        }
+
+        if (writeToHistory) {
+            // Write data to oldest possible period summary with no data
+            periodSummaries[i] = PeriodSummary({
+                inactive: false,
+                sumCommitmentLevel: currentSumCommitmentLevel,
+                sumActiveContributionPoints: currentSumActiveContributionPoints,
+                sumCreatedContributionPoints: currentSumCreatedContributionPoints,
+                sumGivenContributionPoints: currentSumGivenContributionPoints
+            });
+
+            // if there's a gap in data- we have inactive periods. Fill up with inactive flag and empty values where possible
+            if (i < lastPeriodId) {
+                for (uint256 j=i+1; j<_currentPeriodId; j++) {
+                    periodSummaries[j] = PeriodSummary({
+                        inactive: true,
+                        sumCommitmentLevel: currentSumCommitmentLevel,
+                        sumActiveContributionPoints: currentSumActiveContributionPoints,
+                        sumCreatedContributionPoints: 0,
+                        sumGivenContributionPoints: 0
+                    });
+                }
+            }
+
+            // Still in writeToHistory conditional: clear out storage where applicable
+            delete sumCreatedContributionPoints;
+            delete sumGivenContributionPoints;
         }
     }
 
@@ -272,22 +305,27 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     function _addTask(Task memory _task) internal {
         if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
         if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
+        
+        uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
+        currentSumActiveContributionPoints += sumTaskContributionPoints;
+        currentSumCreatedContributionPoints += sumTaskContributionPoints;
+        
         tasks.push(_task);
-        sumContributionPoints += (_task.contributionPoints * _task.quantity);
         // TODO: events
     }
 
-    function submitTask(address who, uint256 taskId) public {
+    function acceptTask(address who, uint256 taskId) public {
         // TODO: access control
         Task storage task = tasks[taskId];
         currentPeriodId_ = currentPeriodId();
         Participation storage participation = participations[who][currentPeriodId_];
 
         if (taskId > currentTaskId()) revert InvalidTaskId();
-        if (task.contributionPoints == 0) revert TaskIdDead();
+        if (task.quantity == 0) revert TaskNotActive();
         // TODO: validate member status
 
         // TODO: update points
+        _writePeriodSummary();
 
     }
 

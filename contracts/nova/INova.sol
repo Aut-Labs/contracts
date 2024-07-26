@@ -14,6 +14,7 @@ interface INova {
     error InvalidTaskContributionPoints();
     error InvalidTaskQuantity();
     error InvalidTaskId();
+    error TaskNotActive();
 
     event AdminGranted(address to);
     event AdminRenounced(address from);
