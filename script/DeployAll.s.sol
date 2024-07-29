@@ -65,14 +65,15 @@ contract DeployAll is Script {
         autId = deployAutId(trustedForwarder, owner);
         pluginRegistry = deployPluginRegistry(owner);
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
+        globalParameters = deployGlobalParameters(owner);
         novaRegistry = deployNovaRegistry({
             _trustedForwarder: trustedForwarder,
             _owner: owner,
             _autIdAddress: address(autId),
             _pluginRegistryAddress: address(pluginRegistry),
-            _hubDomainsRegistryAddress: address(hubDomainsRegistry)
+            _hubDomainsRegistryAddress: address(hubDomainsRegistry),
+            _globalParametersAddress: address(globalParameters)
         });
-        globalParameters = deployGlobalParameters(owner);
         basicOnboarding = deployBasicOnboarding(owner);
 
         // set novaRegistry to autId (assumes msg.sender == owner [TODO: change this])
@@ -132,7 +133,7 @@ function deployHubDomainsRegistry(
     address _owner
 ) returns (HubDomainsRegistry) {
     // address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
-    HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(address(0)); // TODO
+    HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(address(1)); // TODO
     return hubDomainsRegistry;
 }
 
@@ -151,7 +152,8 @@ function deployNovaRegistry(
     address _owner,
     address _autIdAddress,
     address _pluginRegistryAddress,
-    address _hubDomainsRegistryAddress
+    address _hubDomainsRegistryAddress,
+    address _globalParametersAddress
 ) returns (NovaRegistry) {
     address novaImplementation = address(new Nova());
     address novaRegistryImplementation = address(new NovaRegistry(_trustedForwarder));
@@ -163,7 +165,8 @@ function deployNovaRegistry(
             _autIdAddress,
             novaImplementation,
             _pluginRegistryAddress,
-            _hubDomainsRegistryAddress
+            _hubDomainsRegistryAddress,
+            _globalParametersAddress
         )
     );
     return NovaRegistry(address(novaRegistryProxy));
