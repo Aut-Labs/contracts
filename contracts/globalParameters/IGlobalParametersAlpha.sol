@@ -34,6 +34,9 @@ interface IGlobalParametersAlpha {
     event PrestigeForPeriod0Unstaged();
     event PrestiveForPeriod0Committed();
 
+    function period0Start() external view returns (uint32);
+    function currentPeriodId() external view returns (uint32);
+
     function steepnessDegree3Exp() external view returns (uint16);
     function penaltyFactor3Exp() external view returns (uint16);
     function periodDuration() external view returns (uint32);

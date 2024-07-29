@@ -3,8 +3,10 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./IGlobalParametersAlpha.sol";
+import { TimeLibrary } from "../libraries/TimeLibrary.sol";
 
 contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
+
     // slot 1
     uint16 public steepnessDegree3Exp;
     uint16 public steepnessDegree3ExpStaged;
@@ -23,13 +25,16 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
     // end of slot 1
 
     // timestamps
-    // slots 2-3
+    // slot 2
     uint64 public steepnessDegree3ExpExpiresAt;
     uint64 public penaltyFactor3ExpExpiresAt;
     uint64 public periodDurationExpiresAt;
     uint64 public constrainingFactor6ExpExpiresAt;
+
+    // Slot 3
     uint64 public credibleNeutrality6ExpExpiresAt;
-    // slot 3
+
+    uint32 public period0Start;
 
     uint256 public localReputationForPeriod0;
     uint256 public localReputationForPeriod0Staged;
@@ -43,11 +48,16 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
 
     /// @dev fill with default values
     function initialize() external initializer {
-        periodDuration = 30 * 24 * 60 * 60;
+        period0Start = TimeLibrary.periodStart({timestamp: block.timestamp});
+        periodDuration = TimeLibrary.FOUR_WEEKS;
         steepnessDegree3Exp = 300;
         penaltyFactor3Exp = 500;
         constrainingFactor6Exp = 1_400_000;
         credibleNeutrality6Exp = 1_300_000;
+    }
+
+    function currentPeriodId() external view returns (uint32) {
+        return TimeLibrary.periodId({ period0Start: period0Start, timestamp: block.timestamp });
     }
 
     function stagePeriodDuration(uint32 nextPeriodDuration) external {
