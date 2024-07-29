@@ -77,7 +77,7 @@ contract DeployAll is Script {
         basicOnboarding = deployBasicOnboarding(owner);
 
         // set novaRegistry to autId (assumes msg.sender == owner [TODO: change this])
-        autId.setNovaRegistry(address(novaRegistry));
+        // autId.setNovaRegistry(address(novaRegistry));
 
         // Create and set the allowlist
         Allowlist allowlist = new Allowlist();
@@ -110,7 +110,7 @@ function deployAutId(address _trustedForwarder, address _owner) returns (AutID) 
         _owner,
         abi.encodeWithSelector(
             AutID.initialize.selector,
-            _owner
+            msg.sender
         )
     );
     return AutID(address(autIdProxy));
