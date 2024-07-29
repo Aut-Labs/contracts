@@ -6,8 +6,6 @@ import "../hubContracts/IHubDomainsRegistry.sol";
 interface INovaRegistry {
     function checkNova(address) external view returns (bool);
 
-    function initialize(address autIdAddr_, address novaLogic, address pluginRegistry, address hubDomainsRegistry) external;
-
     function deployNova(uint256 market, string memory metadata, uint256 commitment) external returns (address nova);
 
     function joinNovaHook(address user) external;

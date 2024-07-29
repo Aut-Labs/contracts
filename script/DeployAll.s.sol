@@ -27,6 +27,7 @@ contract DeployAll is Script {
 
     // state variables
     AutID public autId;
+    PluginRegistry pluginRegistry;
     NovaRegistry public novaRegistry;
     GlobalParametersAlpha public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
@@ -61,17 +62,18 @@ contract DeployAll is Script {
         address trustedForwarder = address(new TrustedForwarder());
 
         // Deploy AutID
-        autId = deployAutId(owner);
+        autId = deployAutId(trustedForwarder, owner);
         pluginRegistry = deployPluginRegistry(owner);
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
         novaRegistry = deployNovaRegistry({
+            _trustedForwarder: trustedForwarder,
             _owner: owner,
             _autIdAddress: address(autId),
             _pluginRegistryAddress: address(pluginRegistry),
             _hubDomainsRegistryAddress: address(hubDomainsRegistry)
         });
         globalParameters = deployGlobalParameters(owner);
-        basicOnboarding = deployBasicOnboarding();
+        basicOnboarding = deployBasicOnboarding(owner);
 
         // set novaRegistry to autId (assumes msg.sender == owner [TODO: change this])
         autId.setNovaRegistry(address(novaRegistry));
@@ -89,7 +91,7 @@ contract DeployAll is Script {
             na[2] = TNamedAddress({name: "novaRegistryProxy", target: address(novaRegistry)});
             na[3] = TNamedAddress({name: "pluginRegistryProxy", target: address(pluginRegistry)});
             na[4] = TNamedAddress({name: "allowlist", target: address(allowlist)});
-            na[5] = TNamedAddress({name: "basicOnboarding", target: basicOnboarding});
+            na[5] = TNamedAddress({name: "basicOnboarding", target: address(basicOnboarding)});
             na[9] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
             for (uint256 i = 0; i != na.length; ++i) {
@@ -100,8 +102,8 @@ contract DeployAll is Script {
     }
 }
 
-function deployAutId(address _owner) returns (AutID) {
-    AutID autIdImplementation = new AutID(trustedForwarder);
+function deployAutId(address _trustedForwarder, address _owner) returns (AutID) {
+    AutID autIdImplementation = new AutID(_trustedForwarder);
     AutProxy autIdProxy = new AutProxy(
         address(autIdImplementation),
         _owner,
@@ -137,7 +139,7 @@ function deployHubDomainsRegistry(
 function deployGlobalParameters(address _owner) returns (GlobalParametersAlpha) {
     GlobalParametersAlpha globalParametersImplementation = new GlobalParametersAlpha();
     AutProxy globalParametersProxy = new AutProxy(
-        globalParametersImplementation,
+        address(globalParametersImplementation),
         _owner,
         ""
     );
@@ -145,30 +147,32 @@ function deployGlobalParameters(address _owner) returns (GlobalParametersAlpha) 
 }
 
 function deployNovaRegistry(
-    address _owner
+    address _trustedForwarder,
+    address _owner,
     address _autIdAddress,
     address _pluginRegistryAddress,
     address _hubDomainsRegistryAddress
 ) returns (NovaRegistry) {
     address novaImplementation = address(new Nova());
-    address novaRegistryImplementation = address(new NovaRegistry(trustedForwarder));
+    address novaRegistryImplementation = address(new NovaRegistry(_trustedForwarder));
     AutProxy novaRegistryProxy = new AutProxy(
-        novaRegistryImpl,
+        novaRegistryImplementation,
         _owner,
         abi.encodeWithSelector(
             NovaRegistry.initialize.selector,
-            autIdProxy,
-            novaImpl,
-            pluginRegistryProxy,
-            hubDomainsRegistry
+            _autIdAddress,
+            novaImplementation,
+            _pluginRegistryAddress,
+            _hubDomainsRegistryAddress
         )
     );
+    return NovaRegistry(address(novaRegistryProxy));
 }
 
-function deployBasicOnboarding() returns (BasicOnboarding) {
-    address onboardingRole1 = address(new SimpleAllowlistOnboarding(owner));
-    address onboardingRole2 = address(new SimpleAllowlistOnboarding(owner));
-    address onboardingRole3 = address(new SimpleAllowlistOnboarding(owner));
+function deployBasicOnboarding(address _owner) returns (BasicOnboarding) {
+    address onboardingRole1 = address(new SimpleAllowlistOnboarding(_owner));
+    address onboardingRole2 = address(new SimpleAllowlistOnboarding(_owner));
+    address onboardingRole3 = address(new SimpleAllowlistOnboarding(_owner));
 
     address[] memory addresses = new address[](3);
     addresses[0] = onboardingRole1;

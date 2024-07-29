@@ -32,7 +32,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     address public autIDAddr;
     address public pluginRegistry;
     address public hubDomainsRegistry;
-    address public glogalParameters;
+    address public globalParameters;
     UpgradeableBeacon public upgradeableBeacon;
     IAllowlist public allowlist;
 

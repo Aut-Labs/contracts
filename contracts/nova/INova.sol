@@ -11,6 +11,7 @@ interface INova {
     error MemberHasNotJoinedHub();
     error SameCommitmentLevel();
     error InvalidCommitmentLevel();
+    error UserHasNotYetCommited();
 
     event AdminGranted(address to);
     event AdminRenounced(address from);
@@ -37,8 +38,8 @@ interface INova {
     function metadataUri() external view returns (string memory);
 
     function roles(address) external view returns (uint256);
-    function commitmentLevels(address) external view returns (uint256);
-    function joinedAt(address) external view returns (uint256);
+    function currentCommitmentLevels(address) external view returns (uint8);
+    function joinedAt(address) external view returns (uint32);
     function parameterWeight(uint256) external view returns (uint256);
     function accountMasks(address) external view returns (uint256);
 
@@ -52,7 +53,7 @@ interface INova {
 
     function removeUrl(string memory) external;
 
-    function join(address who, uint256 role, uint256 commitmentLevel) external;
+    function join(address who, uint256 role, uint8 commitmentLevel) external;
 
     function canJoin(address who, uint256 role) external view returns (bool);
 

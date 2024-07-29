@@ -2,7 +2,7 @@
 pragma solidity ^0.8.21;
 
 import "script/DeployAll.s.sol";
-import { console2 as console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, stdJson, stdMath, StdStorage, stdStorage, StdUtils, Vm, StdStyle, TestBase, DSTest, Test } from "forge-std/Test.sol";
+import { console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, stdJson, stdMath, StdStorage, stdStorage, StdUtils, Vm, StdStyle, TestBase, Test } from "forge-std/Test.sol";
 
 abstract contract BaseTest is Test {
     AutID public autId;
