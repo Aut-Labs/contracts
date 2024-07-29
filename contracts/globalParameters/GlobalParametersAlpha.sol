@@ -48,7 +48,7 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
 
     /// @dev fill with default values
     function initialize() external initializer {
-        period0Start = TimeLibrary.periodStart({timestamp: block.timestamp});
+        period0Start = TimeLibrary.periodStart({timestamp: uint32(block.timestamp)});
         periodDuration = TimeLibrary.FOUR_WEEKS;
         steepnessDegree3Exp = 300;
         penaltyFactor3Exp = 500;
@@ -57,7 +57,7 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
     }
 
     function currentPeriodId() external view returns (uint32) {
-        return TimeLibrary.periodId({ period0Start: period0Start, timestamp: block.timestamp });
+        return TimeLibrary.periodId({ period0Start: period0Start, timestamp: uint32(block.timestamp) });
     }
 
     function stagePeriodDuration(uint32 nextPeriodDuration) external {

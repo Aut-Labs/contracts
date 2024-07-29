@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 interface IAutID {
     event RecordCreated(uint256 tokenId, address account, string username, string uri);
-    event NovaJoined(address account, uint256 role, uint256 commitment, address nova);
+    event NovaJoined(address account, uint256 role, uint8 commitment, address nova);
     event NovaRegistrySet(address);
     event LocalReputationSet(address);
     event TokenMetadataUpdated(uint256 tokenId, address account, string uri);
@@ -41,7 +41,7 @@ interface IAutID {
     /// @param optionalURI Metadata URI string associated with the new AutID NFT
     function mint(
         uint256 role,
-        uint256 commitment,
+        uint8 commitment,
         address nova,
         string memory username_,
         string memory optionalURI
@@ -55,7 +55,7 @@ interface IAutID {
     /// @param optionalURI Metadata URI string associated with the new AutID NFT
     function createRecordAndJoinNova(
         uint256 role,
-        uint256 commitment,
+        uint8 commitment,
         address nova,
         string memory username_,
         string memory optionalURI
@@ -65,5 +65,5 @@ interface IAutID {
     /// @param role Role to join the Nova
     /// @param commitment Commitment to join the Nova
     /// @param nova Address of the Nova to join
-    function joinNova(uint256 role, uint256 commitment, address nova) external;
+    function joinNova(uint256 role, uint8 commitment, address nova) external;
 }
