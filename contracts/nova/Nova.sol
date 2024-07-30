@@ -70,6 +70,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint128 sumCreatedContributionPoints;
         uint128 sumActiveContributionPoints;
         uint128 sumGivenContributionPoints;
+        uint128 sumRemovedContributionPoints;
     }
     mapping(
         uint32 periodId =>
@@ -80,6 +81,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     uint128 currentSumCreatedContributionPoints;
     uint128 currentSumActiveContributionPoints;
     uint128 currentSumGivenContributionPoints;
+    uint128 currentSumRemovedContributionPoints;
 
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
@@ -261,7 +263,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
                 sumCommitmentLevel: currentSumCommitmentLevel,
                 sumActiveContributionPoints: currentSumActiveContributionPoints,
                 sumCreatedContributionPoints: currentSumCreatedContributionPoints,
-                sumGivenContributionPoints: currentSumGivenContributionPoints
+                sumGivenContributionPoints: currentSumGivenContributionPoints,
+                sumRemovedContributionPoints: currentSumRemovedContributionPoints
             });
 
             // if there's a gap in data- we have inactive periods. Fill up with inactive flag and empty values where possible
@@ -272,7 +275,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
                         sumCommitmentLevel: currentSumCommitmentLevel,
                         sumCreatedContributionPoints: 0,
                         sumActiveContributionPoints: currentSumActiveContributionPoints,
-                        sumGivenContributionPoints: 0
+                        sumGivenContributionPoints: 0,
+                        sumRemovedContributionPoints: 0
                     });
                 }
             }
@@ -280,6 +284,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             // Still in writeToHistory conditional: clear out storage where applicable
             delete currentSumCreatedContributionPoints;
             delete currentSumGivenContributionPoints;
+            delete currentSumRemovedContributionPoints;
         }
     }
 
@@ -314,6 +319,34 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         
         tasks.push(_task);
         // TODO: events
+    }
+
+    function removeTasks(uint256[] memory _taskIds) external {
+        _revertForNotAdmin(msg.sender);
+        writePeriodSummary();
+        for (uint256 i=0; i<_taskIds.length; i++) {
+            _removeTask(_taskIds[i]);
+        }
+    }
+
+    function removeTask(uint256 _taskId) external {
+        _revertForNotAdmin(msg.sender);
+        writePeriodSummary();
+        _removeTask(_taskId);
+    }
+
+    function _removeTask(uint256 _taskId) internal {
+        Task memory task = tasks[_taskId];
+        if (task.quantity == 0) revert TaskNotActive();
+        // NOTE: does not subtract from created tasks
+
+        uint128 sumTaskContributionPoints = task.contributionPoints * task.quantity;
+        currentSumActiveContributionPoints -= sumTaskContributionPoints;
+        currentSumRemovedContributionPoints += sumTaskContributionPoints;
+
+        delete tasks[_taskId];
+
+        // TODO: event
     }
 
     /// @custom:sdk-legacy-interface-compatibility
