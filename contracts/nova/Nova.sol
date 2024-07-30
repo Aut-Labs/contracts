@@ -67,17 +67,18 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     struct PeriodSummary {
         bool inactive;
         uint128 sumCommitmentLevel;
+        uint128 sumCreatedContributionPoints;
         uint128 sumActiveContributionPoints;
         uint128 sumGivenContributionPoints;
     }
     mapping(
         uint32 periodId =>
-            uint128 PeriodSummary
+            PeriodSummary periodSummary
     ) public periodSummaries;
 
     uint128 currentSumCommitmentLevel;
-    uint128 currentSumActiveContributionPoints;
     uint128 currentSumCreatedContributionPoints;
+    uint128 currentSumActiveContributionPoints;
     uint128 currentSumGivenContributionPoints;
 
     string[] private _urls;
@@ -237,14 +238,15 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     function _writePeriodSummary(uint32 _currentPeriodId) internal {
         uint32 initPeriodId_ = initPeriodId; // gas
-        uint128 lastPeriodId = _currentPeriodId - 1;
+        uint32 lastPeriodId = _currentPeriodId - 1;
 
         // What happens if a period passes which doesn't write to storage?
         // It means in period n there was activity, period n + 1 => current period there is no activity
-        uint256 i;
+        uint32 i;
         bool writeToHistory;
         for (i=lastPeriodId; i>initPeriodId_ - 1; i--) {
-            if (periodSummaries[i].sumCommitmentLevel != 0) {
+            PeriodSummary storage periodSummary = periodSummaries[i];
+            if (periodSummary.sumCommitmentLevel == 0) {
                 writeToHistory = true;
             } else {
                 // historical commitment levels are up to date- do nothing
@@ -264,20 +266,20 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
             // if there's a gap in data- we have inactive periods. Fill up with inactive flag and empty values where possible
             if (i < lastPeriodId) {
-                for (uint256 j=i+1; j<_currentPeriodId; j++) {
+                for (uint32 j=i+1; j<_currentPeriodId; j++) {
                     periodSummaries[j] = PeriodSummary({
                         inactive: true,
                         sumCommitmentLevel: currentSumCommitmentLevel,
-                        sumActiveContributionPoints: currentSumActiveContributionPoints,
                         sumCreatedContributionPoints: 0,
+                        sumActiveContributionPoints: currentSumActiveContributionPoints,
                         sumGivenContributionPoints: 0
                     });
                 }
             }
 
             // Still in writeToHistory conditional: clear out storage where applicable
-            delete sumCreatedContributionPoints;
-            delete sumGivenContributionPoints;
+            delete currentSumCreatedContributionPoints;
+            delete currentSumGivenContributionPoints;
         }
     }
 
@@ -287,7 +289,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     function addTasks(Task[] calldata _tasks) external {
         _revertForNotAdmin(msg.sender);
-        _writePeriodSummary();
+        writePeriodSummary();
 
         uint256 length = _tasks.length;
         for (uint256 i=0; i<length; i++) {
@@ -297,7 +299,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     function addTask(Task calldata _task) public {
         _revertForNotAdmin(msg.sender);
-        _writePeriodSummary();
+        writePeriodSummary();
 
         _addTask(_task);
     }
@@ -312,21 +314,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         
         tasks.push(_task);
         // TODO: events
-    }
-
-    function acceptTask(address who, uint256 taskId) public {
-        // TODO: access control
-        Task storage task = tasks[taskId];
-        currentPeriodId_ = currentPeriodId();
-        Participation storage participation = participations[who][currentPeriodId_];
-
-        if (taskId > currentTaskId()) revert InvalidTaskId();
-        if (task.quantity == 0) revert TaskNotActive();
-        // TODO: validate member status
-
-        // TODO: update points
-        _writePeriodSummary();
-
     }
 
     /// @custom:sdk-legacy-interface-compatibility
