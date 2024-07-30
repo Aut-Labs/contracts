@@ -175,7 +175,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     /// @notice get the commitment level of a member at a particular period id
     function getCommitmentLevel(address who, uint32 periodId) external view returns (uint32) {
-        if (periodId < getPeriodIdJoined(who)) revert UserHasNotYetCommited();
+        if (periodId < getPeriodIdJoined(who)) revert MemberHasNotYetCommited();
 
         Participation memory participation = participations[who][periodId];
         if (participation.commitmentLevel != 0) {
@@ -194,7 +194,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             period0Start: IGlobalParametersAlpha(novaRegistry).period0Start(),
             timestamp: joinedAt[who]
         });
-        if (periodIdJoined == 0) revert MemberHasNotJoinedHub();
+        if (periodIdJoined == 0) revert MemberDoesNotExist();
         return periodIdJoined;
     }
 
@@ -345,8 +345,42 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         currentSumRemovedContributionPoints += sumTaskContributionPoints;
 
         delete tasks[_taskId];
-
         // TODO: event
+    }
+
+    error UnequalLengths();
+    function giveTasks(uint256[] memory _taskIds, address[] memory _members) external {
+        _revertForNotAdmin(msg.sender);
+        uint256 length = _taskIds.length;
+        if (length != _members.length) revert UnequalLengths();
+        for (uint256 i=0; i<length; i++) {
+            _giveTask(_taskIds[i], _members[i]);
+        }
+    }
+
+    function giveTask(uint256 _taskId, address _member) external {
+        _revertForNotAdmin(msg.sender);
+        _giveTask(_taskId, _member);
+    }
+
+    function _giveTask(uint256 _taskId, address _member) internal {
+        Task storage task = tasks[_taskId];
+        if (task.quantity == 0) revert TaskNotActive();
+        if (joinedAt[_member] == 0) revert MemberDoesNotExist();
+
+
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        Participation storage participation = participations[_member][currentPeriodId];
+
+        uint128 contributionPoints = task.contributionPoints;
+        participation.givenContributionPoints += contributionPoints;
+
+        currentSumGivenContributionPoints += contributionPoints;
+        currentSumActiveContributionPoints -= contributionPoints;
+
+        task.quantity--;
+
+        // TODO: push task to user balance (as nft)
     }
 
     /// @custom:sdk-legacy-interface-compatibility
