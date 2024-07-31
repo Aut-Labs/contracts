@@ -1,4 +1,14 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IReputationMining {}
+interface IReputationMining {
+    function initialize(address initialOwner, address _repFiToken, address _pRepFiToken, address _circular) external;
+
+    function updatePeriod() external;
+
+    function claimUtilityToken() external;
+
+    function claim() external;
+
+    function getTokensForPeriod(uint256 _period) external pure returns (uint256);
+}

@@ -5,10 +5,11 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IPREPFI} from "../token/IpREPFI.sol";
+import {IReputationMining} from "./IReputationMining.sol";
 
 // import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract ReputationMining is ReentrancyGuard, OwnableUpgradeable {
+contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining {
     IERC20 public repFiToken;
     IPREPFI public pRepFiToken;
     address public circular;

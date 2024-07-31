@@ -12,7 +12,7 @@ contract PREPFI is ERC20, AccessControl {
 
     constructor(address _pluginRegistry) ERC20("Promised Reputation Finance", "pREPFI") {
         repFiRegistry = IRepFiRegistry(_pluginRegistry);
-        _mint(msg.sender, 100_000_000 * 10e18);
+        _mint(msg.sender, 100_000_000 ether);
     }
 
     function transfer(address to, uint256 value) public override returns (bool) {
@@ -37,8 +37,7 @@ contract PREPFI is ERC20, AccessControl {
         return true;
     }
 
-    function burn(address account, uint256 value) external {
-        require(hasRole(BURNER_ROLE, msg.sender), "Burn not allowed");
+    function burn(address account, uint256 value) external onlyRole(BURNER_ROLE) {
         _burn(account, value);
     }
 }
