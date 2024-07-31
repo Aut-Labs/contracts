@@ -28,7 +28,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     address public localReputation;
     mapping(bytes32 => uint256) public tokenIdForUsername;
     mapping(address => uint256) public tokenIdForAccount;
-    mapping(address => uint64) public mintedAt;
+    mapping(address => uint32) public mintedAt;
 
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
@@ -72,7 +72,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     /// @inheritdoc IAutID
     function mint(
         uint256 role,
-        uint256 commitment,
+        uint8 commitment,
         address nova,
         string memory username_,
         string memory optionalURI
@@ -83,14 +83,14 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     /// @inheritdoc IAutID
     function createRecordAndJoinNova(
         uint256 role,
-        uint256 commitment,
+        uint8 commitment,
         address nova,
         string memory username_,
         string memory optionalURI
     ) public {
         address account = _msgSender();
         AutIDUtils._revertForZeroAddress(account);
-        mintedAt[account] = uint64(block.timestamp);
+        mintedAt[account] = uint32(block.timestamp);
 
         _createRecord(account, username_, optionalURI);
         _joinNova(account, role, commitment, nova);
@@ -105,7 +105,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     function userNovaCommitmentLevel(address nova, address user) external view returns (uint256) {
-        return INova(nova).commitmentLevels(user);
+        return INova(nova).currentCommitmentLevels(user);
     }
 
     function userNovaJoinedAt(address nova, address user) external view returns (uint256) {
@@ -127,7 +127,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     /// @inheritdoc IAutID
-    function joinNova(uint256 role, uint256 commitment, address nova) public {
+    function joinNova(uint256 role, uint8 commitment, address nova) public {
         address account = _msgSender();
         _revertForZeroAddress(account);
         uint256 tokenId = tokenIdForAccount[account];
@@ -136,7 +136,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _joinNova(account, role, commitment, nova);
     }
 
-    function _joinNova(address account, uint256 role, uint256 commitment, address nova) internal {
+    function _joinNova(address account, uint256 role, uint8 commitment, address nova) internal {
         address novaRegistryAddress = novaRegistry;
         _revertForZeroAddress(novaRegistryAddress);
         _revertForZeroAddress(nova);

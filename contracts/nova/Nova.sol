@@ -8,6 +8,7 @@ import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import "../hubContracts/IHubDomainsRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
+import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
@@ -39,8 +40,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     uint32 public initPeriodId;
 
     mapping(address => uint256) public roles;
-    mapping(address => uint256) public joinedAt;
-    mapping(address => uint256) public currentCommitmentLevels;
+    mapping(address => uint32) public joinedAt;
+    mapping(address => uint8) public currentCommitmentLevels;
     mapping(uint256 => uint256) public parameterWeight;
     mapping(address => uint256) public accountMasks;
 
@@ -91,7 +92,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         hubDomainsRegistry = hubDomainsRegistry_;
         deployer = deployer_;
 
-        initTimestamp = block.timestamp;
+        initTimestamp = uint32(block.timestamp);
         initPeriodId = IGlobalParametersAlpha(novaRegistry_).currentPeriodId();
     }
 
@@ -131,21 +132,20 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         _removeUrl(url);
     }
 
-    function join(address who, uint256 role, uint256 commitmentLevel) external {
+    function join(address who, uint256 role, uint8 commitmentLevel) external {
         require(msg.sender == autID, "caller not AutID contract");
         require(canJoin(who, role), "can not join");
 
         roles[who] = role;
-        commitmentLevels[who] = commitmentLevel;
         members.push(who);
-        joinedAt[who] = block.timestamp;
+        joinedAt[who] = uint32(block.timestamp);
 
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
-        partipications[msg.sender][currentPeriodId].commitmentLevel = commitmentLevel;
-        currentCommitmentLevels[msg.sender] = commitmentLevel;
+        participations[who][currentPeriodId].commitmentLevel = commitmentLevel;
+        currentCommitmentLevels[who] = commitmentLevel;
 
         _writeHistoricalSumCommitmentLevel(currentPeriodId);
-        currentSumCommitmentLevel += commitmentLevel;
+        currentSumCommitmentLevel += uint128(commitmentLevel);
 
         INovaRegistry(novaRegistry).joinNovaHook(who);
 
@@ -156,7 +156,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     function getCommitmentLevel(address who, uint32 periodId) external view returns (uint32) {
         if (periodId < getPeriodIdJoined(who)) revert UserHasNotYetCommited();
 
-        Participation memory participation = participations[who];
+        Participation memory participation = participations[who][periodId];
         if (participation.commitmentLevel != 0) {
             // user has changed their commitmentLevel in a period following `periodId`.  We know this becuase
             // participation.commitmentLevel state is non-zero as it is written following a commitmentLevel change.
@@ -177,8 +177,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         return periodIdJoined;
     }
 
-    function changeCommitmentLevel(uint32 newCommitmentLevel) external {
-        uint32 oldCommitmentLevel = currentCommitmentLevels[msg.sender];
+    function changeCommitmentLevel(uint8 newCommitmentLevel) external {
+        uint8 oldCommitmentLevel = currentCommitmentLevels[msg.sender];
         if (newCommitmentLevel == oldCommitmentLevel) revert SameCommitmentLevel();
 
         // TODO: globalParam
@@ -188,7 +188,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
 
         // write to storage for all 0 values- as the currentCommitmentLevels is now different
-        for (uint256 i=currentPeriodId; i>periodIdJoined - 1; i--) {
+        for (uint32 i=currentPeriodId; i>periodIdJoined - 1; i--) {
             Participation storage participation = participations[msg.sender][i];
             if (participation.commitmentLevel == 0) {
                 participation.commitmentLevel = oldCommitmentLevel;
@@ -213,16 +213,16 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     /// @notice write sumCommitmentLevel to history when needed
     function writeHistoricalSumCommitmentLevel() public {
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry_).currentPeriodId();
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
         _writeHistoricalSumCommitmentLevel(currentPeriodId);
     }
 
     function _writeHistoricalSumCommitmentLevel(uint32 _currentPeriodId) internal {
         uint32 initPeriodId_ = initPeriodId; // gas
-        for (uint256 i=currentPeriodId - 1; i>initPeriodId_ - 1; i--) {
+        for (uint32 i=_currentPeriodId - 1; i>initPeriodId_ - 1; i--) {
             if (historicalSumCommitmentLevel[i] == 0) {
                 // write current sum of commitment to storage as there is currently no stored value
-                historicalSumCommitmentLevel[i] = sumCommitmentLevel;
+                historicalSumCommitmentLevel[i] = currentSumCommitmentLevel;
             } else {
                 // historical commitment levels are up to date- do nothing
                 break;
