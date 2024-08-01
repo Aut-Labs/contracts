@@ -5,7 +5,7 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import {IRepFiRegistry} from "../repFiRegistry/IRepFiRegistry.sol";
 
-contract PREPFI is ERC20, AccessControl {
+contract PRepFi is ERC20, AccessControl {
     IRepFiRegistry repFiRegistry;
 
     bytes32 public constant BURNER_ROLE = keccak256("BURNER");

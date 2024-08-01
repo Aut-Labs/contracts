@@ -17,6 +17,12 @@ import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
 import {HubDomainsRegistry} from "../contracts/hubContracts/HubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
+import {RepFiRegistry} from "../contracts/repfi/repFiRegistry/RepfiRegistry.sol";
+import {RepFi} from "../contracts/repfi/token/REPFI.sol";
+import {PRepFi} from "../contracts/repfi/token/pREPFI.sol";
+import {TokenVesting} from "../contracts/repfi/vesting/TokenVesting.sol";
+import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
+import {InitialDistribution} from "../contracts/repfi/token/InitialDistribution.sol";
 
 import "forge-std/Script.sol";
 
@@ -32,6 +38,20 @@ contract DeployAll is Script {
     GlobalParametersAlpha public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
     BasicOnboarding public basicOnboarding;
+    RepFiRegistry public repFiRegistry;
+    RepFi public repFi;
+    PRepFi public pRepFi;
+    TokenVesting public privateSale;
+    TokenVesting public community;
+    TokenVesting public investors;
+    TokenVesting public team;
+    address public airdrop; // merkle
+    address public partners; // multisig
+    address public ecosystem; // multisig
+    address public profitSharing;
+    address public circular;
+    ReputationMining public reputationMining;
+    InitialDistribution public initialDistribution;
 
     struct TNamedAddress {
         address target;
@@ -83,6 +103,50 @@ contract DeployAll is Script {
         Allowlist allowlist = new Allowlist();
         novaRegistry.setAllowlistAddress(address(allowlist));
 
+        repFiRegistry = deployRepFiRegistry(owner);
+
+        // deploy token contracts
+        repFi = deployRepFi();
+        pRepFi = deployPRepFi(address(repFiRegistry));
+
+        // deploy vesting contracts
+        privateSale = deployTokenVesting(repFi);
+        publicSale = deployTokenVesting(repFi);
+        investors = deployTokenVesting(repFi);
+        team = deployTokenVesting(repFi);
+
+        // deploy circular contract
+        circular = makeAddr("circular"); // ToDo: update to Circular contract later
+
+        // deploy profitSharing
+        profitSharing = makeAddr("profitSharing"); // ToDo: update to ProfitSharing contract later
+
+        airdrop = makeAddr("airdrop"); // ToDo: update to Airdrop contract later
+        partners = makeAddr("partners"); // ToDo: update to partners multisig later
+        ecosystem = makeAddr("ecosystem"); // ToDo: update to ecosystem multisig later
+
+        // deploy reputationMining
+        reputationMining = deployReputationMining(owner, repFi, pRepFi, circular);
+
+        // deploy initialDistribution
+        initialDistribution = deployInitialDistribution(
+            repFi,
+            privateSale,
+            community,
+            reputationMining,
+            airdrop,
+            investors,
+            team,
+            partners,
+            ecosystem
+        );
+
+        // register repfi plugins, more to add later
+        repFiRegistry.registerPlugin(address(reputationMining), "ReputationMining");
+
+        // distribute tokens
+        initialDistribution.distribute();
+
         // todo: convert to helper function
         if (deploying) {
             string memory filename = "deployments.txt";
@@ -96,7 +160,10 @@ contract DeployAll is Script {
             na[9] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
             for (uint256 i = 0; i != na.length; ++i) {
-                vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));
+                vm.writeLine(
+                    filename,
+                    string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target))
+                );
             }
             vm.writeLine(filename, "\n");
         }
@@ -108,10 +175,7 @@ function deployAutId(address _trustedForwarder, address _owner) returns (AutID) 
     AutProxy autIdProxy = new AutProxy(
         address(autIdImplementation),
         _owner,
-        abi.encodeWithSelector(
-            AutID.initialize.selector,
-            msg.sender
-        )
+        abi.encodeWithSelector(AutID.initialize.selector, msg.sender)
     );
     return AutID(address(autIdProxy));
 }
@@ -121,17 +185,12 @@ function deployPluginRegistry(address _owner) returns (PluginRegistry) {
     AutProxy pluginRegistryProxy = new AutProxy(
         address(pluginRegistryImplementation),
         _owner,
-        abi.encodeWithSelector(
-            PluginRegistry.initialize.selector,
-            _owner
-        )
+        abi.encodeWithSelector(PluginRegistry.initialize.selector, _owner)
     );
     return PluginRegistry(address(pluginRegistryProxy));
 }
 
-function deployHubDomainsRegistry(
-    address _owner
-) returns (HubDomainsRegistry) {
+function deployHubDomainsRegistry(address _owner) returns (HubDomainsRegistry) {
     // address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
     HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(address(1)); // TODO
     return hubDomainsRegistry;
@@ -139,11 +198,7 @@ function deployHubDomainsRegistry(
 
 function deployGlobalParameters(address _owner) returns (GlobalParametersAlpha) {
     GlobalParametersAlpha globalParametersImplementation = new GlobalParametersAlpha();
-    AutProxy globalParametersProxy = new AutProxy(
-        address(globalParametersImplementation),
-        _owner,
-        ""
-    );
+    AutProxy globalParametersProxy = new AutProxy(address(globalParametersImplementation), _owner, "");
     return GlobalParametersAlpha(address(globalParametersProxy));
 }
 
@@ -184,4 +239,73 @@ function deployBasicOnboarding(address _owner) returns (BasicOnboarding) {
     BasicOnboarding basicOnboarding = new BasicOnboarding(addresses);
 
     return basicOnboarding;
+}
+
+function deployRepFiRegistry(address _owner) returns (PluginRegistry) {
+    RepFiRegistry repFiRegistryImplementation = new PluginRegistry();
+    AutProxy repFiRegistryProxy = new AutProxy(
+        address(repFiRegistryImplementation),
+        _owner,
+        abi.encodeWithSelector(RepFiRegistry.initialize.selector, _owner)
+    );
+    return RepFiRegistry(address(repFiRegistryProxy));
+}
+
+function deployRepFiToken() returns (RepFi) {
+    RepFi repFi = new RepFi();
+    return repFi;
+}
+
+function deployPRepFiToken(address _repFiRegistry) returns (PRepFi) {
+    RepFi pRepFi = new PRepFi(_repFiRegistry);
+    return pRepFi;
+}
+
+function deployTokenVesting(address _repFiToken) returns (TokenVesting) {
+    TokenVesting vesting = new TokenVesting(_repFiToken);
+
+    // ToDo: set owner to multisig
+    // vesting.transferOwnership(multisig);
+
+    return vesting;
+}
+
+function deployReputationMining(
+    address _owner,
+    address _repFi,
+    address _pRepFi,
+    address _circular
+) returns (ReputationMining) {
+    ReputationMining reputationMiningImplementation = new ReputationMining();
+    AutProxy reputationMiningProxy = new AutProxy(
+        address(reputationMiningImplementation),
+        _owner,
+        abi.encodeWithSelector(ReputationMining.initialize.selector, _owner, _repFi, _pRepFi, _circular)
+    );
+    return ReputationMining(address(reputationMiningProxy));
+}
+
+function deployInitialDistribution(
+    IERC20 _repFi,
+    TokenVesting _privateSale,
+    TokenVesting _community,
+    IReputationMining _reputationMining,
+    address _airdrop,
+    TokenVesting _investors,
+    TokenVesting _team,
+    address _partners,
+    address _ecosystem
+) {
+    InitialDistribution initialDistribution = new InitialDistribution(
+        _repFi,
+        _privateSale,
+        _community,
+        _reputationMining,
+        _airdrop,
+        _investors,
+        _team,
+        _partners,
+        _ecosystem
+    );
+    return initialDistribution;
 }
