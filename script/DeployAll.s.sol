@@ -106,14 +106,14 @@ contract DeployAll is Script {
         repFiRegistry = deployRepFiRegistry(owner);
 
         // deploy token contracts
-        repFi = deployRepFi();
-        pRepFi = deployPRepFi(address(repFiRegistry));
+        repFi = deployRepFiToken();
+        pRepFi = deployPRepFiToken(address(repFiRegistry));
 
         // deploy vesting contracts
-        privateSale = deployTokenVesting(repFi);
-        publicSale = deployTokenVesting(repFi);
-        investors = deployTokenVesting(repFi);
-        team = deployTokenVesting(repFi);
+        privateSale = deployTokenVesting(address(repFi));
+        community = deployTokenVesting(address(repFi));
+        investors = deployTokenVesting(address(repFi));
+        team = deployTokenVesting(address(repFi));
 
         // deploy circular contract
         circular = makeAddr("circular"); // ToDo: update to Circular contract later
@@ -126,7 +126,7 @@ contract DeployAll is Script {
         ecosystem = makeAddr("ecosystem"); // ToDo: update to ecosystem multisig later
 
         // deploy reputationMining
-        reputationMining = deployReputationMining(owner, repFi, pRepFi, circular);
+        reputationMining = deployReputationMining(owner, address(repFi), address(pRepFi), address(circular));
 
         // deploy initialDistribution
         initialDistribution = deployInitialDistribution(
@@ -142,7 +142,11 @@ contract DeployAll is Script {
         );
 
         // register repfi plugins, more to add later
+        vm.prank(owner);
         repFiRegistry.registerPlugin(address(reputationMining), "ReputationMining");
+
+        // send tokens to distribution contract
+        repFi.transfer(address(initialDistribution), 100000000 ether);
 
         // distribute tokens
         initialDistribution.distribute();
@@ -241,8 +245,8 @@ function deployBasicOnboarding(address _owner) returns (BasicOnboarding) {
     return basicOnboarding;
 }
 
-function deployRepFiRegistry(address _owner) returns (PluginRegistry) {
-    RepFiRegistry repFiRegistryImplementation = new PluginRegistry();
+function deployRepFiRegistry(address _owner) returns (RepFiRegistry) {
+    RepFiRegistry repFiRegistryImplementation = new RepFiRegistry();
     AutProxy repFiRegistryProxy = new AutProxy(
         address(repFiRegistryImplementation),
         _owner,
@@ -257,7 +261,7 @@ function deployRepFiToken() returns (RepFi) {
 }
 
 function deployPRepFiToken(address _repFiRegistry) returns (PRepFi) {
-    RepFi pRepFi = new PRepFi(_repFiRegistry);
+    PRepFi pRepFi = new PRepFi(_repFiRegistry);
     return pRepFi;
 }
 
@@ -286,16 +290,16 @@ function deployReputationMining(
 }
 
 function deployInitialDistribution(
-    IERC20 _repFi,
+    RepFi _repFi,
     TokenVesting _privateSale,
     TokenVesting _community,
-    IReputationMining _reputationMining,
+    ReputationMining _reputationMining,
     address _airdrop,
     TokenVesting _investors,
     TokenVesting _team,
     address _partners,
     address _ecosystem
-) {
+) returns (InitialDistribution) {
     InitialDistribution initialDistribution = new InitialDistribution(
         _repFi,
         _privateSale,

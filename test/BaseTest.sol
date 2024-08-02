@@ -2,7 +2,23 @@
 pragma solidity ^0.8.21;
 
 import "script/DeployAll.s.sol";
-import { console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, stdJson, stdMath, StdStorage, stdStorage, StdUtils, Vm, StdStyle, TestBase, Test } from "forge-std/Test.sol";
+import {
+    console,
+    StdAssertions,
+    StdChains,
+    StdCheats,
+    stdError,
+    StdInvariant,
+    stdJson,
+    stdMath,
+    StdStorage,
+    stdStorage,
+    StdUtils,
+    Vm,
+    StdStyle,
+    TestBase,
+    Test
+} from "forge-std/Test.sol";
 
 abstract contract BaseTest is Test {
     AutID public autId;
@@ -10,6 +26,8 @@ abstract contract BaseTest is Test {
     GlobalParametersAlpha public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
     BasicOnboarding public basicOnboarding;
+
+    RepFi public repFi;
 
     address public owner = address(this);
     address public alice = address(0x411Ce);
@@ -28,6 +46,8 @@ abstract contract BaseTest is Test {
         hubDomainsRegistry = deploy.hubDomainsRegistry();
         basicOnboarding = deploy.basicOnboarding();
 
+        repFi = deploy.repFi();
+
         // labeling
         vm.label(owner, "Owner");
         vm.label(alice, "Alice");
@@ -37,5 +57,6 @@ abstract contract BaseTest is Test {
         vm.label(address(globalParameters), "globalParameters");
         vm.label(address(hubDomainsRegistry), "hubDomainsRegistry");
         vm.label(address(basicOnboarding), "basicOnboarding");
+        vm.label(address(repFi), "repFi");
     }
 }
