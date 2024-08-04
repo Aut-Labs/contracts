@@ -3,10 +3,9 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./IGlobalParametersAlpha.sol";
-import { TimeLibrary } from "../libraries/TimeLibrary.sol";
+import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
 contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
-
     // slot 1
     uint16 public steepnessDegree3Exp;
     uint16 public steepnessDegree3ExpStaged;
@@ -57,7 +56,7 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
     }
 
     function currentPeriodId() external view returns (uint32) {
-        return TimeLibrary.periodId({ period0Start: period0Start, timestamp: uint32(block.timestamp) });
+        return TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
     }
 
     function stagePeriodDuration(uint32 nextPeriodDuration) external {
@@ -274,7 +273,6 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
 
         emit CredibleNeutrality6ExpCommitted();
     }
-
 
     // function stageCredibleNeutrality6Exp(uint32 valueToStage) external {
     //     _checkOwner();

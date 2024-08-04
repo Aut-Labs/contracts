@@ -62,18 +62,14 @@ interface IInteractionRegistry {
 
     /// @notice Return if a given interactionId has interaction data stored
     /// @param interactionId bytes32 interaction ID
-    /// @return true if exists, else false 
+    /// @return true if exists, else false
     function isInteractionId(bytes32 interactionId) external view returns (bool);
 
     /// @notice registeres interaction type by the given interaction data
     /// @param chainId chain id of the interaction
     /// @param recipient call address (tx to) of the interaction
     /// @param functionSelector 4 bytes of the function selector of the interaction
-    function registerInteractionId(
-        uint16 chainId,
-        address recipient,
-        bytes4 functionSelector
-    ) external;
+    function registerInteractionId(uint16 chainId, address recipient, bytes4 functionSelector) external;
 }
 
 /// @dev a helper contract for the interaction registry with error definitions
@@ -89,11 +85,7 @@ contract InteractionRegistryErrorHelper {
 }
 
 /// @notice a registry contract for interaction
-contract InteractionRegistry is
-    IInteractionRegistry,
-    InteractionRegistryErrorHelper,
-    AccessControl
-{
+contract InteractionRegistry is IInteractionRegistry, InteractionRegistryErrorHelper, AccessControl {
     /// @inheritdoc IInteractionRegistry
     bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
     /// @inheritdoc IInteractionRegistry
@@ -101,9 +93,7 @@ contract InteractionRegistry is
 
     mapping(bytes32 interactionId => TInteractionData data) internal _interactionDataFor;
     bytes32 internal constant INTERACTION_DATA_TYPEHASH =
-        keccak256(
-            "TInteractionData(uint16 chainId,address recipient,bytes4 functionSelector)"
-        );
+        keccak256("TInteractionData(uint16 chainId,address recipient,bytes4 functionSelector)");
 
     constructor(address initialOperatorManager) {
         if (initialOperatorManager == address(0)) {
@@ -116,15 +106,9 @@ contract InteractionRegistry is
     }
 
     /// @inheritdoc IInteractionRegistry
-    function interactionDataUnpacked(
-        bytes32 interactionId
-    ) external view returns (uint16, address, bytes4) {
+    function interactionDataUnpacked(bytes32 interactionId) external view returns (uint16, address, bytes4) {
         TInteractionData memory data = _interactionDataFor[interactionId];
-        return (
-            data.chainId,
-            data.recipient,
-            data.functionSelector
-        );
+        return (data.chainId, data.recipient, data.functionSelector);
     }
 
     /// @inheritdoc IInteractionRegistry
@@ -154,11 +138,7 @@ contract InteractionRegistry is
     }
 
     /// @inheritdoc IInteractionRegistry
-    function registerInteractionId(
-        uint16 chainId,
-        address recipient,
-        bytes4 functionSelector
-    ) external {
+    function registerInteractionId(uint16 chainId, address recipient, bytes4 functionSelector) external {
         _checkRole(OPERATOR_ROLE);
         if (chainId == 0) {
             revert InvalidChainIdError();
@@ -182,26 +162,11 @@ contract InteractionRegistry is
 
         _interactionDataFor[interactionId] = data;
 
-        emit InteractionTypeCreated(
-            interactionId,
-            chainId,
-            data.recipient,
-            data.functionSelector
-        );
+        emit InteractionTypeCreated(interactionId, chainId, data.recipient, data.functionSelector);
     }
 
     /// @dev a helper utility for calculating interaction data hash
-    function _calcInteractionIdFor(
-        TInteractionData memory data
-    ) internal pure returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(
-                    INTERACTION_DATA_TYPEHASH,
-                    data.chainId,
-                    data.recipient,
-                    data.functionSelector
-                )
-            );
+    function _calcInteractionIdFor(TInteractionData memory data) internal pure returns (bytes32) {
+        return keccak256(abi.encode(INTERACTION_DATA_TYPEHASH, data.chainId, data.recipient, data.functionSelector));
     }
 }

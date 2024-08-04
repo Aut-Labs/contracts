@@ -2,16 +2,12 @@
 pragma solidity ^0.8.20;
 
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-import {
-    ERC721Upgradeable
-} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {
     ERC721URIStorageUpgradeable
 } from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
-import {
-    AccessControlUpgradeable
-} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
 /// @title a ERC721 upgradeable contract with metadata contract for interactions
 contract InteractionFactory is ERC721URIStorageUpgradeable, AccessControlUpgradeable {
@@ -19,11 +15,7 @@ contract InteractionFactory is ERC721URIStorageUpgradeable, AccessControlUpgrade
     /// @param sender sender address of the update
     /// @param interactionId id of interaction
     /// @param uri the uri itself
-    event InteractionURIUpdated(
-        address indexed sender,
-        uint256 indexed interactionId,
-        string uri
-    );
+    event InteractionURIUpdated(address indexed sender, uint256 indexed interactionId, string uri);
     /// @notice en event emitted on interaction mint
     event InteractionMinted(address indexed sender, uint256 interactionId);
     /// @notice an event emitted on transferability change
@@ -68,11 +60,7 @@ contract InteractionFactory is ERC721URIStorageUpgradeable, AccessControlUpgrade
     /// @param to address of the recipient of the interaction token
     /// @param interactionId id of the interaction
     /// @param uri tokenURI
-    function mintInteraction(
-        address to,
-        uint256 interactionId,
-        string memory uri
-    ) external {
+    function mintInteraction(address to, uint256 interactionId, string memory uri) external {
         _checkRole(MINTER_ROLE);
         _mint(to, interactionId);
         _setInteractionURI(interactionId, uri);
@@ -108,12 +96,7 @@ contract InteractionFactory is ERC721URIStorageUpgradeable, AccessControlUpgrade
     /// @inheritdoc IERC165
     function supportsInterface(
         bytes4 interfaceId
-    )
-        public
-        view
-        override(ERC721URIStorageUpgradeable, AccessControlUpgradeable)
-        returns (bool)
-    {
+    ) public view override(ERC721URIStorageUpgradeable, AccessControlUpgradeable) returns (bool) {
         return (ERC721URIStorageUpgradeable.supportsInterface(interfaceId) ||
             AccessControlUpgradeable.supportsInterface(interfaceId));
     }

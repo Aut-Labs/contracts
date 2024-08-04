@@ -10,11 +10,7 @@ interface IInteractionDataset {
     /// @param relayer address of the relayer caused an update
     /// @param merkleRoot new merkle root pushed by the relayer
     /// @param proofsHash hash of the merkle tree source file (nullable)
-    event MerkleRootUpdated(
-        address indexed relayer,
-        bytes32 indexed merkleRoot,
-        bytes32 proofsHash
-    );
+    event MerkleRootUpdated(address indexed relayer, bytes32 indexed merkleRoot, bytes32 proofsHash);
 
     /// @notice a role that manage relayer role
     /// @return manager role
@@ -58,11 +54,7 @@ abstract contract InteractionDatasetErrorHelper {
     error InitialManagerEmptyError();
 }
 
-contract InteractionDataset is
-    IInteractionDataset,
-    InteractionDatasetErrorHelper,
-    AccessControl
-{
+contract InteractionDataset is IInteractionDataset, InteractionDatasetErrorHelper, AccessControl {
     /// @inheritdoc IInteractionDataset
     bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
     /// @inheritdoc IInteractionDataset

@@ -59,13 +59,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint128 givenContributionPoints;
         // TODO: array of completed tasks
     }
-    mapping(
-        address who => mapping(
-            uint32 periodId =>
-                Participation participation
-        )
-    ) public participations;
-    
+    mapping(address who => mapping(uint32 periodId => Participation participation)) public participations;
+
     struct PeriodSummary {
         bool inactive;
         uint128 sumCommitmentLevel;
@@ -74,10 +69,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint128 sumGivenContributionPoints;
         uint128 sumRemovedContributionPoints;
     }
-    mapping(
-        uint32 periodId =>
-            PeriodSummary periodSummary
-    ) public periodSummaries;
+    mapping(uint32 periodId => PeriodSummary periodSummary) public periodSummaries;
 
     uint128 currentSumCommitmentLevel;
     uint128 currentSumCreatedContributionPoints;
@@ -211,7 +203,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
 
         // write to storage for all 0 values- as the currentCommitmentLevels is now different
-        for (uint32 i=currentPeriodId; i>periodIdJoined - 1; i--) {
+        for (uint32 i = currentPeriodId; i > periodIdJoined - 1; i--) {
             Participation storage participation = participations[msg.sender][i];
             if (participation.commitmentLevel == 0) {
                 participation.commitmentLevel = oldCommitmentLevel;
@@ -222,7 +214,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         }
 
         currentCommitmentLevels[msg.sender] = newCommitmentLevel;
-        
+
         _writePeriodSummary(currentPeriodId);
         currentSumCommitmentLevel = currentSumCommitmentLevel - oldCommitmentLevel + newCommitmentLevel;
 
@@ -232,7 +224,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             newCommitmentLevel: newCommitmentLevel
         });
     }
-
 
     /// @notice write sums to history when needed
     function writePeriodSummary() public {
@@ -248,7 +239,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         // It means in period n there was activity, period n + 1 => current period there is no activity
         uint32 i;
         bool writeToHistory;
-        for (i=lastPeriodId; i>initPeriodId_ - 1; i--) {
+        for (i = lastPeriodId; i > initPeriodId_ - 1; i--) {
             PeriodSummary storage periodSummary = periodSummaries[i];
             if (periodSummary.sumCommitmentLevel == 0) {
                 writeToHistory = true;
@@ -271,7 +262,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
             // if there's a gap in data- we have inactive periods. Fill up with inactive flag and empty values where possible
             if (i < lastPeriodId) {
-                for (uint32 j=i+1; j<_currentPeriodId; j++) {
+                for (uint32 j = i + 1; j < _currentPeriodId; j++) {
                     periodSummaries[j] = PeriodSummary({
                         inactive: true,
                         sumCommitmentLevel: currentSumCommitmentLevel,
@@ -299,7 +290,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         writePeriodSummary();
 
         uint256 length = _tasks.length;
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             _addTask(_tasks[i]);
         }
     }
@@ -315,11 +306,11 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
         if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
         if (!IInteractionRegistry(novaRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
-        
+
         uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
         currentSumActiveContributionPoints += sumTaskContributionPoints;
         currentSumCreatedContributionPoints += sumTaskContributionPoints;
-        
+
         tasks.push(_task);
         // TODO: events
     }
@@ -327,7 +318,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     function removeTasks(uint256[] memory _taskIds) external {
         _revertForNotAdmin(msg.sender);
         writePeriodSummary();
-        for (uint256 i=0; i<_taskIds.length; i++) {
+        for (uint256 i = 0; i < _taskIds.length; i++) {
             _removeTask(_taskIds[i]);
         }
     }
@@ -356,7 +347,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         _revertForNotAdmin(msg.sender);
         uint256 length = _taskIds.length;
         if (length != _members.length) revert UnequalLengths();
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             _giveTask(_taskIds[i], _members[i]);
         }
     }
@@ -370,7 +361,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         Task storage task = tasks[_taskId];
         if (task.quantity == 0) revert TaskNotActive();
         if (joinedAt[_member] == 0) revert MemberDoesNotExist();
-
 
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
         Participation storage participation = participations[_member][currentPeriodId];
@@ -454,7 +444,11 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     // this function registers a new .hub domain through the Nova contract.
     // It's called when the user submits their custom domain part and metadata URI.
     // It forwards the request to the HubDomainsRegistry.
-    function registerDomain(string calldata domain_, address novaAddress_, string calldata metadataUri_) external override {
+    function registerDomain(
+        string calldata domain_,
+        address novaAddress_,
+        string calldata metadataUri_
+    ) external override {
         _revertForNotDeployer(msg.sender);
         // also revert if not deployer
         IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);

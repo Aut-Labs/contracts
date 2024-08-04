@@ -19,7 +19,13 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
     uint256 private tokenIdCounter;
     address private permittedContract;
 
-    event DomainRegistered(address indexed novaAddress, address verifier, string domain, uint256 tokenId, string metadataUri);
+    event DomainRegistered(
+        address indexed novaAddress,
+        address verifier,
+        string domain,
+        uint256 tokenId,
+        string metadataUri
+    );
 
     constructor(address _permittedContract) Ownable(msg.sender) {
         require(_permittedContract != address(0), "Permitted contract address cannot be zero");
