@@ -8,6 +8,7 @@ import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import "../hubContracts/IHubDomainsRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
+import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
 // todo: admin retro onboarding
@@ -48,6 +49,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     struct Task {
         uint32 contributionPoints;
         uint128 quantity;
+        bytes32 interactionId;
         // TODO: further identifiers
     }
     Task[] public tasks;
@@ -312,6 +314,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     function _addTask(Task memory _task) internal {
         if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
         if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
+        if (!IInteractionRegistry(novaRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
         
         uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
         currentSumActiveContributionPoints += sumTaskContributionPoints;

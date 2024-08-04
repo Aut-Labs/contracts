@@ -13,6 +13,7 @@ interface INova {
     error InvalidTaskContributionPoints();
     error InvalidTaskQuantity();
     error InvalidTaskId();
+    error InvalidTaskInteractionId();
     error TaskNotActive();
     error MemberHasNotYetCommited();
 

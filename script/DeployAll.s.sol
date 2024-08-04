@@ -11,6 +11,7 @@ import {BasicOnboarding} from "../contracts/onboarding/BasicOnboarding.sol";
 import {Nova} from "../contracts/nova/Nova.sol";
 import {AutID} from "../contracts/autid/AutID.sol";
 import {NovaRegistry} from "../contracts/nova/NovaRegistry.sol";
+import {InteractionRegistry} from "../contracts/interactions/InteractionRegistry.sol";
 import {Allowlist} from "../contracts/utils/Allowlist.sol";
 import {GlobalParametersAlpha} from "../contracts/globalParameters/GlobalParametersAlpha.sol";
 import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
@@ -29,8 +30,9 @@ contract DeployAll is Script {
     AutID public autId;
     PluginRegistry pluginRegistry;
     NovaRegistry public novaRegistry;
-    GlobalParametersAlpha public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
+    InteractionRegistry public interactionRegistry;
+    GlobalParametersAlpha public globalParameters;
     BasicOnboarding public basicOnboarding;
 
     struct TNamedAddress {
@@ -65,6 +67,7 @@ contract DeployAll is Script {
         autId = deployAutId(trustedForwarder, owner);
         pluginRegistry = deployPluginRegistry(owner);
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
+        interactionRegistry = deployInteractionRegistry(owner);
         globalParameters = deployGlobalParameters(owner);
         novaRegistry = deployNovaRegistry({
             _trustedForwarder: trustedForwarder,
@@ -135,6 +138,11 @@ function deployHubDomainsRegistry(
     // address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
     HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(address(1)); // TODO
     return hubDomainsRegistry;
+}
+
+function deployInteractionRegistry(address _owner) returns (InteractionRegistry) {
+    InteractionRegistry interactionRegistry = new InteractionRegistry(_owner);
+    return interactionRegistry;
 }
 
 function deployGlobalParameters(address _owner) returns (GlobalParametersAlpha) {

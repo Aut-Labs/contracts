@@ -46,14 +46,24 @@ interface IInteractionRegistry {
         bytes4 functionSelector
     ) external pure returns (bytes32 interactionId);
 
-    /// @notice returns interaction data for the given interaction id
+    /// @notice returns interaction data for the given interaction id as individual variables
     /// @param interactionId identifier of the interaction
     /// @return chainId chain id of the interaction
     /// @return recipient call address (tx to) of the interaction
     /// @return functionSelector 4 bytes of the function selector of the interaction
-    function interactionDataFor(
+    function interactionDataUnpacked(
         bytes32 interactionId
     ) external view returns (uint16 chainId, address recipient, bytes4 functionSelector);
+
+    /// @notice Returns interaction data for the given interaction as a struct
+    /// @param interactionId identifier of the interaction
+    /// @return TInteractionData of the interaction
+    function interactionData(bytes32 interactionId) external view returns (TInteractionData memory);
+
+    /// @notice Return if a given interactionId has interaction data stored
+    /// @param interactionId bytes32 interaction ID
+    /// @return true if exists, else false 
+    function isInteractionId(bytes32 interactionId) external view returns (bool);
 
     /// @notice registeres interaction type by the given interaction data
     /// @param chainId chain id of the interaction
@@ -106,15 +116,27 @@ contract InteractionRegistry is
     }
 
     /// @inheritdoc IInteractionRegistry
-    function interactionDataFor(
-        bytes32 key
+    function interactionDataUnpacked(
+        bytes32 interactionId
     ) external view returns (uint16, address, bytes4) {
-        TInteractionData memory interactionData = _interactionDataFor[key];
+        TInteractionData memory data = _interactionDataFor[interactionId];
         return (
-            interactionData.chainId,
-            interactionData.recipient,
-            interactionData.functionSelector
+            data.chainId,
+            data.recipient,
+            data.functionSelector
         );
+    }
+
+    /// @inheritdoc IInteractionRegistry
+    function interactionData(bytes32 interactionId) external view returns (TInteractionData memory data) {
+        data = _interactionDataFor[interactionId];
+    }
+
+    /// @inheritdoc IInteractionRegistry
+    function isInteractionId(bytes32 interactionId) external view returns (bool) {
+        TInteractionData memory data = _interactionDataFor[interactionId];
+        // One check is sufficient
+        return (data.chainId > 0);
     }
 
     /// @inheritdoc IInteractionRegistry
