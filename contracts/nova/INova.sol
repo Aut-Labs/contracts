@@ -7,11 +7,15 @@ interface INova {
     error NotDeployer();
     error NotAdmin();
     error NotMember();
-    error MemberHasNotYetCommitted();
-    error MemberHasNotJoinedHub();
+    error MemberDoesNotExist();
     error SameCommitmentLevel();
     error InvalidCommitmentLevel();
-    error UserHasNotYetCommited();
+    error InvalidTaskContributionPoints();
+    error InvalidTaskQuantity();
+    error InvalidTaskId();
+    error InvalidTaskInteractionId();
+    error TaskNotActive();
+    error MemberHasNotYetCommited();
 
     event AdminGranted(address to);
     event AdminRenounced(address from);

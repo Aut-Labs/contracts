@@ -11,6 +11,7 @@ import {
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
+import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {Nova} from "../nova/Nova.sol";
@@ -32,6 +33,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     address public autIDAddr;
     address public pluginRegistry;
     address public hubDomainsRegistry;
+    address public interactionRegistry;
     address public globalParameters;
     UpgradeableBeacon public upgradeableBeacon;
     IAllowlist public allowlist;
@@ -43,6 +45,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         address novaLogic,
         address pluginRegistry_,
         address hubDomainsRegistry_,
+        address interactionRegistry_,
         address globalParameters_
     ) external initializer {
         require(autIDAddr_ != address(0), "NovaRegistry: AutID address zero");
@@ -54,6 +57,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         autIDAddr = autIDAddr_;
         pluginRegistry = pluginRegistry_;
         hubDomainsRegistry = hubDomainsRegistry_;
+        interactionRegistry = interactionRegistry_;
         globalParameters = globalParameters_;
         upgradeableBeacon = new UpgradeableBeacon(novaLogic, address(this));
         // allowlist =
@@ -66,6 +70,10 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
 
     function period0Start() external view returns (uint32) {
         return IGlobalParametersAlpha(globalParameters).period0Start();
+    }
+
+    function isInteractionId(bytes32 interactionId) external view returns (bool) {
+        return IInteractionRegistry(interactionRegistry).isInteractionId(interactionId);
     }
 
     // the only reason for this function is to keep interface compatible with sdk

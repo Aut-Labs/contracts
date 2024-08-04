@@ -8,6 +8,7 @@ import {INova} from "./INova.sol";
 import {INovaRegistry} from "./INovaRegistry.sol";
 import "../hubContracts/IHubDomainsRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
+import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
 // todo: admin retro onboarding
@@ -45,22 +46,36 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     mapping(uint256 => uint256) public parameterWeight;
     mapping(address => uint256) public accountMasks;
 
+    struct Task {
+        uint32 contributionPoints;
+        uint128 quantity;
+        bytes32 interactionId;
+        // TODO: further identifiers
+    }
+    Task[] public tasks;
+
     struct Participation {
         uint32 commitmentLevel;
-        uint32 givenContributionPoints;
+        uint128 givenContributionPoints;
+        // TODO: array of completed tasks
     }
-    mapping(
-        address who => mapping(
-            uint32 periodId =>
-                Participation participation
-        )
-    ) public participations;
-    
-    mapping(
-        uint32 periodId =>
-            uint128 sumCommitmentLevel
-    ) public historicalSumCommitmentLevel;
+    mapping(address who => mapping(uint32 periodId => Participation participation)) public participations;
+
+    struct PeriodSummary {
+        bool inactive;
+        uint128 sumCommitmentLevel;
+        uint128 sumCreatedContributionPoints;
+        uint128 sumActiveContributionPoints;
+        uint128 sumGivenContributionPoints;
+        uint128 sumRemovedContributionPoints;
+    }
+    mapping(uint32 periodId => PeriodSummary periodSummary) public periodSummaries;
+
     uint128 currentSumCommitmentLevel;
+    uint128 currentSumCreatedContributionPoints;
+    uint128 currentSumActiveContributionPoints;
+    uint128 currentSumGivenContributionPoints;
+    uint128 currentSumRemovedContributionPoints;
 
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
@@ -144,7 +159,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         participations[who][currentPeriodId].commitmentLevel = commitmentLevel;
         currentCommitmentLevels[who] = commitmentLevel;
 
-        _writeHistoricalSumCommitmentLevel(currentPeriodId);
+        _writePeriodSummary(currentPeriodId);
         currentSumCommitmentLevel += uint128(commitmentLevel);
 
         INovaRegistry(novaRegistry).joinNovaHook(who);
@@ -154,7 +169,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     /// @notice get the commitment level of a member at a particular period id
     function getCommitmentLevel(address who, uint32 periodId) external view returns (uint32) {
-        if (periodId < getPeriodIdJoined(who)) revert UserHasNotYetCommited();
+        if (periodId < getPeriodIdJoined(who)) revert MemberHasNotYetCommited();
 
         Participation memory participation = participations[who][periodId];
         if (participation.commitmentLevel != 0) {
@@ -173,7 +188,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             period0Start: IGlobalParametersAlpha(novaRegistry).period0Start(),
             timestamp: joinedAt[who]
         });
-        if (periodIdJoined == 0) revert MemberHasNotJoinedHub();
+        if (periodIdJoined == 0) revert MemberDoesNotExist();
         return periodIdJoined;
     }
 
@@ -188,7 +203,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
 
         // write to storage for all 0 values- as the currentCommitmentLevels is now different
-        for (uint32 i=currentPeriodId; i>periodIdJoined - 1; i--) {
+        for (uint32 i = currentPeriodId; i > periodIdJoined - 1; i--) {
             Participation storage participation = participations[msg.sender][i];
             if (participation.commitmentLevel == 0) {
                 participation.commitmentLevel = oldCommitmentLevel;
@@ -199,8 +214,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         }
 
         currentCommitmentLevels[msg.sender] = newCommitmentLevel;
-        
-        _writeHistoricalSumCommitmentLevel(currentPeriodId);
+
+        _writePeriodSummary(currentPeriodId);
         currentSumCommitmentLevel = currentSumCommitmentLevel - oldCommitmentLevel + newCommitmentLevel;
 
         emit ChangeCommitmentLevel({
@@ -210,24 +225,155 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         });
     }
 
-
-    /// @notice write sumCommitmentLevel to history when needed
-    function writeHistoricalSumCommitmentLevel() public {
+    /// @notice write sums to history when needed
+    function writePeriodSummary() public {
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
-        _writeHistoricalSumCommitmentLevel(currentPeriodId);
+        _writePeriodSummary(currentPeriodId);
     }
 
-    function _writeHistoricalSumCommitmentLevel(uint32 _currentPeriodId) internal {
+    function _writePeriodSummary(uint32 _currentPeriodId) internal {
         uint32 initPeriodId_ = initPeriodId; // gas
-        for (uint32 i=_currentPeriodId - 1; i>initPeriodId_ - 1; i--) {
-            if (historicalSumCommitmentLevel[i] == 0) {
-                // write current sum of commitment to storage as there is currently no stored value
-                historicalSumCommitmentLevel[i] = currentSumCommitmentLevel;
+        uint32 lastPeriodId = _currentPeriodId - 1;
+
+        // What happens if a period passes which doesn't write to storage?
+        // It means in period n there was activity, period n + 1 => current period there is no activity
+        uint32 i;
+        bool writeToHistory;
+        for (i = lastPeriodId; i > initPeriodId_ - 1; i--) {
+            PeriodSummary storage periodSummary = periodSummaries[i];
+            if (periodSummary.sumCommitmentLevel == 0) {
+                writeToHistory = true;
             } else {
                 // historical commitment levels are up to date- do nothing
                 break;
             }
         }
+
+        if (writeToHistory) {
+            // Write data to oldest possible period summary with no data
+            periodSummaries[i] = PeriodSummary({
+                inactive: false,
+                sumCommitmentLevel: currentSumCommitmentLevel,
+                sumActiveContributionPoints: currentSumActiveContributionPoints,
+                sumCreatedContributionPoints: currentSumCreatedContributionPoints,
+                sumGivenContributionPoints: currentSumGivenContributionPoints,
+                sumRemovedContributionPoints: currentSumRemovedContributionPoints
+            });
+
+            // if there's a gap in data- we have inactive periods. Fill up with inactive flag and empty values where possible
+            if (i < lastPeriodId) {
+                for (uint32 j = i + 1; j < _currentPeriodId; j++) {
+                    periodSummaries[j] = PeriodSummary({
+                        inactive: true,
+                        sumCommitmentLevel: currentSumCommitmentLevel,
+                        sumCreatedContributionPoints: 0,
+                        sumActiveContributionPoints: currentSumActiveContributionPoints,
+                        sumGivenContributionPoints: 0,
+                        sumRemovedContributionPoints: 0
+                    });
+                }
+            }
+
+            // Still in writeToHistory conditional: clear out storage where applicable
+            delete currentSumCreatedContributionPoints;
+            delete currentSumGivenContributionPoints;
+            delete currentSumRemovedContributionPoints;
+        }
+    }
+
+    function currentTaskId() public view returns (uint256) {
+        return tasks.length - 1;
+    }
+
+    function addTasks(Task[] calldata _tasks) external {
+        _revertForNotAdmin(msg.sender);
+        writePeriodSummary();
+
+        uint256 length = _tasks.length;
+        for (uint256 i = 0; i < length; i++) {
+            _addTask(_tasks[i]);
+        }
+    }
+
+    function addTask(Task calldata _task) public {
+        _revertForNotAdmin(msg.sender);
+        writePeriodSummary();
+
+        _addTask(_task);
+    }
+
+    function _addTask(Task memory _task) internal {
+        if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
+        if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
+        if (!IInteractionRegistry(novaRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
+
+        uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
+        currentSumActiveContributionPoints += sumTaskContributionPoints;
+        currentSumCreatedContributionPoints += sumTaskContributionPoints;
+
+        tasks.push(_task);
+        // TODO: events
+    }
+
+    function removeTasks(uint256[] memory _taskIds) external {
+        _revertForNotAdmin(msg.sender);
+        writePeriodSummary();
+        for (uint256 i = 0; i < _taskIds.length; i++) {
+            _removeTask(_taskIds[i]);
+        }
+    }
+
+    function removeTask(uint256 _taskId) external {
+        _revertForNotAdmin(msg.sender);
+        writePeriodSummary();
+        _removeTask(_taskId);
+    }
+
+    function _removeTask(uint256 _taskId) internal {
+        Task memory task = tasks[_taskId];
+        if (task.quantity == 0) revert TaskNotActive();
+        // NOTE: does not subtract from created tasks
+
+        uint128 sumTaskContributionPoints = task.contributionPoints * task.quantity;
+        currentSumActiveContributionPoints -= sumTaskContributionPoints;
+        currentSumRemovedContributionPoints += sumTaskContributionPoints;
+
+        delete tasks[_taskId];
+        // TODO: event
+    }
+
+    error UnequalLengths();
+    function giveTasks(uint256[] memory _taskIds, address[] memory _members) external {
+        _revertForNotAdmin(msg.sender);
+        uint256 length = _taskIds.length;
+        if (length != _members.length) revert UnequalLengths();
+        for (uint256 i = 0; i < length; i++) {
+            _giveTask(_taskIds[i], _members[i]);
+        }
+    }
+
+    function giveTask(uint256 _taskId, address _member) external {
+        _revertForNotAdmin(msg.sender);
+        _giveTask(_taskId, _member);
+    }
+
+    function _giveTask(uint256 _taskId, address _member) internal {
+        Task storage task = tasks[_taskId];
+        if (task.quantity == 0) revert TaskNotActive();
+        if (joinedAt[_member] == 0) revert MemberDoesNotExist();
+
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        Participation storage participation = participations[_member][currentPeriodId];
+
+        uint128 contributionPoints = task.contributionPoints;
+        participation.givenContributionPoints += contributionPoints;
+
+        currentSumGivenContributionPoints += contributionPoints;
+        currentSumActiveContributionPoints -= contributionPoints;
+
+        task.quantity--;
+
+        // TODO: push task to user balance (as nft)
     }
 
     /// @custom:sdk-legacy-interface-compatibility
@@ -298,7 +444,11 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     // this function registers a new .hub domain through the Nova contract.
     // It's called when the user submits their custom domain part and metadata URI.
     // It forwards the request to the HubDomainsRegistry.
-    function registerDomain(string calldata domain_, address novaAddress_, string calldata metadataUri_) external override {
+    function registerDomain(
+        string calldata domain_,
+        address novaAddress_,
+        string calldata metadataUri_
+    ) external override {
         _revertForNotDeployer(msg.sender);
         // also revert if not deployer
         IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);

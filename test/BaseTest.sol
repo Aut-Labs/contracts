@@ -9,6 +9,7 @@ abstract contract BaseTest is Test {
     NovaRegistry public novaRegistry;
     GlobalParametersAlpha public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
+    InteractionRegistry public interactionRegistry;
     BasicOnboarding public basicOnboarding;
 
     address public owner = address(this);
@@ -26,6 +27,7 @@ abstract contract BaseTest is Test {
         novaRegistry = deploy.novaRegistry();
         globalParameters = deploy.globalParameters();
         hubDomainsRegistry = deploy.hubDomainsRegistry();
+        interactionRegistry = deploy.interactionRegistry();
         basicOnboarding = deploy.basicOnboarding();
 
         // labeling
