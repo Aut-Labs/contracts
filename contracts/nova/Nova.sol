@@ -57,6 +57,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     struct Participation {
         uint32 commitmentLevel;
         uint128 givenContributionPoints;
+        uint96 participationScore;
         // TODO: array of completed tasks
     }
     mapping(address who => mapping(uint32 periodId => Participation participation)) public participations;
@@ -156,7 +157,11 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         joinedAt[who] = uint32(block.timestamp);
 
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
-        participations[who][currentPeriodId].commitmentLevel = commitmentLevel;
+        participations[who][currentPeriodId] = Partipication({
+            commitmentLevel: commitmentLevel,
+            givenContributionPoints: 0,
+            participationScore: 100
+        })
         currentCommitmentLevels[who] = commitmentLevel;
 
         _writePeriodSummary(currentPeriodId);
@@ -168,7 +173,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     /// @notice get the commitment level of a member at a particular period id
-    function getCommitmentLevel(address who, uint32 periodId) external view returns (uint32) {
+    function getCommitmentLevel(address who, uint32 periodId) public view returns (uint32) {
         if (periodId < getPeriodIdJoined(who)) revert MemberHasNotYetCommited();
 
         Participation memory participation = participations[who][periodId];
@@ -223,6 +228,46 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             oldCommitmentLevel: oldCommitmentLevel,
             newCommitmentLevel: newCommitmentLevel
         });
+    }
+
+    // TODO: visibility?
+    function writeUserParticipation(address who) public {
+
+        // TODO: algorithm
+        // NOTE: in periodIdJoined, participation score is default 100.  Only write to following periods
+        uint32 periodIdJoined = getPeriodIdJoined(who);
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        
+        // update historical periods if necessary
+        _writePeriodSummary(currentPeriodId);
+
+        // We are only writing to the last period which has ended: ie, currentPeriodId - 1
+        uint32 periodToStartWrite;
+        for (uint32 i=currentPeriodId-1; i>periodIdJoined; i--) {
+            // loop through passed periods and find the oldest period where participation has not yet been written
+            if (participations[who][i].participationScore == 0) {
+                periodToStartWrite = i;
+            } else {
+                // we have reached the end of 0 values
+                break;
+            }
+        }
+
+        // return if there is nothing to write
+        if (periodToStartWrite == 0) return;
+
+        // Get previous period participation score to use as a starting weight
+        uint96 previousParticipationScore = participations[who][periodToStartWrite - 1].participationScore;
+
+        // Start at the first empty period and write the participation score given the previous score and c
+        // TODO: c from globalParameters
+        uint32 c = 10_000;
+        uint32 div = 10_000;
+        for (uint32 i=periodToStartWrite; i<currentPeriodId; i++) {
+            // TODO: active vs. given
+            PeriodSummary memory periodSummary = periodSummaries[i];
+            uint128 sumActiveContributionPoints = periodSummaries[i].sumActiveContributionPoints;
+        }
     }
 
     /// @notice write sums to history when needed
