@@ -57,6 +57,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     struct Participation {
         uint32 commitmentLevel;
         uint128 givenContributionPoints;
+        uint96 participationScore;
         // TODO: array of completed tasks
     }
     mapping(address who => mapping(uint32 periodId => Participation participation)) public participations;
@@ -156,7 +157,11 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         joinedAt[who] = uint32(block.timestamp);
 
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
-        participations[who][currentPeriodId].commitmentLevel = commitmentLevel;
+        participations[who][currentPeriodId] = Participation({
+            commitmentLevel: commitmentLevel,
+            givenContributionPoints: 0,
+            participationScore: 100
+        });
         currentCommitmentLevels[who] = commitmentLevel;
 
         _writePeriodSummary(currentPeriodId);
@@ -168,7 +173,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     /// @notice get the commitment level of a member at a particular period id
-    function getCommitmentLevel(address who, uint32 periodId) external view returns (uint32) {
+    function getCommitmentLevel(address who, uint32 periodId) public view returns (uint32) {
         if (periodId < getPeriodIdJoined(who)) revert MemberHasNotYetCommited();
 
         Participation memory participation = participations[who][periodId];
@@ -223,6 +228,123 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             oldCommitmentLevel: oldCommitmentLevel,
             newCommitmentLevel: newCommitmentLevel
         });
+    }
+
+    function writeParticipations(address[] calldata whos) external {
+        // update historical periods if necessary
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        _writePeriodSummary(currentPeriodId);
+
+        for (uint256 i=0; i<whos.length; i++) {
+            _writeParticipation(whos[i], currentPeriodId);
+        }
+    }
+
+    function writeParticipation(address who) external {
+        // update historical periods if necessary
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        _writePeriodSummary(currentPeriodId);
+
+        _writeParticipation(who, currentPeriodId);
+    }
+
+
+    // TODO: visibility?
+    function _writeParticipation(address who, uint32 currentPeriodId) public {
+
+        // TODO: algorithm
+        // NOTE: in periodIdJoined, participation score is default 100.  Only write to following periods
+        uint32 periodIdJoined = getPeriodIdJoined(who);
+
+        // We are only writing to the last period which has ended: ie, currentPeriodId - 1
+        uint32 periodToStartWrite;
+        for (uint32 i=currentPeriodId-1; i>periodIdJoined; i--) {
+            // loop through passed periods and find the oldest period where participation has not yet been written
+            if (participations[who][i].participationScore == 0) {
+                periodToStartWrite = i;
+            } else {
+                // we have reached the end of 0 values
+                break;
+            }
+        }
+
+        // return if there is nothing to write
+        if (periodToStartWrite == 0) return;
+
+        // Get previous period participation score to use as a starting weight
+        uint96 previousParticipationScore = participations[who][periodToStartWrite - 1].participationScore;
+
+        // Start at the first empty period and write the participation score given the previous score and c
+        // TODO: c from globalParameters
+        uint96 c = 40; // 40%
+        for (uint32 i=periodToStartWrite; i<currentPeriodId; i++) {
+            uint128 performance = _calcPerformanceInPeriod({
+                who: who,
+                periodId: i
+            });
+
+            uint96 delta;
+            uint96 currentParticipationScore;
+            // TODO: precision
+            if (performance > 100) {
+                // exceeded expectations: raise participation score
+                delta = uint96(performance) - 100;
+                if (delta > c) delta = 40;
+                currentParticipationScore =
+                    previousParticipationScore * (100 + delta) / delta;
+            } else {
+                // underperformed: lower participation score
+                delta = 100 - uint96(performance);
+                if (delta > c) delta = c;
+                currentParticipationScore = 
+                    previousParticipationScore * (100 - delta) / delta;
+            }
+
+            // write to storage
+            participations[who][i].participationScore = currentParticipationScore;
+
+            // overwrite previousParticipationScore to use for the next period if needed
+            previousParticipationScore = currentParticipationScore;
+        }
+    }
+
+    /// @dev returned with 1e18 precision
+    function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
+       _revertForNotMember(who);
+       uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+       if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+       return _calcPerformanceInPeriod(who, periodId);
+    }
+
+    function _calcPerformanceInPeriod(address who, uint32 periodId) internal view returns (uint128) {
+        uint128 expectedContributionPoints = _calcExpectedContributionPoints({
+            commitmentLevel: getCommitmentLevel(who, periodId),
+            periodId: periodId
+        });
+        
+        Participation memory participationOfMemberForPeriod = participations[who][periodId];
+        
+        // TODO: is rounding down to 0 acceptable here?
+        // TODO: rm precision hardcode
+        uint128 performance =
+            100 * participationOfMemberForPeriod.givenContributionPoints / expectedContributionPoints;
+
+        return performance;
+    }
+
+    // fiCL * TCP
+    function calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) public view returns (uint128) {
+       if (commitmentLevel < 1 || commitmentLevel > 10) revert InvalidCommitmentLevel();
+       uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+       if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+       return _calcExpectedContributionPoints(commitmentLevel, periodId); 
+    }
+
+    function _calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) internal view returns (uint128) {
+        PeriodSummary memory periodSummary = periodSummaries[periodId];
+        uint256 numScaled = 1e18 * uint256(commitmentLevel) * periodSummary.sumActiveContributionPoints;
+        uint256 expectedContributionPoints = numScaled / periodSummary.sumCommitmentLevel / 1e18;
+        return uint128(expectedContributionPoints);
     }
 
     /// @notice write sums to history when needed
@@ -342,7 +464,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         // TODO: event
     }
 
-    error UnequalLengths();
     function giveTasks(uint256[] memory _taskIds, address[] memory _members) external {
         _revertForNotAdmin(msg.sender);
         uint256 length = _taskIds.length;

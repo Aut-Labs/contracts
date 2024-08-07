@@ -14,8 +14,10 @@ interface INova {
     error InvalidTaskQuantity();
     error InvalidTaskId();
     error InvalidTaskInteractionId();
+    error InvalidPeriodId();
     error TaskNotActive();
     error MemberHasNotYetCommited();
+    error UnequalLengths();
 
     event AdminGranted(address to);
     event AdminRenounced(address from);
