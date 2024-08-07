@@ -29,7 +29,7 @@ contract RepFiRegistry is OwnableUpgradeable {
     }
 
     function removePlugin(address contractAddress) external onlyOwner {
-        require(contractAddress != address(0), "contractAddress must be a valid");
+        require(contractAddress != address(0), "contractAddress must be a valid address");
         require(plugins[contractAddress].enabled == true, "plugin does not exist");
 
         delete plugins[contractAddress];

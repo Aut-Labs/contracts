@@ -10,7 +10,8 @@ contract PRepFi is ERC20, AccessControl {
 
     bytes32 public constant BURNER_ROLE = keccak256("BURNER");
 
-    constructor(address _pluginRegistry) ERC20("Promised Reputation Finance", "pREPFI") {
+    constructor(address _owner, address _pluginRegistry) ERC20("Predictive Reputation Finance", "pREPFI") {
+        _grantRole(DEFAULT_ADMIN_ROLE, _owner);
         repFiRegistry = IRepFiRegistry(_pluginRegistry);
         _mint(msg.sender, 100_000_000 ether);
     }

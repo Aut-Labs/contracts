@@ -17,7 +17,7 @@ import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
 import {HubDomainsRegistry} from "../contracts/hubContracts/HubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
-import {RepFiRegistry} from "../contracts/repfi/repFiRegistry/RepfiRegistry.sol";
+import {RepFiRegistry} from "../contracts/repfi/repFiRegistry/RepFiRegistry.sol";
 import {RepFi} from "../contracts/repfi/token/REPFI.sol";
 import {PRepFi} from "../contracts/repfi/token/pREPFI.sol";
 import {TokenVesting} from "../contracts/repfi/vesting/TokenVesting.sol";
@@ -28,6 +28,7 @@ import "forge-std/Script.sol";
 
 contract DeployAll is Script {
     address public owner;
+    address public projectMultisig;
     uint256 public privateKey;
     bool public deploying;
 
@@ -60,15 +61,18 @@ contract DeployAll is Script {
 
     function setUpTest(address _owner) public {
         owner = _owner;
+        projectMultisig = owner;
     }
 
     function setUp() public {
         if (block.chainid == 137) {
             owner = vm.envAddress("MAINNET_OWNER_ADDRESS");
             privateKey = vm.envUint("MAINNET_PRIVATE_KEY");
+            projectMultisig = vm.envAddress("MAINNET_PROJECT_MULTISIG_ADDRESS");
         } else if (block.chainid == 80002) {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
+            projectMultisig = vm.envAddress("TESTNET_PROJECT_MULTISIG_ADDRESS");
         } else {
             revert("invalid chainid");
         }
@@ -84,7 +88,7 @@ contract DeployAll is Script {
         // Deploy AutID
         autId = deployAutId(trustedForwarder, owner);
         pluginRegistry = deployPluginRegistry(owner);
-        hubDomainsRegistry = deployHubDomainsRegistry(owner);
+        hubDomainsRegistry = deployHubDomainsRegistry();
         globalParameters = deployGlobalParameters(owner);
         novaRegistry = deployNovaRegistry({
             _trustedForwarder: trustedForwarder,
@@ -107,13 +111,13 @@ contract DeployAll is Script {
 
         // deploy token contracts
         repFi = deployRepFiToken();
-        pRepFi = deployPRepFiToken(address(repFiRegistry));
+        pRepFi = deployPRepFiToken(address(owner), address(repFiRegistry));
 
         // deploy vesting contracts
-        privateSale = deployTokenVesting(address(repFi));
-        community = deployTokenVesting(address(repFi));
-        investors = deployTokenVesting(address(repFi));
-        team = deployTokenVesting(address(repFi));
+        privateSale = deployTokenVesting(address(repFi), projectMultisig);
+        community = deployTokenVesting(address(repFi), projectMultisig);
+        investors = deployTokenVesting(address(repFi), projectMultisig);
+        team = deployTokenVesting(address(repFi), projectMultisig);
 
         // deploy circular contract
         circular = makeAddr("circular"); // ToDo: update to Circular contract later
@@ -142,11 +146,22 @@ contract DeployAll is Script {
         );
 
         // register repfi plugins, more to add later
-        vm.prank(owner);
+        vm.startPrank(owner);
+        // ToDo: give burner role to reputationmining in prepfi
+        pRepFi.grantRole(pRepFi.BURNER_ROLE(), address(reputationMining));
+
+        repFiRegistry.registerPlugin(address(address(this)), "DeployContract");
+        repFiRegistry.registerPlugin(address(initialDistribution), "InitialDistribution");
         repFiRegistry.registerPlugin(address(reputationMining), "ReputationMining");
+        vm.stopPrank();
 
         // send tokens to distribution contract
-        repFi.transfer(address(initialDistribution), 100000000 ether);
+        repFi.transfer(address(initialDistribution), 100000000 ether); // 100 million repfi tokens
+
+        // send pRepFi to reputationMining
+        pRepFi.transfer(address(reputationMining), 36000000 ether);
+
+        // transfer ownership to multisig for all contracts that have an owner
 
         // distribute tokens
         initialDistribution.distribute();
@@ -154,7 +169,7 @@ contract DeployAll is Script {
         // todo: convert to helper function
         if (deploying) {
             string memory filename = "deployments.txt";
-            TNamedAddress[10] memory na;
+            TNamedAddress[24] memory na;
             na[0] = TNamedAddress({name: "globalParametersProxy", target: address(globalParameters)});
             na[1] = TNamedAddress({name: "autIDProxy", target: address(autId)});
             na[2] = TNamedAddress({name: "novaRegistryProxy", target: address(novaRegistry)});
@@ -162,6 +177,21 @@ contract DeployAll is Script {
             na[4] = TNamedAddress({name: "allowlist", target: address(allowlist)});
             na[5] = TNamedAddress({name: "basicOnboarding", target: address(basicOnboarding)});
             na[9] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
+            na[10] = TNamedAddress({name: "repFiRegistry", target: address(repFiRegistry)});
+            na[11] = TNamedAddress({name: "repFi", target: address(repFi)});
+            na[12] = TNamedAddress({name: "pRepFi", target: address(pRepFi)});
+            na[13] = TNamedAddress({name: "privateSale", target: address(privateSale)});
+            na[14] = TNamedAddress({name: "community", target: address(community)});
+            na[15] = TNamedAddress({name: "investors", target: address(investors)});
+            na[16] = TNamedAddress({name: "team", target: address(team)});
+            na[17] = TNamedAddress({name: "airdrop", target: address(airdrop)});
+            na[18] = TNamedAddress({name: "partners", target: address(partners)});
+            na[19] = TNamedAddress({name: "ecosystem", target: address(ecosystem)});
+            na[20] = TNamedAddress({name: "profitSharing", target: address(profitSharing)});
+            na[21] = TNamedAddress({name: "circular", target: address(circular)});
+            na[22] = TNamedAddress({name: "reputationMining", target: address(reputationMining)});
+            na[23] = TNamedAddress({name: "initialDistribution", target: address(initialDistribution)});
+
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
             for (uint256 i = 0; i != na.length; ++i) {
                 vm.writeLine(
@@ -194,7 +224,7 @@ function deployPluginRegistry(address _owner) returns (PluginRegistry) {
     return PluginRegistry(address(pluginRegistryProxy));
 }
 
-function deployHubDomainsRegistry(address _owner) returns (HubDomainsRegistry) {
+function deployHubDomainsRegistry() returns (HubDomainsRegistry) {
     // address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
     HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(address(1)); // TODO
     return hubDomainsRegistry;
@@ -260,13 +290,13 @@ function deployRepFiToken() returns (RepFi) {
     return repFi;
 }
 
-function deployPRepFiToken(address _repFiRegistry) returns (PRepFi) {
-    PRepFi pRepFi = new PRepFi(_repFiRegistry);
+function deployPRepFiToken(address _owner, address _repFiRegistry) returns (PRepFi) {
+    PRepFi pRepFi = new PRepFi(_owner, _repFiRegistry);
     return pRepFi;
 }
 
-function deployTokenVesting(address _repFiToken) returns (TokenVesting) {
-    TokenVesting vesting = new TokenVesting(_repFiToken);
+function deployTokenVesting(address _repFiToken, address _owner) returns (TokenVesting) {
+    TokenVesting vesting = new TokenVesting(_repFiToken, _owner);
 
     // ToDo: set owner to multisig
     // vesting.transferOwnership(multisig);

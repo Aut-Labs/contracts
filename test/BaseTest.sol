@@ -27,7 +27,14 @@ abstract contract BaseTest is Test {
     HubDomainsRegistry public hubDomainsRegistry;
     BasicOnboarding public basicOnboarding;
 
+    RepFiRegistry public repFiRegistry;
     RepFi public repFi;
+    PRepFi public pRepFi;
+    TokenVesting public privateSale;
+    TokenVesting public community;
+    TokenVesting public investors;
+    TokenVesting public team;
+    ReputationMining public reputationMining;
 
     address public owner = address(this);
     address public alice = address(0x411Ce);
@@ -46,7 +53,17 @@ abstract contract BaseTest is Test {
         hubDomainsRegistry = deploy.hubDomainsRegistry();
         basicOnboarding = deploy.basicOnboarding();
 
+        repFiRegistry = deploy.repFiRegistry();
+
         repFi = deploy.repFi();
+        pRepFi = deploy.pRepFi();
+
+        privateSale = deploy.privateSale();
+        community = deploy.community();
+        investors = deploy.investors();
+        team = deploy.team();
+
+        reputationMining = deploy.reputationMining();
 
         // labeling
         vm.label(owner, "Owner");
@@ -57,6 +74,13 @@ abstract contract BaseTest is Test {
         vm.label(address(globalParameters), "globalParameters");
         vm.label(address(hubDomainsRegistry), "hubDomainsRegistry");
         vm.label(address(basicOnboarding), "basicOnboarding");
+        vm.label(address(repFiRegistry), "repFiRegistry");
         vm.label(address(repFi), "repFi");
+        vm.label(address(pRepFi), "pRepFi");
+        vm.label(address(privateSale), "privateSale");
+        vm.label(address(community), "community");
+        vm.label(address(investors), "investors");
+        vm.label(address(team), "team");
+        vm.label(address(reputationMining), "reputationMining");
     }
 }

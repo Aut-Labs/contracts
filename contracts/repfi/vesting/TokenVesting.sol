@@ -55,9 +55,9 @@ contract TokenVesting is Ownable, ReentrancyGuard {
      * @dev Creates a vesting contract.
      * @param token_ address of the ERC20 token contract
      */
-    constructor(address token_) Ownable(msg.sender) {
-        // Check that the token address is not 0x0.
-        require(token_ != address(0x0));
+    constructor(address token_, address _owner) Ownable(_owner) {
+        require(_owner != address(0), "invalid owner");
+        require(token_ != address(0), "invalid token");
         // Set the token address.
         _token = IERC20(token_);
     }
