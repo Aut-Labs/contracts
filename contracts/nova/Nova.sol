@@ -197,6 +197,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         emit MemberGranted(who, role);
     }
 
+    // TODO: member can join twice with a role value of 0
     function canJoin(address who, uint256 role) public view returns (bool) {
         if (IMembership(membership).roles(who) != 0) {
             return false;

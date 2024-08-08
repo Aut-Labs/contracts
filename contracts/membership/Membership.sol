@@ -11,6 +11,7 @@ interface IMembership {
 }
 
 contract Membership is Ownable {
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     uint256 public constant MIN_COMMITMENT = 1;
     uint256 public constant MAX_COMMITMENT = 10;
@@ -32,7 +33,7 @@ contract Membership is Ownable {
     mapping(address => uint256) public roles;
     mapping(address => uint256) public accountMasks;
 
-    address[] public members;
+    EnumerableSet.AddressSet[] private _members;
 
     struct Task {
         uint32 contributionPoints;
@@ -76,25 +77,18 @@ contract Membership is Ownable {
     //                        ROLES
     // ------------------------------------------------------
 
+    function members() external view returns (address[] memory) {
+        return _members.values();
+    }
+
     function isMember(address who) public view returns (bool) {
-        return _checkMaskPosition(who, MEMBER_MASK_POSITION);
+        return _members.contains(who);
     }
 
-    function _checkMaskPosition(address who, uint8 maskPosition) internal view returns (bool) {
-        return (accountMasks[who] & (1 << maskPosition)) != 0;
-    }
-
-    function _setMaskPosition(address to, uint8 maskPosition) internal {
-        accountMasks[to] |= (1 << maskPosition);
-    }
-
-    function _unsetMaskPosition(address to, uint8 maskPosition) internal {
-        accountMasks[to] &= ~(1 << maskPosition);
-    }
-
+    error AlreadyMember();
     function join(address who, uint256 role, uint8 commitmentLevel) external onlyOwner {
         roles[who] = role;
-        members.push(who);
+        if (!_members.add(who)) revert AlreadyMember();
         joinedAt[who] = uint32(block.timestamp);
 
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
