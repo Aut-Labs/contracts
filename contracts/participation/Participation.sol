@@ -10,7 +10,7 @@ interface IMembership {
     function isMember(address) external view returns (bool);
 }
 
-contract Membership is Ownable {
+contract Participation is Ownable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     uint256 public constant MIN_COMMITMENT = 1;
