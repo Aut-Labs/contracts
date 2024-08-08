@@ -4,18 +4,21 @@ pragma solidity ^0.8.20;
 import "../hubContracts/IHubDomainsRegistry.sol";
 
 interface INova {
-    error NotDeployer();
-    error NotAdmin();
-    error NotMember();
-    error MemberDoesNotExist();
-    error SameCommitmentLevel();
+    error AdminCannotRenounceSelf();
+    error AlreadyAdmin();
+    error CannotRemoveNonAdmin();
     error InvalidCommitmentLevel();
     error InvalidTaskContributionPoints();
     error InvalidTaskQuantity();
     error InvalidTaskId();
     error InvalidTaskInteractionId();
-    error TaskNotActive();
+    error MemberDoesNotExist();
     error MemberHasNotYetCommited();
+    error NotDeployer();
+    error NotAdmin();
+    error NotMember();
+    error SameCommitmentLevel();
+    error TaskNotActive();
 
     event AdminGranted(address to);
     event AdminRenounced(address from);

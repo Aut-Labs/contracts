@@ -11,8 +11,12 @@ import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha
 import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
+import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
 // todo: admin retro onboarding
 contract Nova is INova, NovaUtils, NovaUpgradeable {
+    using EnumerableSet for EnumerableSet.AddressSet;
+
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
     uint256 public constant CONVICTION_PARAMETER = 3;
@@ -46,6 +50,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
 
+    EnumerableSet.AddressSet internal _admins;
+
     function initialize(
         address deployer_,
         address autID_,
@@ -73,6 +79,51 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         initTimestamp = uint32(block.timestamp);
         initPeriodId = IGlobalParametersAlpha(novaRegistry_).currentPeriodId();
     }
+
+    // -----------------------------------------------------------
+    //                     ADMIN-MANAGEMENT
+    // -----------------------------------------------------------
+
+    function admins() external view return (address[] memory) {
+        return _admins.values();
+    }
+
+    function isAdmin(address who) public view returns (bool) {
+        return _admins.contains(who);
+    }
+
+    function addAdmins(address[] calldata whos) external {
+        if (!isAdmin(msg.sender)) revert NotAdmin();
+        for (uint256 i=0; i<whos.length; i++) {
+            _addAdmin(whos[i]);
+        }
+    }
+
+    function addAdmin(address who) external {
+        if (!isAdmin(msg.sender)) revert NotAdmin();
+        _addAdmin(who);
+    }
+
+    function _addAdmin(address who) internal {
+        if (!isMember(who)) revert NotMember();
+        if (!_admins.add(who)) revert AlreadyAdmin();
+
+        emit AdminGranted(who);
+    }
+
+    function removeAdmin(address who) external {
+        if (!isAdmin(msg.sender)) revert NotAdmin();
+        if (msg.sender == who) revert AdminCannotRenounceSelf();
+        if (!_admins.remove(who)) revert CannotRemoveNonAdmin();
+
+        emit AdminRenounced(who);
+    }
+
+    function isMember(address who) public view returns (bool) {
+        return IMembership(membership).isMember(who);
+    }
+
+    // -----------------------------------------------------------
 
     function setMetadataUri(string memory uri) external {
         _revertForNotAdmin(msg.sender);

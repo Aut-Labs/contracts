@@ -2,10 +2,12 @@
 pragma solidity ^0.8.20;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 interface IMembership {
     function join(address, uint256, uint8) external;
-    function roles(address) external returns (uint256);
+    function roles(address) external view returns (uint256);
+    function isMember(address) external view returns (bool);
 }
 
 contract Membership is Ownable {
@@ -30,7 +32,6 @@ contract Membership is Ownable {
     mapping(address => uint256) public roles;
     mapping(address => uint256) public accountMasks;
 
-    address[] public admins;
     address[] public members;
 
     struct Task {
@@ -77,45 +78,6 @@ contract Membership is Ownable {
 
     function isMember(address who) public view returns (bool) {
         return _checkMaskPosition(who, MEMBER_MASK_POSITION);
-    }
-
-    function isAdmin(address who) public view returns (bool) {
-        return _checkMaskPosition(who, ADMIN_MASK_POSITION);
-    }
-
-    function addAdmins(address[] calldata admins_) external {
-        require(isAdmin(msg.sender), "caller not an admin");
-
-        for (uint256 i; i != admins_.length; ++i) {
-            _addAdmin(admins_[i]);
-        }
-    }
-
-    function addAdmin(address who) public {
-        require(isAdmin(msg.sender), "caller not an admin");
-        _addAdmin(who);
-    }
-
-    function _addAdmin(address who) private {
-        require(isAdmin(msg.sender), "caller not an admin");
-        require(isMember(who), "who is not a member");
-
-        _setMaskPosition(who, ADMIN_MASK_POSITION);
-        /// @custom:sdk-legacy-interface-compatibility
-        admins.push(who);
-
-        emit AdminGranted(who);
-    }
-
-    // TODO: does not manage admins array
-    function removeAdmin(address from) external {
-        require(from != address(0), "zero address");
-        require(isAdmin(msg.sender), "caller not an admin");
-        require(msg.sender != from, "admin can not renounce himself");
-
-        _unsetMaskPosition(from, ADMIN_MASK_POSITION);
-
-        emit AdminRenounced(from);
     }
 
     function _checkMaskPosition(address who, uint8 maskPosition) internal view returns (bool) {
