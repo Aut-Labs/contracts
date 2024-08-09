@@ -276,7 +276,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
         // Start at the first empty period and write the participation score given the previous score and c
         // TODO: c from globalParameters
-        uint96 c = 40; // 40%
+        uint96 constraintFactor = 4e17; // 40%
+        uint96 penaltyFactor = 4e17; // 40%
         for (uint32 i=periodToStartWrite; i<currentPeriodId; i++) {
             uint128 performance = _calcPerformanceInPeriod({
                 who: who,
@@ -286,18 +287,18 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             uint96 delta;
             uint96 score;
             // TODO: precision
-            if (performance > 100) {
+            if (performance > 1e18) {
                 // exceeded expectations: raise participation score
-                delta = uint96(performance) - 100;
-                if (delta > c) delta = 40;
+                delta = uint96(performance) - 1e18;
+                if (delta > constraintFactor) delta = constraintFactor;
                 score =
-                    previousScore * (100 + delta) / delta;
+                    previousScore * (1e18 + delta) / delta;
             } else {
                 // underperformed: lower participation score
-                delta = 100 - uint96(performance);
-                if (delta > c) delta = c;
+                delta = 1e18 - uint96(performance);
+                if (delta > penaltyFactor) delta = penaltyFactor;
                 score = 
-                    previousScore * (100 - delta) / delta;
+                    previousScore * (1e18 - delta) / delta;
             }
 
             // write to storage
@@ -324,10 +325,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         
         Participation memory participationOfMemberForPeriod = participations[who][periodId];
         
-        // TODO: is rounding down to 0 acceptable here?
-        // TODO: rm precision hardcode
         uint128 performance =
-            100 * participationOfMemberForPeriod.givenContributionPoints / expectedContributionPoints;
+            1e18 * participationOfMemberForPeriod.givenContributionPoints / expectedContributionPoints;
 
         return performance;
     }
