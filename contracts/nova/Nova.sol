@@ -57,7 +57,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     struct Participation {
         uint32 commitmentLevel;
         uint128 givenContributionPoints;
-        uint96 participationScore;
+        uint96 score;
         // TODO: array of completed tasks
     }
     mapping(address who => mapping(uint32 periodId => Participation participation)) public participations;
@@ -160,7 +160,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         participations[who][currentPeriodId] = Participation({
             commitmentLevel: commitmentLevel,
             givenContributionPoints: 0,
-            participationScore: 100
+            score: 1e18
         });
         currentCommitmentLevels[who] = commitmentLevel;
 
@@ -260,7 +260,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint32 periodToStartWrite;
         for (uint32 i=currentPeriodId-1; i>periodIdJoined; i--) {
             // loop through passed periods and find the oldest period where participation has not yet been written
-            if (participations[who][i].participationScore == 0) {
+            if (participations[who][i].score == 0) {
                 periodToStartWrite = i;
             } else {
                 // we have reached the end of 0 values
@@ -272,7 +272,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         if (periodToStartWrite == 0) return;
 
         // Get previous period participation score to use as a starting weight
-        uint96 previousParticipationScore = participations[who][periodToStartWrite - 1].participationScore;
+        uint96 previousScore = participations[who][periodToStartWrite - 1].score;
 
         // Start at the first empty period and write the participation score given the previous score and c
         // TODO: c from globalParameters
@@ -284,27 +284,27 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             });
 
             uint96 delta;
-            uint96 currentParticipationScore;
+            uint96 score;
             // TODO: precision
             if (performance > 100) {
                 // exceeded expectations: raise participation score
                 delta = uint96(performance) - 100;
                 if (delta > c) delta = 40;
-                currentParticipationScore =
-                    previousParticipationScore * (100 + delta) / delta;
+                score =
+                    previousScore * (100 + delta) / delta;
             } else {
                 // underperformed: lower participation score
                 delta = 100 - uint96(performance);
                 if (delta > c) delta = c;
-                currentParticipationScore = 
-                    previousParticipationScore * (100 - delta) / delta;
+                score = 
+                    previousScore * (100 - delta) / delta;
             }
 
             // write to storage
-            participations[who][i].participationScore = currentParticipationScore;
+            participations[who][i].score = score;
 
-            // overwrite previousParticipationScore to use for the next period if needed
-            previousParticipationScore = currentParticipationScore;
+            // overwrite previousScore to use for the next period if needed
+            previousScore = score;
         }
     }
 
