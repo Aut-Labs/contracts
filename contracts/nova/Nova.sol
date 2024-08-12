@@ -281,8 +281,10 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint96 constraintFactor = 4e17; // 40%
         uint96 penaltyFactor = 4e17; // 40%
         for (uint32 i=periodToStartWrite; i<currentPeriodId; i++) {
+            Participation storage participation = participations[who][i];
             uint128 performance = _calcPerformanceInPeriod({
-                who: who,
+                commitmentLevel: getCommitmentLevel({ who: who, periodId: i }),
+                givenContributionPoints: participation.givenContributionPoints,
                 periodId: i
             });
 
@@ -304,8 +306,8 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             }
 
             // write to storage
-            participations[who][i].score = score;
-            participations[who][i].performance = performance;
+            participation.score = score;
+            participation.performance = performance;
 
             // overwrite previousScore to use for the next period if needed
             previousScore = score;
