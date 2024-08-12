@@ -65,6 +65,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     struct PeriodSummary {
         bool inactive;
+        bool isSealed;
         uint128 sumCommitmentLevel;
         uint128 sumCreatedContributionPoints;
         uint128 sumActiveContributionPoints;
@@ -399,6 +400,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             // Write data to oldest possible period summary with no data
             periodSummaries[i] = PeriodSummary({
                 inactive: false,
+                isSealed: false,
                 sumCommitmentLevel: currentSumCommitmentLevel,
                 sumActiveContributionPoints: currentSumActiveContributionPoints,
                 sumCreatedContributionPoints: currentSumCreatedContributionPoints,
@@ -411,6 +413,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
                 for (uint32 j = i + 1; j < _currentPeriodId; j++) {
                     periodSummaries[j] = PeriodSummary({
                         inactive: true,
+                        isSealed: true,
                         sumCommitmentLevel: currentSumCommitmentLevel,
                         sumCreatedContributionPoints: 0,
                         sumActiveContributionPoints: currentSumActiveContributionPoints,
@@ -425,6 +428,44 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             delete currentSumGivenContributionPoints;
             delete currentSumRemovedContributionPoints;
         }
+    }
+
+    function canSeal(uint32 periodId) external view returns (bool) {
+        PeriodSummary memory periodSummary = periodSummaries[periodId];
+        if (periodSummary.isSealed) return false;
+        uint256 length = members.length;
+        for (uint256 i=0; i<length; i++) {
+            if (participations[members[i]][periodId].score == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function getMembersToWriteParticipation(uint32 periodId) external view returns (address[] memory) {
+        uint256 numMembersToWrite = 0;
+        uint256 length = members.length;
+        address[] memory membersCopy = new address[](length);
+        for (uint256 i=0; i<length; i++) {
+            address member = members[i];
+            if (participations[member][periodId].score == 0) {
+                membersCopy[numMembersToWrite++] = member;
+            }
+        }
+
+        address[] memory arrMembersToWrite = new address[](numMembersToWrite);
+        for (uint256 i=0; i<numMembersToWrite; i++) {
+            arrMembersToWrite[i] = membersCopy[i];
+        }
+        return arrMembersToWrite;
+    }
+
+    // TODO: role other than admin?
+    function seal(uint32 periodId) external {
+        _revertForNotAdmin(msg.sender);
+        PeriodSummary storage periodSummary = periodSummaries[periodId];
+        if (periodSummary.isSealed) revert PeriodAlreadySealed();
+        periodSummary.isSealed = true;
     }
 
     function currentTaskId() public view returns (uint256) {
