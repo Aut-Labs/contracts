@@ -237,7 +237,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
         _writePeriodSummary(currentPeriodId);
 
-        for (uint256 i=0; i<whos.length; i++) {
+        for (uint256 i = 0; i < whos.length; i++) {
             _writeParticipation(whos[i], currentPeriodId);
         }
     }
@@ -250,17 +250,15 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         _writeParticipation(who, currentPeriodId);
     }
 
-
     // TODO: visibility?
     function _writeParticipation(address who, uint32 currentPeriodId) public {
-
         // TODO: algorithm
         // NOTE: in periodIdJoined, participation score is default 100.  Only write to following periods
         uint32 periodIdJoined = getPeriodIdJoined(who);
 
         // We are only writing to the last period which has ended: ie, currentPeriodId - 1
         uint32 periodToStartWrite;
-        for (uint32 i=currentPeriodId-1; i>periodIdJoined; i--) {
+        for (uint32 i = currentPeriodId - 1; i > periodIdJoined; i--) {
             // loop through passed periods and find the oldest period where participation has not yet been written
             if (participations[who][i].score == 0) {
                 periodToStartWrite = i;
@@ -280,10 +278,10 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         // TODO: c from globalParameters
         uint96 constraintFactor = 4e17; // 40%
         uint96 penaltyFactor = 4e17; // 40%
-        for (uint32 i=periodToStartWrite; i<currentPeriodId; i++) {
+        for (uint32 i = periodToStartWrite; i < currentPeriodId; i++) {
             Participation storage participation = participations[who][i];
             uint128 performance = _calcPerformanceInPeriod({
-                commitmentLevel: getCommitmentLevel({ who: who, periodId: i }),
+                commitmentLevel: getCommitmentLevel({who: who, periodId: i}),
                 givenContributionPoints: participation.givenContributionPoints,
                 periodId: i
             });
@@ -295,14 +293,12 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
                 // exceeded expectations: raise participation score
                 delta = uint96(performance) - 1e18;
                 if (delta > constraintFactor) delta = constraintFactor;
-                score =
-                    previousScore * (1e18 + delta) / delta;
+                score = (previousScore * (1e18 + delta)) / delta;
             } else {
                 // underperformed: lower participation score
                 delta = 1e18 - uint96(performance);
                 if (delta > penaltyFactor) delta = penaltyFactor;
-                score = 
-                    previousScore * (1e18 - delta) / delta;
+                score = (previousScore * (1e18 - delta)) / delta;
             }
 
             // write to storage
@@ -320,13 +316,14 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint128 givenContributionPoints,
         uint32 periodId
     ) public view returns (uint128) {
-       uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
-       if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
-       return _calcPerformanceInPeriod({
-            commitmentLevel: commitmentLevel,
-            givenContributionPoints: givenContributionPoints,
-            periodId: periodId
-       });
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+        return
+            _calcPerformanceInPeriod({
+                commitmentLevel: commitmentLevel,
+                givenContributionPoints: givenContributionPoints,
+                periodId: periodId
+            });
     }
 
     function _calcPerformanceInPeriod(
@@ -338,32 +335,33 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
             commitmentLevel: commitmentLevel,
             periodId: periodId
         });
-        uint128 performance = 1e18 * givenContributionPoints / expectedContributionPoints;
+        uint128 performance = (1e18 * givenContributionPoints) / expectedContributionPoints;
         return performance;
     }
 
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
-       _revertForNotMember(who);
-       uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
-       if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
-       return _calcPerformanceInPeriod(who, periodId);
+        _revertForNotMember(who);
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+        return _calcPerformanceInPeriod(who, periodId);
     }
 
     function _calcPerformanceInPeriod(address who, uint32 periodId) internal view returns (uint128) {
-        return _calcPerformanceInPeriod({
-            commitmentLevel: getCommitmentLevel(who, periodId),
-            givenContributionPoints: participations[who][periodId].givenContributionPoints,
-            periodId: periodId
-        });
+        return
+            _calcPerformanceInPeriod({
+                commitmentLevel: getCommitmentLevel(who, periodId),
+                givenContributionPoints: participations[who][periodId].givenContributionPoints,
+                periodId: periodId
+            });
     }
 
     // fiCL * TCP
     function calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) public view returns (uint128) {
-       if (commitmentLevel < 1 || commitmentLevel > 10) revert InvalidCommitmentLevel();
-       uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
-       if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
-       return _calcExpectedContributionPoints(commitmentLevel, periodId); 
+        if (commitmentLevel < 1 || commitmentLevel > 10) revert InvalidCommitmentLevel();
+        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+        return _calcExpectedContributionPoints(commitmentLevel, periodId);
     }
 
     function _calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) internal view returns (uint128) {
