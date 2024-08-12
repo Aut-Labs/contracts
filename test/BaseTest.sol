@@ -35,6 +35,7 @@ abstract contract BaseTest is Test {
     TokenVesting public investors;
     TokenVesting public team;
     ReputationMining public reputationMining;
+    InitialDistribution public initialDistribution;
 
     address public owner = address(this);
     address public alice = address(0x411Ce);
@@ -64,6 +65,7 @@ abstract contract BaseTest is Test {
         team = deploy.team();
 
         reputationMining = deploy.reputationMining();
+        initialDistribution = deploy.initialDistribution();
 
         // labeling
         vm.label(owner, "Owner");

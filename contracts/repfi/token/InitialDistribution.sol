@@ -53,7 +53,10 @@ contract InitialDistribution {
 
     function distribute() external {
         require(msg.sender == owner, "only owner can distribute");
-        require(repFi.balanceOf(address(this)) == 100 * MILLION_ETHER, "RepFI has already been sent from the contract");
+        require(
+            repFi.balanceOf(address(this)) == 100 * MILLION_ETHER,
+            "not enough RepFI in the contract for distribution"
+        );
 
         // 8 million for private sale
         sendTokens(address(privateSale), 8 * MILLION_ETHER);
