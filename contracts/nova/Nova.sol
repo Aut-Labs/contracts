@@ -161,6 +161,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         participations[who][currentPeriodId] = Participation({
             commitmentLevel: commitmentLevel,
             givenContributionPoints: 0,
+            performance: 0,
             score: 1e18
         });
         currentCommitmentLevels[who] = commitmentLevel;
@@ -311,6 +312,34 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         }
     }
 
+    /// @notice helper to predict performance score for any user
+    function calcPerformanceInPeriod(
+        uint32 commitmentLevel,
+        uint128 givenContributionPoints,
+        uint32 periodId
+    ) public view returns (uint128) {
+       uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+       if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+       return _calcPerformanceInPeriod({
+            commitmentLevel: commitmentLevel,
+            givenContributionPoints: givenContributionPoints,
+            periodId: periodId
+       });
+    }
+
+    function _calcPerformanceInPeriod(
+        uint32 commitmentLevel,
+        uint128 givenContributionPoints,
+        uint32 periodId
+    ) internal view returns (uint128) {
+        uint128 expectedContributionPoints = _calcExpectedContributionPoints({
+            commitmentLevel: commitmentLevel,
+            periodId: periodId
+        });
+        uint128 performance = 1e18 * givenContributionPoints / expectedContributionPoints;
+        return performance;
+    }
+
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
        _revertForNotMember(who);
@@ -320,17 +349,11 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     }
 
     function _calcPerformanceInPeriod(address who, uint32 periodId) internal view returns (uint128) {
-        uint128 expectedContributionPoints = _calcExpectedContributionPoints({
+        return _calcPerformanceInPeriod({
             commitmentLevel: getCommitmentLevel(who, periodId),
+            givenContributionPoints: participations[who][periodId].givenContributionPoints,
             periodId: periodId
         });
-        
-        Participation memory participationOfMemberForPeriod = participations[who][periodId];
-        
-        uint128 performance =
-            1e18 * participationOfMemberForPeriod.givenContributionPoints / expectedContributionPoints;
-
-        return performance;
     }
 
     // fiCL * TCP
