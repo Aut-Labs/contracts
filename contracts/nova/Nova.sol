@@ -58,6 +58,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint32 commitmentLevel;
         uint128 givenContributionPoints;
         uint96 score;
+        uint128 performance;
         // TODO: array of completed tasks
     }
     mapping(address who => mapping(uint32 periodId => Participation participation)) public participations;
@@ -303,6 +304,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
             // write to storage
             participations[who][i].score = score;
+            participations[who][i].performance = performance;
 
             // overwrite previousScore to use for the next period if needed
             previousScore = score;
