@@ -14,7 +14,7 @@ import {INovaRegistry} from "./INovaRegistry.sol";
 import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
-import {Nova} from "../nova/Nova.sol";
+import {INova, Nova} from "../nova/Nova.sol";
 
 /// @title NovaRegistry
 contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
@@ -116,9 +116,20 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         return _userNovaList[user];
     }
 
-    function joinNovaHook(address member) external {
-        address nova = msg.sender;
+    function join(
+        address nova,
+        address member,
+        uint256 role,
+        uint8 commitment
+    ) external {
         require(checkNova[nova], "NovaRegistry: sender not a nova");
+        
+        INova(nova).join({
+            who: member,
+            role: role,
+            commitmentLevel: commitment
+        });
+        
         uint256 position = _userNovaList[member].length;
         _userNovaList[member].push(nova);
         _userNovaListIds[member][nova] = position;
