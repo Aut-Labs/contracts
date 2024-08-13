@@ -116,20 +116,11 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         return _userNovaList[user];
     }
 
-    function join(
-        address nova,
-        address member,
-        uint256 role,
-        uint8 commitment
-    ) external {
+    function join(address nova, address member, uint256 role, uint8 commitment) external {
         require(checkNova[nova], "NovaRegistry: sender not a nova");
-        
-        INova(nova).join({
-            who: member,
-            role: role,
-            commitmentLevel: commitment
-        });
-        
+
+        INova(nova).join({who: member, role: role, commitmentLevel: commitment});
+
         uint256 position = _userNovaList[member].length;
         _userNovaList[member].push(nova);
         _userNovaListIds[member][nova] = position;
