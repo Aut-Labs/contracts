@@ -145,6 +145,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _revertForCanNotJoinNova(nova, account, role);
         _revertForMinCommitmentNotReached(nova, commitment);
 
+        INovaRegistry(novaRegistryAddress).join({nova: nova, member: account, role: role, commitment: commitment});
         INova(nova).join(account, role, commitment);
 
         emit NovaJoined(account, role, commitment, nova);

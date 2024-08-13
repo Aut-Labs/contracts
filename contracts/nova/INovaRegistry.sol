@@ -8,7 +8,7 @@ interface INovaRegistry {
 
     function deployNova(uint256 market, string memory metadata, uint256 commitment) external returns (address nova);
 
-    function joinNovaHook(address user) external;
+    function join(address nova, address member, uint256 role, uint8 commitment) external;
 
     function listUserNovas(address user) external view returns (address[] memory);
 

@@ -5,7 +5,6 @@ import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
 import {NovaUpgradeable} from "./NovaUpgradeable.sol";
 import {NovaUtils} from "./NovaUtils.sol";
 import {INova} from "./INova.sol";
-import {INovaRegistry} from "./INovaRegistry.sol";
 import "../hubContracts/IHubDomainsRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
@@ -26,7 +25,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     uint8 public constant ADMIN_MASK_POSITION = 1;
 
     address public autID;
-    address public novaRegistry;
     address public hubDomainsRegistry;
     address public pluginRegistry;
     address public onboarding;
@@ -39,6 +37,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     uint32 public initTimestamp;
     uint32 public initPeriodId;
+    uint32 public period0Start;
 
     mapping(address => uint256) public roles;
     mapping(address => uint32) public joinedAt;
@@ -106,12 +105,12 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         _setMetadataUri(metadataUri_);
         pluginRegistry = pluginRegistry_;
         autID = autID_;
-        novaRegistry = novaRegistry_;
         hubDomainsRegistry = hubDomainsRegistry_;
         deployer = deployer_;
 
         initTimestamp = uint32(block.timestamp);
         initPeriodId = IGlobalParametersAlpha(novaRegistry_).currentPeriodId();
+        period0Start = IGlobalParametersAlpha(novaRegistry_).period0Start();
     }
 
     function setMetadataUri(string memory uri) external {
@@ -158,7 +157,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         members.push(who);
         joinedAt[who] = uint32(block.timestamp);
 
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         participations[who][currentPeriodId] = Participation({
             commitmentLevel: commitmentLevel,
             givenContributionPoints: 0,
@@ -169,8 +168,6 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
         _writePeriodSummary(currentPeriodId);
         currentSumCommitmentLevel += uint128(commitmentLevel);
-
-        INovaRegistry(novaRegistry).joinNovaHook(who);
 
         emit MemberGranted(who, role);
     }
@@ -192,10 +189,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     /// @notice return the period id the member joined the hub
     function getPeriodIdJoined(address who) public view returns (uint32) {
-        uint32 periodIdJoined = TimeLibrary.periodId({
-            period0Start: IGlobalParametersAlpha(novaRegistry).period0Start(),
-            timestamp: joinedAt[who]
-        });
+        uint32 periodIdJoined = TimeLibrary.periodId({period0Start: period0Start, timestamp: joinedAt[who]});
         if (periodIdJoined == 0) revert MemberDoesNotExist();
         return periodIdJoined;
     }
@@ -208,7 +202,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         if (newCommitmentLevel == 0 || newCommitmentLevel > 10) revert InvalidCommitmentLevel();
 
         uint32 periodIdJoined = getPeriodIdJoined(msg.sender);
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
 
         // write to storage for all 0 values- as the currentCommitmentLevels is now different
         for (uint32 i = currentPeriodId; i > periodIdJoined - 1; i--) {
@@ -235,7 +229,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     function writeParticipations(address[] calldata whos) external {
         // update historical periods if necessary
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         _writePeriodSummary(currentPeriodId);
 
         for (uint256 i = 0; i < whos.length; i++) {
@@ -245,7 +239,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     function writeParticipation(address who) external {
         // update historical periods if necessary
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         _writePeriodSummary(currentPeriodId);
 
         _writeParticipation(who, currentPeriodId);
@@ -317,7 +311,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint128 givenContributionPoints,
         uint32 periodId
     ) public view returns (uint128) {
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
         return
             _calcPerformanceInPeriod({
@@ -343,7 +337,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
         _revertForNotMember(who);
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
         return _calcPerformanceInPeriod(who, periodId);
     }
@@ -360,7 +354,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     // fiCL * TCP
     function calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) public view returns (uint128) {
         if (commitmentLevel < 1 || commitmentLevel > 10) revert InvalidCommitmentLevel();
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
         return _calcExpectedContributionPoints(commitmentLevel, periodId);
     }
@@ -374,7 +368,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
 
     /// @notice write sums to history when needed
     function writePeriodSummary() public {
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         _writePeriodSummary(currentPeriodId);
     }
 
@@ -434,7 +428,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         PeriodSummary memory periodSummary = periodSummaries[periodId];
         if (periodSummary.isSealed) return false;
         uint256 length = members.length;
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             if (participations[members[i]][periodId].score == 0) {
                 return false;
             }
@@ -446,7 +440,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         uint256 numMembersToWrite = 0;
         uint256 length = members.length;
         address[] memory membersCopy = new address[](length);
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             address member = members[i];
             if (participations[member][periodId].score == 0) {
                 membersCopy[numMembersToWrite++] = member;
@@ -454,7 +448,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         }
 
         address[] memory arrMembersToWrite = new address[](numMembersToWrite);
-        for (uint256 i=0; i<numMembersToWrite; i++) {
+        for (uint256 i = 0; i < numMembersToWrite; i++) {
             arrMembersToWrite[i] = membersCopy[i];
         }
         return arrMembersToWrite;
@@ -492,7 +486,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
     function _addTask(Task memory _task) internal {
         if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
         if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
-        if (!IInteractionRegistry(novaRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
+        // if (!IInteractionRegistry(novaRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
 
         uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
         currentSumActiveContributionPoints += sumTaskContributionPoints;
@@ -548,7 +542,7 @@ contract Nova is INova, NovaUtils, NovaUpgradeable {
         if (task.quantity == 0) revert TaskNotActive();
         if (joinedAt[_member] == 0) revert MemberDoesNotExist();
 
-        uint32 currentPeriodId = IGlobalParametersAlpha(novaRegistry).currentPeriodId();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         Participation storage participation = participations[_member][currentPeriodId];
 
         uint128 contributionPoints = task.contributionPoints;
