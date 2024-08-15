@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import {HubUpgradeable} from "./HubUpgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 /*
 TODO:
@@ -11,6 +11,10 @@ TODO:
 - Should the deployer be allowed to transfer their deployer role ownership?
 - max/min values of parameters
 */
+
+interface IMembership {
+    function membersCount() external view returns (uint256);
+}
 
 abstract contract Hub is HubUpgradeable {
     uint256 public constant SIZE_PARAMETER = 1;
@@ -21,14 +25,20 @@ abstract contract Hub is HubUpgradeable {
 
     address public onboarding;
     /// @dev these addrs are seen as immutable
-    address public autID;
-    address public hubDomainsRegistry;
+    // address public hubDomainsRegistry;
+    address public globalParameters;
+    address public membership;
+    // address public prestige;
     address public taskRegistry;
 
     uint256 public archetype;
     uint256 public commitment;
     uint256 public market;
     string public metadataUri;
+
+    uint32 public initTimestamp;
+    uint32 public initPeriodId;
+    uint32 public period0Start;
 
     EnumerableSet.AddressSet internal _admins;
 
@@ -41,24 +51,37 @@ abstract contract Hub is HubUpgradeable {
 
     function initialize(
         address _initialOwner,
-        address _autID,
-        address _hubDomainsRegistry,
-        address _novaRegistry,
+        // address _hubDomainsRegistry,
+        address _globalParameters,
+        address _membership,
+        // address _prestige,
         address _taskRegistry,
         uint256 _market,
         uint256 _commitment,
         string memory _metadataUri
     ) {
+        // ownership
         __Ownable_init(_initialOwner);
         _admins.add(_initialOwner);
 
-        autID = _autID;
-        hubDomainsRegistry = _hubDomainsRegistry;
+        // set addrs
+        // hubDomainsRegistry = _hubDomainsRegistry;
+        globalParameters = _globalParameters;
+        membership = _membership;
+        // prestige = _prestige;
         taskRegistry = _taskRegistry;
 
+        // set vars
         _setMarket(_market);
         _setCommitment(_commitment);
         _setMetadataUri(_metadataUri);
+
+        initTimestamp = uint32(block.timestamp);
+        period0Start = IGlobalParametersAlpha(_globalParameters).period0Start();
+        initPeriodId = TimeLibrary.periodId({
+            period0Start: period0Start,
+            timestamp: uint32(block.timestamp)
+        });
     }
 
     // -----------------------------------------------------------
@@ -86,7 +109,7 @@ abstract contract Hub is HubUpgradeable {
     }
 
     function _addAdmin(address who) internal {
-        if (!isMember(who)) revert NotMember();
+        if (!isMember(who)) revert NotMember(); // TODO: call membership
         if (!_admins.add(who)) revert AlreadyAdmin();
 
         emit AdminGranted(who);
@@ -100,17 +123,50 @@ abstract contract Hub is HubUpgradeable {
         emit AdminRenounced(who);
 
     // -----------------------------------------------------------
+    //                        VIEWS
+    // -----------------------------------------------------------
+
+    function membersCount() external view returns (uint256) {
+        return IMembership(membership).membersCount();
+    }
+
+    function periodCount() external view returns (uint32) {
+        return TimeLibrary.periodId({
+            period0Start: period0Start,
+            timestamp: uint32(block.timestamp)
+        });
+    }
+
+    function roles() external view returns (address[] memory) {
+        // TODO: return roles from membership
+    }
+
+    function hasRole(address who, uint256 role) external view returns (bool) {
+        // TODO
+    }
+
+    function hadRole(address who, uint256 role, uint32 periodId) external view returns (bool) {
+        // TODO
+    }
+
+    function roleAtPeriod(address who, uint32 periodId) public view returns (uint256) {
+        // TODO
+    }
+
+
+
+    // -----------------------------------------------------------
     //                        HUB-MANAGEMENT
     // -----------------------------------------------------------
 
-    function registerDomain(
-        string calldata domain_,
-        address novaAddress_,
-        string calldata metadataUri_
-    ) external override onlyOwner {
-        // also revert if not deployer
-        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);
-    }
+    // function registerDomain(
+    //     string calldata domain_,
+    //     address novaAddress_,
+    //     string calldata metadataUri_
+    // ) external override onlyOwner {
+    //     // also revert if not deployer
+    //     IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);
+    // }
 
     function addUrl(string memory url) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();

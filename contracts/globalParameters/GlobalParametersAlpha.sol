@@ -50,7 +50,7 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
         period0Start = TimeLibrary.periodStart({timestamp: uint32(block.timestamp)});
         periodDuration = TimeLibrary.FOUR_WEEKS;
         steepnessDegree3Exp = 300;
-        penaltyFactor3Exp = 500;
+        penaltyFactor3Exp = 600; // TODO: scale properly
         constrainingFactor6Exp = 1_400_000;
         credibleNeutrality6Exp = 1_300_000;
     }
