@@ -33,7 +33,7 @@ interface IHub {
     event CommitmentSet(uint256);
     event ChangeCommitmentLevel(address indexed who, uint32 oldCommitmentLevel, uint32 newCommitmentLevel);
 
-    function registerDomain(string calldata domain, address novaAddress, string calldata metadataUri) external;
+    function registerDomain(string calldata domain, address hubAddress, string calldata metadataUri) external;
     function getDomain(string calldata domain) external view returns (address, string memory);
     function autID() external view returns (address);
     function pluginRegistry() external view returns (address);

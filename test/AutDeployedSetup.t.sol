@@ -10,9 +10,9 @@ pragma solidity ^0.8.21;
 // contract AutDeployedSetup is DSTest {
 //     Vm vm = Vm(HEVM_ADDRESS);
 //     AutID autID;
-//     HubRegistry novaRegistry;
+//     HubRegistry hubRegistry;
 //     HubDomainsRegistry hubDomainsRegistry;
-//     Hub novaLogic;
+//     Hub hubLogic;
 //     UpgradeableBeacon upgradeableBeacon;
 //     address owner = address(this);
 //     address pluginRegistry = address(1);
@@ -20,20 +20,20 @@ pragma solidity ^0.8.21;
 
 //     function setUp() public {
 //         autID = new AutID(trustedForwarder);
-//         novaRegistry = new HubRegistry(trustedForwarder);
-//         novaLogic = new Hub();
-//         hubDomainsRegistry = new HubDomainsRegistry(address(novaLogic));
+//         hubRegistry = new HubRegistry(trustedForwarder);
+//         hubLogic = new Hub();
+//         hubDomainsRegistry = new HubDomainsRegistry(address(hubLogic));
 
 //         address autIdAddress = address(autID);
-//         address novaRegistryAddress = address(novaRegistry);
-//         address novaAddress = address(novaLogic);
+//         address hubRegistryAddress = address(hubRegistry);
+//         address hubAddress = address(hubLogic);
 //         address hubDomainsRegistryAddress = address(hubDomainsRegistry);
 
 //         autID.initialize(owner);
-//         novaLogic.initialize(
+//         hubLogic.initialize(
 //             owner,
 //             autIdAddress, // AutID address
-//             address(novaRegistry),
+//             address(hubRegistry),
 //             pluginRegistry, // plugin registry address
 //             1, // Market
 //             1, // Commitment
@@ -41,34 +41,34 @@ pragma solidity ^0.8.21;
 //             hubDomainsRegistryAddress
 //         );
 
-//         novaRegistry.initialize(
+//         hubRegistry.initialize(
 //             autIdAddress,
-//             novaAddress,
+//             hubAddress,
 //             pluginRegistry,
 //             hubDomainsRegistryAddress
 //         );
 
-//         autID.setHubRegistry(novaRegistryAddress);
+//         autID.setHubRegistry(hubRegistryAddress);
 //     }
 
 //     function testDeployHubAndCreateRecord() public {
 //         vm.startPrank(owner);
 //         uint256 market = 4;
-//         string memory metadata = "novaMetadata";
+//         string memory metadata = "hubMetadata";
 //         uint256 minCommitment = 5;
 
-//         address novaAddress = novaRegistry.deployHub(
+//         address hubAddress = hubRegistry.deployHub(
 //             market,
 //             metadata,
 //             minCommitment
 //         );
 //         assertEq(
-//             Hub(novaAddress).market(),
+//             Hub(hubAddress).market(),
 //             market,
 //             "Hub market should match the input market"
 //         );
 //         assertEq(
-//             Hub(novaAddress).metadataUri(),
+//             Hub(hubAddress).metadataUri(),
 //             metadata,
 //             "Hub metadataUri should match the input metadataUri"
 //         );
@@ -79,7 +79,7 @@ pragma solidity ^0.8.21;
 //         autID.createRecordAndJoinHub(
 //             role,
 //             commitment,
-//             novaAddress,
+//             hubAddress,
 //             username,
 //             optionalUri
 //         );
@@ -97,14 +97,14 @@ pragma solidity ^0.8.21;
 //         // register domain from hub
 //         string memory domain = "testdomain.hub";
 //         string memory domainMetadata = "testdomainmetadata";
-//         novaLogic.registerDomain(domain, novaAddress, domainMetadata);
+//         hubLogic.registerDomain(domain, hubAddress, domainMetadata);
 //         (address domainHubAddress, string memory domainMetadataResult) = hubDomainsRegistry.getDomain(
 //             domain
 //         );
 
 //         assertEq(
 //             domainHubAddress,
-//             novaAddress,
+//             hubAddress,
 //             "Domain owner should be the hub contract"
 //         );
 
@@ -118,7 +118,7 @@ pragma solidity ^0.8.21;
 //         string memory domain2 = "testdomain2.hub";
 //         string memory domainMetadata2 = "testdomainmetadata2";
 //         vm.expectRevert("Caller is not the permitted contract");
-//         hubDomainsRegistry.registerDomain(domain2, novaAddress, domainMetadata2);
+//         hubDomainsRegistry.registerDomain(domain2, hubAddress, domainMetadata2);
 
 //         vm.stopPrank();
 //     }

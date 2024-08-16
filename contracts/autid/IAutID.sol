@@ -9,7 +9,7 @@ interface IAutID {
     event TokenMetadataUpdated(uint256 tokenId, address account, string uri);
 
     /// @notice Retrieve HubRegistry contract address
-    function novaRegistry() external view returns (address);
+    function hubRegistry() external view returns (address);
 
     /// @notice Retrieve LocalReputation contract address
     function localReputation() external view returns (address);

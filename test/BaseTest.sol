@@ -6,7 +6,7 @@ import { console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, s
 
 abstract contract BaseTest is Test {
     AutID public autId;
-    HubRegistry public novaRegistry;
+    HubRegistry public hubRegistry;
     GlobalParametersAlpha public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
     InteractionRegistry public interactionRegistry;
@@ -24,7 +24,7 @@ abstract contract BaseTest is Test {
 
         // set env
         autId = deploy.autId();
-        novaRegistry = deploy.novaRegistry();
+        hubRegistry = deploy.hubRegistry();
         globalParameters = deploy.globalParameters();
         hubDomainsRegistry = deploy.hubDomainsRegistry();
         interactionRegistry = deploy.interactionRegistry();
@@ -35,7 +35,7 @@ abstract contract BaseTest is Test {
         vm.label(alice, "Alice");
         vm.label(bob, "Bob");
         vm.label(address(autId), "autId");
-        vm.label(address(novaRegistry), "novaRegistry");
+        vm.label(address(hubRegistry), "hubRegistry");
         vm.label(address(globalParameters), "globalParameters");
         vm.label(address(hubDomainsRegistry), "hubDomainsRegistry");
         vm.label(address(basicOnboarding), "basicOnboarding");

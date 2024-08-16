@@ -24,7 +24,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
 
     uint256 private _tokenId;
 
-    address public novaRegistry;
+    address public hubRegistry;
     address public localReputation;
     mapping(bytes32 => uint256) public tokenIdForUsername;
     mapping(address => uint256) public tokenIdForAccount;
@@ -45,7 +45,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     function setHubRegistry(address newHubRegistry) external onlyOwner {
         _revertForZeroAddress(newHubRegistry);
 
-        novaRegistry = newHubRegistry;
+        hubRegistry = newHubRegistry;
 
         emit HubRegistrySet(newHubRegistry);
     }
@@ -97,7 +97,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     function listUserHubs(address user) external view returns (address[] memory) {
-        return IHubRegistry(novaRegistry).listUserHubs(user);
+        return IHubRegistry(hubRegistry).listUserHubs(user);
     }
 
     function userHubRole(address hub, address user) external view returns (uint256) {
@@ -137,15 +137,15 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     function _joinHub(address account, uint256 role, uint8 commitment, address hub) internal {
-        address novaRegistryAddress = novaRegistry;
-        _revertForZeroAddress(novaRegistryAddress);
+        address hubRegistryAddress = hubRegistry;
+        _revertForZeroAddress(hubRegistryAddress);
         _revertForZeroAddress(hub);
         _revertForInvalidCommitment(commitment);
-        _revertForUncheckedHub(novaRegistryAddress, hub);
+        _revertForUncheckedHub(hubRegistryAddress, hub);
         _revertForCanNotJoinHub(hub, account, role);
         _revertForMinCommitmentNotReached(hub, commitment);
 
-        IHubRegistry(novaRegistryAddress).join({hub: hub, member: account, role: role, commitment: commitment});
+        IHubRegistry(hubRegistryAddress).join({hub: hub, member: account, role: role, commitment: commitment});
         IHub(hub).join(account, role, commitment);
 
         emit HubJoined(account, role, commitment, hub);

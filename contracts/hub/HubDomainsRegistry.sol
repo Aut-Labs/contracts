@@ -8,19 +8,19 @@ import "./IHubDomainsRegistry.sol";
 contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
     struct Domain {
         string name;
-        address novaAddress;
+        address hubAddress;
         address verifier;
         string metadataUri;
     }
 
     mapping(string => Domain) private domains;
-    mapping(address => string[]) private novaAddressToDomains;
+    mapping(address => string[]) private hubAddressToDomains;
     mapping(uint256 => string) private tokenIdToDomain;
     uint256 private tokenIdCounter;
     address private permittedContract;
 
     event DomainRegistered(
-        address indexed novaAddress,
+        address indexed hubAddress,
         address verifier,
         string domain,
         uint256 tokenId,
@@ -40,23 +40,23 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
 
     function registerDomain(
         string calldata domain,
-        address novaAddress,
+        address hubAddress,
         string calldata metadataUri
     ) external override(IHubDomainsRegistry) onlyPermittedContract {
-        require(domains[domain].novaAddress == address(0), "Domain already registered");
-        require(novaAddressToDomains[novaAddress].length == 0, "Domain already registered");
+        require(domains[domain].hubAddress == address(0), "Domain already registered");
+        require(hubAddressToDomains[hubAddress].length == 0, "Domain already registered");
         require(_isValidDomain(domain), "Invalid domain format");
 
         tokenIdCounter++;
-        domains[domain] = Domain(domain, novaAddress, msg.sender, metadataUri);
-        novaAddressToDomains[novaAddress].push(domain);
+        domains[domain] = Domain(domain, hubAddress, msg.sender, metadataUri);
+        hubAddressToDomains[hubAddress].push(domain);
         tokenIdToDomain[tokenIdCounter] = domain;
 
-        emit DomainRegistered(novaAddress, msg.sender, domain, tokenIdCounter, metadataUri);
+        emit DomainRegistered(hubAddress, msg.sender, domain, tokenIdCounter, metadataUri);
     }
 
     function getDomain(string calldata domain) external view returns (address, string memory) {
-        return (domains[domain].novaAddress, domains[domain].metadataUri);
+        return (domains[domain].hubAddress, domains[domain].metadataUri);
     }
 
     function verifierOf(uint256 tokenId) external view returns (address verifier) {

@@ -66,7 +66,7 @@ contract TaskFactory is Initializable {
     function _addTask(Task memory _task) internal {
         if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
         if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
-        // if (!IInteractionRegistry(novaRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
+        // if (!IInteractionRegistry(hubRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
 
         uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
         currentSumActiveContributionPoints += sumTaskContributionPoints;

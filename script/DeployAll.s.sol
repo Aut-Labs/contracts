@@ -29,7 +29,7 @@ contract DeployAll is Script {
     // state variables
     AutID public autId;
     PluginRegistry pluginRegistry;
-    HubRegistry public novaRegistry;
+    HubRegistry public hubRegistry;
     HubDomainsRegistry public hubDomainsRegistry;
     InteractionRegistry public interactionRegistry;
     GlobalParametersAlpha public globalParameters;
@@ -69,7 +69,7 @@ contract DeployAll is Script {
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
         interactionRegistry = deployInteractionRegistry(owner);
         globalParameters = deployGlobalParameters(owner);
-        novaRegistry = deployHubRegistry({
+        hubRegistry = deployHubRegistry({
             _trustedForwarder: trustedForwarder,
             _owner: owner,
             _autIdAddress: address(autId),
@@ -79,12 +79,12 @@ contract DeployAll is Script {
         });
         basicOnboarding = deployBasicOnboarding(owner);
 
-        // set novaRegistry to autId (assumes msg.sender == owner [TODO: change this])
-        // autId.setHubRegistry(address(novaRegistry));
+        // set hubRegistry to autId (assumes msg.sender == owner [TODO: change this])
+        // autId.setHubRegistry(address(hubRegistry));
 
         // Create and set the allowlist
         Allowlist allowlist = new Allowlist();
-        novaRegistry.setAllowlistAddress(address(allowlist));
+        hubRegistry.setAllowlistAddress(address(allowlist));
 
         // todo: convert to helper function
         if (deploying) {
@@ -92,7 +92,7 @@ contract DeployAll is Script {
             TNamedAddress[10] memory na;
             na[0] = TNamedAddress({name: "globalParametersProxy", target: address(globalParameters)});
             na[1] = TNamedAddress({name: "autIDProxy", target: address(autId)});
-            na[2] = TNamedAddress({name: "novaRegistryProxy", target: address(novaRegistry)});
+            na[2] = TNamedAddress({name: "hubRegistryProxy", target: address(hubRegistry)});
             na[3] = TNamedAddress({name: "pluginRegistryProxy", target: address(pluginRegistry)});
             na[4] = TNamedAddress({name: "allowlist", target: address(allowlist)});
             na[5] = TNamedAddress({name: "basicOnboarding", target: address(basicOnboarding)});
@@ -135,7 +135,7 @@ function deployPluginRegistry(address _owner) returns (PluginRegistry) {
 function deployHubDomainsRegistry(
     address _owner
 ) returns (HubDomainsRegistry) {
-    // address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
+    // address hubDomainsRegistry = address(new HubDomainsRegistry(hubImpl));
     HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(address(1)); // TODO
     return hubDomainsRegistry;
 }
@@ -163,21 +163,21 @@ function deployHubRegistry(
     address _hubDomainsRegistryAddress,
     address _globalParametersAddress
 ) returns (HubRegistry) {
-    address novaImplementation = address(new Hub());
-    address novaRegistryImplementation = address(new HubRegistry(_trustedForwarder));
-    AutProxy novaRegistryProxy = new AutProxy(
-        novaRegistryImplementation,
+    address hubImplementation = address(new Hub());
+    address hubRegistryImplementation = address(new HubRegistry(_trustedForwarder));
+    AutProxy hubRegistryProxy = new AutProxy(
+        hubRegistryImplementation,
         _owner,
         abi.encodeWithSelector(
             HubRegistry.initialize.selector,
             _autIdAddress,
-            novaImplementation,
+            hubImplementation,
             _pluginRegistryAddress,
             _hubDomainsRegistryAddress,
             _globalParametersAddress
         )
     );
-    return HubRegistry(address(novaRegistryProxy));
+    return HubRegistry(address(hubRegistryProxy));
 }
 
 function deployBasicOnboarding(address _owner) returns (BasicOnboarding) {

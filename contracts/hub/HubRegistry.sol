@@ -20,16 +20,16 @@ import {Membership} from "./Membership.sol";
 
 /// @title HubRegistry
 contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
-    event HubCreated(address deployer, address novaAddress, uint256 market, uint256 commitment, string metadata);
+    event HubCreated(address deployer, address hubAddress, uint256 market, uint256 commitment, string metadata);
     event AllowlistSet(address allowlist);
 
     // just for interface compatibility
     // actually there is no need to store it in the contract
-    mapping(address => address[]) public novaDeployers;
+    mapping(address => address[]) public hubDeployers;
     mapping(address => address[]) internal _userHubList;
     mapping(address => mapping(address => uint256)) internal _userHubListIds;
     mapping(address => bool) public checkHub;
-    address[] public novas;
+    address[] public hubs;
 
     address public deployerAddress;
     address public autIDAddr;
@@ -44,14 +44,14 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
 
     function initialize(
         address autIDAddr_,
-        address novaLogic,
+        address hubLogic,
         address pluginRegistry_,
         address hubDomainsRegistry_,
         address interactionRegistry_,
         address globalParameters_
     ) external initializer {
         require(autIDAddr_ != address(0), "HubRegistry: AutID address zero");
-        require(novaLogic != address(0), "HubRegistry: Hub logic address zero");
+        require(hubLogic != address(0), "HubRegistry: Hub logic address zero");
         require(pluginRegistry_ != address(0), "HubRegistry: PluginRegistry address zero");
         __Ownable_init(msg.sender);
 
@@ -61,7 +61,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         hubDomainsRegistry = hubDomainsRegistry_;
         interactionRegistry = interactionRegistry_;
         globalParameters = globalParameters_;
-        upgradeableBeacon = new UpgradeableBeacon(novaLogic, address(this));
+        upgradeableBeacon = new UpgradeableBeacon(hubLogic, address(this));
         // allowlist =
         // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
     }
@@ -79,37 +79,38 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     }
 
     // the only reason for this function is to keep interface compatible with sdk
-    // `novas` variable is public anyway
-    // the only reason for `novas` variable is that TheGraph is not connected
+    // `hubs` variable is public anyway
+    // the only reason for `hubs` variable is that TheGraph is not connected
     function getHubs() public view returns (address[] memory) {
-        return novas;
+        return hubs;
     }
 
     // the same comment as for `getHubs` method
     function getHubByDeployer(address deployer) public view returns (address[] memory) {
-        return novaDeployers[deployer];
+        return hubDeployers[deployer];
     }
 
     /// @dev depoloy beacon proxy for a new hub
     function deployHub(uint256 market, string memory metadata, uint256 commitment) external returns (address hub) {
         _validateHubDeploymentParams(market, metadata, commitment);
-        _checkAllowlist();
+        // _checkAllowlist(); // TODO: how should allowlist be designed?
 
-        Membership membership = new Membership(); // TODO: proxy?
+        Membership membership = new Membership(); // TODO: proxy
         bytes memory data = abi.encodeWithSelector(
             Hub.initialize.selector,
             _msgSender(),
-            autIDAddr,
-            address(this),
-            pluginRegistry,
+            // humDomainsRegistry,
+            globalParameters,
+            membership,
+            // prestige,
+            taskRegistry,
             market,
             commitment,
-            metadata,
-            hubDomainsRegistry
+            metadata
         );
         hub = address(new BeaconProxy(address(upgradeableBeacon), data));
-        novaDeployers[_msgSender()].push(hub);
-        novas.push(hub);
+        hubDeployers[_msgSender()].push(hub);
+        hubs.push(hub);
         checkHub[hub] = true;
 
         emit HubCreated(_msgSender(), hub, market, commitment, metadata);
@@ -156,9 +157,9 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
             // if (!allowlist.isAllowed(_msgSender())) {
             //     revert IAllowlist.Unallowed();
             // }
-            if ((novaDeployers[_msgSender()].length != 0)) {
+            if ((hubDeployers[_msgSender()].length != 0)) {
                 revert IAllowlist.AlreadyDeployedAHub();
-                // `novaDeployers` state is not stored within allowlist,
+                // `hubDeployers` state is not stored within allowlist,
                 //  although the error belongs to allowlist
             }
         }

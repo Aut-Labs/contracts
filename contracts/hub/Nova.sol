@@ -62,7 +62,7 @@ contract Hub is IHub, HubUtils, HubUpgradeable {
     function initialize(
         address deployer_,
         address autID_,
-        address novaRegistry_,
+        address hubRegistry_,
         address pluginRegistry_,
         uint256 market_,
         uint256 commitment_,
@@ -81,8 +81,8 @@ contract Hub is IHub, HubUtils, HubUpgradeable {
         deployer = deployer_;
 
         initTimestamp = uint32(block.timestamp);
-        initPeriodId = IGlobalParametersAlpha(novaRegistry_).currentPeriodId();
-        period0Start = IGlobalParametersAlpha(novaRegistry_).period0Start();
+        initPeriodId = IGlobalParametersAlpha(hubRegistry_).currentPeriodId();
+        period0Start = IGlobalParametersAlpha(hubRegistry_).period0Start();
     }
 
     function setMetadataUri(string memory uri) external {
@@ -214,12 +214,12 @@ contract Hub is IHub, HubUtils, HubUpgradeable {
     // It forwards the request to the HubDomainsRegistry.
     function registerDomain(
         string calldata domain_,
-        address novaAddress_,
+        address hubAddress_,
         string calldata metadataUri_
     ) external override {
         _revertForNotDeployer(msg.sender);
         // also revert if not deployer
-        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);
+        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, hubAddress_, metadataUri_);
     }
 
     function getDomain(string calldata domain) external view returns (address, string memory) {

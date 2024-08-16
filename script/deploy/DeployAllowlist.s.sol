@@ -27,7 +27,7 @@ contract DeployAllowlist is Script {
         vm.startBroadcast(vm.envUint("PVK_A1"));
 
         address allowlistImpl = address(new Allowlist());
-        IHubRegistry novaRegistry = IHubRegistry(0x3d299cA87A62bd0fB005e6e7b081e794c15456DA);
-        novaRegistry.setAllowlistAddress(allowlistImpl);
+        IHubRegistry hubRegistry = IHubRegistry(0x3d299cA87A62bd0fB005e6e7b081e794c15456DA);
+        hubRegistry.setAllowlistAddress(allowlistImpl);
     }
 }

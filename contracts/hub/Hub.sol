@@ -158,11 +158,11 @@ abstract contract Hub is HubUpgradeable {
 
     // function registerDomain(
     //     string calldata domain_,
-    //     address novaAddress_,
+    //     address hubAddress_,
     //     string calldata metadataUri_
     // ) external override onlyOwner {
     //     // also revert if not deployer
-    //     IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, novaAddress_, metadataUri_);
+    //     IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, hubAddress_, metadataUri_);
     // }
 
     function addUrl(string memory url) external {

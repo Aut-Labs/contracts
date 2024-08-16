@@ -48,8 +48,8 @@ abstract contract AutIDUtils {
         }
     }
 
-    function _revertForUncheckedHub(address novaRegistry_, address hub) internal view {
-        if (!IHubRegistry(novaRegistry_).checkHub(hub)) {
+    function _revertForUncheckedHub(address hubRegistry_, address hub) internal view {
+        if (!IHubRegistry(hubRegistry_).checkHub(hub)) {
             revert UncheckedHub();
         }
     }
