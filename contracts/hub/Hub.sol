@@ -12,9 +12,6 @@ TODO:
 - max/min values of parameters
 */
 
-interface IMembership {
-    function membersCount() external view returns (uint256);
-}
 
 abstract contract Hub is HubUpgradeable {
     uint256 public constant SIZE_PARAMETER = 1;
