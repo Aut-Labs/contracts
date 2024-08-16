@@ -6,7 +6,7 @@ import { console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, s
 
 abstract contract BaseTest is Test {
     AutID public autId;
-    NovaRegistry public novaRegistry;
+    HubRegistry public novaRegistry;
     GlobalParametersAlpha public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
     InteractionRegistry public interactionRegistry;

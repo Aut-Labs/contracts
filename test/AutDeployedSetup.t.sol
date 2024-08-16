@@ -4,15 +4,15 @@ pragma solidity ^0.8.21;
 // import "ds-test/test.sol";
 // import "forge-std/Vm.sol";
 // import "../contracts/autid/AutID.sol";
-// import "../contracts/nova/NovaRegistry.sol";
+// import "../contracts/hub/HubRegistry.sol";
 // import "../contracts/hubContracts/HubDomainsRegistry.sol";
 
 // contract AutDeployedSetup is DSTest {
 //     Vm vm = Vm(HEVM_ADDRESS);
 //     AutID autID;
-//     NovaRegistry novaRegistry;
+//     HubRegistry novaRegistry;
 //     HubDomainsRegistry hubDomainsRegistry;
-//     Nova novaLogic;
+//     Hub novaLogic;
 //     UpgradeableBeacon upgradeableBeacon;
 //     address owner = address(this);
 //     address pluginRegistry = address(1);
@@ -20,8 +20,8 @@ pragma solidity ^0.8.21;
 
 //     function setUp() public {
 //         autID = new AutID(trustedForwarder);
-//         novaRegistry = new NovaRegistry(trustedForwarder);
-//         novaLogic = new Nova();
+//         novaRegistry = new HubRegistry(trustedForwarder);
+//         novaLogic = new Hub();
 //         hubDomainsRegistry = new HubDomainsRegistry(address(novaLogic));
 
 //         address autIdAddress = address(autID);
@@ -48,35 +48,35 @@ pragma solidity ^0.8.21;
 //             hubDomainsRegistryAddress
 //         );
 
-//         autID.setNovaRegistry(novaRegistryAddress);
+//         autID.setHubRegistry(novaRegistryAddress);
 //     }
 
-//     function testDeployNovaAndCreateRecord() public {
+//     function testDeployHubAndCreateRecord() public {
 //         vm.startPrank(owner);
 //         uint256 market = 4;
 //         string memory metadata = "novaMetadata";
 //         uint256 minCommitment = 5;
 
-//         address novaAddress = novaRegistry.deployNova(
+//         address novaAddress = novaRegistry.deployHub(
 //             market,
 //             metadata,
 //             minCommitment
 //         );
 //         assertEq(
-//             Nova(novaAddress).market(),
+//             Hub(novaAddress).market(),
 //             market,
-//             "Nova market should match the input market"
+//             "Hub market should match the input market"
 //         );
 //         assertEq(
-//             Nova(novaAddress).metadataUri(),
+//             Hub(novaAddress).metadataUri(),
 //             metadata,
-//             "Nova metadataUri should match the input metadataUri"
+//             "Hub metadataUri should match the input metadataUri"
 //         );
 //         string memory username = "testuser";
 //         string memory optionalUri = "testuri";
 //         uint256 role = 1;
 //         uint256 commitment = 5;
-//         autID.createRecordAndJoinNova(
+//         autID.createRecordAndJoinHub(
 //             role,
 //             commitment,
 //             novaAddress,
@@ -94,18 +94,18 @@ pragma solidity ^0.8.21;
 //             "Token ID should be non-zero after record creation"
 //         );
 
-//         // register domain from nova
+//         // register domain from hub
 //         string memory domain = "testdomain.hub";
 //         string memory domainMetadata = "testdomainmetadata";
 //         novaLogic.registerDomain(domain, novaAddress, domainMetadata);
-//         (address domainNovaAddress, string memory domainMetadataResult) = hubDomainsRegistry.getDomain(
+//         (address domainHubAddress, string memory domainMetadataResult) = hubDomainsRegistry.getDomain(
 //             domain
 //         );
 
 //         assertEq(
-//             domainNovaAddress,
+//             domainHubAddress,
 //             novaAddress,
-//             "Domain owner should be the nova contract"
+//             "Domain owner should be the hub contract"
 //         );
 
 //         assertEq(

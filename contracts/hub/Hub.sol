@@ -179,7 +179,7 @@ abstract contract Hub is HubUpgradeable {
     }
 
     function setArchetypeAndParameters(uint8[] calldata input) external {
-        require(input.length == 6, "Nova: incorrect input length");
+        require(input.length == 6, "Hub: incorrect input length");
         if (!isAdmin(msg.sender)) revert NotAdmin();
 
         _revertForInvalidParameter(input[0]);

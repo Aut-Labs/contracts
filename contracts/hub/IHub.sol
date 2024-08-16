@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "../hubContracts/IHubDomainsRegistry.sol";
 
-interface INova {
+interface IHub {
     error NotDeployer();
     error NotAdmin();
     error NotMember();

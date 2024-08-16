@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/utils/StorageSlot.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-abstract contract NovaUpgradeable is Initializable {
+abstract contract HubUpgradeable is Initializable {
     // 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50
     bytes32 private constant _BEACON_SLOT = bytes32(uint256(keccak256("eip1967.proxy.beacon")));
     bytes32 private constant _IMPLEMENTATION_SLOT = bytes32(uint256(keccak256("id.aut.os.proxy.implementation")) - 1);

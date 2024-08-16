@@ -14,19 +14,21 @@ import {IHubRegistry} from "./IHubRegistry.sol";
 import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
-import {INova, Nova} from "../nova/Nova.sol";
+
+import {IHub, Hub} from "../hub/Hub.sol";
+import {Membership} from "./Membership.sol";
 
 /// @title HubRegistry
 contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
-    event NovaCreated(address deployer, address novaAddress, uint256 market, uint256 commitment, string metadata);
+    event HubCreated(address deployer, address novaAddress, uint256 market, uint256 commitment, string metadata);
     event AllowlistSet(address allowlist);
 
     // just for interface compatibility
     // actually there is no need to store it in the contract
     mapping(address => address[]) public novaDeployers;
-    mapping(address => address[]) internal _userNovaList;
-    mapping(address => mapping(address => uint256)) internal _userNovaListIds;
-    mapping(address => bool) public checkNova;
+    mapping(address => address[]) internal _userHubList;
+    mapping(address => mapping(address => uint256)) internal _userHubListIds;
+    mapping(address => bool) public checkHub;
     address[] public novas;
 
     address public deployerAddress;
@@ -49,7 +51,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         address globalParameters_
     ) external initializer {
         require(autIDAddr_ != address(0), "HubRegistry: AutID address zero");
-        require(novaLogic != address(0), "HubRegistry: Nova logic address zero");
+        require(novaLogic != address(0), "HubRegistry: Hub logic address zero");
         require(pluginRegistry_ != address(0), "HubRegistry: PluginRegistry address zero");
         __Ownable_init(msg.sender);
 
@@ -79,22 +81,23 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     // the only reason for this function is to keep interface compatible with sdk
     // `novas` variable is public anyway
     // the only reason for `novas` variable is that TheGraph is not connected
-    function getNovas() public view returns (address[] memory) {
+    function getHubs() public view returns (address[] memory) {
         return novas;
     }
 
-    // the same comment as for `getNovas` method
-    function getNovaByDeployer(address deployer) public view returns (address[] memory) {
+    // the same comment as for `getHubs` method
+    function getHubByDeployer(address deployer) public view returns (address[] memory) {
         return novaDeployers[deployer];
     }
 
-    /// @dev depoloy beacon proxy for a new nova
-    function deployNova(uint256 market, string memory metadata, uint256 commitment) external returns (address nova) {
-        _validateNovaDeploymentParams(market, metadata, commitment);
+    /// @dev depoloy beacon proxy for a new hub
+    function deployHub(uint256 market, string memory metadata, uint256 commitment) external returns (address hub) {
+        _validateHubDeploymentParams(market, metadata, commitment);
         _checkAllowlist();
 
+        Membership membership = new Membership(); // TODO: proxy?
         bytes memory data = abi.encodeWithSelector(
-            Nova.initialize.selector,
+            Hub.initialize.selector,
             _msgSender(),
             autIDAddr,
             address(this),
@@ -104,30 +107,30 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
             metadata,
             hubDomainsRegistry
         );
-        nova = address(new BeaconProxy(address(upgradeableBeacon), data));
-        novaDeployers[_msgSender()].push(nova);
-        novas.push(nova);
-        checkNova[nova] = true;
+        hub = address(new BeaconProxy(address(upgradeableBeacon), data));
+        novaDeployers[_msgSender()].push(hub);
+        novas.push(hub);
+        checkHub[hub] = true;
 
-        emit NovaCreated(_msgSender(), nova, market, commitment, metadata);
+        emit HubCreated(_msgSender(), hub, market, commitment, metadata);
     }
 
-    function listUserNovas(address user) external view returns (address[] memory) {
-        return _userNovaList[user];
+    function listUserHubs(address user) external view returns (address[] memory) {
+        return _userHubList[user];
     }
 
-    function join(address nova, address member, uint256 role, uint8 commitment) external {
-        require(checkNova[nova], "HubRegistry: sender not a nova");
+    function join(address hub, address member, uint256 role, uint8 commitment) external {
+        require(checkHub[hub], "HubRegistry: sender not a hub");
 
-        INova(nova).join({who: member, role: role, commitmentLevel: commitment});
+        IHub(hub).join({who: member, role: role, commitmentLevel: commitment});
 
-        uint256 position = _userNovaList[member].length;
-        _userNovaList[member].push(nova);
-        _userNovaListIds[member][nova] = position;
+        uint256 position = _userHubList[member].length;
+        _userHubList[member].push(hub);
+        _userHubListIds[member][hub] = position;
     }
 
-    /// @dev upgrades nova beacon to the new logic contract
-    function upgradeNova(address newLogic) external {
+    /// @dev upgrades hub beacon to the new logic contract
+    function upgradeHub(address newLogic) external {
         _checkOwner();
         require(newLogic != address(0), "HubRegistry: address zero");
         upgradeableBeacon.upgradeTo(newLogic);
@@ -154,14 +157,14 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
             //     revert IAllowlist.Unallowed();
             // }
             if ((novaDeployers[_msgSender()].length != 0)) {
-                revert IAllowlist.AlreadyDeployedANova();
+                revert IAllowlist.AlreadyDeployedAHub();
                 // `novaDeployers` state is not stored within allowlist,
                 //  although the error belongs to allowlist
             }
         }
     }
 
-    function _validateNovaDeploymentParams(uint256 market, string memory metadata, uint256 commitment) internal pure {
+    function _validateHubDeploymentParams(uint256 market, string memory metadata, uint256 commitment) internal pure {
         require(market > 0 && market < 6, "HubRegistry: invalid market value");
         require(bytes(metadata).length != 0, "HubRegistry: metadata empty");
         require(commitment > 0 && commitment < 11, "HubRegistry: invalid commitment value");

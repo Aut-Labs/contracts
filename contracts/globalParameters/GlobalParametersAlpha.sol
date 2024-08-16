@@ -43,6 +43,9 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
     uint64 public localReputationForPeriod0ExpiresAt;
     uint64 public prestigeForPeriod0ExpiresAt;
 
+    uint128 public constant PS = 1e18;
+    uint128 public constant BASE_PRESTIGE = 1e18;
+
     constructor() {}
 
     /// @dev fill with default values

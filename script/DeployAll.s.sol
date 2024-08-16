@@ -1,16 +1,16 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {INova} from "../contracts/nova/INova.sol";
+import {IHub} from "../contracts/hub/IHub.sol";
 import {IAutID} from "../contracts/autid/IAutID.sol";
-import {INovaRegistry} from "../contracts/nova/INovaRegistry.sol";
+import {IHubRegistry} from "../contracts/hub/IHubRegistry.sol";
 import {IAllowlist} from "../contracts/utils/IAllowlist.sol";
 import {IGlobalParametersAlpha} from "../contracts/globalParameters/IGlobalParametersAlpha.sol";
 import {SimpleAllowlistOnboarding} from "../contracts/onboarding/SimpleAllowlistOnboarding.sol";
 import {BasicOnboarding} from "../contracts/onboarding/BasicOnboarding.sol";
-import {Nova} from "../contracts/nova/Nova.sol";
+import {Hub} from "../contracts/hub/Hub.sol";
 import {AutID} from "../contracts/autid/AutID.sol";
-import {NovaRegistry} from "../contracts/nova/NovaRegistry.sol";
+import {HubRegistry} from "../contracts/hub/HubRegistry.sol";
 import {InteractionRegistry} from "../contracts/interactions/InteractionRegistry.sol";
 import {Allowlist} from "../contracts/utils/Allowlist.sol";
 import {GlobalParametersAlpha} from "../contracts/globalParameters/GlobalParametersAlpha.sol";
@@ -29,7 +29,7 @@ contract DeployAll is Script {
     // state variables
     AutID public autId;
     PluginRegistry pluginRegistry;
-    NovaRegistry public novaRegistry;
+    HubRegistry public novaRegistry;
     HubDomainsRegistry public hubDomainsRegistry;
     InteractionRegistry public interactionRegistry;
     GlobalParametersAlpha public globalParameters;
@@ -69,7 +69,7 @@ contract DeployAll is Script {
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
         interactionRegistry = deployInteractionRegistry(owner);
         globalParameters = deployGlobalParameters(owner);
-        novaRegistry = deployNovaRegistry({
+        novaRegistry = deployHubRegistry({
             _trustedForwarder: trustedForwarder,
             _owner: owner,
             _autIdAddress: address(autId),
@@ -80,7 +80,7 @@ contract DeployAll is Script {
         basicOnboarding = deployBasicOnboarding(owner);
 
         // set novaRegistry to autId (assumes msg.sender == owner [TODO: change this])
-        // autId.setNovaRegistry(address(novaRegistry));
+        // autId.setHubRegistry(address(novaRegistry));
 
         // Create and set the allowlist
         Allowlist allowlist = new Allowlist();
@@ -155,21 +155,21 @@ function deployGlobalParameters(address _owner) returns (GlobalParametersAlpha) 
     return GlobalParametersAlpha(address(globalParametersProxy));
 }
 
-function deployNovaRegistry(
+function deployHubRegistry(
     address _trustedForwarder,
     address _owner,
     address _autIdAddress,
     address _pluginRegistryAddress,
     address _hubDomainsRegistryAddress,
     address _globalParametersAddress
-) returns (NovaRegistry) {
-    address novaImplementation = address(new Nova());
-    address novaRegistryImplementation = address(new NovaRegistry(_trustedForwarder));
+) returns (HubRegistry) {
+    address novaImplementation = address(new Hub());
+    address novaRegistryImplementation = address(new HubRegistry(_trustedForwarder));
     AutProxy novaRegistryProxy = new AutProxy(
         novaRegistryImplementation,
         _owner,
         abi.encodeWithSelector(
-            NovaRegistry.initialize.selector,
+            HubRegistry.initialize.selector,
             _autIdAddress,
             novaImplementation,
             _pluginRegistryAddress,
@@ -177,7 +177,7 @@ function deployNovaRegistry(
             _globalParametersAddress
         )
     );
-    return NovaRegistry(address(novaRegistryProxy));
+    return HubRegistry(address(novaRegistryProxy));
 }
 
 function deployBasicOnboarding(address _owner) returns (BasicOnboarding) {
