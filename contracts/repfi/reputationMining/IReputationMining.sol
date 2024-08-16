@@ -2,7 +2,13 @@
 pragma solidity ^0.8.20;
 
 interface IReputationMining {
-    function initialize(address initialOwner, address _repFiToken, address _pRepFiToken, address _circular) external;
+    function initialize(
+        address initialOwner,
+        address _repFiToken,
+        address _pRepFiToken,
+        address _circular,
+        address _peerValueContract
+    ) external;
 
     function updatePeriod() external;
 

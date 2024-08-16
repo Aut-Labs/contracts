@@ -38,7 +38,8 @@ contract PRepFi is ERC20, AccessControl {
         return true;
     }
 
-    function burn(address account, uint256 value) external onlyRole(BURNER_ROLE) {
+    function burn(address account, uint256 value) external onlyRole(BURNER_ROLE) returns (bool) {
         _burn(account, value);
+        return true;
     }
 }

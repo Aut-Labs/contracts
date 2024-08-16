@@ -36,6 +36,7 @@ abstract contract BaseTest is Test {
     TokenVesting public team;
     ReputationMining public reputationMining;
     InitialDistribution public initialDistribution;
+    RandomNumberGenerator public randomNumberGenerator;
 
     address public owner = address(this);
     address public alice = address(0x411Ce);
@@ -64,6 +65,7 @@ abstract contract BaseTest is Test {
         investors = deploy.investors();
         team = deploy.team();
 
+        randomNumberGenerator = deploy.randomNumberGenerator();
         reputationMining = deploy.reputationMining();
         initialDistribution = deploy.initialDistribution();
 
@@ -84,5 +86,7 @@ abstract contract BaseTest is Test {
         vm.label(address(investors), "investors");
         vm.label(address(team), "team");
         vm.label(address(reputationMining), "reputationMining");
+        vm.label(address(initialDistribution), "initialDistribution");
+        vm.label(address(randomNumberGenerator), "peerValueContract");
     }
 }

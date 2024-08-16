@@ -23,6 +23,7 @@ import {PRepFi} from "../contracts/repfi/token/pREPFI.sol";
 import {TokenVesting} from "../contracts/repfi/vesting/TokenVesting.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
 import {InitialDistribution} from "../contracts/repfi/token/InitialDistribution.sol";
+import {RandomNumberGenerator} from "../contracts/randomNumberGenerator/RandomNumberGenerator.sol";
 
 import "forge-std/Script.sol";
 
@@ -53,6 +54,7 @@ contract DeployAll is Script {
     address public circular;
     ReputationMining public reputationMining;
     InitialDistribution public initialDistribution;
+    RandomNumberGenerator public randomNumberGenerator;
 
     struct TNamedAddress {
         address target;
@@ -129,8 +131,18 @@ contract DeployAll is Script {
         partners = makeAddr("partners"); // ToDo: update to partners multisig later
         ecosystem = makeAddr("ecosystem"); // ToDo: update to ecosystem multisig later
 
+        // ToDo: change this to the real contract when it's ready
+
+        randomNumberGenerator = new RandomNumberGenerator();
+
         // deploy reputationMining
-        reputationMining = deployReputationMining(owner, address(repFi), address(pRepFi), address(circular));
+        reputationMining = deployReputationMining(
+            owner,
+            address(repFi),
+            address(pRepFi),
+            address(circular),
+            address(randomNumberGenerator)
+        );
 
         // deploy initialDistribution
         initialDistribution = deployInitialDistribution(
@@ -308,13 +320,21 @@ function deployReputationMining(
     address _owner,
     address _repFi,
     address _pRepFi,
-    address _circular
+    address _circular,
+    address _randomNumberGenerator
 ) returns (ReputationMining) {
     ReputationMining reputationMiningImplementation = new ReputationMining();
     AutProxy reputationMiningProxy = new AutProxy(
         address(reputationMiningImplementation),
         _owner,
-        abi.encodeWithSelector(ReputationMining.initialize.selector, _owner, _repFi, _pRepFi, _circular)
+        abi.encodeWithSelector(
+            ReputationMining.initialize.selector,
+            _owner,
+            _repFi,
+            _pRepFi,
+            _circular,
+            _randomNumberGenerator
+        )
     );
     return ReputationMining(address(reputationMiningProxy));
 }
