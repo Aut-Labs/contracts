@@ -1,9 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "../hubContracts/IHubDomainsRegistry.sol";
-
-interface INovaRegistry {
+interface IHubRegistry {
     function checkNova(address) external view returns (bool);
 
     function deployNova(uint256 market, string memory metadata, uint256 commitment) external returns (address nova);

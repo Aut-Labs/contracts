@@ -10,14 +10,14 @@ import {
 } from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
-import {INovaRegistry} from "./INovaRegistry.sol";
+import {IHubRegistry} from "./IHubRegistry.sol";
 import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 import {INova, Nova} from "../nova/Nova.sol";
 
-/// @title NovaRegistry
-contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
+/// @title HubRegistry
+contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
     event NovaCreated(address deployer, address novaAddress, uint256 market, uint256 commitment, string metadata);
     event AllowlistSet(address allowlist);
 
@@ -48,9 +48,9 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
         address interactionRegistry_,
         address globalParameters_
     ) external initializer {
-        require(autIDAddr_ != address(0), "NovaRegistry: AutID address zero");
-        require(novaLogic != address(0), "NovaRegistry: Nova logic address zero");
-        require(pluginRegistry_ != address(0), "NovaRegistry: PluginRegistry address zero");
+        require(autIDAddr_ != address(0), "HubRegistry: AutID address zero");
+        require(novaLogic != address(0), "HubRegistry: Nova logic address zero");
+        require(pluginRegistry_ != address(0), "HubRegistry: PluginRegistry address zero");
         __Ownable_init(msg.sender);
 
         deployerAddress = msg.sender;
@@ -117,7 +117,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     }
 
     function join(address nova, address member, uint256 role, uint8 commitment) external {
-        require(checkNova[nova], "NovaRegistry: sender not a nova");
+        require(checkNova[nova], "HubRegistry: sender not a nova");
 
         INova(nova).join({who: member, role: role, commitmentLevel: commitment});
 
@@ -129,7 +129,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     /// @dev upgrades nova beacon to the new logic contract
     function upgradeNova(address newLogic) external {
         _checkOwner();
-        require(newLogic != address(0), "NovaRegistry: address zero");
+        require(newLogic != address(0), "HubRegistry: address zero");
         upgradeableBeacon.upgradeTo(newLogic);
     }
 
@@ -143,7 +143,7 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
 
     /// @dev transfer beacon ownership (hopefuly to a new and better-implemented registry)
     function tranferBeaconOwnership(address newOwner) external onlyOwner {
-        require(newOwner != address(0), "NovaRegistry: address zero");
+        require(newOwner != address(0), "HubRegistry: address zero");
         upgradeableBeacon.transferOwnership(newOwner);
     }
 
@@ -162,9 +162,9 @@ contract NovaRegistry is INovaRegistry, ERC2771ContextUpgradeable, OwnableUpgrad
     }
 
     function _validateNovaDeploymentParams(uint256 market, string memory metadata, uint256 commitment) internal pure {
-        require(market > 0 && market < 6, "NovaRegistry: invalid market value");
-        require(bytes(metadata).length != 0, "NovaRegistry: metadata empty");
-        require(commitment > 0 && commitment < 11, "NovaRegistry: invalid commitment value");
+        require(market > 0 && market < 6, "HubRegistry: invalid market value");
+        require(bytes(metadata).length != 0, "HubRegistry: metadata empty");
+        require(commitment > 0 && commitment < 11, "HubRegistry: invalid commitment value");
     }
 
     function _msgSender() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (address) {
