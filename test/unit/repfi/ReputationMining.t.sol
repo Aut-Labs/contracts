@@ -9,6 +9,7 @@ contract ReputationMiningTest is BaseTest {
     address circular;
     ReputationMining reputationMiningContract;
     uint256 initialPRepFiBalance = 36000000 ether; // 36 million tokens
+    uint256 public constant MAX_MINT_PER_PERIOD = 100 ether;
 
     function setUp() public override {
         super.setUp();
@@ -101,9 +102,15 @@ contract ReputationMiningTest is BaseTest {
         vm.startPrank(alice);
         reputationMiningContract.claimUtilityToken();
         uint256 randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
+        uint randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
         vm.stopPrank();
 
-        uint256 givenAmount = randomPeerValue;
+        uint256 tokensForPeriod = 500000 ether;
+        uint256 givenAmount = randomPeerValue * (tokensForPeriod / randomGlobalReputation);
+        if (givenAmount > MAX_MINT_PER_PERIOD) {
+            givenAmount = MAX_MINT_PER_PERIOD;
+        }
+        console.log("given amount", givenAmount);
 
         uint256 pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
 
@@ -143,6 +150,121 @@ contract ReputationMiningTest is BaseTest {
         reputationMiningContract.claimUtilityToken();
     }
 
+    function test_claimRepFiTokens() public {
+        // ToDo: add test where the user stakes his prepfi tokens somewhere so we get a different calculation
+        // start first period
+        reputationMiningContract.updatePeriod();
+
+        uint256 pRepFiBalanceBefore = pRepfiToken.balanceOf(address(alice));
+        assertEq(pRepFiBalanceBefore, 0, "initial balance is not zero");
+
+        vm.startPrank(alice);
+        reputationMiningContract.claimUtilityToken();
+        uint256 randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
+        uint randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
+        vm.stopPrank();
+
+        uint256 tokensForPeriod = 500000 ether;
+        uint256 givenAmount = randomPeerValue * (tokensForPeriod / randomGlobalReputation);
+        if (givenAmount > MAX_MINT_PER_PERIOD) {
+            givenAmount = MAX_MINT_PER_PERIOD;
+        }
+        console.log("given amount", givenAmount);
+
+        uint256 pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
+
+        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received pRepFi doesn't match");
+        assertLe(
+            pRepFiBalanceAfter,
+            reputationMiningContract.MAX_MINT_PER_PERIOD(),
+            "distribution exceeded maximum amount"
+        );
+
+        // alice stakes 60% pRepFi tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
+        uint256 stakedAmount = (givenAmount * 50) / 100;
+        console.log("staked amount", stakedAmount);
+        vm.prank(alice);
+        pRepfiToken.approve(address(this), stakedAmount);
+
+        // put the tokens in this contract for now
+        pRepfiToken.transferFrom(address(alice), address(this), stakedAmount);
+
+        skip(28 days);
+
+        // admin updates the period
+        reputationMiningContract.updatePeriod();
+
+        uint256 repfiBalanceBefore = repfiToken.balanceOf(address(alice));
+        assertEq(repfiBalanceBefore, 0, "initial balance is not zero");
+
+        vm.prank(alice);
+        reputationMiningContract.claim();
+
+        uint256 repfiBalanceAfter = repfiToken.balanceOf(address(alice));
+
+        uint256 participation = (stakedAmount * 100) / givenAmount;
+        console.log("participation", participation);
+        uint256 denominator = 1000;
+        uint256 ratio = (stakedAmount * denominator) / ((givenAmount * 60) / 100);
+        uint256 earnedTokens = (ratio * (givenAmount - stakedAmount)) / denominator;
+        uint256 totalEarned = earnedTokens;
+        console.log("earnings", earnedTokens);
+
+        assertEq(repfiBalanceAfter, earnedTokens, "reward amounts do not match");
+        // The other 40% should be transferred to the circular contract
+        assertEq(
+            repfiToken.balanceOf(address(circular)),
+            pRepFiBalanceAfter - earnedTokens,
+            "circular contract didn't receive appropriate leftover amount"
+        );
+        uint256 totalBurned = repfiToken.balanceOf(address(circular));
+
+        // alice claims utility tokens again
+        vm.startPrank(alice);
+        reputationMiningContract.claimUtilityToken();
+        randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
+        randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
+        vm.stopPrank();
+
+        givenAmount = randomPeerValue * (tokensForPeriod / randomGlobalReputation);
+        if (givenAmount > MAX_MINT_PER_PERIOD) {
+            givenAmount = MAX_MINT_PER_PERIOD;
+        }
+        console.log("given amount", givenAmount);
+
+        // alice stakes 90% pRepFi tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
+        stakedAmount = (givenAmount * 90) / 100;
+        console.log("staked amount", stakedAmount);
+        vm.prank(alice);
+        pRepfiToken.approve(address(this), stakedAmount);
+
+        // put the tokens in this contract for now
+        pRepfiToken.transferFrom(address(alice), address(this), stakedAmount);
+
+        skip(28 days);
+
+        // admin updates the period
+        reputationMiningContract.updatePeriod();
+
+        vm.prank(alice);
+        reputationMiningContract.claim();
+
+        repfiBalanceAfter = repfiToken.balanceOf(address(alice)) - totalEarned;
+
+        // remaining repfi will be distributed 1:1
+        earnedTokens = givenAmount - stakedAmount;
+        totalEarned += earnedTokens;
+        console.log("earnings", earnedTokens);
+
+        assertEq(repfiBalanceAfter, earnedTokens, "reward amounts do not match");
+
+        totalBurned = repfiToken.balanceOf(address(circular));
+
+        // alice claims utility tokens again
+        vm.prank(alice);
+        reputationMiningContract.claimUtilityToken();
+    }
+
     function test_claimPRepFiTokensWithPreviousBalance() public {
         // start first period
         reputationMiningContract.updatePeriod();
@@ -153,9 +275,16 @@ contract ReputationMiningTest is BaseTest {
         vm.startPrank(alice);
         reputationMiningContract.claimUtilityToken();
         uint256 randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
+        uint randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
         vm.stopPrank();
 
-        uint256 givenAmount = randomPeerValue;
+        uint256 tokensForPeriod = 500000 ether;
+        uint256 givenAmount = randomPeerValue * (tokensForPeriod / randomGlobalReputation);
+        console.log("given amount", givenAmount);
+
+        if (givenAmount > MAX_MINT_PER_PERIOD) {
+            givenAmount = MAX_MINT_PER_PERIOD;
+        }
 
         uint256 pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
 
@@ -178,9 +307,15 @@ contract ReputationMiningTest is BaseTest {
         vm.startPrank(alice);
         reputationMiningContract.claimUtilityToken();
         randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
+        randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
         vm.stopPrank();
 
-        givenAmount = randomPeerValue;
+        tokensForPeriod = 500000 ether;
+        givenAmount = randomPeerValue * (tokensForPeriod / randomGlobalReputation);
+        if (givenAmount > MAX_MINT_PER_PERIOD) {
+            givenAmount = MAX_MINT_PER_PERIOD;
+        }
+        console.log("given amount", givenAmount);
 
         pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
 

@@ -7,8 +7,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IPREPFI} from "../token/IpREPFI.sol";
 import {IReputationMining} from "./IReputationMining.sol";
 import {IRandomNumberGenerator} from "../../randomNumberGenerator/IRandomNumberGenerator.sol";
-
-// import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining {
     IERC20 public repFiToken;
@@ -16,12 +15,16 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     address public circular;
     IRandomNumberGenerator randomNumberGenerator;
 
-    uint256 public constant MAX_MINT_PER_PERIOD = 1000 ether; // to be changed later
+    uint256 public constant MAX_MINT_PER_PERIOD = 100 ether; // to be changed later
+    uint256 public constant DENOMINATOR = 1000;
     uint256 public period = 0;
     uint256 public lastPeriodChange = 0;
     uint256 public constant PERIOD_DURATION = 28 days;
     mapping(uint256 period => uint256 amount) public tokensLeft;
     mapping(address user => mapping(uint256 period => uint256 amount)) public givenBalance;
+
+    using SafeERC20 for IERC20;
+    using SafeERC20 for IPREPFI;
 
     function initialize(
         address initialOwner,
@@ -71,7 +74,8 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         if (pRepFiBalance > 0) {
             // reset pRepFi token balance
             // or should we claim their previous rewards instead?
-            pRepFiToken.burn(msg.sender, pRepFiBalance);
+            bool success = pRepFiToken.burn(msg.sender, pRepFiBalance);
+            require(success, "Failed to burn remaining tokens");
 
             // send RepFI tokens for this user to circlular contract?
         }
@@ -82,17 +86,16 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         givenBalance[msg.sender][period] = amount;
 
         // send tokens
-        pRepFiToken.transfer(msg.sender, amount);
+        pRepFiToken.safeTransfer(msg.sender, amount);
     }
 
     function getClaimableUtilityTokenForPeriod(address _account, uint256 _period) public view returns (uint256 amount) {
         // get peer value
         uint256 peerValue = randomNumberGenerator.getRandomNumberForAccount(_account, 80, 160);
+        uint256 totalTokensForPeriod = getTokensForPeriod(_period);
+        uint256 totalGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(_account, 80000, 160000); // let's assume we have 1000 users with a random between 80 and 160 in peer value
 
-        amount = peerValue;
-
-        // calculate allocation for this period
-        // ToDo: Distribute monthly pREPFI tokens based on formula
+        amount = peerValue * (totalTokensForPeriod / totalGlobalReputation);
 
         // in case the amount is bigger than the maximum allowed per period, set the maximum
         if (amount > MAX_MINT_PER_PERIOD) {
@@ -113,23 +116,24 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         // calculate rewards based on token utilisation
         // check pREPFI balance vs allocated tokens for last period unless there's a better way to check this
         uint256 tokensUsed = givenAmount - pRepFiBalance;
-        uint256 participation = tokensUsed > 0 ? (tokensUsed / givenAmount) * 100 : 0;
+        // what do we do with the decimals here? Looks like we need to scale to receive a number other than 0
+        uint256 participation = tokensUsed > 0 ? ((tokensUsed) * 100) / givenAmount : 0;
         uint256 earnedTokens = 0;
 
         if (participation >= 60) {
-            earnedTokens = givenAmount;
+            earnedTokens = pRepFiBalance;
         } else {
-            earnedTokens = tokensUsed / ((givenAmount * 60) / 100);
+            uint256 ratio = (tokensUsed * DENOMINATOR) / ((givenAmount * 60) / 100);
+            earnedTokens = (ratio * pRepFiBalance) / DENOMINATOR;
         }
         // burn pRepFI tokens
-        pRepFiToken.burn(msg.sender, pRepFiBalance);
+        bool success = pRepFiToken.burn(msg.sender, pRepFiBalance);
+        require(success, "Failed to burn remaining RepFi");
 
         // send repFi tokens
-        bool earnedTokensSent = repFiToken.transfer(msg.sender, earnedTokens);
-        require(earnedTokensSent, "Token transfer failed");
+        repFiToken.safeTransfer(msg.sender, earnedTokens);
         // send remaining repFi tokens to circle contract (or burn)
-        bool circularTokensSent = repFiToken.transfer(circular, givenAmount - earnedTokens);
-        require(circularTokensSent, "Circular Token transfer failed");
+        repFiToken.safeTransfer(circular, givenAmount - earnedTokens);
     }
 
     function getTokensForPeriod(uint256 _period) public pure returns (uint256) {
