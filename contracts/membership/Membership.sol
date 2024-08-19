@@ -16,7 +16,7 @@ contract Membership is Initializable {
     uint32 public period0Start;
     uint32 public initPeriodId;
     
-    uint128 public commitment;
+    uint128 public commitmentSum;
     uint128 public pointsActive;
 
     uint128 public periodPointsCreated;
@@ -43,7 +43,7 @@ contract Membership is Initializable {
     struct PeriodSummary {
         bool inactive;
         bool isSealed;
-        uint128 commitment;
+        uint128 commitmentSum;
         uint128 pointsActive;
         uint128 pointsCreated;
         uint128 pointsGiven;
@@ -95,24 +95,24 @@ contract Membership is Initializable {
 
 
     /// @notice get the commitment level of a member at a particular period id
-    function getCommitmentLevel(address who, uint32 periodId) public view returns (uint32) {
+    function getCommitment(address who, uint32 periodId) public view returns (uint32) {
         if (periodId < getPeriodIdJoined(who)) revert MemberHasNotYetCommited();
 
         Participation memory participation = participations[who][periodId];
-        if (participation.commitmentLevel != 0) {
-            // user has changed their commitmentLevel in a period following `periodId`.  We know this becuase
-            // participation.commitmentLevel state is non-zero as it is written following a commitmentLevel change.
-            return participation.commitmentLevel;
+        if (participation.commitment != 0) {
+            // user has changed their commitment in a period following `periodId`.  We know this becuase
+            // participation.commitment state is non-zero as it is written following a commitment change.
+            return participation.commitment;
         } else {
             // User has *not* changed their commitment level: meaning their commitLevel is sync to current
-            return currentCommitmentLevels[who];
+            return currentCommitments[who];
         }
     }
 
 
     /// @notice helper to predict performance score for any user
     function calcPerformanceInPeriod(
-        uint32 commitmentLevel,
+        uint32 commitment,
         uint128 givenContributionPoints,
         uint32 periodId
     ) public view returns (uint128) {
@@ -120,19 +120,19 @@ contract Membership is Initializable {
         if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
         return
             _calcPerformanceInPeriod({
-                commitmentLevel: commitmentLevel,
+                commitment: commitment,
                 givenContributionPoints: givenContributionPoints,
                 periodId: periodId
             });
     }
 
     function _calcPerformanceInPeriod(
-        uint32 commitmentLevel,
+        uint32 commitment,
         uint128 givenContributionPoints,
         uint32 periodId
     ) internal view returns (uint128) {
         uint128 expectedContributionPoints = _calcExpectedContributionPoints({
-            commitmentLevel: commitmentLevel,
+            commitment: commitment,
             periodId: periodId
         });
         uint128 performance = (1e18 * givenContributionPoints) / expectedContributionPoints;
@@ -150,24 +150,24 @@ contract Membership is Initializable {
     function _calcPerformanceInPeriod(address who, uint32 periodId) internal view returns (uint128) {
         return
             _calcPerformanceInPeriod({
-                commitmentLevel: getCommitmentLevel(who, periodId),
+                commitment: getCommitment(who, periodId),
                 givenContributionPoints: participations[who][periodId].givenContributionPoints,
                 periodId: periodId
             });
     }
 
     // fiCL * TCP
-    function calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) public view returns (uint128) {
-        if (commitmentLevel < 1 || commitmentLevel > 10) revert InvalidCommitmentLevel();
+    function calcExpectedContributionPoints(uint32 commitment, uint32 periodId) public view returns (uint128) {
+        if (commitment < 1 || commitment > 10) revert InvalidCommitment();
         uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
-        return _calcExpectedContributionPoints(commitmentLevel, periodId);
+        return _calcExpectedContributionPoints(commitment, periodId);
     }
 
-    function _calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) internal view returns (uint128) {
+    function _calcExpectedContributionPoints(uint32 commitment, uint32 periodId) internal view returns (uint128) {
         PeriodSummary memory periodSummary = periodSummaries[periodId];
-        uint256 numScaled = 1e18 * uint256(commitmentLevel) * periodSummary.sumActiveContributionPoints;
-        uint256 expectedContributionPoints = numScaled / periodSummary.sumCommitmentLevel / 1e18;
+        uint256 numScaled = 1e18 * uint256(commitment) * periodSummary.sumActiveContributionPoints;
+        uint256 expectedContributionPoints = numScaled / periodSummary.sumCommitment / 1e18;
         return uint128(expectedContributionPoints);
     }
 
@@ -184,7 +184,7 @@ contract Membership is Initializable {
 
         _members.add(who);
 
-        currentCommitmentSum += commitment;
+        commitmentSum += commitment;
 
         uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
         participations[who][currentPeriodId] = Participation({
@@ -198,36 +198,36 @@ contract Membership is Initializable {
         emit Join(who, role, commitment);
     }
 
-    function changeCommitmentLevel(uint8 newCommitmentLevel) external {
-        uint8 oldCommitmentLevel = currentCommitmentLevels[msg.sender];
-        if (newCommitmentLevel == oldCommitmentLevel) revert SameCommitmentLevel();
+    function changeCommitment(uint8 newCommitment) external {
+        uint8 oldCommitment = currentCommitments[msg.sender];
+        if (newCommitment == oldCommitment) revert SameCommitment();
 
         // TODO: globalParam
-        if (newCommitmentLevel == 0 || newCommitmentLevel > 10) revert InvalidCommitmentLevel();
+        if (newCommitment == 0 || newCommitment > 10) revert InvalidCommitment();
 
         uint32 periodIdJoined = getPeriodIdJoined(msg.sender);
         uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
 
-        // write to storage for all 0 values- as the currentCommitmentLevels is now different
+        // write to storage for all 0 values- as the currentCommitments is now different
         for (uint32 i = currentPeriodId; i > periodIdJoined - 1; i--) {
             Participation storage participation = participations[msg.sender][i];
-            if (participation.commitmentLevel == 0) {
-                participation.commitmentLevel = oldCommitmentLevel;
+            if (participation.commitment == 0) {
+                participation.commitment = oldCommitment;
             } else {
                 // we have reached the end of zero values
                 break;
             }
         }
 
-        currentCommitmentLevels[msg.sender] = newCommitmentLevel;
+        currentCommitments[msg.sender] = newCommitment;
 
         _writePeriodSummary(currentPeriodId);
-        currentSumCommitmentLevel = currentSumCommitmentLevel - oldCommitmentLevel + newCommitmentLevel;
+        currentSumCommitment = currentSumCommitment - oldCommitment + newCommitment;
 
-        emit ChangeCommitmentLevel({
+        emit ChangeCommitment({
             who: msg.sender,
-            oldCommitmentLevel: oldCommitmentLevel,
-            newCommitmentLevel: newCommitmentLevel
+            oldCommitment: oldCommitment,
+            newCommitment: newCommitment
         });
     }
 
@@ -280,7 +280,7 @@ contract Membership is Initializable {
         for (uint32 i = periodToStartWrite; i < currentPeriodId; i++) {
             Participation storage participation = participations[who][i];
             uint128 performance = _calcPerformanceInPeriod({
-                commitmentLevel: getCommitmentLevel({who: who, periodId: i}),
+                commitment: getCommitment({who: who, periodId: i}),
                 givenContributionPoints: participation.givenContributionPoints,
                 periodId: i
             });
@@ -326,7 +326,7 @@ contract Membership is Initializable {
         bool writeToHistory;
         for (i = lastPeriodId; i > initPeriodId_ - 1; i--) {
             PeriodSummary storage periodSummary = periodSummaries[i];
-            if (periodSummary.commitment == 0) {
+            if (periodSummary.commitmentSum == 0) {
                 writeToHistory = true;
             } else {
                 // historical commitment levels are up to date- do nothing
@@ -339,21 +339,25 @@ contract Membership is Initializable {
             periodSummaries[i] = PeriodSummary({
                 inactive: false,
                 isSealed: false,
-                commitment: commitment,
-                pointsActive: pointsActive
+                commitmentSum: commitmentSum,
+                pointsActive: pointsActive,
                 pointsCreated: periodPointsCreated,
                 pointsGiven: periodPointsGiven,
                 pointsRemoved: periodPointsRemoved
             });
 
-            // if there's a gap in data- we have inactive periods. Fill up with inactive flag and empty values where possible
+            // if there's a gap in data- we have inactive periods.
+            // How do we know a gap means inactive periods?
+            //      Because each interaction with the members data, tasks, joining, etc. all write
+            //      to period summary, keeping it synced.
+            // Fill up with inactive flag and empty values where possible
             if (i < lastPeriodId) {
                 for (uint32 j = i + 1; j < _currentPeriodId; j++) {
                     periodSummaries[j] = PeriodSummary({
                         inactive: true,
                         isSealed: true,
-                        commitment: commitment,
-                        pointsActive: pointsActive
+                        commitmentSum: commitmentSum,
+                        pointsActive: pointsActive,
                         pointsCreated: 0,
                         pointsGiven: 0,
                         pointsRemoved: 0
