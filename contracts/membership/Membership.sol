@@ -2,22 +2,38 @@
 pragma solidity ^0.8.20;
 
 import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
-contract Membership {
+contract Membership is Initializable {
     using EnumerableSet for EnumerableSet.AddressSet;
+    using EnumerableSet for EnumerableSet.UintSet;
 
     address public hub;
     address public autID;
     address public taskManager;
 
+    uint32 public period0Start;
+    uint32 public initPeriodId;
+    
+    uint128 public commitment;
+    uint128 public pointsActive;
+
+    uint128 public periodPointsCreated;
+    uint128 public periodPointsGiven;
+    uint128 public periodPointsRemoved;
+
     mapping(address => uint32) public joinedAt;
     mapping(address => uint32) public withdrawn;
+    mapping(address => uint256) public currentRole;
+    mapping(address => uint8) public currentCommitment;
+    
     EnumerableSet.AddressSet[] private _members;
 
     struct Participation {
         uint256 role;
-        uint32 commitmentLevel;
-        uint128 givenContributionPoints;
+        uint32 commitment;
+        uint128 givenPoints;
         uint96 score;
         uint128 performance;
         // TODO: array of completed tasks
@@ -27,21 +43,36 @@ contract Membership {
     struct PeriodSummary {
         bool inactive;
         bool isSealed;
-        uint128 sumCommitmentLevel;
+        uint128 commitment;
+        uint128 pointsActive;
+        uint128 pointsCreated;
+        uint128 pointsGiven;
+        uint128 pointsRemoved;
     }
     mapping(uint32 periodId => PeriodSummary periodSummary) public periodSummaries;
 
-    constructor() {}
+    constructor() {
+        _disableInitializers();
+    }
 
-    function _init_Membership(
+    function initialize(
         address _hub,
         address _autID,
-        address _taskManager
-    ) public {
+        address _taskManager,
+        uint32 _period0Start
+    ) public initializer {
         hub = _hub;
         autID = _autID;
         taskManager = _taskManager;
+
+        period0Start = _period0Start;
+        initPeriodId = TimeLibrary.periodId({period0Start: _period0Start, timestamp: uint32(block.timestamp)});
     }
+
+
+    // -----------------------------------------------------------
+    //                          VIEWS
+    // -----------------------------------------------------------
 
     function members() external view returns (address[] memory) {
         return _members.values();
@@ -76,6 +107,95 @@ contract Membership {
             // User has *not* changed their commitment level: meaning their commitLevel is sync to current
             return currentCommitmentLevels[who];
         }
+    }
+
+
+    /// @notice helper to predict performance score for any user
+    function calcPerformanceInPeriod(
+        uint32 commitmentLevel,
+        uint128 givenContributionPoints,
+        uint32 periodId
+    ) public view returns (uint128) {
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
+        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+        return
+            _calcPerformanceInPeriod({
+                commitmentLevel: commitmentLevel,
+                givenContributionPoints: givenContributionPoints,
+                periodId: periodId
+            });
+    }
+
+    function _calcPerformanceInPeriod(
+        uint32 commitmentLevel,
+        uint128 givenContributionPoints,
+        uint32 periodId
+    ) internal view returns (uint128) {
+        uint128 expectedContributionPoints = _calcExpectedContributionPoints({
+            commitmentLevel: commitmentLevel,
+            periodId: periodId
+        });
+        uint128 performance = (1e18 * givenContributionPoints) / expectedContributionPoints;
+        return performance;
+    }
+
+    /// @dev returned with 1e18 precision
+    function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
+        _revertForNotMember(who);
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
+        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+        return _calcPerformanceInPeriod(who, periodId);
+    }
+
+    function _calcPerformanceInPeriod(address who, uint32 periodId) internal view returns (uint128) {
+        return
+            _calcPerformanceInPeriod({
+                commitmentLevel: getCommitmentLevel(who, periodId),
+                givenContributionPoints: participations[who][periodId].givenContributionPoints,
+                periodId: periodId
+            });
+    }
+
+    // fiCL * TCP
+    function calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) public view returns (uint128) {
+        if (commitmentLevel < 1 || commitmentLevel > 10) revert InvalidCommitmentLevel();
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
+        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+        return _calcExpectedContributionPoints(commitmentLevel, periodId);
+    }
+
+    function _calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) internal view returns (uint128) {
+        PeriodSummary memory periodSummary = periodSummaries[periodId];
+        uint256 numScaled = 1e18 * uint256(commitmentLevel) * periodSummary.sumActiveContributionPoints;
+        uint256 expectedContributionPoints = numScaled / periodSummary.sumCommitmentLevel / 1e18;
+        return uint128(expectedContributionPoints);
+    }
+
+    // -----------------------------------------------------------
+    //                          MUTATIVE
+    // -----------------------------------------------------------
+
+    function join(address who, uint256 role, uint8 commitment) external {
+        if (msg.sender != hub) revert SenderNotHub();
+        
+        currentRole[who] = role;
+        currentCommitment[who] = commitment;
+        joinedAt[who] = uint32(block.timestamp);
+
+        _members.add(who);
+
+        currentCommitmentSum += commitment;
+
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
+        participations[who][currentPeriodId] = Participation({
+            role: role,
+            commitment: commitment,
+            givenPoints: 0,
+            score: 1e18,
+            performance: 0
+        });
+
+        emit Join(who, role, commitment);
     }
 
     function changeCommitmentLevel(uint8 newCommitmentLevel) external {
@@ -189,66 +309,6 @@ contract Membership {
         }
     }
 
-    /// @notice helper to predict performance score for any user
-    function calcPerformanceInPeriod(
-        uint32 commitmentLevel,
-        uint128 givenContributionPoints,
-        uint32 periodId
-    ) public view returns (uint128) {
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
-        return
-            _calcPerformanceInPeriod({
-                commitmentLevel: commitmentLevel,
-                givenContributionPoints: givenContributionPoints,
-                periodId: periodId
-            });
-    }
-
-    function _calcPerformanceInPeriod(
-        uint32 commitmentLevel,
-        uint128 givenContributionPoints,
-        uint32 periodId
-    ) internal view returns (uint128) {
-        uint128 expectedContributionPoints = _calcExpectedContributionPoints({
-            commitmentLevel: commitmentLevel,
-            periodId: periodId
-        });
-        uint128 performance = (1e18 * givenContributionPoints) / expectedContributionPoints;
-        return performance;
-    }
-
-    /// @dev returned with 1e18 precision
-    function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
-        _revertForNotMember(who);
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
-        return _calcPerformanceInPeriod(who, periodId);
-    }
-
-    function _calcPerformanceInPeriod(address who, uint32 periodId) internal view returns (uint128) {
-        return
-            _calcPerformanceInPeriod({
-                commitmentLevel: getCommitmentLevel(who, periodId),
-                givenContributionPoints: participations[who][periodId].givenContributionPoints,
-                periodId: periodId
-            });
-    }
-
-    // fiCL * TCP
-    function calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) public view returns (uint128) {
-        if (commitmentLevel < 1 || commitmentLevel > 10) revert InvalidCommitmentLevel();
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
-        return _calcExpectedContributionPoints(commitmentLevel, periodId);
-    }
-
-    function _calcExpectedContributionPoints(uint32 commitmentLevel, uint32 periodId) internal view returns (uint128) {
-        PeriodSummary memory periodSummary = periodSummaries[periodId];
-        uint256 numScaled = 1e18 * uint256(commitmentLevel) * periodSummary.sumActiveContributionPoints;
-        uint256 expectedContributionPoints = numScaled / periodSummary.sumCommitmentLevel / 1e18;
-        return uint128(expectedContributionPoints);
-    }
 
     /// @notice write sums to history when needed
     function writePeriodSummary() public {
@@ -266,7 +326,7 @@ contract Membership {
         bool writeToHistory;
         for (i = lastPeriodId; i > initPeriodId_ - 1; i--) {
             PeriodSummary storage periodSummary = periodSummaries[i];
-            if (periodSummary.sumCommitmentLevel == 0) {
+            if (periodSummary.commitment == 0) {
                 writeToHistory = true;
             } else {
                 // historical commitment levels are up to date- do nothing
@@ -279,11 +339,11 @@ contract Membership {
             periodSummaries[i] = PeriodSummary({
                 inactive: false,
                 isSealed: false,
-                sumCommitmentLevel: currentSumCommitmentLevel,
-                sumActiveContributionPoints: currentSumActiveContributionPoints,
-                sumCreatedContributionPoints: currentSumCreatedContributionPoints,
-                sumGivenContributionPoints: currentSumGivenContributionPoints,
-                sumRemovedContributionPoints: currentSumRemovedContributionPoints
+                commitment: commitment,
+                pointsActive: pointsActive
+                pointsCreated: periodPointsCreated,
+                pointsGiven: periodPointsGiven,
+                pointsRemoved: periodPointsRemoved
             });
 
             // if there's a gap in data- we have inactive periods. Fill up with inactive flag and empty values where possible
@@ -292,19 +352,20 @@ contract Membership {
                     periodSummaries[j] = PeriodSummary({
                         inactive: true,
                         isSealed: true,
-                        sumCommitmentLevel: currentSumCommitmentLevel,
-                        sumCreatedContributionPoints: 0,
-                        sumActiveContributionPoints: currentSumActiveContributionPoints,
-                        sumGivenContributionPoints: 0,
-                        sumRemovedContributionPoints: 0
+                        commitment: commitment,
+                        pointsActive: pointsActive
+                        pointsCreated: 0,
+                        pointsGiven: 0,
+                        pointsRemoved: 0
                     });
                 }
             }
 
-            // Still in writeToHistory conditional: clear out storage where applicable
-            delete currentSumCreatedContributionPoints;
-            delete currentSumGivenContributionPoints;
-            delete currentSumRemovedContributionPoints;
+            // Still in writeToHistory conditional...
+            // Clear out the storage only relevant to the period
+            delete periodPointsCreated;
+            delete periodPointsGiven;
+            delete periodPointsRemoved;
         }
     }
 

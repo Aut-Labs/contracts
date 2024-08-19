@@ -14,6 +14,9 @@ TODO:
 
 
 abstract contract Hub is HubUpgradeable {
+    using EnumerableSet for EnumerableSet.AddressSet;
+    using EnumerableSet for EnumerableSet.UintSet;
+
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
     uint256 public constant CONVICTION_PARAMETER = 3;
@@ -38,6 +41,7 @@ abstract contract Hub is HubUpgradeable {
     uint32 public period0Start;
 
     EnumerableSet.AddressSet internal _admins;
+    EnumerableSet.UintSet internal _roles;
 
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
@@ -53,6 +57,7 @@ abstract contract Hub is HubUpgradeable {
         address _membership,
         // address _prestige,
         address _taskRegistry,
+        uint256[] calldata roles_,
         uint256 _market,
         uint256 _commitment,
         string memory _metadataUri
@@ -69,6 +74,7 @@ abstract contract Hub is HubUpgradeable {
         taskRegistry = _taskRegistry;
 
         // set vars
+        _setRoles(roles_);
         _setMarket(_market);
         _setCommitment(_commitment);
         _setMetadataUri(_metadataUri);
@@ -79,6 +85,14 @@ abstract contract Hub is HubUpgradeable {
             period0Start: period0Start,
             timestamp: uint32(block.timestamp)
         });
+    }
+
+    // -----------------------------------------------------------
+    //                         MUTATIVE
+    // -----------------------------------------------------------
+
+    function join(address who, uint256 role, uint8 commitment) external {
+        IMembership(membership).join(who, role, commitment);
     }
 
     // -----------------------------------------------------------
@@ -134,8 +148,12 @@ abstract contract Hub is HubUpgradeable {
         });
     }
 
-    function roles() external view returns (address[] memory) {
-        // TODO: return roles from membership
+    function roles() external view returns (uint256[] memory) {
+        return _roles.values();
+    }
+
+    function roleOf(address who) external view returns (uint256) {
+        return IMembership(membership).currentRole(who);
     }
 
     function hasRole(address who, uint256 role) external view returns (bool) {
@@ -150,7 +168,19 @@ abstract contract Hub is HubUpgradeable {
         // TODO
     }
 
+    function canJoin(address who, uint256 role) public view returns (bool) {
+        if (IMembership(membership).currentRole(who) != 0) {
+            return false;
+        }
 
+        if (onboarding != address(0)) {
+            if (OnboardingModule(onboarding).isActive()) {
+                return OnboardingModule(onboarding).isOnboarded(who, role);
+            }
+            return false;
+        }
+        return true;
+    }
 
     // -----------------------------------------------------------
     //                        HUB-MANAGEMENT
@@ -192,6 +222,12 @@ abstract contract Hub is HubUpgradeable {
     }
 
     /// internal
+
+    function _setRoles(address[] memory roles_) internal {
+        for (uint256 i=0; i<roles_.length; i++) {
+            _roles.add(roles_[i]);
+        }
+    }
 
     function _setMarket(uint256 market_) internal {
         _revertForInvalidMarket(market_);
