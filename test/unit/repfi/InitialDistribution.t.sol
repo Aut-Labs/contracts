@@ -2,8 +2,6 @@
 pragma solidity ^0.8.21;
 
 import "../../BaseTest.sol";
-import "../../../contracts/repfi/token/REPFI.sol";
-import "../../../contracts/repfi/token/InitialDistribution.sol";
 
 contract InitialDistributionTest is BaseTest {
     RepFi repfiToken;
@@ -57,6 +55,14 @@ contract InitialDistributionTest is BaseTest {
         );
 
         assert(address(initialDistributionContract) != address(0));
+        assertEq(address(initialDistributionContract.privateSale()), address(privateSale));
+        assertEq(address(initialDistributionContract.community()), address(community));
+        assertEq(address(initialDistributionContract.reputationMining()), address(reputationMining));
+        assertEq(address(initialDistributionContract.airdrop()), address(airdrop));
+        assertEq(address(initialDistributionContract.investors()), address(investors));
+        assertEq(address(initialDistributionContract.team()), address(team));
+        assertEq(address(initialDistributionContract.partners()), address(partners));
+        assertEq(address(initialDistributionContract.ecosystem()), address(ecosystem));
     }
 
     function test_DistributeRevertNotOwner() public {
