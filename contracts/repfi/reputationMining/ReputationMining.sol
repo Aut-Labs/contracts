@@ -93,9 +93,9 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         // get peer value
         uint256 peerValue = randomNumberGenerator.getRandomNumberForAccount(_account, 80, 160);
         uint256 totalTokensForPeriod = getTokensForPeriod(_period);
-        uint256 totalGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(_account, 80000, 160000); // let's assume we have 1000 users with a random between 80 and 160 in peer value
+        uint256 totalPeerValue = randomNumberGenerator.getRandomNumberForAccount(_account, 80000, 160000); // let's assume we have 1000 users with a random between 80 and 160 in peer value
 
-        amount = peerValue * (totalTokensForPeriod / totalGlobalReputation);
+        amount = peerValue * (totalTokensForPeriod / totalPeerValue);
 
         // in case the amount is bigger than the maximum allowed per period, set the maximum
         if (amount > MAX_MINT_PER_PERIOD) {
