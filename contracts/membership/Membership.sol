@@ -109,6 +109,20 @@ contract Membership is Initializable {
         }
     }
 
+    function getCommitmentSum(uint32 periodId) external view returns (uint128) {
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
+        if (periodId < initPeriodId || periodId > currentPeriodId) revert InvalidPeriodId();
+        if (periodId == currentPeriodId) {
+            return commitmentSum;
+        } else {
+            PeriodSummary memory periodSummary = periodSummaries[periodId];
+            return periodSummary.commitmentSum;
+        }
+    }
+
+    function getParticipationScore(address who, uint32 periodId) external view returns (uint128) {
+
+    }
 
     /// @notice helper to predict performance score for any user
     function calcPerformanceInPeriod(
