@@ -15,6 +15,13 @@ contract ParticipationScore is Initializable {
         _disableInitializers();
     }
 
+    struct Participation {
+        uint128 score;
+        uint128 performance;
+    }
+
+    mapping(address who => mapping(uint32 periodId => Participation)) public participations;
+
     function initialize(
         address _globalParameters,
         address _hub,
@@ -22,11 +29,11 @@ contract ParticipationScore is Initializable {
         address _taskManager,
         address _rgn
     ) external initializer {
-        globalParameters = _globalParameters
-        hub = _hub
-        membership = _membership
-        taskManager = _taskManager
-        rgn = _rgn
+        globalParameters = _globalParameters;
+        hub = _hub;
+        membership = _membership;
+        taskManager = _taskManager;
+        rgn = _rgn;
     }
 
         /// @notice helper to predict performance score for any user
@@ -167,4 +174,6 @@ contract ParticipationScore is Initializable {
             previousScore = score;
         }
     }
+
+
 }
