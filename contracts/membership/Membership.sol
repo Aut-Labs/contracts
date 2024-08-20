@@ -33,7 +33,7 @@ contract Membership is Initializable {
     struct Participation {
         uint256 role;
         uint32 commitment;
-        uint128 givenPoints;
+        uint128 pointsGiven;
         uint96 score;
         uint128 performance;
         // TODO: array of completed tasks
@@ -190,7 +190,7 @@ contract Membership is Initializable {
         participations[who][currentPeriodId] = Participation({
             role: role,
             commitment: commitment,
-            givenPoints: 0,
+            pointsGiven: 0,
             score: 1e18,
             performance: 0
         });
