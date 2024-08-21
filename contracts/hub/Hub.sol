@@ -182,6 +182,14 @@ abstract contract Hub is HubUpgradeable {
         return true;
     }
 
+    function constraintFactor() external view returns (uint96) {
+        return 4e17; // TODO: setters in here vs. calling globalParameters
+    }
+
+    function penaltyFactor() external view returns (uint96) {
+        return 4e17; // TODO
+    }
+
     // -----------------------------------------------------------
     //                        HUB-MANAGEMENT
     // -----------------------------------------------------------

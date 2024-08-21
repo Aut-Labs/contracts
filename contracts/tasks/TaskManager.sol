@@ -1,23 +1,19 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {TimeLibrary} from "../libraries/TimeLibrary.sol";
+import {IPeriodUtils} from "../utils/interfaces/IPeriodUtils.sol";
 
-contract TaskManager is Initializable {
-
-    address public membership;
-    address public taskFactory;
-    address public hub;
-    address public taskRegistry;
+abstract contract TaskManager is IPeriodUtils {
 
     uint128 public pointsActive;
-
     uint128 public periodPointsCreated;
     uint128 public periodPointsGiven;
     uint128 public periodPointsRemoved;
 
-    // globally sharable
+    address public taskRegistry;
+    // address public hub;
+
+    // globally shared
     uint32 public override period0Start;
     uint32 public override initPeriodId;
 
@@ -42,19 +38,6 @@ contract TaskManager is Initializable {
 
     function currentTaskId() public view returns (uint256) {
         return tasks.length - 1;
-    }
-
-    function initialize(
-        address _membership,
-        address _taskFactory,
-        address _hub,
-    ) external initializer {
-        hub = _hub;
-        taskFactory =_taskFactory;
-        membership = _membership;
-
-        period0Start = _period0Start;
-        initPeriodId = TimeLibrary.periodId({period0Start: _period0Start, timestamp: uint32(block.timestamp)});
     }
 
     function getTaskStatus(uint256 taskId) external view returns (TaskStatus) {

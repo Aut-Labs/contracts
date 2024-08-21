@@ -2,19 +2,18 @@
 pragma solidity ^0.8.20;
 
 import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {TimeLibrary} from "../libraries/TimeLibrary.sol";
+import { IPeriodUtils } from "../utils/interfaces/IPeriodUtils.sol";
+import { IStorageAccessUtils} from "../utils/interfaces/IStorageAccessUtils.sol";
 
-contract Membership is Initializable {
+abstract contract Membership is IPeriodUtils, IStorageAccessUtils {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
 
-    address public hub;
-    address public autID;
-    address public taskManager;
-
+    // globally shared
     uint32 public period0Start;
     uint32 public initPeriodId;
+    address public hub;
+    address public autID;
     
     uint128 public commitmentSum;
     uint128 public pointsActive;
@@ -48,34 +47,16 @@ contract Membership is Initializable {
 
     mapping(uint32 periodId => uint128 commitmentSum) public commitmentSums;
 
-    struct PeriodSummary {
-        bool inactive;
-        bool isSealed;
-        uint128 commitmentSum;
-        uint128 pointsActive;
-        uint128 pointsCreated;
-        uint128 pointsGiven;
-        uint128 pointsRemoved;
-    }
-    mapping(uint32 periodId => PeriodSummary periodSummary) public periodSummaries;
-
-    constructor() {
-        _disableInitializers();
-    }
-
-    function initialize(
-        address _hub,
-        address _autID,
-        address _taskManager,
-        uint32 _period0Start
-    ) public initializer {
-        hub = _hub;
-        autID = _autID;
-        taskManager = _taskManager;
-
-        period0Start = _period0Start;
-        initPeriodId = TimeLibrary.periodId({period0Start: _period0Start, timestamp: uint32(block.timestamp)});
-    }
+    // struct PeriodSummary {
+    //     bool inactive;
+    //     bool isSealed;
+    //     uint128 commitmentSum;
+    //     uint128 pointsActive;
+    //     uint128 pointsCreated;
+    //     uint128 pointsGiven;
+    //     uint128 pointsRemoved;
+    // }
+    // mapping(uint32 periodId => PeriodSummary periodSummary) public periodSummaries;
 
 
     // -----------------------------------------------------------
@@ -94,9 +75,9 @@ contract Membership is Initializable {
         return _members.length();
     }
 
-    /// @notice return the period id the member joined the hub TODO: membership
+    /// @notice return the period id the member joined the hub
     function getPeriodIdJoined(address who) public view returns (uint32) {
-        uint32 periodIdJoined = TimeLibrary.periodId({period0Start: period0Start, timestamp: joinedAt[who]});
+        uint32 periodIdJoined = getPeriodId(joinedAt[who]);
         if (periodIdJoined == 0) revert MemberDoesNotExist();
         return periodIdJoined;
     }
@@ -118,8 +99,7 @@ contract Membership is Initializable {
     }
 
     function getCommitmentSum(uint32 periodId) external view returns (uint128) {
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        if (periodId < initPeriodId || periodId > currentPeriodId) revert InvalidPeriodId();
+        if (periodId < initPeriodId || periodId > currentPeriodId()) revert InvalidPeriodId();
         if (periodId == currentPeriodId) {
             return commitmentSum;
         } else {
@@ -131,8 +111,8 @@ contract Membership is Initializable {
     //                          MUTATIVE
     // -----------------------------------------------------------
 
-    function join(address who, uint256 role, uint8 commitment) external {
-        if (msg.sender != hub) revert SenderNotHub();
+    function join(address who, uint256 role, uint8 commitment) public virtual {
+        if (msg.sender != hub()) revert SenderNotHub();
         
         currentRole[who] = role;
         currentCommitment[who] = commitment;
@@ -142,8 +122,7 @@ contract Membership is Initializable {
 
         commitmentSum += commitment;
 
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        memberDetails[who][currentPeriodId] = MemberDetail({
+        memberDetails[who][currentPeriodId()] = MemberDetail({
             role: role,
             commitment: commitment
         });

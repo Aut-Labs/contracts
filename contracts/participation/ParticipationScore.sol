@@ -4,38 +4,37 @@ pragma solidity ^0.8.20;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 import {TaskManager} from "../tasks/TaskManager.sol";
+import {Membership} from "../membership/Membership.sol";
+import {PeriodUtils} from "../utils/PeriodUtils.sol";
+import {StorageAccessUtils} from "../utils/StorageAccessUtils.sol";
 
-contract ParticipationScore is TaskManager, Membership {
+contract ParticipationScore is PeriodUtils, StorageAccessUtils TaskManager, Membership {
+
+    address public globalParameters;
 
     struct Participation {
         uint128 score;
         uint128 performance;
     }
-
     mapping(address who => mapping(uint32 periodId => Participation)) public participations;
 
     function initialize(
-        address _globalParameters,
-        address _hub,
-        // address _membership,
-        // address _taskManager,
-        address _rgn
+        address _globalParameters
     ) external initializer {
         globalParameters = _globalParameters;
-        hub = _hub;
-        membership = _membership;
-        taskManager = _taskManager;
-        rgn = _rgn;
     }
 
-        /// @notice helper to predict performance score for any user
+    function join(address who, uint256 role, uint8 commitment) public override {
+
+    }
+
+    /// @notice helper to predict performance score for any user
     function calcPerformanceInPeriod(
         uint32 commitment,
         uint128 givenContributionPoints,
         uint32 periodId
     ) public view returns (uint128) {
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+        if (periodId == 0 < initPeriodId || periodId > currentPeriodId()) revert InvalidPeriodId();
         return
             _calcPerformanceInPeriod({
                 commitment: commitment,
@@ -60,8 +59,7 @@ contract ParticipationScore is TaskManager, Membership {
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
         _revertForNotMember(who);
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+        if (periodId < getPeriodId(who) || periodId > currentPeriodId()) revert InvalidPeriodId();
         return _calcPerformanceInPeriod(who, periodId);
     }
 
@@ -77,8 +75,7 @@ contract ParticipationScore is TaskManager, Membership {
     // fiCL * TCP
     function calcExpectedContributionPoints(uint32 commitment, uint32 periodId) public view returns (uint128) {
         if (commitment < 1 || commitment > 10) revert InvalidCommitment();
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        if (periodId == 0 || periodId > currentPeriodId) revert InvalidPeriodId();
+        if (periodId == 0 || periodId > currentPeriodId()) revert InvalidPeriodId();
         return _calcExpectedContributionPoints(commitment, periodId);
     }
 
@@ -89,13 +86,13 @@ contract ParticipationScore is TaskManager, Membership {
         return uint128(expectedContributionPoints);
     }
 
-        function writeParticipations(address[] calldata whos) external {
+    function writeParticipations(address[] calldata whos) external {
         // update historical periods if necessary
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        _writePeriodSummary(currentPeriodId);
+        uint32 currentPeriodId_ = currentPeriodId();
+        _writePointSummary(currentPeriodId_);
 
         for (uint256 i = 0; i < whos.length; i++) {
-            _writeParticipation(whos[i], currentPeriodId);
+            _writeParticipation(whos[i], currentPeriodId_);
         }
     }
 
@@ -119,21 +116,21 @@ contract ParticipationScore is TaskManager, Membership {
 
     function writeParticipation(address who) external {
         // update historical periods if necessary
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        _writePeriodSummary(currentPeriodId);
+        uint32 currentPeriodId_ = currentPeriodId();
+        _writePointSummary(currentPeriodId_);
 
-        _writeParticipation(who, currentPeriodId);
+        _writeParticipation(who, currentPeriodId_);
     }
 
     // TODO: visibility?
-    function _writeParticipation(address who, uint32 currentPeriodId) public {
+    function _writeParticipation(address who, uint32 _currentPeriodId) public {
         // TODO: algorithm
         // NOTE: in periodIdJoined, participation score is default 100.  Only write to following periods
         uint32 periodIdJoined = getPeriodIdJoined(who);
 
-        // We are only writing to the last period which has ended: ie, currentPeriodId - 1
+        // We are only writing to the last period which has ended: ie, _currentPeriodId - 1
         uint32 periodToStartWrite;
-        for (uint32 i = currentPeriodId - 1; i > periodIdJoined; i--) {
+        for (uint32 i = _currentPeriodId - 1; i > periodIdJoined; i--) {
             // loop through passed periods and find the oldest period where participation has not yet been written
             if (participations[who][i].score == 0) {
                 periodToStartWrite = i;
@@ -150,10 +147,7 @@ contract ParticipationScore is TaskManager, Membership {
         uint96 previousScore = participations[who][periodToStartWrite - 1].score;
 
         // Start at the first empty period and write the participation score given the previous score and c
-        // TODO: c from globalParameters
-        uint96 constraintFactor = 4e17; // 40%
-        uint96 penaltyFactor = 4e17; // 40%
-        for (uint32 i = periodToStartWrite; i < currentPeriodId; i++) {
+        for (uint32 i = periodToStartWrite; i < _currentPeriodId; i++) {
             Participation storage participation = participations[who][i];
             uint128 performance = _calcPerformanceInPeriod({
                 commitment: getCommitment({who: who, periodId: i}),
@@ -167,12 +161,12 @@ contract ParticipationScore is TaskManager, Membership {
             if (performance > 1e18) {
                 // exceeded expectations: raise participation score
                 delta = uint96(performance) - 1e18;
-                if (delta > constraintFactor) delta = constraintFactor;
+                if (delta > constraintFactor()) delta = constraintFactor;
                 score = (previousScore * (1e18 + delta)) / delta;
             } else {
                 // underperformed: lower participation score
                 delta = 1e18 - uint96(performance);
-                if (delta > penaltyFactor) delta = penaltyFactor;
+                if (delta > penaltyFactor()) delta = penaltyFactor;
                 score = (previousScore * (1e18 - delta)) / delta;
             }
 
@@ -185,5 +179,11 @@ contract ParticipationScore is TaskManager, Membership {
         }
     }
 
+    function constraintFactor() public view returns (uint96) {
+        return IGlobalParametersAlpha(hub()).constraintFactor();
+    }
 
+    function penaltyFactor() public view returns (uint96) {
+        return IGlobalParametersAlpha(hub()).penaltyFactor();
+    }
 }
