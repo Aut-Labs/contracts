@@ -17,17 +17,28 @@ contract TaskManager is Initializable {
     uint128 public periodPointsGiven;
     uint128 public periodPointsRemoved;
 
+    // globally sharable
+    uint32 public override period0Start;
+    uint32 public override initPeriodId;
+
     enum TaskStatus {
         None, Open, Inactive, Complete
     }
 
-    struct TaskSummary {
+    struct PointSummary {
+        bool isSealed;
         uint128 pointsActive;
         uint128 pointsCreated;
         uint128 pointsGiven;
         uint128 pointsRemoved;
     }
-    mapping(uint32 periodId => TaskSummary) public taskSummaries;
+    mapping(uint32 periodId => PointSummary) public pointSummaries;
+
+    struct MemberActivity {
+        uint128 pointsGiven;
+        bytes32[] tasks;
+    }
+    mapping(address member => mapping(uint32 periodId => MemberActivity)) public memberActivities;
 
     function currentTaskId() public view returns (uint256) {
         return tasks.length - 1;
@@ -165,5 +176,63 @@ contract TaskManager is Initializable {
         // TODO: push task to user balance (as nft)
     }
 
+    /// @notice write sums to history when needed
+    function writePointSummary() public {
+        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
+        _writePointSummary(currentPeriodId);
+    }
 
+    function _writePointSummary(uint32 _currentPeriodId) internal {
+        uint32 initPeriodId_ = initPeriodId; // gas
+        uint32 lastPeriodId = _currentPeriodId - 1;
+
+        // What happens if a period passes which doesn't write to storage?
+        // It means in period n there was activity, period n + 1 => current period there is no activity
+        uint32 i;
+        bool writeToHistory;
+        for (i = lastPeriodId; i > initPeriodId_ - 1; i--) {
+            if (!pointSummaries[i].sealed) {
+                writeToHistory = true;
+            } else {
+                // historical commitment levels are up to date- do nothing
+                break;
+            }
+        }
+
+        if (writeToHistory) {
+            // Write data to oldest possible period summary with no data
+            pointSummaries[i] = PointSummary({
+            periodSummaries[i] = PeriodSummary({
+                isSealed: true,
+                // commitmentSum: commitmentSum,
+                pointsActive: pointsActive,
+                pointsCreated: periodPointsCreated,
+                pointsGiven: periodPointsGiven,
+                pointsRemoved: periodPointsRemoved
+            });
+
+            // if there's a gap in data- we have inactive periods.
+            // How do we know a gap means inactive periods?
+            //      Because each interaction with the members tasks write to the task summary, keeping it synced
+            // Fill up with empty values as inactive
+            if (i < lastPeriodId) {
+                for (uint32 j = i + 1; j < _currentPeriodId; j++) {
+                    periodSummaries[j] = PeriodSummary({
+                        isSealed: true,
+                        commitmentSum: commitmentSum,
+                        pointsActive: pointsActive,
+                        pointsCreated: 0,
+                        pointsGiven: 0,
+                        pointsRemoved: 0
+                    });
+                }
+            }
+
+            // Still in writeToHistory conditional...
+            // Clear out the storage only relevant to the period
+            delete periodPointsCreated;
+            delete periodPointsGiven;
+            delete periodPointsRemoved;
+        }
+    }
 }

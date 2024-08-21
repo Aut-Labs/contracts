@@ -3,17 +3,9 @@ pragma solidity ^0.8.20;
 
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
+import {TaskManager} from "../tasks/TaskManager.sol";
 
-contract ParticipationScore is Initializable {
-    address public globalParameters;
-    address public hub;
-    address public membership;
-    address public taskManager;
-    address public rgn;
-
-    constructor() {
-        _disableInitializers();
-    }
+contract ParticipationScore is TaskManager, Membership {
 
     struct Participation {
         uint128 score;
@@ -25,8 +17,8 @@ contract ParticipationScore is Initializable {
     function initialize(
         address _globalParameters,
         address _hub,
-        address _membership,
-        address _taskManager,
+        // address _membership,
+        // address _taskManager,
         address _rgn
     ) external initializer {
         globalParameters = _globalParameters;
@@ -92,8 +84,8 @@ contract ParticipationScore is Initializable {
 
     function _calcExpectedContributionPoints(uint32 commitment, uint32 periodId) internal view returns (uint128) {
         PeriodSummary memory periodSummary = periodSummaries[periodId];
-        uint256 numScaled = 1e18 * uint256(commitment) * periodSummary.sumActiveContributionPoints;
-        uint256 expectedContributionPoints = numScaled / periodSummary.sumCommitment / 1e18;
+        uint256 numScaled = 1e18 * uint256(commitment) * taskSummaries[periodId].pointsActive;
+        uint256 expectedContributionPoints = numScaled / commitmentSum[periodId] / 1e18;
         return uint128(expectedContributionPoints);
     }
 
@@ -106,6 +98,24 @@ contract ParticipationScore is Initializable {
             _writeParticipation(whos[i], currentPeriodId);
         }
     }
+
+    // function getMembersToWriteParticipation(uint32 periodId) external view returns (address[] memory) {
+    //     uint256 numMembersToWrite = 0;
+    //     uint256 length = members.length;
+    //     address[] memory membersCopy = new address[](length);
+    //     for (uint256 i = 0; i < length; i++) {
+    //         address member = members[i];
+    //         if (participations[member][periodId].score == 0) {
+    //             membersCopy[numMembersToWrite++] = member;
+    //         }
+    //     }
+
+    //     address[] memory arrMembersToWrite = new address[](numMembersToWrite);
+    //     for (uint256 i = 0; i < numMembersToWrite; i++) {
+    //         arrMembersToWrite[i] = membersCopy[i];
+    //     }
+    //     return arrMembersToWrite;
+    // }
 
     function writeParticipation(address who) external {
         // update historical periods if necessary
