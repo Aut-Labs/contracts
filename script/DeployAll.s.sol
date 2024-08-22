@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IHub} from "../contracts/hub/IHub.sol";
+import {IHub} from "../contracts/hub/interfaces/IHub.sol";
 import {IAutID} from "../contracts/autid/IAutID.sol";
-import {IHubRegistry} from "../contracts/hub/IHubRegistry.sol";
+import {IHubRegistry} from "../contracts/hub/interfaces/IHubRegistry.sol";
 import {IAllowlist} from "../contracts/utils/IAllowlist.sol";
 import {IGlobalParametersAlpha} from "../contracts/globalParameters/IGlobalParametersAlpha.sol";
 import {SimpleAllowlistOnboarding} from "../contracts/onboarding/SimpleAllowlistOnboarding.sol";
@@ -15,7 +15,7 @@ import {InteractionRegistry} from "../contracts/interactions/InteractionRegistry
 import {Allowlist} from "../contracts/utils/Allowlist.sol";
 import {GlobalParametersAlpha} from "../contracts/globalParameters/GlobalParametersAlpha.sol";
 import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
-import {HubDomainsRegistry} from "../contracts/hubContracts/HubDomainsRegistry.sol";
+import {HubDomainsRegistry} from "../contracts/hub/HubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 

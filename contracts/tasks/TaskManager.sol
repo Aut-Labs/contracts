@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {IPeriodUtils} from "../utils/interfaces/IPeriodUtils.sol";
-import {IAccessUtils} from "../utils/AccessUtils.sol";
+import {IAccessUtils} from "../utils/interfaces/IAccessUtils.sol";
 
 abstract contract TaskManager is IPeriodUtils, IAccessUtils {
 
@@ -22,6 +22,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     struct Task {
         TaskStatus status;
     }
+    Task[] public tasks;
 
     struct PointSummary {
         bool isSealed;
@@ -37,6 +38,8 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
         bytes32[] tasks;
     }
     mapping(address member => mapping(uint32 periodId => MemberActivity)) public memberActivities;
+
+    error UnequalLengths();
 
     function currentTaskId() public view returns (uint256) {
         return tasks.length - 1;
@@ -72,7 +75,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function addTasks(Task[] calldata _tasks) external {
-        if !this.isAdmin(msg.sender) revert NotAdmin();
+        if (!this.isAdmin(msg.sender)) revert NotAdmin();
         writePointSummary();
 
         uint256 length = _tasks.length;
@@ -82,7 +85,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function addTask(Task calldata _task) public {
-        if !this.isAdmin(msg.sender) revert NotAdmin();
+        if (!this.isAdmin(msg.sender)) revert NotAdmin();
         writePointSummary();
 
         _addTask(_task);
@@ -102,7 +105,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function removeTasks(uint256[] memory _taskIds) external {
-        if !this.isAdmin(msg.sender) revert NotAdmin();
+        if (!this.isAdmin(msg.sender)) revert NotAdmin();
         writePointSummary();
         for (uint256 i = 0; i < _taskIds.length; i++) {
             _removeTask(_taskIds[i]);
@@ -110,7 +113,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function removeTask(uint256 _taskId) external {
-        if !this.isAdmin(msg.sender) revert NotAdmin();
+        if (!this.isAdmin(msg.sender)) revert NotAdmin();
         writePointSummary();
         _removeTask(_taskId);
     }
@@ -129,7 +132,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function giveTasks(uint256[] memory _taskIds, address[] memory _members) external {
-        if !this.isAdmin(msg.sender) revert NotAdmin();
+        if (!this.isAdmin(msg.sender)) revert NotAdmin();
         uint256 length = _taskIds.length;
         if (length != _members.length) revert UnequalLengths();
         for (uint256 i = 0; i < length; i++) {
@@ -138,7 +141,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function giveTask(uint256 _taskId, address _member) external {
-        if !this.isAdmin(msg.sender) revert NotAdmin();
+        if (!this.isAdmin(msg.sender)) revert NotAdmin();
         _giveTask(_taskId, _member);
     }
 
@@ -166,7 +169,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function _writePointSummary(uint32 _currentPeriodId) internal {
-        uint32 initPeriodId_ = initPeriodId; // gas
+        uint32 initPeriodId_ = this.initPeriodId(); // gas
         uint32 lastPeriodId = _currentPeriodId - 1;
 
         // What happens if a period passes which doesn't write to storage?
@@ -174,7 +177,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
         uint32 i;
         bool writeToHistory;
         for (i = lastPeriodId; i > initPeriodId_ - 1; i--) {
-            if (!pointSummaries[i].sealed) {
+            if (!pointSummaries[i].isSealed) {
                 writeToHistory = true;
             } else {
                 // historical commitment levels are up to date- do nothing
@@ -197,7 +200,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
             //      Because each interaction with the members tasks write to the task summary, keeping it synced
             if (i < lastPeriodId) {
                 for (uint32 j = i + 1; j < _currentPeriodId; j++) {
-                    periodSummaries[j] = PointSummary({
+                    pointSummaries[j] = PointSummary({
                         isSealed: true,
                         pointsActive: pointsActive,
                         pointsCreated: 0,

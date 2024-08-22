@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./IHubDomainsRegistry.sol";
+import "./interfaces/IHubDomainsRegistry.sol";
 
 contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
     struct Domain {

@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IHub} from "../hub/IHub.sol";
-import {IHubRegistry} from "../hub/IHubRegistry.sol";
+import {IHub} from "../hub/interfaces/IHub.sol";
+import {IHubRegistry} from "../hub/interfaces/IHubRegistry.sol";
 
 abstract contract AutIDUtils {
     error ZeroAddress();

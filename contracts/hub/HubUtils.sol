@@ -1,12 +1,15 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-abstract contract NovaUtils {
+abstract contract HubUtils {
     error ZeroAddress();
     error InvalidMarket();
     error InvalidParameter();
     error InvalidCommitment();
     error InvalidMetadataUri();
+    
+    event AdminGranted(address who);
+    event AdminRenounced(address who);
 
     function _revertForZeroAddress(address who) internal pure {
         if (who == address(0)) {

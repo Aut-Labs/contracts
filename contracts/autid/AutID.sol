@@ -15,8 +15,8 @@ import {
 } from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {AutIDUtils} from "./AutIDUtils.sol";
-import {IHub} from "../hub/IHub.sol";
-import {IHubRegistry} from "../hub/IHubRegistry.sol";
+import {IHub} from "../hub/interfaces/IHub.sol";
+import {IHubRegistry} from "../hub/interfaces/IHubRegistry.sol";
 
 contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, ERC2771ContextUpgradeable, IAutID {
     error ConflictingRecord();

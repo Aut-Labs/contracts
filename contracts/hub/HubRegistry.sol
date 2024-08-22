@@ -10,12 +10,13 @@ import {
 } from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
-import {IHubRegistry} from "./IHubRegistry.sol";
+import {IHubRegistry} from "./interfaces/IHubRegistry.sol";
 import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 
-import {IHub, Hub} from "../hub/Hub.sol";
+import {Hub} from "./Hub.sol";
+import {IHub} from "./interfaces/IHub.sol";
 import {ParticipationScore} from "../participation/ParticipationScore.sol";
 
 /// @title HubRegistry
@@ -32,7 +33,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     address[] public hubs;
 
     address public deployerAddress;
-    address public autIDAddr;
+    address public autId;
     address public pluginRegistry;
     address public hubDomainsRegistry;
     address public interactionRegistry;
@@ -43,20 +44,20 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
     function initialize(
-        address autIDAddr_,
+        address autId_,
         address hubLogic,
         address pluginRegistry_,
         address hubDomainsRegistry_,
         address interactionRegistry_,
         address globalParameters_
     ) external initializer {
-        require(autIDAddr_ != address(0), "HubRegistry: AutID address zero");
+        require(autId_ != address(0), "HubRegistry: AutID address zero");
         require(hubLogic != address(0), "HubRegistry: Hub logic address zero");
         require(pluginRegistry_ != address(0), "HubRegistry: PluginRegistry address zero");
         __Ownable_init(msg.sender);
 
         deployerAddress = msg.sender;
-        autIDAddr = autIDAddr_;
+        autId = autId_;
         pluginRegistry = pluginRegistry_;
         hubDomainsRegistry = hubDomainsRegistry_;
         interactionRegistry = interactionRegistry_;

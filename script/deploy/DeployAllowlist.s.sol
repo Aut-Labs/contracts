@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {IAllowlist} from "../../contracts/utils/IAllowlist.sol";
-import {IHubRegistry} from "../../contracts/hub/IHubRegistry.sol";
+import {IHubRegistry} from "../../contracts/hub/interfaces/IHubRegistry.sol";
 
 import {Allowlist} from "../../contracts/utils/Allowlist.sol";
 

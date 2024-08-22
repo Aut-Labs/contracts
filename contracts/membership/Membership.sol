@@ -16,11 +16,6 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
     address public autID;
     
     uint128 public commitmentSum;
-    uint128 public pointsActive;
-
-    uint128 public periodPointsCreated;
-    uint128 public periodPointsGiven;
-    uint128 public periodPointsRemoved;
 
     mapping(address => uint32) public joinedAt;
     mapping(address => uint32) public withdrawn;
@@ -34,30 +29,14 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
         uint8 commitment;
     }
     mapping(address who => mapping(uint32 periodId => MemberDetail)) public memberDetails;
-
-    // struct Participation {
-    //     uint256 role;
-    //     uint32 commitment;
-    //     uint128 pointsGiven;
-    //     uint96 score;
-    //     uint128 performance;
-    //     // TODO: array of completed tasks
-    // }
-    // mapping(address who => mapping(uint32 periodId => Participation participation)) public participations;
-
     mapping(uint32 periodId => uint128 commitmentSum) public commitmentSums;
 
-    // struct PeriodSummary {
-    //     bool inactive;
-    //     bool isSealed;
-    //     uint128 commitmentSum;
-    //     uint128 pointsActive;
-    //     uint128 pointsCreated;
-    //     uint128 pointsGiven;
-    //     uint128 pointsRemoved;
-    // }
-    // mapping(uint32 periodId => PeriodSummary periodSummary) public periodSummaries;
+    error MemberDoesNotExist();
+    error MemberHasNotYetCommited();
+    error InvalidPeriodId();
+    error SenderNotHub();
 
+    event Join(address, uint256, uint8);
 
     // -----------------------------------------------------------
     //                          VIEWS
@@ -77,7 +56,7 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
 
     /// @notice return the period id the member joined the hub
     function getPeriodIdJoined(address who) public view returns (uint32) {
-        uint32 periodIdJoined = getPeriodId(joinedAt[who]);
+        uint32 periodIdJoined = this.getPeriodId(joinedAt[who]);
         if (periodIdJoined == 0) revert MemberDoesNotExist();
         return periodIdJoined;
     }
@@ -94,13 +73,14 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
             return memberDetail.commitment;
         } else {
             // User has *not* changed their commitment level: meaning their commitLevel is sync to current
-            return currentCommitments[who];
+            return currentCommitment[who];
         }
     }
 
     function getCommitmentSum(uint32 periodId) external view returns (uint128) {
-        if (periodId < initPeriodId || periodId > this.currentPeriodId()) revert InvalidPeriodId();
-        if (periodId == currentPeriodId) {
+        uint32 currentPeriodId_ = this.currentPeriodId();
+        if (periodId < initPeriodId || periodId > currentPeriodId_) revert InvalidPeriodId();
+        if (periodId == currentPeriodId_) {
             return commitmentSum;
         } else {
             return commitmentSums[periodId];
@@ -126,15 +106,6 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
             role: role,
             commitment: commitment
         });
-
-        // TODO: update participationScore
-        // participations[who][currentPeriodId] = Participation({
-        //     role: role,
-        //     commitment: commitment,
-        //     pointsGiven: 0,
-        //     score: 1e18,
-        //     performance: 0
-        // });
 
         emit Join(who, role, commitment);
     }

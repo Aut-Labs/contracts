@@ -3,15 +3,15 @@ pragma solidity ^0.8.20;
 
 import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
 import {HubUpgradeable} from "./HubUpgradeable.sol";
-import {HubUtils} from "./HubUtils.sol";
-import {IHub} from "./IHub.sol";
-import "../hubContracts/IHubDomainsRegistry.sol";
+import {NovaUtils} from "./NovaUtils.sol";
+import {IHub} from "./interfaces/IHub.sol";
+import "./interfaces/IHubDomainsRegistry.sol";
 import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
 // todo: admin retro onboarding
-contract Hub is IHub, HubUtils, HubUpgradeable {
+contract Nova is IHub, NovaUtils, HubUpgradeable {
     uint256 public constant SIZE_PARAMETER = 1;
     uint256 public constant REPUTATION_PARAMETER = 2;
     uint256 public constant CONVICTION_PARAMETER = 3;

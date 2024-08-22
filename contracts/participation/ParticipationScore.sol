@@ -7,8 +7,9 @@ import {TaskManager} from "../tasks/TaskManager.sol";
 import {Membership} from "../membership/Membership.sol";
 import {PeriodUtils} from "../utils/PeriodUtils.sol";
 import {AccessUtils} from "../utils/AccessUtils.sol";
+import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
 
-contract ParticipationScore is PeriodUtils, AccessUtils, TaskManager, Membership {
+contract ParticipationScore is PeriodUtils, AccessUtils, Initializable, TaskManager, Membership {
 
     address public globalParameters;
 
@@ -17,6 +18,9 @@ contract ParticipationScore is PeriodUtils, AccessUtils, TaskManager, Membership
         uint128 performance;
     }
     mapping(address who => mapping(uint32 periodId => Participation)) public participations;
+
+    error NotMember();
+    error InvalidCommitment();
 
     function initialize(
         address _globalParameters,
@@ -72,7 +76,7 @@ contract ParticipationScore is PeriodUtils, AccessUtils, TaskManager, Membership
 
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
-        _revertForNotMember(who);
+        if (!isMember(who)) revert NotMember();
         if (periodId < getPeriodId(who) || periodId > currentPeriodId()) revert InvalidPeriodId();
         return _calcPerformanceInPeriod(who, periodId);
     }
@@ -94,8 +98,7 @@ contract ParticipationScore is PeriodUtils, AccessUtils, TaskManager, Membership
     }
 
     function _calcExpectedContributionPoints(uint32 commitment, uint32 periodId) internal view returns (uint128) {
-        PeriodSummary memory periodSummary = periodSummaries[periodId];
-        uint256 numScaled = 1e18 * uint256(commitment) * taskSummaries[periodId].pointsActive;
+        uint256 numScaled = 1e18 * uint256(commitment) * pointSummaries[periodId].pointsActive;
         uint256 expectedContributionPoints = numScaled / commitmentSum[periodId] / 1e18;
         return uint128(expectedContributionPoints);
     }

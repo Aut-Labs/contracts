@@ -4,6 +4,13 @@ pragma solidity ^0.8.20;
 import {HubUpgradeable} from "./HubUpgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {TimeLibrary} from "../libraries/TimeLibrary.sol";
+import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
+import {IMembership} from "../membership/IMembership.sol";
+import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
+import {HubUtils} from "./HubUtils.sol";
+import {IHub} from "./interfaces/IHub.sol";
+import {IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
 
 /*
 TODO:
@@ -13,7 +20,7 @@ TODO:
 */
 
 
-abstract contract Hub is HubUpgradeable {
+contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
 
@@ -25,14 +32,14 @@ abstract contract Hub is HubUpgradeable {
 
     address public onboarding;
     /// @dev these addrs are seen as immutable
-    // address public hubDomainsRegistry;
+    address public hubDomainsRegistry;
     address public globalParameters;
     address public participation;
     // address public prestige;
     address public taskRegistry;
 
     uint256 public archetype;
-    uint256 public commitment;
+    // uint256 public commitment;
     uint256 public market;
     string public metadataUri;
 
@@ -46,13 +53,16 @@ abstract contract Hub is HubUpgradeable {
     string[] private _urls;
     mapping(bytes32 => uint256) private _urlHashIndex;
 
+    mapping(uint256 => uint256) public parameterWeight;
+
+
     constructor() {
         _disableInitializers();
     }
 
     function initialize(
         address _initialOwner,
-        // address _hubDomainsRegistry,
+        address _hubDomainsRegistry,
         address _globalParameters,
         address _participation,
         // address _prestige,
@@ -61,13 +71,13 @@ abstract contract Hub is HubUpgradeable {
         uint256 _market,
         uint256 _commitment,
         string memory _metadataUri
-    ) {
+    ) external initializer {
         // ownership
         __Ownable_init(_initialOwner);
         _admins.add(_initialOwner);
 
         // set addrs
-        // hubDomainsRegistry = _hubDomainsRegistry;
+        hubDomainsRegistry = _hubDomainsRegistry;
         globalParameters = _globalParameters;
         participation = _participation;
         // prestige = _prestige;
@@ -99,7 +109,7 @@ abstract contract Hub is HubUpgradeable {
     //                     ADMIN-MANAGEMENT
     // -----------------------------------------------------------
 
-    function admins() external view return (address[] memory) {
+    function admins() external view returns (address[] memory) {
         return _admins.values();
     }
 
@@ -120,7 +130,7 @@ abstract contract Hub is HubUpgradeable {
     }
 
     function _addAdmin(address who) internal {
-        if (!isMember(who)) revert NotMember(); // TODO: call participation
+        if (!isMember(who)) revert NotMember();
         if (!_admins.add(who)) revert AlreadyAdmin();
 
         emit AdminGranted(who);
@@ -132,6 +142,7 @@ abstract contract Hub is HubUpgradeable {
         if (!_admins.remove(who)) revert CannotRemoveNonAdmin();
 
         emit AdminRenounced(who);
+    }
 
     // -----------------------------------------------------------
     //                        VIEWS
@@ -139,6 +150,10 @@ abstract contract Hub is HubUpgradeable {
 
     function membersCount() external view returns (uint256) {
         return IMembership(participation).membersCount();
+    }
+
+    function isMember(address who) public view returns (bool) {
+        return IMembership(participation).isMember(who);
     }
 
     function periodCount() external view returns (uint32) {
@@ -246,11 +261,11 @@ abstract contract Hub is HubUpgradeable {
     }
 
     function _setCommitment(uint256 commitment_) internal {
-        _revertForInvalidCommitment(commitment_);
+        // _revertForInvalidCommitment(commitment_);
 
-        commitment = commitment_;
+        // commitment = commitment_;
 
-        emit CommitmentSet(commitment_);
+        // emit CommitmentSet(commitment_);
     }
 
     function _setMetadataUri(string memory metadataUri_) internal {
