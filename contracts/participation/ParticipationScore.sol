@@ -6,9 +6,9 @@ import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 import {TaskManager} from "../tasks/TaskManager.sol";
 import {Membership} from "../membership/Membership.sol";
 import {PeriodUtils} from "../utils/PeriodUtils.sol";
-import {StorageAccessUtils} from "../utils/StorageAccessUtils.sol";
+import {AccessUtils} from "../utils/AccessUtils.sol";
 
-contract ParticipationScore is PeriodUtils, StorageAccessUtils TaskManager, Membership {
+contract ParticipationScore is PeriodUtils, AccessUtils, TaskManager, Membership {
 
     address public globalParameters;
 
@@ -19,13 +19,27 @@ contract ParticipationScore is PeriodUtils, StorageAccessUtils TaskManager, Memb
     mapping(address who => mapping(uint32 periodId => Participation)) public participations;
 
     function initialize(
-        address _globalParameters
+        address _globalParameters,
+        address _hub,
+        address _autId,
+        uint32 _period0Start,
+        uint32 _initPeriodId
     ) external initializer {
         globalParameters = _globalParameters;
+
+        _init_AccessUtils({_hub: _hub, _autId: _autId});
+        _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
     function join(address who, uint256 role, uint8 commitment) public override {
-
+        // Call join of membership
+        super.join();
+        
+        // store initial participation
+        participations[who][currentPeriodId()] = Participation({
+            score: 1e18,
+            performance: 0
+        });
     }
 
     /// @notice helper to predict performance score for any user

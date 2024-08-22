@@ -35,7 +35,7 @@ interface IHub {
 
     function registerDomain(string calldata domain, address hubAddress, string calldata metadataUri) external;
     function getDomain(string calldata domain) external view returns (address, string memory);
-    function autID() external view returns (address);
+    function autId() external view returns (address);
     function pluginRegistry() external view returns (address);
     function onboarding() external view returns (address);
 

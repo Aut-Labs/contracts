@@ -16,7 +16,7 @@ import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha
 import {IAllowlist} from "../utils/IAllowlist.sol";
 
 import {IHub, Hub} from "../hub/Hub.sol";
-import {Membership} from "./Membership.sol";
+import {ParticipationScore} from "../participation/ParticipationScore.sol";
 
 /// @title HubRegistry
 contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
@@ -66,11 +66,11 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
     }
 
-    function currentPeriodId() external view returns (uint32) {
+    function currentPeriodId() public view returns (uint32) {
         return IGlobalParametersAlpha(globalParameters).currentPeriodId();
     }
 
-    function period0Start() external view returns (uint32) {
+    function period0Start() public view returns (uint32) {
         return IGlobalParametersAlpha(globalParameters).period0Start();
     }
 
@@ -91,24 +91,37 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     }
 
     /// @dev depoloy beacon proxy for a new hub
-    function deployHub(uint256 market, string memory metadata, uint256 commitment) external returns (address hub) {
+    function deployHub(
+        uint256[] calldata roles,
+        uint256 market,
+        string memory metadata,
+        uint256 commitment
+    ) external returns (address hub) {
         _validateHubDeploymentParams(market, metadata, commitment);
         // _checkAllowlist(); // TODO: how should allowlist be designed?
 
-        Membership membership = new Membership(); // TODO: proxy
+        ParticipationScore participationScore = new ParticipationScore();
         bytes memory data = abi.encodeWithSelector(
             Hub.initialize.selector,
             _msgSender(),
             // humDomainsRegistry,
             globalParameters,
-            membership,
+            participation,
             // prestige,
             taskRegistry,
+            roles,
             market,
             commitment,
             metadata
         );
         hub = address(new BeaconProxy(address(upgradeableBeacon), data));
+        participationScore.initialize({
+            _globalParameters: globalParameters,
+            _hub: hub,
+            _autId: autId,
+            _period0Start: period0Start(),
+            _initPeriodId: currentPeriodId()
+        });
         hubDeployers[_msgSender()].push(hub);
         hubs.push(hub);
         checkHub[hub] = true;

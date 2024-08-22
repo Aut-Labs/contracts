@@ -2,23 +2,25 @@
 pragma solidity ^0.8.20;
 
 import {IPeriodUtils} from "../utils/interfaces/IPeriodUtils.sol";
+import {IAccessUtils} from "../utils/AccessUtils.sol";
 
-abstract contract TaskManager is IPeriodUtils {
+abstract contract TaskManager is IPeriodUtils, IAccessUtils {
+
+    error NotAdmin();
 
     uint128 public pointsActive;
     uint128 public periodPointsCreated;
     uint128 public periodPointsGiven;
     uint128 public periodPointsRemoved;
 
-    address public taskRegistry;
-    // address public hub;
-
-    // globally shared
-    uint32 public override period0Start;
-    uint32 public override initPeriodId;
+    // address public taskRegistry;
 
     enum TaskStatus {
         None, Open, Inactive, Complete
+    }
+
+    struct Task {
+        TaskStatus status;
     }
 
     struct PointSummary {
@@ -70,8 +72,8 @@ abstract contract TaskManager is IPeriodUtils {
     }
 
     function addTasks(Task[] calldata _tasks) external {
-        _revertForNotAdmin(msg.sender);
-        writePeriodSummary();
+        if !this.isAdmin(msg.sender) revert NotAdmin();
+        writePointSummary();
 
         uint256 length = _tasks.length;
         for (uint256 i = 0; i < length; i++) {
@@ -80,54 +82,54 @@ abstract contract TaskManager is IPeriodUtils {
     }
 
     function addTask(Task calldata _task) public {
-        _revertForNotAdmin(msg.sender);
-        writePeriodSummary();
+        if !this.isAdmin(msg.sender) revert NotAdmin();
+        writePointSummary();
 
         _addTask(_task);
     }
 
     function _addTask(Task memory _task) internal {
-        if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
-        if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
-        // if (!IInteractionRegistry(hubRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
+        // if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
+        // if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
+        // // if (!IInteractionRegistry(hubRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
 
-        uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
-        currentSumActiveContributionPoints += sumTaskContributionPoints;
-        currentSumCreatedContributionPoints += sumTaskContributionPoints;
+        // uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
+        // currentSumActiveContributionPoints += sumTaskContributionPoints;
+        // currentSumCreatedContributionPoints += sumTaskContributionPoints;
 
-        tasks.push(_task);
+        // tasks.push(_task);
         // TODO: events
     }
 
     function removeTasks(uint256[] memory _taskIds) external {
-        _revertForNotAdmin(msg.sender);
-        writePeriodSummary();
+        if !this.isAdmin(msg.sender) revert NotAdmin();
+        writePointSummary();
         for (uint256 i = 0; i < _taskIds.length; i++) {
             _removeTask(_taskIds[i]);
         }
     }
 
     function removeTask(uint256 _taskId) external {
-        _revertForNotAdmin(msg.sender);
-        writePeriodSummary();
+        if !this.isAdmin(msg.sender) revert NotAdmin();
+        writePointSummary();
         _removeTask(_taskId);
     }
 
     function _removeTask(uint256 _taskId) internal {
-        Task memory task = tasks[_taskId];
-        if (task.quantity == 0) revert TaskNotActive();
-        // NOTE: does not subtract from created tasks
+        // Task memory task = tasks[_taskId];
+        // if (task.quantity == 0) revert TaskNotActive();
+        // // NOTE: does not subtract from created tasks
 
-        uint128 sumTaskContributionPoints = task.contributionPoints * task.quantity;
-        currentSumActiveContributionPoints -= sumTaskContributionPoints;
-        currentSumRemovedContributionPoints += sumTaskContributionPoints;
+        // uint128 sumTaskContributionPoints = task.contributionPoints * task.quantity;
+        // currentSumActiveContributionPoints -= sumTaskContributionPoints;
+        // currentSumRemovedContributionPoints += sumTaskContributionPoints;
 
-        delete tasks[_taskId];
+        // delete tasks[_taskId];
         // TODO: event
     }
 
     function giveTasks(uint256[] memory _taskIds, address[] memory _members) external {
-        _revertForNotAdmin(msg.sender);
+        if !this.isAdmin(msg.sender) revert NotAdmin();
         uint256 length = _taskIds.length;
         if (length != _members.length) revert UnequalLengths();
         for (uint256 i = 0; i < length; i++) {
@@ -136,33 +138,31 @@ abstract contract TaskManager is IPeriodUtils {
     }
 
     function giveTask(uint256 _taskId, address _member) external {
-        _revertForNotAdmin(msg.sender);
+        if !this.isAdmin(msg.sender) revert NotAdmin();
         _giveTask(_taskId, _member);
     }
 
     function _giveTask(uint256 _taskId, address _member) internal {
-        Task storage task = tasks[_taskId];
-        if (task.quantity == 0) revert TaskNotActive();
-        if (joinedAt[_member] == 0) revert MemberDoesNotExist();
+        // Task storage task = tasks[_taskId];
+        // if (task.quantity == 0) revert TaskNotActive();
+        // if (joinedAt[_member] == 0) revert MemberDoesNotExist();
 
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        Participation storage participation = participations[_member][currentPeriodId];
+        // Participation storage participation = participations[_member][currentPeriodId()];
 
-        uint128 contributionPoints = task.contributionPoints;
-        participation.givenContributionPoints += contributionPoints;
+        // uint128 contributionPoints = task.contributionPoints;
+        // participation.givenContributionPoints += contributionPoints;
 
-        currentSumGivenContributionPoints += contributionPoints;
-        currentSumActiveContributionPoints -= contributionPoints;
+        // currentSumGivenContributionPoints += contributionPoints;
+        // currentSumActiveContributionPoints -= contributionPoints;
 
-        task.quantity--;
+        // task.quantity--;
 
         // TODO: push task to user balance (as nft)
     }
 
     /// @notice write sums to history when needed
     function writePointSummary() public {
-        uint32 currentPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-        _writePointSummary(currentPeriodId);
+        _writePointSummary(this.currentPeriodId());
     }
 
     function _writePointSummary(uint32 _currentPeriodId) internal {
@@ -185,9 +185,7 @@ abstract contract TaskManager is IPeriodUtils {
         if (writeToHistory) {
             // Write data to oldest possible period summary with no data
             pointSummaries[i] = PointSummary({
-            periodSummaries[i] = PeriodSummary({
                 isSealed: true,
-                // commitmentSum: commitmentSum,
                 pointsActive: pointsActive,
                 pointsCreated: periodPointsCreated,
                 pointsGiven: periodPointsGiven,
@@ -197,12 +195,10 @@ abstract contract TaskManager is IPeriodUtils {
             // if there's a gap in data- we have inactive periods.
             // How do we know a gap means inactive periods?
             //      Because each interaction with the members tasks write to the task summary, keeping it synced
-            // Fill up with empty values as inactive
             if (i < lastPeriodId) {
                 for (uint32 j = i + 1; j < _currentPeriodId; j++) {
-                    periodSummaries[j] = PeriodSummary({
+                    periodSummaries[j] = PointSummary({
                         isSealed: true,
-                        commitmentSum: commitmentSum,
                         pointsActive: pointsActive,
                         pointsCreated: 0,
                         pointsGiven: 0,

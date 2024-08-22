@@ -3,9 +3,9 @@ pragma solidity ^0.8.20;
 
 import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import { IPeriodUtils } from "../utils/interfaces/IPeriodUtils.sol";
-import { IStorageAccessUtils} from "../utils/interfaces/IStorageAccessUtils.sol";
+import { IAccessUtils} from "../utils/interfaces/IAccessUtils.sol";
 
-abstract contract Membership is IPeriodUtils, IStorageAccessUtils {
+abstract contract Membership is IPeriodUtils, IAccessUtils {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
 
@@ -99,7 +99,7 @@ abstract contract Membership is IPeriodUtils, IStorageAccessUtils {
     }
 
     function getCommitmentSum(uint32 periodId) external view returns (uint128) {
-        if (periodId < initPeriodId || periodId > currentPeriodId()) revert InvalidPeriodId();
+        if (periodId < initPeriodId || periodId > this.currentPeriodId()) revert InvalidPeriodId();
         if (periodId == currentPeriodId) {
             return commitmentSum;
         } else {
@@ -122,7 +122,7 @@ abstract contract Membership is IPeriodUtils, IStorageAccessUtils {
 
         commitmentSum += commitment;
 
-        memberDetails[who][currentPeriodId()] = MemberDetail({
+        memberDetails[who][this.currentPeriodId()] = MemberDetail({
             role: role,
             commitment: commitment
         });

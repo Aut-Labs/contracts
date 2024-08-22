@@ -27,7 +27,7 @@ abstract contract Hub is HubUpgradeable {
     /// @dev these addrs are seen as immutable
     // address public hubDomainsRegistry;
     address public globalParameters;
-    address public membership;
+    address public participation;
     // address public prestige;
     address public taskRegistry;
 
@@ -54,7 +54,7 @@ abstract contract Hub is HubUpgradeable {
         address _initialOwner,
         // address _hubDomainsRegistry,
         address _globalParameters,
-        address _membership,
+        address _participation,
         // address _prestige,
         address _taskRegistry,
         uint256[] calldata roles_,
@@ -69,7 +69,7 @@ abstract contract Hub is HubUpgradeable {
         // set addrs
         // hubDomainsRegistry = _hubDomainsRegistry;
         globalParameters = _globalParameters;
-        membership = _membership;
+        participation = _participation;
         // prestige = _prestige;
         taskRegistry = _taskRegistry;
 
@@ -92,7 +92,7 @@ abstract contract Hub is HubUpgradeable {
     // -----------------------------------------------------------
 
     function join(address who, uint256 role, uint8 commitment) external {
-        IMembership(membership).join(who, role, commitment);
+        IMembership(participation).join(who, role, commitment);
     }
 
     // -----------------------------------------------------------
@@ -120,7 +120,7 @@ abstract contract Hub is HubUpgradeable {
     }
 
     function _addAdmin(address who) internal {
-        if (!isMember(who)) revert NotMember(); // TODO: call membership
+        if (!isMember(who)) revert NotMember(); // TODO: call participation
         if (!_admins.add(who)) revert AlreadyAdmin();
 
         emit AdminGranted(who);
@@ -138,7 +138,7 @@ abstract contract Hub is HubUpgradeable {
     // -----------------------------------------------------------
 
     function membersCount() external view returns (uint256) {
-        return IMembership(membership).membersCount();
+        return IMembership(participation).membersCount();
     }
 
     function periodCount() external view returns (uint32) {
@@ -153,7 +153,7 @@ abstract contract Hub is HubUpgradeable {
     }
 
     function roleOf(address who) external view returns (uint256) {
-        return IMembership(membership).currentRole(who);
+        return IMembership(participation).currentRole(who);
     }
 
     function hasRole(address who, uint256 role) external view returns (bool) {
@@ -169,7 +169,7 @@ abstract contract Hub is HubUpgradeable {
     }
 
     function canJoin(address who, uint256 role) public view returns (bool) {
-        if (IMembership(membership).currentRole(who) != 0) {
+        if (IMembership(participation).currentRole(who) != 0) {
             return false;
         }
 
