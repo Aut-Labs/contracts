@@ -13,6 +13,8 @@ contract PeriodUtils {
     // keccak256(abi.encode(uint256(keccak256("aut.storage.PeriodUtils")) - 1))
     bytes32 private constant PeriodUtilsStorageLocation = 0xbb30d154f2784c70f43e6e03f8bf8078407501460b7616d04bf445b7588c175a;
 
+    error InvalidPeriodId();
+
     function _getPeriodUtilsStorage() private pure returns (PeriodUtilsStorage storage $) {
         assembly {
             $.slot := PeriodUtilsStorageLocation
@@ -26,7 +28,6 @@ contract PeriodUtils {
     }
 
     function currentPeriodId() public view returns (uint32) {
-        PeriodUtilsStorage storage $ = _getPeriodUtilsStorage();
         return TimeLibrary.periodId({period0Start: period0Start(), timestamp: uint32(block.timestamp)});
     }
 

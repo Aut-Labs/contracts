@@ -1,12 +1,11 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IPeriodUtils} from "../utils/interfaces/IPeriodUtils.sol";
-import {IAccessUtils} from "../utils/interfaces/IAccessUtils.sol";
+import {PeriodUtils} from "../utils/PeriodUtils.sol";
+import {AccessUtils} from "../utils/AccessUtils.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-abstract contract TaskManager is IPeriodUtils, IAccessUtils {
-
-    error NotAdmin();
+contract TaskManager is Initializable, PeriodUtils, AccessUtils {
 
     uint128 public pointsActive;
     uint128 public periodPointsCreated;
@@ -41,6 +40,20 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
 
     error UnequalLengths();
 
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(
+        address _hub,
+        address _autId,
+        uint32 _period0Start,
+        uint32 _initPeriodId
+    ) external initializer {
+        _init_AccessUtils({_hub: _hub, _autId: _autId});
+        _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
+    }
+
     function currentTaskId() public view returns (uint256) {
         return tasks.length - 1;
     }
@@ -53,9 +66,6 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
         // TODO
     }
 
-    function getGivenContributionPoints(uint32 periodId) external view returns (uint128) {
-        // TODO
-    }
 
     function getActiveTasks(uint32 periodId) external view returns (Task[] memory) {
         // TODO
@@ -65,9 +75,18 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
         // TODO
     }
 
-    function getTotalContributionPoints(uint32 periodId) external view returns (uint128) {
-        // TODO
+    function getPointsActive(uint32 periodId) external view returns (uint128) {
+        return pointSummaries[periodId].pointsActive;
     }
+
+    function getPointsGiven(uint32 periodId) external view returns (uint128) {
+        return pointSummaries[periodId].pointsGiven;
+    }
+
+    function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128) {
+        return memberActivities[who][periodId].pointsGiven;
+    }
+
 
     function getCompletedTasks(uint32 periodId) external view returns (Task[] memory) {
         // TODO: how should completed tasks be stored? is it by each time task points
@@ -75,7 +94,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function addTasks(Task[] calldata _tasks) external {
-        if (!this.isAdmin(msg.sender)) revert NotAdmin();
+        _revertIfNotAdmin();
         writePointSummary();
 
         uint256 length = _tasks.length;
@@ -85,7 +104,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function addTask(Task calldata _task) public {
-        if (!this.isAdmin(msg.sender)) revert NotAdmin();
+        _revertIfNotAdmin();
         writePointSummary();
 
         _addTask(_task);
@@ -105,7 +124,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function removeTasks(uint256[] memory _taskIds) external {
-        if (!this.isAdmin(msg.sender)) revert NotAdmin();
+        _revertIfNotAdmin();
         writePointSummary();
         for (uint256 i = 0; i < _taskIds.length; i++) {
             _removeTask(_taskIds[i]);
@@ -113,7 +132,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function removeTask(uint256 _taskId) external {
-        if (!this.isAdmin(msg.sender)) revert NotAdmin();
+        _revertIfNotAdmin();
         writePointSummary();
         _removeTask(_taskId);
     }
@@ -132,7 +151,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function giveTasks(uint256[] memory _taskIds, address[] memory _members) external {
-        if (!this.isAdmin(msg.sender)) revert NotAdmin();
+        _revertIfNotAdmin();
         uint256 length = _taskIds.length;
         if (length != _members.length) revert UnequalLengths();
         for (uint256 i = 0; i < length; i++) {
@@ -141,7 +160,7 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
     }
 
     function giveTask(uint256 _taskId, address _member) external {
-        if (!this.isAdmin(msg.sender)) revert NotAdmin();
+        _revertIfNotAdmin();
         _giveTask(_taskId, _member);
     }
 
@@ -165,11 +184,11 @@ abstract contract TaskManager is IPeriodUtils, IAccessUtils {
 
     /// @notice write sums to history when needed
     function writePointSummary() public {
-        _writePointSummary(this.currentPeriodId());
+        _writePointSummary(currentPeriodId());
     }
 
     function _writePointSummary(uint32 _currentPeriodId) internal {
-        uint32 initPeriodId_ = this.initPeriodId(); // gas
+        uint32 initPeriodId_ = initPeriodId(); // gas
         uint32 lastPeriodId = _currentPeriodId - 1;
 
         // What happens if a period passes which doesn't write to storage?

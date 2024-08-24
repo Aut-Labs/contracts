@@ -5,7 +5,7 @@ import {IHub} from "../contracts/hub/interfaces/IHub.sol";
 import {IAutID} from "../contracts/autid/IAutID.sol";
 import {IHubRegistry} from "../contracts/hub/interfaces/IHubRegistry.sol";
 import {IAllowlist} from "../contracts/utils/IAllowlist.sol";
-import {IGlobalParametersAlpha} from "../contracts/globalParameters/IGlobalParametersAlpha.sol";
+import {IGlobalParameters} from "../contracts/globalParameters/IGlobalParameters.sol";
 import {SimpleAllowlistOnboarding} from "../contracts/onboarding/SimpleAllowlistOnboarding.sol";
 import {BasicOnboarding} from "../contracts/onboarding/BasicOnboarding.sol";
 import {Hub} from "../contracts/hub/Hub.sol";
@@ -13,7 +13,7 @@ import {AutID} from "../contracts/autid/AutID.sol";
 import {HubRegistry} from "../contracts/hub/HubRegistry.sol";
 import {InteractionRegistry} from "../contracts/interactions/InteractionRegistry.sol";
 import {Allowlist} from "../contracts/utils/Allowlist.sol";
-import {GlobalParametersAlpha} from "../contracts/globalParameters/GlobalParametersAlpha.sol";
+import {GlobalParameters} from "../contracts/globalParameters/GlobalParameters.sol";
 import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
 import {HubDomainsRegistry} from "../contracts/hub/HubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
@@ -32,7 +32,7 @@ contract DeployAll is Script {
     HubRegistry public hubRegistry;
     HubDomainsRegistry public hubDomainsRegistry;
     InteractionRegistry public interactionRegistry;
-    GlobalParametersAlpha public globalParameters;
+    GlobalParameters public globalParameters;
     BasicOnboarding public basicOnboarding;
 
     struct TNamedAddress {
@@ -145,14 +145,14 @@ function deployInteractionRegistry(address _owner) returns (InteractionRegistry)
     return interactionRegistry;
 }
 
-function deployGlobalParameters(address _owner) returns (GlobalParametersAlpha) {
-    GlobalParametersAlpha globalParametersImplementation = new GlobalParametersAlpha();
+function deployGlobalParameters(address _owner) returns (GlobalParameters) {
+    GlobalParameters globalParametersImplementation = new GlobalParameters();
     AutProxy globalParametersProxy = new AutProxy(
         address(globalParametersImplementation),
         _owner,
         ""
     );
-    return GlobalParametersAlpha(address(globalParametersProxy));
+    return GlobalParameters(address(globalParametersProxy));
 }
 
 function deployHubRegistry(

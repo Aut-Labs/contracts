@@ -5,11 +5,12 @@ import {HubUpgradeable} from "./HubUpgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
-import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
+import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IMembership} from "../membership/IMembership.sol";
 import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
 import {HubUtils} from "./HubUtils.sol";
 import {IHub} from "./interfaces/IHub.sol";
+import {ITaskManager} from "../tasks/ITaskManager.sol";
 import {IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
 
 /*
@@ -35,11 +36,13 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     address public hubDomainsRegistry;
     address public globalParameters;
     address public participation;
+    address public membership;
+    address public taskManager;
     // address public prestige;
-    address public taskRegistry;
+    // address public taskRegistry;
 
     uint256 public archetype;
-    // uint256 public commitment;
+    uint256 public commitment;
     uint256 public market;
     string public metadataUri;
 
@@ -64,9 +67,6 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         address _initialOwner,
         address _hubDomainsRegistry,
         address _globalParameters,
-        address _participation,
-        // address _prestige,
-        address _taskRegistry,
         uint256[] calldata roles_,
         uint256 _market,
         uint256 _commitment,
@@ -79,9 +79,6 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         // set addrs
         hubDomainsRegistry = _hubDomainsRegistry;
         globalParameters = _globalParameters;
-        participation = _participation;
-        // prestige = _prestige;
-        taskRegistry = _taskRegistry;
 
         // set vars
         _setRoles(roles_);
@@ -90,19 +87,34 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         _setMetadataUri(_metadataUri);
 
         initTimestamp = uint32(block.timestamp);
-        period0Start = IGlobalParametersAlpha(_globalParameters).period0Start();
+        period0Start = IGlobalParameters(_globalParameters).period0Start();
         initPeriodId = TimeLibrary.periodId({
             period0Start: period0Start,
             timestamp: uint32(block.timestamp)
         });
     }
 
+    function initialize2(
+        address _participation,
+        address _membership,
+        address _taskManager
+        // address _prestige,
+        // address _taskRegistry
+    ) external reinitializer(2) {
+        participation = _participation;
+        membership = _membership;
+        taskManager = _taskManager;
+        // prestige = _prestige;
+        // taskRegistry = _taskRegistry;
+    }
+
     // -----------------------------------------------------------
     //                         MUTATIVE
     // -----------------------------------------------------------
 
-    function join(address who, uint256 role, uint8 commitment) external {
-        IMembership(participation).join(who, role, commitment);
+    function join(address who, uint256 role, uint8 _commitment) external {
+        IMembership(participation).join(who, role, _commitment);
+        ITaskManager(taskManager).join(who);
     }
 
     // -----------------------------------------------------------
@@ -197,11 +209,11 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         return true;
     }
 
-    function constraintFactor() external view returns (uint96) {
+    function constraintFactor() external pure returns (uint128) {
         return 4e17; // TODO: setters in here vs. calling globalParameters
     }
 
-    function penaltyFactor() external view returns (uint96) {
+    function penaltyFactor() external pure returns (uint128) {
         return 4e17; // TODO
     }
 
@@ -209,14 +221,14 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     //                        HUB-MANAGEMENT
     // -----------------------------------------------------------
 
-    // function registerDomain(
-    //     string calldata domain_,
-    //     address hubAddress_,
-    //     string calldata metadataUri_
-    // ) external override onlyOwner {
-    //     // also revert if not deployer
-    //     IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, hubAddress_, metadataUri_);
-    // }
+    function registerDomain(
+        string calldata domain_,
+        address hubAddress_,
+        string calldata metadataUri_
+    ) external onlyOwner {
+        // also revert if not deployer
+        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, hubAddress_, metadataUri_);
+    }
 
     function addUrl(string memory url) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
@@ -246,7 +258,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
 
     /// internal
 
-    function _setRoles(address[] memory roles_) internal {
+    function _setRoles(uint256[] memory roles_) internal {
         for (uint256 i=0; i<roles_.length; i++) {
             _roles.add(roles_[i]);
         }
@@ -261,11 +273,11 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     }
 
     function _setCommitment(uint256 commitment_) internal {
-        // _revertForInvalidCommitment(commitment_);
+        _revertForInvalidCommitment(commitment_);
 
-        // commitment = commitment_;
+        commitment = commitment_;
 
-        // emit CommitmentSet(commitment_);
+        emit CommitmentSet(commitment_);
     }
 
     function _setMetadataUri(string memory metadataUri_) internal {

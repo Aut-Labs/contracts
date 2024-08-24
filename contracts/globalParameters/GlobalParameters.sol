@@ -2,10 +2,10 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "./IGlobalParametersAlpha.sol";
+import "./IGlobalParameters.sol";
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
-contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
+contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
     // slot 1
     uint16 public steepnessDegree3Exp;
     uint16 public steepnessDegree3ExpStaged;
@@ -34,6 +34,8 @@ contract GlobalParametersAlpha is IGlobalParametersAlpha, OwnableUpgradeable {
     uint64 public credibleNeutrality6ExpExpiresAt;
 
     uint32 public period0Start;
+    uint128 public penaltyFactor;
+    uint128 public constraintFactor;
 
     uint256 public localReputationForPeriod0;
     uint256 public localReputationForPeriod0Staged;

@@ -7,9 +7,6 @@ abstract contract HubUtils {
     error InvalidParameter();
     error InvalidCommitment();
     error InvalidMetadataUri();
-    
-    event AdminGranted(address who);
-    event AdminRenounced(address who);
 
     function _revertForZeroAddress(address who) internal pure {
         if (who == address(0)) {

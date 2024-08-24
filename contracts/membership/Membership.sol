@@ -2,19 +2,16 @@
 pragma solidity ^0.8.20;
 
 import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import { IPeriodUtils } from "../utils/interfaces/IPeriodUtils.sol";
-import { IAccessUtils} from "../utils/interfaces/IAccessUtils.sol";
+import { PeriodUtils } from "../utils/PeriodUtils.sol";
+import { AccessUtils} from "../utils/AccessUtils.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-abstract contract Membership is IPeriodUtils, IAccessUtils {
+contract Membership is Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
 
-    // globally shared
-    uint32 public period0Start;
-    uint32 public initPeriodId;
-    address public hub;
-    address public autID;
-    
+    address public taskManager;
+
     uint128 public commitmentSum;
 
     mapping(address => uint32) public joinedAt;
@@ -22,7 +19,7 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
     mapping(address => uint256) public currentRole;
     mapping(address => uint8) public currentCommitment;
     
-    EnumerableSet.AddressSet[] private _members;
+    EnumerableSet.AddressSet private _members;
 
     struct MemberDetail {
         uint128 role;
@@ -33,10 +30,22 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
 
     error MemberDoesNotExist();
     error MemberHasNotYetCommited();
-    error InvalidPeriodId();
     error SenderNotHub();
 
     event Join(address, uint256, uint8);
+
+    function initialize(
+        address _taskManager,
+        address _hub,
+        address _autId,
+        uint32 _period0Start,
+        uint32 _initPeriodId
+    ) external initializer {
+        taskManager = _taskManager;
+
+        _init_AccessUtils({_hub: _hub, _autId: _autId});
+        _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
+    }
 
     // -----------------------------------------------------------
     //                          VIEWS
@@ -56,7 +65,7 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
 
     /// @notice return the period id the member joined the hub
     function getPeriodIdJoined(address who) public view returns (uint32) {
-        uint32 periodIdJoined = this.getPeriodId(joinedAt[who]);
+        uint32 periodIdJoined = getPeriodId(joinedAt[who]);
         if (periodIdJoined == 0) revert MemberDoesNotExist();
         return periodIdJoined;
     }
@@ -78,8 +87,8 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
     }
 
     function getCommitmentSum(uint32 periodId) external view returns (uint128) {
-        uint32 currentPeriodId_ = this.currentPeriodId();
-        if (periodId < initPeriodId || periodId > currentPeriodId_) revert InvalidPeriodId();
+        uint32 currentPeriodId_ = currentPeriodId();
+        if (periodId < initPeriodId() || periodId > currentPeriodId_) revert InvalidPeriodId();
         if (periodId == currentPeriodId_) {
             return commitmentSum;
         } else {
@@ -91,8 +100,8 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
     //                          MUTATIVE
     // -----------------------------------------------------------
 
-    function join(address who, uint256 role, uint8 commitment) public virtual {
-        if (msg.sender != hub()) revert SenderNotHub();
+    function join(address who, uint128 role, uint8 commitment) public virtual {
+        _revertIfNotHub();
         
         currentRole[who] = role;
         currentCommitment[who] = commitment;
@@ -102,7 +111,7 @@ abstract contract Membership is IPeriodUtils, IAccessUtils {
 
         commitmentSum += commitment;
 
-        memberDetails[who][this.currentPeriodId()] = MemberDetail({
+        memberDetails[who][currentPeriodId()] = MemberDetail({
             role: role,
             commitment: commitment
         });

@@ -5,6 +5,10 @@ import {IHub} from "../hub/interfaces/IHub.sol";
 
 contract AccessUtils {
 
+    error NotAdmin();
+    error NotHub();
+    error NotAutId();
+
     struct AccessUtilsStorage {
         address hub;
         address autId;
@@ -28,7 +32,7 @@ contract AccessUtils {
         $.autId = _autId;
     }
 
-    function isAdmin(address who) external view returns (bool) {
+    function isAdmin(address who) public view returns (bool) {
         return IHub(hub()).isAdmin(who);
     }
 
@@ -40,5 +44,17 @@ contract AccessUtils {
     function autId() public view returns (address) {
         AccessUtilsStorage storage $ = _getAccessUtilsStorage();
         return $.autId;
+    }
+
+    function _revertIfNotAdmin() internal view {
+        if (!isAdmin(msg.sender)) revert NotAdmin();
+    }
+
+    function _revertIfNotHub() internal view {
+        if (msg.sender != hub()) revert NotHub();
+    }
+
+    function _revertIfNotAutId() internal view {
+        if (msg.sender != autId()) revert NotAutId();
     }
 }

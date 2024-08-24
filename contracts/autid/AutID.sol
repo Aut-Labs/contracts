@@ -100,17 +100,17 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         return IHubRegistry(hubRegistry).listUserHubs(user);
     }
 
-    function userHubRole(address hub, address user) external view returns (uint256) {
-        return IHub(hub).roles(user);
-    }
+    // function userHubRole(address hub, address user) external view returns (uint256) {
+    //     return IHub(hub).roles(user);
+    // }
 
-    function userHubCommitmentLevel(address hub, address user) external view returns (uint256) {
-        return IHub(hub).currentCommitmentLevels(user);
-    }
+    // function userHubCommitmentLevel(address hub, address user) external view returns (uint256) {
+    //     return IHub(hub).currentCommitmentLevels(user);
+    // }
 
-    function userHubJoinedAt(address hub, address user) external view returns (uint256) {
-        return IHub(hub).joinedAt(user);
-    }
+    // function userHubJoinedAt(address hub, address user) external view returns (uint256) {
+    //     return IHub(hub).joinedAt(user);
+    // }
 
     function transferFrom(address, address, uint256) public pure override(ERC721Upgradeable, IERC721) {
         revert UntransferableToken();

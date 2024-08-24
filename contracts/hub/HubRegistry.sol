@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
+import {AutProxy} from "../proxy/AutProxy.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
@@ -12,12 +13,13 @@ import {
 import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {IHubRegistry} from "./interfaces/IHubRegistry.sol";
 import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
-import {IGlobalParametersAlpha} from "../globalParameters/IGlobalParametersAlpha.sol";
+import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 
-import {Hub} from "./Hub.sol";
 import {IHub} from "./interfaces/IHub.sol";
-import {ParticipationScore} from "../participation/ParticipationScore.sol";
+import {ITaskManager} from "../tasks/ITaskManager.sol";
+import {IParticipation} from "../participation/IParticipation.sol";
+import {IMembership} from "../membership/IMembership.sol";
 
 /// @title HubRegistry
 contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
@@ -32,12 +34,22 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     mapping(address => bool) public checkHub;
     address[] public hubs;
 
+    struct HubContracts {
+        address taskManager;
+        address membership;
+        address participation;
+    }
+    mapping(address => HubContracts) public hubContracts;
+
     address public deployerAddress;
     address public autId;
     address public pluginRegistry;
     address public hubDomainsRegistry;
     address public interactionRegistry;
     address public globalParameters;
+    address public membershipImplementation;
+    address public participationImplementation;
+    address public taskManagerImplementation;
     UpgradeableBeacon public upgradeableBeacon;
     IAllowlist public allowlist;
 
@@ -49,7 +61,10 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         address pluginRegistry_,
         address hubDomainsRegistry_,
         address interactionRegistry_,
-        address globalParameters_
+        address globalParameters_,
+        address _membershipImplementation,
+        address _participationImplementation,
+        address _taskManagerImplementation
     ) external initializer {
         require(autId_ != address(0), "HubRegistry: AutID address zero");
         require(hubLogic != address(0), "HubRegistry: Hub logic address zero");
@@ -63,16 +78,20 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         interactionRegistry = interactionRegistry_;
         globalParameters = globalParameters_;
         upgradeableBeacon = new UpgradeableBeacon(hubLogic, address(this));
+        
+        membershipImplementation = _membershipImplementation;
+        participationImplementation = _participationImplementation;
+        taskManagerImplementation = _taskManagerImplementation;
         // allowlist =
         // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
     }
 
     function currentPeriodId() public view returns (uint32) {
-        return IGlobalParametersAlpha(globalParameters).currentPeriodId();
+        return IGlobalParameters(globalParameters).currentPeriodId();
     }
 
     function period0Start() public view returns (uint32) {
-        return IGlobalParametersAlpha(globalParameters).period0Start();
+        return IGlobalParameters(globalParameters).period0Start();
     }
 
     function isInteractionId(bytes32 interactionId) external view returns (bool) {
@@ -101,31 +120,91 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         _validateHubDeploymentParams(market, metadata, commitment);
         // _checkAllowlist(); // TODO: how should allowlist be designed?
 
-        ParticipationScore participationScore = new ParticipationScore();
-        bytes memory data = abi.encodeWithSelector(
-            Hub.initialize.selector,
-            _msgSender(),
-            // humDomainsRegistry,
-            globalParameters,
-            participation,
-            // prestige,
-            taskRegistry,
-            roles,
-            market,
-            commitment,
-            metadata
+        // deploy hub w/ beacon
+        bytes memory data = abi.encodeCall(
+            IHub.initialize,
+            (
+                _msgSender(),
+                hubDomainsRegistry,
+                globalParameters,
+                roles,
+                market,
+                commitment,
+                metadata
+            )
         );
         hub = address(new BeaconProxy(address(upgradeableBeacon), data));
-        participationScore.initialize({
-            _globalParameters: globalParameters,
-            _hub: hub,
-            _autId: autId,
-            _period0Start: period0Start(),
-            _initPeriodId: currentPeriodId()
+
+        // deploy taskManager
+        uint32 period0Start_ = period0Start();
+        uint32 initPeriodId = currentPeriodId();
+        data = abi.encodeCall(
+            ITaskManager.initialize,
+            (
+                hub,
+                autId,
+                period0Start_,
+                initPeriodId
+            )
+        );
+        address taskManager = address(new AutProxy(
+            taskManagerImplementation,
+            _msgSender(),
+            data
+        ));
+
+        // deploy membership
+        data = abi.encodeCall(
+            IMembership.initialize,
+            (
+                taskManager,
+                hub,
+                autId,
+                period0Start_,
+                initPeriodId
+            )
+        );
+        address membership = address(new AutProxy(
+            membershipImplementation,
+            _msgSender(),
+            data
+        ));
+
+        // deploy participation
+        data = abi.encodeCall(
+            IParticipation.initialize,
+            (
+                globalParameters,
+                membership,
+                taskManager,
+                hub,
+                autId,
+                period0Start_,
+                initPeriodId
+            )
+        );
+        address participation = address(new AutProxy(
+            participationImplementation,
+            _msgSender(),
+            data
+        ));
+
+        // Finish initializing the hub
+        IHub(hub).initialize2({
+            _participation: participation,
+            _membership: membership,
+            _taskManager: taskManager
+            // _taskRegistry: taskRegistry
         });
+
         hubDeployers[_msgSender()].push(hub);
         hubs.push(hub);
         checkHub[hub] = true;
+        hubContracts[hub] = HubContracts({
+            membership: membership,
+            taskManager: taskManager,
+            participation: participation
+        });
 
         emit HubCreated(_msgSender(), hub, market, commitment, metadata);
     }
@@ -137,7 +216,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     function join(address hub, address member, uint256 role, uint8 commitment) external {
         require(checkHub[hub], "HubRegistry: sender not a hub");
 
-        IHub(hub).join({who: member, role: role, commitmentLevel: commitment});
+        IHub(hub).join({who: member, role: role, _commitment: commitment});
 
         uint256 position = _userHubList[member].length;
         _userHubList[member].push(hub);
