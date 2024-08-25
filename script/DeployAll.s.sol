@@ -18,6 +18,10 @@ import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
 import {HubDomainsRegistry} from "../contracts/hub/HubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
+import {Membership} from "../contracts/membership/Membership.sol";
+import {Participation} from "../contracts/participation/Participation.sol";
+import {TaskManager} from "../contracts/tasks/TaskManager.sol";
+
 
 import "forge-std/Script.sol";
 
@@ -27,6 +31,10 @@ contract DeployAll is Script {
     bool public deploying;
 
     // state variables
+    address membershipImplementation;
+    address participationImplementation;
+    address taskManagerImplementation;
+
     AutID public autId;
     PluginRegistry pluginRegistry;
     HubRegistry public hubRegistry;
@@ -52,7 +60,9 @@ contract DeployAll is Script {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
         } else {
-            revert("invalid chainid");
+            // revert("invalid chainid");
+            owner = vm.envAddress("OWNER");
+            privateKey = vm.envUint("PRIVATE_KEY");
         }
         console.log("setUp -- done");
 
@@ -64,23 +74,33 @@ contract DeployAll is Script {
         address trustedForwarder = address(new TrustedForwarder());
 
         // Deploy AutID
-        autId = deployAutId(trustedForwarder, owner);
+        autId = deployAutId(trustedForwarder, vm.addr(privateKey));
         pluginRegistry = deployPluginRegistry(owner);
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
         interactionRegistry = deployInteractionRegistry(owner);
         globalParameters = deployGlobalParameters(owner);
+        (
+            membershipImplementation,
+            participationImplementation,
+            taskManagerImplementation
+        ) = deployHubDependencyImplementations();
         hubRegistry = deployHubRegistry({
             _trustedForwarder: trustedForwarder,
             _owner: owner,
             _autIdAddress: address(autId),
             _pluginRegistryAddress: address(pluginRegistry),
             _hubDomainsRegistryAddress: address(hubDomainsRegistry),
-            _globalParametersAddress: address(globalParameters)
+            _interactionRegistryAddress: address(interactionRegistry),
+            _globalParametersAddress: address(globalParameters),
+            _membershipImplementation: membershipImplementation,
+            _participationImplementation: participationImplementation,
+            _taskManagerImplementation: taskManagerImplementation
         });
         basicOnboarding = deployBasicOnboarding(owner);
 
-        // set hubRegistry to autId (assumes msg.sender == owner [TODO: change this])
-        // autId.setHubRegistry(address(hubRegistry));
+        // set hubRegistry to autId and transfer ownership
+        autId.setHubRegistry(address(hubRegistry));
+        autId.transferOwnership(owner);
 
         // Create and set the allowlist
         Allowlist allowlist = new Allowlist();
@@ -89,14 +109,14 @@ contract DeployAll is Script {
         // todo: convert to helper function
         if (deploying) {
             string memory filename = "deployments.txt";
-            TNamedAddress[10] memory na;
+            TNamedAddress[7] memory na;
             na[0] = TNamedAddress({name: "globalParametersProxy", target: address(globalParameters)});
             na[1] = TNamedAddress({name: "autIDProxy", target: address(autId)});
             na[2] = TNamedAddress({name: "hubRegistryProxy", target: address(hubRegistry)});
             na[3] = TNamedAddress({name: "pluginRegistryProxy", target: address(pluginRegistry)});
             na[4] = TNamedAddress({name: "allowlist", target: address(allowlist)});
             na[5] = TNamedAddress({name: "basicOnboarding", target: address(basicOnboarding)});
-            na[9] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
+            na[6] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
             for (uint256 i = 0; i != na.length; ++i) {
                 vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));
@@ -113,7 +133,7 @@ function deployAutId(address _trustedForwarder, address _owner) returns (AutID) 
         _owner,
         abi.encodeWithSelector(
             AutID.initialize.selector,
-            msg.sender
+            _owner
         )
     );
     return AutID(address(autIdProxy));
@@ -155,26 +175,46 @@ function deployGlobalParameters(address _owner) returns (GlobalParameters) {
     return GlobalParameters(address(globalParametersProxy));
 }
 
+function deployHubDependencyImplementations() returns (
+    address membershipImplementation,
+    address participationImplementation,
+    address taskManagerImplementation
+) {
+    membershipImplementation = address(new Membership());
+    participationImplementation = address(new Participation());
+    taskManagerImplementation = address(new TaskManager());
+}
+
 function deployHubRegistry(
     address _trustedForwarder,
     address _owner,
     address _autIdAddress,
     address _pluginRegistryAddress,
     address _hubDomainsRegistryAddress,
-    address _globalParametersAddress
+    address _interactionRegistryAddress,
+    address _globalParametersAddress,
+    address _membershipImplementation,
+    address _participationImplementation,
+    address _taskManagerImplementation
 ) returns (HubRegistry) {
     address hubImplementation = address(new Hub());
     address hubRegistryImplementation = address(new HubRegistry(_trustedForwarder));
     AutProxy hubRegistryProxy = new AutProxy(
         hubRegistryImplementation,
         _owner,
-        abi.encodeWithSelector(
-            HubRegistry.initialize.selector,
-            _autIdAddress,
-            hubImplementation,
-            _pluginRegistryAddress,
-            _hubDomainsRegistryAddress,
-            _globalParametersAddress
+        abi.encodeCall(
+            IHubRegistry.initialize,
+            (
+                _autIdAddress,
+                hubImplementation,
+                _pluginRegistryAddress,
+                _hubDomainsRegistryAddress,
+                _interactionRegistryAddress,
+                _globalParametersAddress,
+                _membershipImplementation,
+                _participationImplementation,
+                _taskManagerImplementation
+            )
         )
     );
     return HubRegistry(address(hubRegistryProxy));

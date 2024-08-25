@@ -2,6 +2,18 @@
 pragma solidity ^0.8.20;
 
 interface IHubRegistry {
+    function initialize(
+        address autId_,
+        address hubLogic,
+        address pluginRegistry_,
+        address hubDomainsRegistry_,
+        address interactionRegistry_,
+        address globalParameters_,
+        address _membershipImplementation,
+        address _participationImplementation,
+        address _taskManagerImplementation
+    ) external;
+
     function checkHub(address) external view returns (bool);
 
     // function deployHub(uint256 market, string memory metadata, uint256 commitment) external returns (address hub);
