@@ -127,6 +127,7 @@ contract ReputationMiningTest is BaseTest {
         reputationMiningContract.updatePeriod();
 
         uint256 repfiBalanceBefore = repfiToken.balanceOf(address(alice));
+        uint256 circularRepfiBalanceBefore = repfiToken.balanceOf(address(circular));
         assertEq(repfiBalanceBefore, 0, "initial balance is not zero");
 
         vm.prank(alice);
@@ -141,7 +142,7 @@ contract ReputationMiningTest is BaseTest {
         // The other 40% should be transferred to the circular contract
         assertEq(
             repfiToken.balanceOf(address(circular)),
-            pRepFiBalanceAfter - calculatedRewards,
+            pRepFiBalanceAfter - calculatedRewards + circularRepfiBalanceBefore,
             "circular contract didn't receive appropriate leftover amount"
         );
 
@@ -195,6 +196,7 @@ contract ReputationMiningTest is BaseTest {
         reputationMiningContract.updatePeriod();
 
         uint256 repfiBalanceBefore = repfiToken.balanceOf(address(alice));
+        uint256 circularRepfiBalanceBefore = repfiToken.balanceOf(address(circular));
         assertEq(repfiBalanceBefore, 0, "initial balance is not zero");
 
         vm.prank(alice);
@@ -214,7 +216,7 @@ contract ReputationMiningTest is BaseTest {
         // The other 40% should be transferred to the circular contract
         assertEq(
             repfiToken.balanceOf(address(circular)),
-            pRepFiBalanceAfter - earnedTokens,
+            pRepFiBalanceAfter - earnedTokens + circularRepfiBalanceBefore,
             "circular contract didn't receive appropriate leftover amount"
         );
         uint256 totalBurned = repfiToken.balanceOf(address(circular));

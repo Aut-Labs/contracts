@@ -52,11 +52,8 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         period++;
         lastPeriodChange = block.timestamp;
 
-        // initialize amount of tokens unlocked in this month
+        // initialize amount of tokens unlocked in this period
         tokensLeft[period] = this.getTokensForPeriod(period);
-
-        // ToDo: cleanup after last period
-        // slashed or unused tokens from the last period should be burned or sent to the circular contract.
 
         uint256 leftoverTokens = tokensLeft[period - 1];
         tokensLeft[period - 1] = 0;
@@ -64,6 +61,9 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         if (leftoverTokens > 0) {
             bool success = pRepFiToken.burn(address(this), leftoverTokens);
             require(success, "failed to burn tokens");
+
+            success = repFiToken.transfer(address(circular), leftoverTokens);
+            require(success, "failed to transfer tokens to the circular contract");
         }
     }
 
@@ -73,11 +73,12 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         uint256 pRepFiBalance = pRepFiToken.balanceOf(msg.sender);
         if (pRepFiBalance > 0) {
             // reset pRepFi token balance
-            // or should we claim their previous rewards instead?
             bool success = pRepFiToken.burn(msg.sender, pRepFiBalance);
             require(success, "Failed to burn remaining tokens");
 
-            // send RepFI tokens for this user to circlular contract?
+            // send RepFI tokens for this user to circlular contract
+            success = repFiToken.transfer(address(circular), pRepFiBalance);
+            require(success, "failed to transfer tokens to the circular contract");
         }
 
         uint256 amount = getClaimableUtilityTokenForPeriod(msg.sender, period);
@@ -104,7 +105,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     }
 
     function claim() external nonReentrant {
-        // ToDo: calculate how much of the pREPFI tokens the user has used in this period and distribute monthly allocation of REPFI tokens
+        // calculate how much of the pREPFI tokens the user has used in this period and distribute monthly allocation of REPFI tokens
         uint256 givenAmount = givenBalance[msg.sender][period - 1];
         require(givenAmount > 0, "no claims available for this period");
         uint256 pRepFiBalance = pRepFiToken.balanceOf(msg.sender);
@@ -116,7 +117,6 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         // calculate rewards based on token utilisation
         // check pREPFI balance vs allocated tokens for last period unless there's a better way to check this
         uint256 tokensUsed = givenAmount - pRepFiBalance;
-        // what do we do with the decimals here? Looks like we need to scale to receive a number other than 0
         uint256 participation = tokensUsed > 0 ? ((tokensUsed) * 100) / givenAmount : 0;
         uint256 earnedTokens = 0;
 
@@ -132,7 +132,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
 
         // send repFi tokens
         repFiToken.safeTransfer(msg.sender, earnedTokens);
-        // send remaining repFi tokens to circle contract (or burn)
+        // send remaining repFi tokens to circle contract
         repFiToken.safeTransfer(circular, givenAmount - earnedTokens);
     }
 
