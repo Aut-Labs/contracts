@@ -10,9 +10,7 @@ import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IMembership} from "../membership/IMembership.sol";
 import {ITaskManager} from "../tasks/ITaskManager.sol";
 
-
 contract Participation is Initializable, PeriodUtils, AccessUtils {
-
     address public globalParameters;
     address public membership;
     address public taskManager;
@@ -45,12 +43,9 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
 
     function join(address who) external {
         _revertIfNotHub();
-        
+
         // store initial participation
-        memberParticipations[who][currentPeriodId()] = MemberParticipation({
-            score: 1e18,
-            performance: 0
-        });
+        memberParticipations[who][currentPeriodId()] = MemberParticipation({score: 1e18, performance: 0});
     }
 
     /// @notice helper to predict performance score for any user
@@ -60,12 +55,7 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
         uint32 periodId
     ) public view returns (uint128) {
         if (periodId < initPeriodId() || periodId > currentPeriodId()) revert InvalidPeriodId();
-        return
-            _calcPerformanceInPeriod({
-                commitment: commitment,
-                pointsGiven: pointsGiven,
-                periodId: periodId
-            });
+        return _calcPerformanceInPeriod({commitment: commitment, pointsGiven: pointsGiven, periodId: periodId});
     }
 
     function _calcPerformanceInPeriod(
@@ -84,7 +74,8 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
         if (!IMembership(membership).isMember(who)) revert NotMember();
-        if (periodId < IMembership(membership).getPeriodIdJoined(who) || periodId > currentPeriodId()) revert InvalidPeriodId();
+        if (periodId < IMembership(membership).getPeriodIdJoined(who) || periodId > currentPeriodId())
+            revert InvalidPeriodId();
         return _calcPerformanceInPeriod(who, periodId);
     }
 
@@ -117,7 +108,7 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
     function writeMemberParticipations(address[] calldata whos) external {
         // update historical periods if necessary
         ITaskManager(taskManager).writePointSummary();
-        
+
         uint32 currentPeriodId_ = currentPeriodId();
         for (uint256 i = 0; i < whos.length; i++) {
             _writeMemberParticipation(whos[i], currentPeriodId_);
@@ -147,7 +138,7 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
     function writeMemberParticipation(address who) external {
         // update historical periods if necessary
         ITaskManager(taskManager).writePointSummary();
-        
+
         _writeMemberParticipation(who, currentPeriodId());
     }
 

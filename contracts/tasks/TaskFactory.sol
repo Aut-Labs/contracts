@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract TaskFactory is Initializable {
-
     uint128 currentSumCreatedContributionPoints;
     uint128 currentSumActiveContributionPoints;
     uint128 currentSumGivenContributionPoints;
@@ -26,15 +25,8 @@ contract TaskFactory is Initializable {
     }
     mapping(bytes32 => bool) public taskId;
 
-    function initialize(
-        address _hub,
-        address _membership
-    ) external initializer {
+    function initialize(address _hub, address _membership) external initializer {
         hub = _hub;
         membership = _membership;
     }
-
-
-
-
 }

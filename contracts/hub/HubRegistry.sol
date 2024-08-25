@@ -78,7 +78,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         interactionRegistry = interactionRegistry_;
         globalParameters = globalParameters_;
         upgradeableBeacon = new UpgradeableBeacon(hubLogic, address(this));
-        
+
         membershipImplementation = _membershipImplementation;
         participationImplementation = _participationImplementation;
         taskManagerImplementation = _taskManagerImplementation;
@@ -123,71 +123,26 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         // deploy hub w/ beacon
         bytes memory data = abi.encodeCall(
             IHub.initialize,
-            (
-                _msgSender(),
-                hubDomainsRegistry,
-                globalParameters,
-                roles,
-                market,
-                commitment,
-                metadata
-            )
+            (_msgSender(), hubDomainsRegistry, globalParameters, roles, market, commitment, metadata)
         );
         hub = address(new BeaconProxy(address(upgradeableBeacon), data));
 
         // deploy taskManager
         uint32 period0Start_ = period0Start();
         uint32 initPeriodId = currentPeriodId();
-        data = abi.encodeCall(
-            ITaskManager.initialize,
-            (
-                hub,
-                autId,
-                period0Start_,
-                initPeriodId
-            )
-        );
-        address taskManager = address(new AutProxy(
-            taskManagerImplementation,
-            _msgSender(),
-            data
-        ));
+        data = abi.encodeCall(ITaskManager.initialize, (hub, autId, period0Start_, initPeriodId));
+        address taskManager = address(new AutProxy(taskManagerImplementation, _msgSender(), data));
 
         // deploy membership
-        data = abi.encodeCall(
-            IMembership.initialize,
-            (
-                taskManager,
-                hub,
-                autId,
-                period0Start_,
-                initPeriodId
-            )
-        );
-        address membership = address(new AutProxy(
-            membershipImplementation,
-            _msgSender(),
-            data
-        ));
+        data = abi.encodeCall(IMembership.initialize, (taskManager, hub, autId, period0Start_, initPeriodId));
+        address membership = address(new AutProxy(membershipImplementation, _msgSender(), data));
 
         // deploy participation
         data = abi.encodeCall(
             IParticipation.initialize,
-            (
-                globalParameters,
-                membership,
-                taskManager,
-                hub,
-                autId,
-                period0Start_,
-                initPeriodId
-            )
+            (globalParameters, membership, taskManager, hub, autId, period0Start_, initPeriodId)
         );
-        address participation = address(new AutProxy(
-            participationImplementation,
-            _msgSender(),
-            data
-        ));
+        address participation = address(new AutProxy(participationImplementation, _msgSender(), data));
 
         // Finish initializing the hub
         IHub(hub).initialize2({

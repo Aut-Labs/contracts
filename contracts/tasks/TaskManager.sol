@@ -6,7 +6,6 @@ import {AccessUtils} from "../utils/AccessUtils.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract TaskManager is Initializable, PeriodUtils, AccessUtils {
-
     uint128 public pointsActive;
     uint128 public periodPointsCreated;
     uint128 public periodPointsGiven;
@@ -15,7 +14,10 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
     // address public taskRegistry;
 
     enum TaskStatus {
-        None, Open, Inactive, Complete
+        None,
+        Open,
+        Inactive,
+        Complete
     }
 
     struct Task {
@@ -44,12 +46,7 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
         _disableInitializers();
     }
 
-    function initialize(
-        address _hub,
-        address _autId,
-        uint32 _period0Start,
-        uint32 _initPeriodId
-    ) external initializer {
+    function initialize(address _hub, address _autId, uint32 _period0Start, uint32 _initPeriodId) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: _autId});
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
@@ -65,7 +62,6 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
     function getTaskWeight(uint256 taskId) external view returns (uint128) {
         // TODO
     }
-
 
     function getActiveTasks(uint32 periodId) external view returns (Task[] memory) {
         // TODO
@@ -86,7 +82,6 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
     function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128) {
         return memberActivities[who][periodId].pointsGiven;
     }
-
 
     function getCompletedTasks(uint32 periodId) external view returns (Task[] memory) {
         // TODO: how should completed tasks be stored? is it by each time task points
@@ -114,11 +109,9 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
         // if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
         // if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
         // // if (!IInteractionRegistry(hubRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
-
         // uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
         // currentSumActiveContributionPoints += sumTaskContributionPoints;
         // currentSumCreatedContributionPoints += sumTaskContributionPoints;
-
         // tasks.push(_task);
         // TODO: events
     }
@@ -141,11 +134,9 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
         // Task memory task = tasks[_taskId];
         // if (task.quantity == 0) revert TaskNotActive();
         // // NOTE: does not subtract from created tasks
-
         // uint128 sumTaskContributionPoints = task.contributionPoints * task.quantity;
         // currentSumActiveContributionPoints -= sumTaskContributionPoints;
         // currentSumRemovedContributionPoints += sumTaskContributionPoints;
-
         // delete tasks[_taskId];
         // TODO: event
     }
@@ -168,17 +159,12 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
         // Task storage task = tasks[_taskId];
         // if (task.quantity == 0) revert TaskNotActive();
         // if (joinedAt[_member] == 0) revert MemberDoesNotExist();
-
         // Participation storage participation = participations[_member][currentPeriodId()];
-
         // uint128 contributionPoints = task.contributionPoints;
         // participation.givenContributionPoints += contributionPoints;
-
         // currentSumGivenContributionPoints += contributionPoints;
         // currentSumActiveContributionPoints -= contributionPoints;
-
         // task.quantity--;
-
         // TODO: push task to user balance (as nft)
     }
 

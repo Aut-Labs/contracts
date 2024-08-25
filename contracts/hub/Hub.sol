@@ -20,7 +20,6 @@ TODO:
 - max/min values of parameters
 */
 
-
 contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
@@ -58,7 +57,6 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
 
     mapping(uint256 => uint256) public parameterWeight;
 
-
     constructor() {
         _disableInitializers();
     }
@@ -88,19 +86,19 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
 
         initTimestamp = uint32(block.timestamp);
         period0Start = IGlobalParameters(_globalParameters).period0Start();
-        initPeriodId = TimeLibrary.periodId({
-            period0Start: period0Start,
-            timestamp: uint32(block.timestamp)
-        });
+        initPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
     }
 
     function initialize2(
         address _participation,
         address _membership,
         address _taskManager
+    )
+        external
         // address _prestige,
         // address _taskRegistry
-    ) external reinitializer(2) {
+        reinitializer(2)
+    {
         participation = _participation;
         membership = _membership;
         taskManager = _taskManager;
@@ -131,7 +129,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
 
     function addAdmins(address[] calldata whos) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
-        for (uint256 i=0; i<whos.length; i++) {
+        for (uint256 i = 0; i < whos.length; i++) {
             _addAdmin(whos[i]);
         }
     }
@@ -169,10 +167,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     }
 
     function periodCount() external view returns (uint32) {
-        return TimeLibrary.periodId({
-            period0Start: period0Start,
-            timestamp: uint32(block.timestamp)
-        });
+        return TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
     }
 
     function roles() external view returns (uint256[] memory) {
@@ -259,7 +254,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     /// internal
 
     function _setRoles(uint256[] memory roles_) internal {
-        for (uint256 i=0; i<roles_.length; i++) {
+        for (uint256 i = 0; i < roles_.length; i++) {
             _roles.add(roles_[i]);
         }
     }

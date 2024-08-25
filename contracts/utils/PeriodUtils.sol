@@ -4,14 +4,14 @@ pragma solidity ^0.8.20;
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
 contract PeriodUtils {
-    
     struct PeriodUtilsStorage {
         uint32 period0Start;
         uint32 initPeriodId;
     }
 
     // keccak256(abi.encode(uint256(keccak256("aut.storage.PeriodUtils")) - 1))
-    bytes32 private constant PeriodUtilsStorageLocation = 0xbb30d154f2784c70f43e6e03f8bf8078407501460b7616d04bf445b7588c175a;
+    bytes32 private constant PeriodUtilsStorageLocation =
+        0xbb30d154f2784c70f43e6e03f8bf8078407501460b7616d04bf445b7588c175a;
 
     error InvalidPeriodId();
 

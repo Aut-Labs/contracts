@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import { PeriodUtils } from "../utils/PeriodUtils.sol";
-import { AccessUtils} from "../utils/AccessUtils.sol";
+import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {PeriodUtils} from "../utils/PeriodUtils.sol";
+import {AccessUtils} from "../utils/AccessUtils.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract Membership is Initializable, PeriodUtils, AccessUtils {
@@ -18,7 +18,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     mapping(address => uint32) public withdrawn;
     mapping(address => uint256) public currentRole;
     mapping(address => uint8) public currentCommitment;
-    
+
     EnumerableSet.AddressSet private _members;
 
     struct MemberDetail {
@@ -70,7 +70,6 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         return periodIdJoined;
     }
 
-
     /// @notice get the commitment level of a member at a particular period id
     function getCommitment(address who, uint32 periodId) public view returns (uint8) {
         if (periodId < getPeriodIdJoined(who)) revert MemberHasNotYetCommited();
@@ -102,7 +101,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
 
     function join(address who, uint128 role, uint8 commitment) public virtual {
         _revertIfNotHub();
-        
+
         currentRole[who] = role;
         currentCommitment[who] = commitment;
         joinedAt[who] = uint32(block.timestamp);
@@ -111,10 +110,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
 
         commitmentSum += commitment;
 
-        memberDetails[who][currentPeriodId()] = MemberDetail({
-            role: role,
-            commitment: commitment
-        });
+        memberDetails[who][currentPeriodId()] = MemberDetail({role: role, commitment: commitment});
 
         emit Join(who, role, commitment);
     }
