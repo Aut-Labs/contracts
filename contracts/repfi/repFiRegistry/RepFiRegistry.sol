@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-/// @title RepFiRegistry
+/// @title RepFi Registry
 /// @author Āut Labs
 /// @notice This contract keeps track of the plugins used in the Reputation Finance ecosystem and will be used by the pRepFi token mostly as the only transactions allowed for this token is from and to these plugins.
 contract RepFiRegistry is OwnableUpgradeable {
@@ -32,6 +32,7 @@ contract RepFiRegistry is OwnableUpgradeable {
         __Ownable_init(initialOwner);
     }
 
+    /// @notice gap used as best practice for upgradeable contracts
     uint256[50] private __gap;
 
     /// @notice Registers a plugin, only callable by the owner of the contract

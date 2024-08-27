@@ -1,4 +1,4 @@
-// contract taken from https://github.com/AbdelStark/token-vesting-contracts
+// contract taken from https://github.com/AbdelStark/token-vesting-contracts and updated to integrate Openzeppelin contracts instead of Solmate's
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
 
@@ -45,6 +45,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @dev Reverts if the vesting schedule does not exist or has been revoked.
+     * @param vestingScheduleId the ID of the vesting schedule
      */
     modifier onlyIfVestingScheduleNotRevoked(bytes32 vestingScheduleId) {
         require(!vestingSchedules[vestingScheduleId].revoked);
@@ -54,6 +55,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
     /**
      * @dev Creates a vesting contract.
      * @param token_ address of the ERC20 token contract
+     * @param _owner the owner of the contract
      */
     constructor(address token_, address _owner) Ownable(_owner) {
         require(_owner != address(0), "invalid owner");
@@ -160,6 +162,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @dev Returns the number of vesting schedules associated to a beneficiary.
+     * @param _beneficiary The beneficiary for whom to count the vesting schedules
      * @return the number of vesting schedules
      */
     function getVestingSchedulesCountByBeneficiary(address _beneficiary) external view returns (uint256) {
@@ -168,6 +171,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @dev Returns the vesting schedule id at the given index.
+     * @param index The index of the vesting schedule
      * @return the vesting id
      */
     function getVestingIdAtIndex(uint256 index) external view returns (bytes32) {
@@ -177,6 +181,8 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @notice Returns the vesting schedule information for a given holder and index.
+     * @param holder the holder of the vesting schedule
+     * @param index The index of the vesting schedule
      * @return the vesting schedule structure information
      */
     function getVestingScheduleByAddressAndIndex(
@@ -196,6 +202,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @dev Returns the address of the ERC20 token managed by the vesting contract.
+     * @return the address of the ERC20 token managed by the vesting contract
      */
     function getToken() external view returns (address) {
         return address(_token);
@@ -211,6 +218,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @notice Computes the vested amount of tokens for the given vesting schedule identifier.
+     * @param vestingScheduleId the ID of the vesting schedule
      * @return the vested amount
      */
     function computeReleasableAmount(
@@ -222,6 +230,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @notice Returns the vesting schedule information for a given identifier.
+     * @param vestingScheduleId the ID of the vesting schedule
      * @return the vesting schedule structure information
      */
     function getVestingSchedule(bytes32 vestingScheduleId) public view returns (VestingSchedule memory) {
@@ -238,6 +247,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @dev Computes the next vesting schedule identifier for a given holder address.
+     * @param holder the holder of the vesting schedule to compute the next ID for
      */
     function computeNextVestingScheduleIdForHolder(address holder) public view returns (bytes32) {
         return computeVestingScheduleIdForAddressAndIndex(holder, holdersVestingCount[holder]);
@@ -245,6 +255,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @dev Returns the last vesting schedule for a given holder address.
+     * @param holder the holder of the vesting schedule to find the last one of
      */
     function getLastVestingScheduleForHolder(address holder) external view returns (VestingSchedule memory) {
         return vestingSchedules[computeVestingScheduleIdForAddressAndIndex(holder, holdersVestingCount[holder] - 1)];
@@ -252,6 +263,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @dev Computes the vesting schedule identifier for an address and an index.
+     * @param holder the holder of the vesting schedule to compute the next ID for
      */
     function computeVestingScheduleIdForAddressAndIndex(address holder, uint256 index) public pure returns (bytes32) {
         return keccak256(abi.encodePacked(holder, index));
@@ -259,6 +271,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
 
     /**
      * @dev Computes the releasable amount of tokens for a vesting schedule.
+     * @param vestingSchedule the vesting schedule for which to compute the releaseable amount
      * @return the amount of releasable tokens
      */
     function _computeReleasableAmount(VestingSchedule memory vestingSchedule) internal view returns (uint256) {

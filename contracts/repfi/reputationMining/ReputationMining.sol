@@ -9,23 +9,48 @@ import {IReputationMining} from "./IReputationMining.sol";
 import {IRandomNumberGenerator} from "../../randomNumberGenerator/IRandomNumberGenerator.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+/// @title Reputation Mining
+/// @author Āut Labs
+/// @notice This contract distributes an allocation of pRepFi tokens to Āut users depending on their peer value every period
+/// users can then utilize these tokens using the plugins defined in the RepFiRegistry contract. When the period has ended
+/// the admin will update the period after which users can claim the RepFi tokens they have earned in the previous period
+/// based on their usage and can receive new pRepFi tokens and put them to use in the next period.
 contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining {
+    /// @notice the RepFi token contract
     IERC20 public repFiToken;
+    /// @notice the pRepFi token contract
     IPREPFI public pRepFiToken;
+    /// @notice address where unclaimed funds will be sent to so they can be used by the platform
     address public circular;
+    /// @notice random generator contract where we can get a random value for "peer value" as well was the "total value"
+    /// @dev this contract will be replaced with the PeerValue contract in the near future, this is just for testing the functionality in the meantime
     IRandomNumberGenerator randomNumberGenerator;
 
+    /// @notice maximum amount of pRepFi tokens a user can receive each period
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether; // to be changed later
+    /// @notice denominator for calculations where we will otherwise end up with a decimal between 0 and 1 which is not possible in Solidity
     uint256 public constant DENOMINATOR = 1000;
+    /// @notice the current period
     uint256 public period = 0;
+    /// @notice the block timestamp of the previous period change
     uint256 public lastPeriodChange = 0;
+    /// @notice period duration
     uint256 public constant PERIOD_DURATION = 28 days;
+    /// @notice mapping that saves how many tokens were left in every period, to make sure not more tokens are distributed than planned and this can also be used to
+    /// send the remaining tokens for each period to the circular contract
     mapping(uint256 period => uint256 amount) public tokensLeft;
+    /// @notice mapping with the givenBalance for each user for every period. This way we can check back later how many tokens the user has received for a certain period
     mapping(address user => mapping(uint256 period => uint256 amount)) public givenBalance;
 
     using SafeERC20 for IERC20;
     using SafeERC20 for IPREPFI;
 
+    /// @notice ReputationMining contract initializer
+    /// @param initialOwner The initial owner of the contract
+    /// @param _repFiToken the address of the RepFi token contract
+    /// @param _pRepFiToken the address of the pRepFi token contract
+    /// @param _circular the address of the circular contract
+    /// @param _randomNumberGenerator the address of the RandomNumberGenerator contract
     function initialize(
         address initialOwner,
         address _repFiToken,
@@ -40,8 +65,10 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         randomNumberGenerator = IRandomNumberGenerator(_randomNumberGenerator);
     }
 
+    /// @notice gap used as best practice for upgradeable contracts
     uint256[50] private __gap;
 
+    /// @notice update the period, executed once every 28 days and should only be called by the owner
     function updatePeriod() external onlyOwner {
         // check if it's allowed to update period
         require(
@@ -67,6 +94,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         }
     }
 
+    /// @notice distributes pRepFi tokens to an Āut user once per period based on their peer value and save the givenBalance for later
     function claimUtilityToken() external nonReentrant {
         require(givenBalance[msg.sender][period] == 0, "user already claimed pREPFI");
 
@@ -82,6 +110,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         }
 
         uint256 amount = getClaimableUtilityTokenForPeriod(msg.sender, period);
+        require(amount <= tokensLeft[period], "not enough tokens left to distribute for this period");
 
         // save the allocation amount for later use
         givenBalance[msg.sender][period] = amount;
@@ -90,6 +119,11 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         pRepFiToken.safeTransfer(msg.sender, amount);
     }
 
+    /// @notice calculates the claimable utility token for a given user in a given period
+    /// @param _account the account for whom the tokens should be calculated
+    /// @param _period the period for which to calculate the claimable utility tokens
+    /// @dev we are using a random number for peerValue and totalPeerValue at the moment until we can use the PeerValue contract that is yet to be developed
+    /// @return amount the claimable utility token for a given user in a given period
     function getClaimableUtilityTokenForPeriod(address _account, uint256 _period) public view returns (uint256 amount) {
         // get peer value
         uint256 peerValue = randomNumberGenerator.getRandomNumberForAccount(_account, 80, 160);
@@ -104,6 +138,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         }
     }
 
+    /// @notice claims the reward tokens (RepFi) for the sender based on the utilisation of the pRepFi token in the previous period and transfers the remaining balance to the circular contract
     function claim() external nonReentrant {
         // calculate how much of the pREPFI tokens the user has used in this period and distribute monthly allocation of REPFI tokens
         uint256 givenAmount = givenBalance[msg.sender][period - 1];
@@ -136,6 +171,9 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         repFiToken.safeTransfer(circular, givenAmount - earnedTokens);
     }
 
+    /// @notice returns the amount of tokens that will be distributed within a given period
+    /// @param _period the period in which we want to know the tokens that are being distributed
+    /// @return the amount of tokens that will be distributed within a given period
     function getTokensForPeriod(uint256 _period) public pure returns (uint256) {
         if (_period > 0 && _period <= 24) {
             return 500000 ether;
