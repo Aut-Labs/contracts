@@ -10,6 +10,7 @@ interface ITaskRegistry {
     error TaskNotRegistered();
 
     function registeredTaskSet() external view returns (bytes32[] memory);
+    function registeredTasks(bytes32 taskId) external view returns (BasicTask memory);
     function isRegisteredTask(bytes32 taskId) external view returns (bool);
 
     function registerTasks(BasicTask[] calldata tasks) external;
