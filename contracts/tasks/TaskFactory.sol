@@ -30,6 +30,7 @@ contract TaskFactory is Initializable, PeriodUtils, AccessUtils {
 
     EnumerableSet.Bytes32Set private _contributionIds;
     mapping(bytes32 => Contribution) public _contributions;
+    mapping(uint32 periodId => bytes32[] contributionIds) public _contributionsInPeriod;
 
     error NotContributionId();
     error TaskIdNotRegistered();
@@ -44,8 +45,8 @@ contract TaskFactory is Initializable, PeriodUtils, AccessUtils {
         // address _hub,
         address _membership,
         address _taskRegistry,
-        // uint32 _period0Start,
-        // uint32 _initPeriodId
+        uint32 _period0Start,
+        uint32 _initPeriodId
     ) external initializer {
         membership = _membership;
         taskRegistry = _taskRegistry;
@@ -54,7 +55,7 @@ contract TaskFactory is Initializable, PeriodUtils, AccessUtils {
         //     _hub: _hub,
         //     _autId: address(0)
         // });
-        // _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
+        _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
     // TODO: should access control be Hub.Admin?
@@ -84,15 +85,12 @@ contract TaskFactory is Initializable, PeriodUtils, AccessUtils {
         if (!_contributionIds.add(contributionId)) revert ContributionIdAlreadyExists();
 
         _contributions[contributionId] = contribution;
-
-        uint256 pointsCreated = contribution.points * contribution.quantity;
+        _contributionsInPeriod[currentPeriodId()].push(contributionId);
 
         // TODO: write to ContributionManager
         ITaskManager(taskManager).
 
-        // TODO: store points created in a period?
-
-        // TODO: write contributionId to contributionsInPeriod
+        // TODO: emit events
     }
 
 
@@ -141,5 +139,9 @@ contract TaskFactory is Initializable, PeriodUtils, AccessUtils {
 
     function contributionIds() external view returns (bytes32[] memory) {
         return _contributionIds.values();
+    }
+
+    function contributionsInPeriod(uint32 periodId) external view returns (bytes32[] memory) {
+        return _contributionsInPeriod[periodId];
     }
 }
