@@ -7,7 +7,6 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 
 contract TaskManager is Initializable, PeriodUtils, AccessUtils {
     uint128 public pointsActive;
-    uint128 public periodPointsCreated;
     uint128 public periodPointsGiven;
     uint128 public periodPointsRemoved;
 
@@ -20,15 +19,16 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
         Complete
     }
 
-    struct Task {
+    struct ContributionStatus {
         TaskStatus status;
+        uint128 quantityGiven;
     }
-    Task[] public tasks;
+    mapping(bytes32 => ContributionStatus) public contributionStatuses;
+    mapping(uint32 periodId => bytes32[] contributionIds) public contributionsInPeriod;
 
     struct PointSummary {
         bool isSealed;
         uint128 pointsActive;
-        uint128 pointsCreated;
         uint128 pointsGiven;
         uint128 pointsRemoved;
     }
@@ -36,7 +36,7 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
 
     struct MemberActivity {
         uint128 pointsGiven;
-        bytes32[] tasks;
+        bytes32[] contributionIds;
     }
     mapping(address member => mapping(uint32 periodId => MemberActivity)) public memberActivities;
 
