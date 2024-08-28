@@ -5,14 +5,12 @@ import {PeriodUtils} from "../utils/PeriodUtils.sol";
 import {AccessUtils} from "../utils/AccessUtils.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract TaskManager is Initializable, PeriodUtils, AccessUtils {
+contract ContributionManager is Initializable, PeriodUtils, AccessUtils {
     uint128 public pointsActive;
     uint128 public periodPointsGiven;
     uint128 public periodPointsRemoved;
 
-    // address public taskRegistry;
-
-    enum TaskStatus {
+    enum Status {
         None,
         Open,
         Inactive,
@@ -20,8 +18,9 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
     }
 
     struct ContributionStatus {
-        TaskStatus status;
-        uint128 quantityGiven;
+        Status status;
+        uint32 points;
+        uint128 quantityRemaining;
     }
     mapping(bytes32 => ContributionStatus) public contributionStatuses;
     mapping(uint32 periodId => bytes32[] contributionIds) public contributionsInPeriod;
@@ -51,19 +50,19 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
-    function currentTaskId() public view returns (uint256) {
+    function currentContributionId() public view returns (uint256) {
         return tasks.length - 1;
     }
 
-    function getTaskStatus(uint256 taskId) external view returns (TaskStatus) {
+    function getContributionStatus(uint256 taskId) external view returns (ContributionStatus) {
         // TODO
     }
 
-    function getTaskWeight(uint256 taskId) external view returns (uint128) {
+    function getContributionWeight(uint256 taskId) external view returns (uint128) {
         // TODO
     }
 
-    function getActiveTasks(uint32 periodId) external view returns (Task[] memory) {
+    function getActiveContributions(uint32 periodId) external view returns (Contribution[] memory) {
         // TODO
     }
 
@@ -83,81 +82,78 @@ contract TaskManager is Initializable, PeriodUtils, AccessUtils {
         return memberActivities[who][periodId].pointsGiven;
     }
 
-    function getCompletedTasks(uint32 periodId) external view returns (Task[] memory) {
+    function getCompletedContributions(uint32 periodId) external view returns (Contribution[] memory) {
         // TODO: how should completed tasks be stored? is it by each time task points
         // are given or when the task is fully completed X many times?
     }
 
-    function addTasks(Task[] calldata _tasks) external {
-        _revertIfNotAdmin();
+    function addContribution(Contribution calldata contribution) public {
+        // _revertIfNotAdmin();
         writePointSummary();
 
-        uint256 length = _tasks.length;
-        for (uint256 i = 0; i < length; i++) {
-            _addTask(_tasks[i]);
-        }
+        _addContribution(contribution);
     }
 
-    function addTask(Task calldata _task) public {
-        _revertIfNotAdmin();
-        writePointSummary();
+    function _addContribution(
+        Contribution memory contribution,
+        bytes32 contributionId
+    ) internal {
+        contributionStatuses[contributionId] = ContributionStatus({
+            status: Status.Open,
+            points: contribution.points,
+            quantityRemaining: contribution.quantity
+        });
+        contributionsInPeriod[currentPeriodId()].push(contributionId);
 
-        _addTask(_task);
-    }
-
-    function _addTask(Task memory _task) internal {
-        // if (_task.contributionPoints == 0 || _task.contributionPoints > 10) revert InvalidTaskContributionPoints();
-        // if (_task.quantity == 0 || _task.quantity > members.length + 100) revert InvalidTaskQuantity();
-        // // if (!IInteractionRegistry(hubRegistry).isInteractionId(_task.interactionId)) revert InvalidTaskInteractionId();
-        // uint128 sumTaskContributionPoints = _task.contributionPoints * _task.quantity;
-        // currentSumActiveContributionPoints += sumTaskContributionPoints;
-        // currentSumCreatedContributionPoints += sumTaskContributionPoints;
-        // tasks.push(_task);
+        // uint128 sumContributionContributionPoints = contribution.contributionPoints * contribution.quantity;
+        // currentSumActiveContributionPoints += sumContributionContributionPoints;
+        // currentSumCreatedContributionPoints += sumContributionContributionPoints;
+        // tasks.push(contribution);
         // TODO: events
     }
 
-    function removeTasks(uint256[] memory _taskIds) external {
+    function removeContributions(uint256[] memory contributionIds) external {
         _revertIfNotAdmin();
         writePointSummary();
-        for (uint256 i = 0; i < _taskIds.length; i++) {
-            _removeTask(_taskIds[i]);
+        for (uint256 i = 0; i < contributionIds.length; i++) {
+            _removeContribution(contributionIds[i]);
         }
     }
 
-    function removeTask(uint256 _taskId) external {
+    function removeContribution(uint256 contributionId) external {
         _revertIfNotAdmin();
         writePointSummary();
-        _removeTask(_taskId);
+        _removeContribution(contributionId);
     }
 
-    function _removeTask(uint256 _taskId) internal {
-        // Task memory task = tasks[_taskId];
-        // if (task.quantity == 0) revert TaskNotActive();
+    function _removeContribution(uint256 contributionId) internal {
+        // Contribution memory task = tasks[contributionId];
+        // if (task.quantity == 0) revert ContributionNotActive();
         // // NOTE: does not subtract from created tasks
-        // uint128 sumTaskContributionPoints = task.contributionPoints * task.quantity;
-        // currentSumActiveContributionPoints -= sumTaskContributionPoints;
-        // currentSumRemovedContributionPoints += sumTaskContributionPoints;
-        // delete tasks[_taskId];
+        // uint128 sumContributionContributionPoints = task.contributionPoints * task.quantity;
+        // currentSumActiveContributionPoints -= sumContributionContributionPoints;
+        // currentSumRemovedContributionPoints += sumContributionContributionPoints;
+        // delete tasks[contributionId];
         // TODO: event
     }
 
-    function giveTasks(uint256[] memory _taskIds, address[] memory _members) external {
+    function giveContributions(uint256[] memory contributionIds, address[] memory _members) external {
         _revertIfNotAdmin();
-        uint256 length = _taskIds.length;
+        uint256 length = contributionIds.length;
         if (length != _members.length) revert UnequalLengths();
         for (uint256 i = 0; i < length; i++) {
-            _giveTask(_taskIds[i], _members[i]);
+            _giveContribution(contributionIds[i], _members[i]);
         }
     }
 
-    function giveTask(uint256 _taskId, address _member) external {
+    function giveContribution(uint256 contributionId, address _member) external {
         _revertIfNotAdmin();
-        _giveTask(_taskId, _member);
+        _giveContribution(contributionId, _member);
     }
 
-    function _giveTask(uint256 _taskId, address _member) internal {
-        // Task storage task = tasks[_taskId];
-        // if (task.quantity == 0) revert TaskNotActive();
+    function _giveContribution(uint256 contributionId, address _member) internal {
+        // Contribution storage task = tasks[contributionId];
+        // if (task.quantity == 0) revert ContributionNotActive();
         // if (joinedAt[_member] == 0) revert MemberDoesNotExist();
         // Participation storage participation = participations[_member][currentPeriodId()];
         // uint128 contributionPoints = task.contributionPoints;

@@ -28,38 +28,38 @@ contract TaskRegistry is ITaskRegistry {
 
     function registerTasks(TaskType[] calldata tasks) external {
         for (uint256 i = 0; i < tasks.length; i++) {
-            if (!_registerTask(tasks[i])) revert TaskAlreadyRegistered();
+            _registerTask(tasks[i]);
         }
     }
 
     function registerTask(TaskType memory task) external {
-        if (!_registerTask(task)) revert TaskAlreadyRegistered();
+        _registerTask(task);
     }
 
     function _registerTask(TaskType memory task) internal returns (bool) {
         bytes32 taskId = encodeTask(task);
 
-        _registeredTasks[taskId] = task;
+        if (!_registeredTaskSet.add(taskId)) revert TaskAlreadyRegistered();
 
-        return _registeredTaskSet.add(taskId);
+        _registeredTasks[taskId] = task;
     }
 
     function unregisterTasks(TaskType[] calldata tasks) external {
         for (uint256 i = 0; i < tasks.length; i++) {
-            if (!_unregisterTask(tasks[i])) revert TaskNotRegistered();
+            _unregisterTask(tasks[i])
         }
     }
 
     function unregisterTask(TaskType calldata task) external {
-        if (!_unregisterTask(task)) revert TaskNotRegistered();
+        _unregisterTask(task);
     }
 
-    function _unregisterTask(TaskType memory task) internal returns (bool) {
+    function _unregisterTask(TaskType memory task) internal {
         bytes32 taskId = encodeTask(task);
 
-        delete _registeredTasks[taskId];
+        if (!_registeredTaskSet.remove(taskId)) revert TaskNotRegistered();
 
-        return _registeredTaskSet.remove(taskId);
+        delete _registeredTasks[taskId];
     }
 
     function encodeTask(TaskType memory task) public pure returns (bytes32) {
