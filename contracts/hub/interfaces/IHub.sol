@@ -85,7 +85,7 @@ interface IHub {
 
     function isAdmin(address who) external view returns (bool);
 
-    // function setArchetypeAndParameters(uint8[] calldata input) external;
+    function isMember(address who) external view returns (bool);
 
-    // function isMember(address who) external view returns (bool);
+    // function setArchetypeAndParameters(uint8[] calldata input) external;
 }

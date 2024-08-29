@@ -162,8 +162,8 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         return IMembership(participation).membersCount();
     }
 
-    function isMember(address who) public view returns (bool) {
-        return IMembership(participation).isMember(who);
+    function isMember(address who) public view override returns (bool) {
+        return IMembership(membership).isMember(who);
     }
 
     function periodCount() external view returns (uint32) {
@@ -175,7 +175,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     }
 
     function roleOf(address who) external view returns (uint256) {
-        return IMembership(participation).currentRole(who);
+        return IMembership(membership).currentRole(who);
     }
 
     function hasRole(address who, uint256 role) external view returns (bool) {

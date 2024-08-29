@@ -4,42 +4,23 @@ pragma solidity ^0.8.20;
 import {PeriodUtils} from "../utils/PeriodUtils.sol";
 import {AccessUtils} from "../utils/AccessUtils.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-contract ContributionManager is Initializable, PeriodUtils, AccessUtils {
+import {Status, ContributionStatus, PointSummary, MemberActivity, ITaskManager} from "./interfaces/ITaskManager.sol";
+import {Contribution} from "./interfaces/ITaskFactory.sol";
+
+contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
+    using EnumerableSet for EnumerableSet.Bytes32Set;
+
     uint128 public pointsActive;
     uint128 public periodPointsGiven;
     uint128 public periodPointsRemoved;
 
-    enum Status {
-        None,
-        Open,
-        Inactive,
-        Complete
-    }
-
-    struct ContributionStatus {
-        Status status;
-        uint32 points;
-        uint128 quantityRemaining;
-    }
     mapping(bytes32 => ContributionStatus) public contributionStatuses;
-    mapping(uint32 periodId => bytes32[] contributionIds) public contributionsInPeriod;
-
-    struct PointSummary {
-        bool isSealed;
-        uint128 pointsActive;
-        uint128 pointsGiven;
-        uint128 pointsRemoved;
-    }
     mapping(uint32 periodId => PointSummary) public pointSummaries;
-
-    struct MemberActivity {
-        uint128 pointsGiven;
-        bytes32[] contributionIds;
-    }
     mapping(address member => mapping(uint32 periodId => MemberActivity)) public memberActivities;
-
-    error UnequalLengths();
+    mapping(address member => EnumerableSet.Bytes32Set) private memberContributions;
+    mapping(uint32 periodId => bytes32[] contributionIds) public contributionsGivenInPeriod;
 
     constructor() {
         _disableInitializers();
@@ -50,24 +31,20 @@ contract ContributionManager is Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
-    function currentContributionId() public view returns (uint256) {
-        return tasks.length - 1;
+    function getContributionStatus(bytes32 contributionId) external view returns (ContributionStatus memory) {
+        return contributionStatuses[contributionId];
     }
 
-    function getContributionStatus(uint256 taskId) external view returns (ContributionStatus) {
-        // TODO
+    function getContributionWeight(bytes32 contributionId) external view returns (uint128) {
+        return contributionStatuses[contributionId].points;
     }
 
-    function getContributionWeight(uint256 taskId) external view returns (uint128) {
-        // TODO
+    function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128) {
+        return memberActivities[who][periodId].pointsGiven;
     }
 
-    function getActiveContributions(uint32 periodId) external view returns (Contribution[] memory) {
-        // TODO
-    }
-
-    function getGivenContributionPoints(address who, uint32 periodId) external view returns (uint128) {
-        // TODO
+    function getMemberContributionIds(address who, uint32 periodId) external view returns (bytes32[] memory) {
+        return memberActivities[who][periodId].contributionIds;
     }
 
     function getPointsActive(uint32 periodId) external view returns (uint128) {
@@ -78,41 +55,26 @@ contract ContributionManager is Initializable, PeriodUtils, AccessUtils {
         return pointSummaries[periodId].pointsGiven;
     }
 
-    function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128) {
-        return memberActivities[who][periodId].pointsGiven;
+    function getGivenContributions(uint32 periodId) external view returns (bytes32[] memory) {
+        return contributionsGivenInPeriod[periodId];
     }
 
-    function getCompletedContributions(uint32 periodId) external view returns (Contribution[] memory) {
-        // TODO: how should completed tasks be stored? is it by each time task points
-        // are given or when the task is fully completed X many times?
-    }
-
-    function addContribution(Contribution calldata contribution) public {
-        // _revertIfNotAdmin();
+    function addContribution(Contribution calldata contribution, bytes32 contributionId) public {
+        // TODO: must be called from TaskFactory
         writePointSummary();
 
-        _addContribution(contribution);
+        _addContribution(contribution, contributionId);
     }
 
-    function _addContribution(
-        Contribution memory contribution,
-        bytes32 contributionId
-    ) internal {
+    function _addContribution(Contribution memory contribution, bytes32 contributionId) internal {
         contributionStatuses[contributionId] = ContributionStatus({
             status: Status.Open,
             points: contribution.points,
             quantityRemaining: contribution.quantity
         });
-        contributionsInPeriod[currentPeriodId()].push(contributionId);
-
-        // uint128 sumContributionContributionPoints = contribution.contributionPoints * contribution.quantity;
-        // currentSumActiveContributionPoints += sumContributionContributionPoints;
-        // currentSumCreatedContributionPoints += sumContributionContributionPoints;
-        // tasks.push(contribution);
-        // TODO: events
     }
 
-    function removeContributions(uint256[] memory contributionIds) external {
+    function removeContributions(bytes32[] memory contributionIds) external {
         _revertIfNotAdmin();
         writePointSummary();
         for (uint256 i = 0; i < contributionIds.length; i++) {
@@ -120,48 +82,73 @@ contract ContributionManager is Initializable, PeriodUtils, AccessUtils {
         }
     }
 
-    function removeContribution(uint256 contributionId) external {
+    function removeContribution(bytes32 contributionId) external {
         _revertIfNotAdmin();
         writePointSummary();
         _removeContribution(contributionId);
     }
 
-    function _removeContribution(uint256 contributionId) internal {
-        // Contribution memory task = tasks[contributionId];
-        // if (task.quantity == 0) revert ContributionNotActive();
-        // // NOTE: does not subtract from created tasks
-        // uint128 sumContributionContributionPoints = task.contributionPoints * task.quantity;
-        // currentSumActiveContributionPoints -= sumContributionContributionPoints;
-        // currentSumRemovedContributionPoints += sumContributionContributionPoints;
-        // delete tasks[contributionId];
+    function _removeContribution(bytes32 contributionId) internal {
+        ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
+        if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotActive();
+
+        // NOTE: does not subtract from created contributions
+        uint128 sumPointsRemoved = contributionStatus.points * contributionStatus.quantityRemaining;
+
+        pointsActive -= sumPointsRemoved;
+        periodPointsRemoved += sumPointsRemoved;
+        contributionStatus.status = Status.Inactive;
+
         // TODO: event
     }
 
-    function giveContributions(uint256[] memory contributionIds, address[] memory _members) external {
+    function giveContributions(bytes32[] memory contributionIds, address[] memory whos) external {
         _revertIfNotAdmin();
+        writePointSummary();
+
         uint256 length = contributionIds.length;
-        if (length != _members.length) revert UnequalLengths();
+        if (length != whos.length) revert UnequalLengths();
         for (uint256 i = 0; i < length; i++) {
-            _giveContribution(contributionIds[i], _members[i]);
+            _giveContribution(contributionIds[i], whos[i]);
         }
     }
 
-    function giveContribution(uint256 contributionId, address _member) external {
+    function giveContribution(bytes32 contributionId, address who) external {
         _revertIfNotAdmin();
-        _giveContribution(contributionId, _member);
+        writePointSummary();
+        _giveContribution(contributionId, who);
     }
 
-    function _giveContribution(uint256 contributionId, address _member) internal {
-        // Contribution storage task = tasks[contributionId];
-        // if (task.quantity == 0) revert ContributionNotActive();
-        // if (joinedAt[_member] == 0) revert MemberDoesNotExist();
-        // Participation storage participation = participations[_member][currentPeriodId()];
-        // uint128 contributionPoints = task.contributionPoints;
-        // participation.givenContributionPoints += contributionPoints;
-        // currentSumGivenContributionPoints += contributionPoints;
-        // currentSumActiveContributionPoints -= contributionPoints;
-        // task.quantity--;
-        // TODO: push task to user balance (as nft)
+    function _giveContribution(bytes32 contributionId, address who) internal {
+        _revertIfNotMember(who);
+
+        ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
+        if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotActive();
+        uint32 points = contributionStatus.points;
+
+        uint32 currentPeriodId_ = currentPeriodId();
+
+        // update member activity
+        MemberActivity storage memberActivity = memberActivities[who][currentPeriodId_];
+        memberActivity.pointsGiven += points;
+        memberActivity.contributionIds.push(contributionId);
+
+        if (!memberContributions[who].add(contributionId)) revert MemberAlreadyContributed();
+
+        // update "hot" point summary
+        pointsActive -= points;
+        periodPointsGiven += points;
+
+        // update total contributions given in the period
+        contributionsGivenInPeriod[currentPeriodId_].push(contributionId);
+
+        // Finally, update contribution status and mark as complete if needed
+        contributionStatus.quantityRemaining -= 1;
+        if (contributionStatus.quantityRemaining == 0) {
+            contributionStatus.status = Status.Complete;
+        }
+
+        // TODO: events
     }
 
     /// @notice write sums to history when needed
@@ -191,20 +178,18 @@ contract ContributionManager is Initializable, PeriodUtils, AccessUtils {
             pointSummaries[i] = PointSummary({
                 isSealed: true,
                 pointsActive: pointsActive,
-                pointsCreated: periodPointsCreated,
                 pointsGiven: periodPointsGiven,
                 pointsRemoved: periodPointsRemoved
             });
 
             // if there's a gap in data- we have inactive periods.
             // How do we know a gap means inactive periods?
-            //      Because each interaction with the members tasks write to the task summary, keeping it synced
+            //      Because each interaction with the members write to the point summary, keeping it synced
             if (i < lastPeriodId) {
                 for (uint32 j = i + 1; j < _currentPeriodId; j++) {
                     pointSummaries[j] = PointSummary({
                         isSealed: true,
                         pointsActive: pointsActive,
-                        pointsCreated: 0,
                         pointsGiven: 0,
                         pointsRemoved: 0
                     });
@@ -213,7 +198,6 @@ contract ContributionManager is Initializable, PeriodUtils, AccessUtils {
 
             // Still in writeToHistory conditional...
             // Clear out the storage only relevant to the period
-            delete periodPointsCreated;
             delete periodPointsGiven;
             delete periodPointsRemoved;
         }

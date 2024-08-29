@@ -6,6 +6,7 @@ import {IHub} from "../hub/interfaces/IHub.sol";
 contract AccessUtils {
     error NotAdmin();
     error NotHub();
+    error NotMember();
     error NotAutId();
 
     struct AccessUtilsStorage {
@@ -29,8 +30,12 @@ contract AccessUtils {
         $.autId = _autId;
     }
 
-    function isAdmin(address who) public view returns (bool) {
+    function _isAdmin(address who) internal view returns (bool) {
         return IHub(hub()).isAdmin(who);
+    }
+
+    function _isMember(address who) internal view virtual returns (bool) {
+        return IHub(hub()).isMember(who);
     }
 
     function hub() public view returns (address) {
@@ -44,11 +49,15 @@ contract AccessUtils {
     }
 
     function _revertIfNotAdmin() internal view {
-        if (!isAdmin(msg.sender)) revert NotAdmin();
+        if (!_isAdmin(msg.sender)) revert NotAdmin();
     }
 
     function _revertIfNotHub() internal view {
         if (msg.sender != hub()) revert NotHub();
+    }
+
+    function _revertIfNotMember(address who) internal view {
+        if (!_isMember(who)) revert NotMember();
     }
 
     function _revertIfNotAutId() internal view {

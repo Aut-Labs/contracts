@@ -36,7 +36,7 @@ contract TaskRegistry is ITaskRegistry {
         _registerTask(task);
     }
 
-    function _registerTask(TaskType memory task) internal returns (bool) {
+    function _registerTask(TaskType memory task) internal {
         bytes32 taskId = encodeTask(task);
 
         if (!_registeredTaskSet.add(taskId)) revert TaskAlreadyRegistered();
@@ -46,7 +46,7 @@ contract TaskRegistry is ITaskRegistry {
 
     function unregisterTasks(TaskType[] calldata tasks) external {
         for (uint256 i = 0; i < tasks.length; i++) {
-            _unregisterTask(tasks[i])
+            _unregisterTask(tasks[i]);
         }
     }
 

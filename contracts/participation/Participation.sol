@@ -21,7 +21,6 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
     }
     mapping(address who => mapping(uint32 periodId => MemberParticipation)) public memberParticipations;
 
-    error NotMember();
     error InvalidCommitment();
 
     function initialize(
@@ -73,7 +72,7 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
 
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
-        if (!IMembership(membership).isMember(who)) revert NotMember();
+        _revertIfNotMember(who);
         if (periodId < IMembership(membership).getPeriodIdJoined(who) || periodId > currentPeriodId())
             revert InvalidPeriodId();
         return _calcPerformanceInPeriod(who, periodId);
