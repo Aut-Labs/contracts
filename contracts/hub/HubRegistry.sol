@@ -132,7 +132,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         data = abi.encodeCall(IHubModule.initialize, (hub, period0Start(), currentPeriodId()));
 
         // deploy taskFactory
-        address taskFactory =address(new AutProxy(taskFactoryImplementation, _msgSender(), data));
+        address taskFactory = address(new AutProxy(taskFactoryImplementation, _msgSender(), data));
 
         // deploy taskManager
         address taskManager = address(new AutProxy(taskManagerImplementation, _msgSender(), data));

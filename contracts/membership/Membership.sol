@@ -32,11 +32,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
 
     event Join(address, uint256, uint8);
 
-    function initialize(
-        address _hub,
-        uint32 _period0Start,
-        uint32 _initPeriodId
-    ) external initializer {
+    function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
@@ -67,7 +63,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     function getPeriodIdsJoined(address[] calldata whos) external view returns (uint32[] memory) {
         uint256 length = whos.length;
         uint32[] memory pis = new uint32[](length);
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             pis[i] = getPeriodIdJoined({who: whos[i]});
         }
         return pis;
@@ -88,11 +84,14 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         }
     }
 
-    function getCommitments(address[] calldata whos, uint32[] calldata periodIds) external view returns (uint8[] memory) {
+    function getCommitments(
+        address[] calldata whos,
+        uint32[] calldata periodIds
+    ) external view returns (uint8[] memory) {
         uint256 length = whos.length;
         require(length == periodIds.length);
         uint8[] memory commitments = new uint8[](length);
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             commitments[i] = getCommitment({who: whos[i], periodId: periodIds[i]});
         }
         return commitments;
@@ -111,7 +110,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     function getCommitmentSums(uint32[] calldata periodIds) external view returns (uint128[] memory) {
         uint256 length = periodIds.length;
         uint128[] memory sums = new uint128[](length);
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             sums[i] = getCommitmentSum({periodId: periodIds[i]});
         }
         return sums;

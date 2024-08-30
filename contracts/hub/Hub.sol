@@ -99,10 +99,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         address _taskManager,
         address _participation,
         address _membership
-    )
-        external
-        reinitializer(2)
-    {
+    ) external reinitializer(2) {
         taskFactory = _taskFactory;
         taskManager = _taskManager;
         participation = _participation;

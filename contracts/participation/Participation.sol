@@ -12,14 +12,9 @@ import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
 import {IParticipation, MemberParticipation} from "./IParticipation.sol";
 
 contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtils {
-
     mapping(address who => mapping(uint32 periodId => MemberParticipation)) public memberParticipations;
 
-    function initialize(
-        address _hub,
-        uint32 _period0Start,
-        uint32 _initPeriodId
-    ) external initializer {
+    function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
@@ -48,7 +43,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
     ) external view returns (uint128[] memory) {
         uint256 length = commitments.length;
         uint128[] memory performances = new uint128[](length);
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             performances[i] = calcPerformanceInPeriod({
                 commitment: commitments[i],
                 pointsGiven: pointsGiven[i],
@@ -63,15 +58,10 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         uint128 pointsGiven,
         uint32 periodId
     ) internal view returns (uint128) {
-        uint128 expectedContributionPoints = _calcExpectedPoints({
-            commitment: commitment,
-            periodId: periodId
-        });
+        uint128 expectedContributionPoints = _calcExpectedPoints({commitment: commitment, periodId: periodId});
         uint128 performance = (1e18 * pointsGiven) / expectedContributionPoints;
         return performance;
     }
-
-
 
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
@@ -81,19 +71,25 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return _calcPerformanceInPeriod(who, periodId);
     }
 
-    function calcPerformanceInPeriods(address who, uint32[] calldata periodIds) external view returns (uint128[] memory) {
+    function calcPerformanceInPeriods(
+        address who,
+        uint32[] calldata periodIds
+    ) external view returns (uint128[] memory) {
         uint256 length = periodIds.length;
         uint128[] memory performances = new uint128[](length);
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             performances[i] = calcPerformanceInPeriod({who: who, periodId: periodIds[i]});
         }
         return performances;
     }
 
-    function calcPerformancesInPeriod(address[] calldata whos, uint32 periodId) external view returns (uint128[] memory) {
+    function calcPerformancesInPeriod(
+        address[] calldata whos,
+        uint32 periodId
+    ) external view returns (uint128[] memory) {
         uint256 length = whos.length;
         uint128[] memory performances = new uint128[](length);
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             performances[i] = calcPerformanceInPeriod({who: whos[i], periodId: periodId});
         }
         return performances;
@@ -115,29 +111,37 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return _calcExpectedPoints(commitment, periodId);
     }
 
-    function calcsExpectedPoints(uint32[] calldata commitments, uint32[] calldata periodIds) external view returns (uint128[] memory) {
+    function calcsExpectedPoints(
+        uint32[] calldata commitments,
+        uint32[] calldata periodIds
+    ) external view returns (uint128[] memory) {
         uint256 length = commitments.length;
         require(length == periodIds.length);
         uint128[] memory eps = new uint128[](length);
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             eps[i] = calcExpectedPoints({commitment: commitments[i], periodId: periodIds[i]});
         }
         return eps;
     }
 
     function _calcExpectedPoints(uint32 commitment, uint32 periodId) internal view returns (uint128) {
-        return fractionalCommitment({commitment: commitment, periodId: periodId}) * ITaskManager(taskManager()).getPointsActive(periodId) / 1e18;
+        return
+            (fractionalCommitment({commitment: commitment, periodId: periodId}) *
+                ITaskManager(taskManager()).getPointsActive(periodId)) / 1e18;
     }
 
     function fractionalCommitment(uint32 commitment, uint32 periodId) public view returns (uint128) {
-        return 1e18 * uint128(commitment) / commitmentSum(periodId);
+        return (1e18 * uint128(commitment)) / commitmentSum(periodId);
     }
 
-    function fractionalsCommitments(uint32[] calldata commitments, uint32[] calldata periodIds) external view returns (uint128[] memory) {
+    function fractionalsCommitments(
+        uint32[] calldata commitments,
+        uint32[] calldata periodIds
+    ) external view returns (uint128[] memory) {
         uint256 length = commitments.length;
         require(length == periodIds.length);
         uint128[] memory fcs = new uint128[](length);
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             fcs[i] = fractionalCommitment({commitment: commitments[i], periodId: periodIds[i]});
         }
         return fcs;
