@@ -70,6 +70,15 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         return periodIdJoined;
     }
 
+    function getPeriodIdsJoined(address[] calldata whos) external view returns (uint32[] memory) {
+        uint256 length = whos.length;
+        uint32[] memory pis = new uint32[](length);
+        for (uint256 i=0; i<length; i++) {
+            pis[i] = getPeriodIdJoined({who: whos[i]});
+        }
+        return pis;
+    }
+
     /// @notice get the commitment level of a member at a particular period id
     function getCommitment(address who, uint32 periodId) public view returns (uint8) {
         if (periodId < getPeriodIdJoined(who)) revert MemberHasNotYetCommited();
@@ -85,7 +94,17 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         }
     }
 
-    function getCommitmentSum(uint32 periodId) external view returns (uint128) {
+    function getCommitments(address[] calldata whos, uint32[] calldata periodIds) external view returns (uint8[] memory) {
+        uint256 length = whos.length;
+        require(length == periodIds.length);
+        uint8[] memory commitments = new uint8[](length);
+        for (uint256 i=0; i<length; i++) {
+            commitments[i] = getCommitment({who: whos[i], periodId: periodIds[i]});
+        }
+        return commitments;
+    }
+
+    function getCommitmentSum(uint32 periodId) public view returns (uint128) {
         uint32 currentPeriodId_ = currentPeriodId();
         if (periodId < initPeriodId() || periodId > currentPeriodId_) revert InvalidPeriodId();
         if (periodId == currentPeriodId_) {
@@ -93,6 +112,15 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         } else {
             return commitmentSums[periodId];
         }
+    }
+
+    function getCommitmentSums(uint32[] calldata periodIds) external view returns (uint128[] memory) {
+        uint256 length = periodIds.length;
+        uint128[] memory sums = new uint128[](length);
+        for (uint256 i=0; i<length; i++) {
+            sums[i] = getCommitmentSum({periodId: periodIds[i]});
+        }
+        return sums;
     }
 
     // -----------------------------------------------------------

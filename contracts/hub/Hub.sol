@@ -24,8 +24,8 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
 
+    // TODO: validate these
     uint256 public constant SIZE_PARAMETER = 1;
-    uint256 public constant REPUTATION_PARAMETER = 2;
     uint256 public constant CONVICTION_PARAMETER = 3;
     uint256 public constant PERFORMANCE_PARAMETER = 4;
     uint256 public constant GROWTH_PARAMETER = 5;
@@ -159,7 +159,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     // -----------------------------------------------------------
 
     function membersCount() external view returns (uint256) {
-        return IMembership(participation).membersCount();
+        return IMembership(membership).membersCount();
     }
 
     function isMember(address who) public view override returns (bool) {

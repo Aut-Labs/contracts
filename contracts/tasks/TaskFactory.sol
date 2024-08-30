@@ -43,6 +43,8 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
+    // TODO: view of active contribtions based on expiration date
+
     // TODO: should access control be Hub.Admin?
 
     function createContributions(Contribution[] calldata contributions) external returns (bytes32[] memory) {

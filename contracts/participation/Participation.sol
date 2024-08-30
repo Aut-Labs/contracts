@@ -9,19 +9,14 @@ import {AccessUtils} from "../utils/AccessUtils.sol";
 import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IMembership} from "../membership/IMembership.sol";
 import {ITaskManager} from "../tasks/ITaskManager.sol";
+import {IParticipation, MemberParticipation} from "./IParticipation.sol";
 
-contract Participation is Initializable, PeriodUtils, AccessUtils {
+contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtils {
     address public globalParameters;
     address public membership;
     address public taskManager;
 
-    struct MemberParticipation {
-        uint128 score;
-        uint128 performance;
-    }
     mapping(address who => mapping(uint32 periodId => MemberParticipation)) public memberParticipations;
-
-    error InvalidCommitment();
 
     function initialize(
         address _globalParameters,
@@ -57,12 +52,29 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
         return _calcPerformanceInPeriod({commitment: commitment, pointsGiven: pointsGiven, periodId: periodId});
     }
 
+    function calcPerformancesInPeriod(
+        uint32[] calldata commitments,
+        uint128[] calldata pointsGiven,
+        uint32 periodId
+    ) external view returns (uint128[] memory) {
+        uint256 length = commitments.length;
+        uint128[] memory performances = new uint128[](length);
+        for (uint256 i=0; i<length; i++) {
+            performances[i] = calcPerformanceInPeriod({
+                commitment: commitments[i],
+                pointsGiven: pointsGiven[i],
+                periodId: periodId
+            });
+        }
+        return performances;
+    }
+
     function _calcPerformanceInPeriod(
         uint32 commitment,
         uint128 pointsGiven,
         uint32 periodId
     ) internal view returns (uint128) {
-        uint128 expectedContributionPoints = _calcExpectedContributionPoints({
+        uint128 expectedContributionPoints = _calcExpectedPoints({
             commitment: commitment,
             periodId: periodId
         });
@@ -70,12 +82,32 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
         return performance;
     }
 
+
+
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
         _revertIfNotMember(who);
         if (periodId < IMembership(membership).getPeriodIdJoined(who) || periodId > currentPeriodId())
             revert InvalidPeriodId();
         return _calcPerformanceInPeriod(who, periodId);
+    }
+
+    function calcPerformanceInPeriods(address who, uint32[] calldata periodIds) external view returns (uint128[] memory) {
+        uint256 length = periodIds.length;
+        uint128[] memory performances = new uint128[](length);
+        for (uint256 i=0; i<length; i++) {
+            performances[i] = calcPerformanceInPeriod({who: who, periodId: periodIds[i]});
+        }
+        return performances;
+    }
+
+    function calcPerformancesInPeriod(address[] calldata whos, uint32 periodId) external view returns (uint128[] memory) {
+        uint256 length = whos.length;
+        uint128[] memory performances = new uint128[](length);
+        for (uint256 i=0; i<length; i++) {
+            performances[i] = calcPerformanceInPeriod({who: whos[i], periodId: periodId});
+        }
+        return performances;
     }
 
     function _calcPerformanceInPeriod(address who, uint32 periodId) internal view returns (uint128) {
@@ -88,16 +120,38 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
     }
 
     // fiCL * TCP
-    function calcExpectedContributionPoints(uint32 commitment, uint32 periodId) public view returns (uint128) {
+    function calcExpectedPoints(uint32 commitment, uint32 periodId) public view returns (uint128) {
         if (commitment < 1 || commitment > 10) revert InvalidCommitment();
         if (periodId == 0 || periodId > currentPeriodId()) revert InvalidPeriodId();
-        return _calcExpectedContributionPoints(commitment, periodId);
+        return _calcExpectedPoints(commitment, periodId);
     }
 
-    function _calcExpectedContributionPoints(uint32 commitment, uint32 periodId) internal view returns (uint128) {
-        uint256 numScaled = 1e18 * uint256(commitment) * ITaskManager(taskManager).getPointsActive(periodId);
-        uint256 expectedContributionPoints = numScaled / commitmentSum(periodId) / 1e18;
-        return uint128(expectedContributionPoints);
+    function calcsExpectedPoints(uint32[] calldata commitments, uint32[] calldata periodIds) external view returns (uint128[] memory) {
+        uint256 length = commitments.length;
+        require(length == periodIds.length);
+        uint128[] memory eps = new uint128[](length);
+        for (uint256 i=0; i<length; i++) {
+            eps[i] = calcExpectedPoints({commitment: commitments[i], periodId: periodIds[i]});
+        }
+        return eps;
+    }
+
+    function _calcExpectedPoints(uint32 commitment, uint32 periodId) internal view returns (uint128) {
+        return fractionalCommitment({commitment: commitment, periodId: periodId}) * ITaskManager(taskManager).getPointsActive(periodId) / 1e18;
+    }
+
+    function fractionalCommitment(uint32 commitment, uint32 periodId) public view returns (uint128) {
+        return 1e18 * uint128(commitment) / commitmentSum(periodId);
+    }
+
+    function fractionalsCommitments(uint32[] calldata commitments, uint32[] calldata periodIds) external view returns (uint128[] memory) {
+        uint256 length = commitments.length;
+        require(length == periodIds.length);
+        uint128[] memory fcs = new uint128[](length);
+        for (uint256 i=0; i<length; i++) {
+            fcs[i] = fractionalCommitment({commitment: commitments[i], periodId: periodIds[i]});
+        }
+        return fcs;
     }
 
     function commitmentSum(uint32 periodId) internal view returns (uint128) {
@@ -115,6 +169,7 @@ contract Participation is Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @notice off-chain helper to check which members to write participation score to
+    // TODO: seal member participation if all written?
     function getMembersToWriteMemberParticipation(uint32 periodId) external view returns (address[] memory) {
         uint256 numMembersToWrite = 0;
         address[] memory members = IMembership(membership).members();
