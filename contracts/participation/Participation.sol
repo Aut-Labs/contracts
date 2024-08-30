@@ -158,16 +158,6 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return IMembership(membership).commitmentSums(periodId);
     }
 
-    function writeMemberParticipations(address[] calldata whos) external {
-        // update historical periods if necessary
-        ITaskManager(taskManager).writePointSummary();
-
-        uint32 currentPeriodId_ = currentPeriodId();
-        for (uint256 i = 0; i < whos.length; i++) {
-            _writeMemberParticipation(whos[i], currentPeriodId_);
-        }
-    }
-
     /// @notice off-chain helper to check which members to write participation score to
     // TODO: seal member participation if all written?
     function getMembersToWriteMemberParticipation(uint32 periodId) external view returns (address[] memory) {
@@ -194,6 +184,16 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         ITaskManager(taskManager).writePointSummary();
 
         _writeMemberParticipation(who, currentPeriodId());
+    }
+
+    function writeMemberParticipations(address[] calldata whos) external {
+        // update historical periods if necessary
+        ITaskManager(taskManager).writePointSummary();
+
+        uint32 currentPeriodId_ = currentPeriodId();
+        for (uint256 i = 0; i < whos.length; i++) {
+            _writeMemberParticipation(whos[i], currentPeriodId_);
+        }
     }
 
     // TODO: visibility?
