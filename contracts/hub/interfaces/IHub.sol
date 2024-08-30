@@ -37,6 +37,7 @@ interface IHub {
     function initialize(
         address _initialOwner,
         address _hubDomainsRegistry,
+        address _taskRegistry,
         address _globalParameters,
         uint256[] calldata roles_,
         uint256 _market,
@@ -45,12 +46,19 @@ interface IHub {
     ) external;
 
     function initialize2(
+        address _taskFactory,
+        address _taskManager,
         address _participation,
-        address _membership,
-        address _taskManager
-        // address _prestige,
-        // address _taskRegistry
+        address _membership
     ) external;
+
+    function hubDomainsRegistry() external view returns (address);
+    function taskRegistry() external view returns (address);
+    function globalParameters() external view returns (address);
+    function participation() external view returns (address);
+    function membership() external view returns (address);
+    function taskFactory() external view returns (address);
+    function taskManager() external view returns (address);
 
     // function registerDomain(string calldata domain, address hubAddress, string calldata metadataUri) external;
     // function getDomain(string calldata domain) external view returns (address, string memory);

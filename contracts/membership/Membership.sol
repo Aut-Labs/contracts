@@ -10,8 +10,6 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
 
-    address public taskManager;
-
     uint128 public commitmentSum;
 
     mapping(address => uint32) public joinedAt;
@@ -35,15 +33,11 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     event Join(address, uint256, uint8);
 
     function initialize(
-        address _taskManager,
         address _hub,
-        address _autId,
         uint32 _period0Start,
         uint32 _initPeriodId
     ) external initializer {
-        taskManager = _taskManager;
-
-        _init_AccessUtils({_hub: _hub, _autId: _autId});
+        _init_AccessUtils({_hub: _hub, _autId: address(0)});
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 

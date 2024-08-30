@@ -8,30 +8,19 @@ import {PeriodUtils} from "../utils/PeriodUtils.sol";
 import {AccessUtils} from "../utils/AccessUtils.sol";
 import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IMembership} from "../membership/IMembership.sol";
-import {ITaskManager} from "../tasks/ITaskManager.sol";
+import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
 import {IParticipation, MemberParticipation} from "./IParticipation.sol";
 
 contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtils {
-    address public globalParameters;
-    address public membership;
-    address public taskManager;
 
     mapping(address who => mapping(uint32 periodId => MemberParticipation)) public memberParticipations;
 
     function initialize(
-        address _globalParameters,
-        address _membership,
-        address _taskManager,
         address _hub,
-        address _autId,
         uint32 _period0Start,
         uint32 _initPeriodId
     ) external initializer {
-        globalParameters = _globalParameters;
-        membership = _membership;
-        taskManager = _taskManager;
-
-        _init_AccessUtils({_hub: _hub, _autId: _autId});
+        _init_AccessUtils({_hub: _hub, _autId: address(0)});
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
@@ -87,7 +76,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
     /// @dev returned with 1e18 precision
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
         _revertIfNotMember(who);
-        if (periodId < IMembership(membership).getPeriodIdJoined(who) || periodId > currentPeriodId())
+        if (periodId < IMembership(membership()).getPeriodIdJoined(who) || periodId > currentPeriodId())
             revert InvalidPeriodId();
         return _calcPerformanceInPeriod(who, periodId);
     }
@@ -113,8 +102,8 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
     function _calcPerformanceInPeriod(address who, uint32 periodId) internal view returns (uint128) {
         return
             _calcPerformanceInPeriod({
-                commitment: IMembership(membership).getCommitment(who, periodId),
-                pointsGiven: ITaskManager(taskManager).getMemberPointsGiven(who, periodId),
+                commitment: IMembership(membership()).getCommitment(who, periodId),
+                pointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, periodId),
                 periodId: periodId
             });
     }
@@ -137,7 +126,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
     }
 
     function _calcExpectedPoints(uint32 commitment, uint32 periodId) internal view returns (uint128) {
-        return fractionalCommitment({commitment: commitment, periodId: periodId}) * ITaskManager(taskManager).getPointsActive(periodId) / 1e18;
+        return fractionalCommitment({commitment: commitment, periodId: periodId}) * ITaskManager(taskManager()).getPointsActive(periodId) / 1e18;
     }
 
     function fractionalCommitment(uint32 commitment, uint32 periodId) public view returns (uint128) {
@@ -155,14 +144,14 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
     }
 
     function commitmentSum(uint32 periodId) internal view returns (uint128) {
-        return IMembership(membership).commitmentSums(periodId);
+        return IMembership(membership()).commitmentSums(periodId);
     }
 
     /// @notice off-chain helper to check which members to write participation score to
     // TODO: seal member participation if all written?
     function getMembersToWriteMemberParticipation(uint32 periodId) external view returns (address[] memory) {
         uint256 numMembersToWrite = 0;
-        address[] memory members = IMembership(membership).members();
+        address[] memory members = IMembership(membership()).members();
         uint256 length = members.length;
         address[] memory membersCopy = new address[](length);
         for (uint256 i = 0; i < length; i++) {
@@ -181,14 +170,14 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
 
     function writeMemberParticipation(address who) external {
         // update historical periods if necessary
-        ITaskManager(taskManager).writePointSummary();
+        ITaskManager(taskManager()).writePointSummary();
 
         _writeMemberParticipation(who, currentPeriodId());
     }
 
     function writeMemberParticipations(address[] calldata whos) external {
         // update historical periods if necessary
-        ITaskManager(taskManager).writePointSummary();
+        ITaskManager(taskManager()).writePointSummary();
 
         uint32 currentPeriodId_ = currentPeriodId();
         for (uint256 i = 0; i < whos.length; i++) {
@@ -200,7 +189,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
     function _writeMemberParticipation(address who, uint32 _currentPeriodId) public {
         // TODO: algorithm
         // NOTE: in periodIdJoined, participation score is default 100.  Only write to following periods
-        uint32 periodIdJoined = IMembership(membership).getPeriodIdJoined(who);
+        uint32 periodIdJoined = IMembership(membership()).getPeriodIdJoined(who);
 
         // We are only writing to the last period which has ended: ie, _currentPeriodId - 1
         uint32 periodToStartWrite;
@@ -222,10 +211,10 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
 
         // Start at the first empty period and write the participation score given the previous score and c
         for (uint32 i = periodToStartWrite; i < _currentPeriodId; i++) {
-            MemberParticipation storage participation = memberParticipations[who][i];
+            MemberParticipation storage memberParticipation = memberParticipations[who][i];
             uint128 performance = _calcPerformanceInPeriod({
-                commitment: IMembership(membership).getCommitment({who: who, periodId: i}),
-                pointsGiven: ITaskManager(taskManager).getMemberPointsGiven(who, i),
+                commitment: IMembership(membership()).getCommitment({who: who, periodId: i}),
+                pointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, i),
                 periodId: i
             });
 
@@ -234,13 +223,13 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
             uint128 score;
             // TODO: precision
             if (performance > 1e18) {
-                // exceeded expectations: raise participation score
+                // exceeded expectations: raise memberParticipation score
                 delta = performance - 1e18;
                 factor = constraintFactor();
                 if (delta > factor) delta = factor;
                 score = (previousScore * (1e18 + delta)) / delta;
             } else {
-                // underperformed: lower participation score
+                // underperformed: lower memberParticipation score
                 delta = 1e18 - performance;
                 factor = penaltyFactor();
                 if (delta > factor) delta = factor;
@@ -248,13 +237,15 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
             }
 
             // write to storage
-            participation.score = score;
-            participation.performance = performance;
+            memberParticipation.score = score;
+            memberParticipation.performance = performance;
 
             // overwrite previousScore to use for the next period if needed
             previousScore = score;
         }
     }
+
+    // TODO: make these configurable
 
     function constraintFactor() public view returns (uint128) {
         return IGlobalParameters(hub()).constraintFactor();

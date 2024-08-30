@@ -10,7 +10,7 @@ import {IMembership} from "../membership/IMembership.sol";
 import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
 import {HubUtils} from "./HubUtils.sol";
 import {IHub} from "./interfaces/IHub.sol";
-import {ITaskManager} from "../tasks/ITaskManager.sol";
+import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
 import {IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
 
 /*
@@ -33,9 +33,11 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     address public onboarding;
     /// @dev these addrs are seen as immutable
     address public hubDomainsRegistry;
+    address public taskRegistry;
     address public globalParameters;
     address public participation;
     address public membership;
+    address public taskFactory;
     address public taskManager;
     // address public prestige;
     // address public taskRegistry;
@@ -64,6 +66,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     function initialize(
         address _initialOwner,
         address _hubDomainsRegistry,
+        address _taskRegistry,
         address _globalParameters,
         uint256[] calldata roles_,
         uint256 _market,
@@ -76,6 +79,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
 
         // set addrs
         hubDomainsRegistry = _hubDomainsRegistry;
+        taskRegistry = _taskRegistry;
         globalParameters = _globalParameters;
 
         // set vars
@@ -89,21 +93,20 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         initPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
     }
 
+    /// @dev contracts specific to this hub
     function initialize2(
+        address _taskFactory,
+        address _taskManager,
         address _participation,
-        address _membership,
-        address _taskManager
+        address _membership
     )
         external
-        // address _prestige,
-        // address _taskRegistry
         reinitializer(2)
     {
+        taskFactory = _taskFactory;
+        taskManager = _taskManager;
         participation = _participation;
         membership = _membership;
-        taskManager = _taskManager;
-        // prestige = _prestige;
-        // taskRegistry = _taskRegistry;
     }
 
     // -----------------------------------------------------------
@@ -111,8 +114,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     // -----------------------------------------------------------
 
     function join(address who, uint256 role, uint8 _commitment) external {
-        IMembership(participation).join(who, role, _commitment);
-        ITaskManager(taskManager).join(who);
+        IMembership(membership).join(who, role, _commitment);
     }
 
     // -----------------------------------------------------------

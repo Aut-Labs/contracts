@@ -17,9 +17,7 @@ import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IAllowlist} from "../utils/IAllowlist.sol";
 
 import {IHub} from "./interfaces/IHub.sol";
-import {ITaskManager} from "../tasks/ITaskManager.sol";
-import {IParticipation} from "../participation/IParticipation.sol";
-import {IMembership} from "../membership/IMembership.sol";
+import {IHubModule} from "./interfaces/IHubModule.sol";
 
 /// @title HubRegistry
 contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
@@ -35,6 +33,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     address[] public hubs;
 
     struct HubContracts {
+        address taskFactory;
         address taskManager;
         address membership;
         address participation;
@@ -43,12 +42,13 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
 
     address public deployerAddress;
     address public autId;
-    address public pluginRegistry;
     address public hubDomainsRegistry;
+    address public taskRegistry;
     address public interactionRegistry;
     address public globalParameters;
     address public membershipImplementation;
     address public participationImplementation;
+    address public taskFactoryImplementation;
     address public taskManagerImplementation;
     UpgradeableBeacon public upgradeableBeacon;
     IAllowlist public allowlist;
@@ -58,29 +58,30 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     function initialize(
         address autId_,
         address hubLogic,
-        address pluginRegistry_,
         address hubDomainsRegistry_,
+        address taskRegistry_,
         address interactionRegistry_,
         address globalParameters_,
         address _membershipImplementation,
         address _participationImplementation,
+        address _taskFactoryImplementation,
         address _taskManagerImplementation
     ) external initializer {
         require(autId_ != address(0), "HubRegistry: AutID address zero");
         require(hubLogic != address(0), "HubRegistry: Hub logic address zero");
-        require(pluginRegistry_ != address(0), "HubRegistry: PluginRegistry address zero");
         __Ownable_init(msg.sender);
 
         deployerAddress = msg.sender;
         autId = autId_;
-        pluginRegistry = pluginRegistry_;
         hubDomainsRegistry = hubDomainsRegistry_;
+        taskRegistry = taskRegistry_;
         interactionRegistry = interactionRegistry_;
         globalParameters = globalParameters_;
         upgradeableBeacon = new UpgradeableBeacon(hubLogic, address(this));
 
         membershipImplementation = _membershipImplementation;
         participationImplementation = _participationImplementation;
+        taskFactoryImplementation = _taskFactoryImplementation;
         taskManagerImplementation = _taskManagerImplementation;
         // allowlist =
         // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
@@ -123,41 +124,40 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         // deploy hub w/ beacon
         bytes memory data = abi.encodeCall(
             IHub.initialize,
-            (_msgSender(), hubDomainsRegistry, globalParameters, roles, market, commitment, metadata)
+            (_msgSender(), hubDomainsRegistry, taskRegistry, globalParameters, roles, market, commitment, metadata)
         );
         hub = address(new BeaconProxy(address(upgradeableBeacon), data));
 
+        // data for all hub-owned modules
+        data = abi.encodeCall(IHubModule.initialize, (hub, period0Start(), currentPeriodId()));
+
+        // deploy taskFactory
+        address taskFactory =address(new AutProxy(taskFactoryImplementation, _msgSender(), data));
+
         // deploy taskManager
-        uint32 period0Start_ = period0Start();
-        uint32 initPeriodId = currentPeriodId();
-        data = abi.encodeCall(ITaskManager.initialize, (hub, autId, period0Start_, initPeriodId));
         address taskManager = address(new AutProxy(taskManagerImplementation, _msgSender(), data));
 
         // deploy membership
-        data = abi.encodeCall(IMembership.initialize, (taskManager, hub, autId, period0Start_, initPeriodId));
         address membership = address(new AutProxy(membershipImplementation, _msgSender(), data));
 
         // deploy participation
-        data = abi.encodeCall(
-            IParticipation.initialize,
-            (globalParameters, membership, taskManager, hub, autId, period0Start_, initPeriodId)
-        );
         address participation = address(new AutProxy(participationImplementation, _msgSender(), data));
 
         // Finish initializing the hub
         IHub(hub).initialize2({
+            _taskFactory: taskFactory,
+            _taskManager: taskManager,
             _participation: participation,
-            _membership: membership,
-            _taskManager: taskManager
-            // _taskRegistry: taskRegistry
+            _membership: membership
         });
 
         hubDeployers[_msgSender()].push(hub);
         hubs.push(hub);
         checkHub[hub] = true;
         hubContracts[hub] = HubContracts({
-            membership: membership,
+            taskFactory: taskFactory,
             taskManager: taskManager,
+            membership: membership,
             participation: participation
         });
 

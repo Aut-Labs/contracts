@@ -13,10 +13,7 @@ import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet
 contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
-    uint128 public periodPointsCreated;
-
-    address public taskRegistry;
-    address public taskManager;
+    uint128 public periodPointsCreated; // TODO
 
     EnumerableSet.Bytes32Set private _contributionIds;
     mapping(bytes32 => Contribution) public _contributions;
@@ -27,19 +24,15 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     }
 
     function initialize(
-        // address _hub,
-        address _taskRegistry,
-        address _taskManager,
+        address _hub,
         uint32 _period0Start,
         uint32 _initPeriodId
     ) external initializer {
-        taskRegistry = _taskRegistry;
-        taskManager = _taskManager;
 
-        // _init_AccessUtils({
-        //     _hub: _hub,
-        //     _autId: address(0)
-        // });
+        _init_AccessUtils({
+            _hub: _hub,
+            _autId: address(0)
+        });
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
@@ -65,7 +58,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     }
 
     function _createContribution(Contribution memory contribution) internal returns (bytes32) {
-        if (!ITaskRegistry(taskRegistry).isRegisteredTask(contribution.taskId)) revert TaskIdNotRegistered();
+        if (!ITaskRegistry(taskRegistry()).isRegisteredTask(contribution.taskId)) revert TaskIdNotRegistered();
         if (contribution.quantity == 0) revert InvalidContributionQuantity(); // TODO: max quantity?
         if (contribution.points == 0 || contribution.points > 10) revert InvalidContributionPoints();
 
@@ -75,8 +68,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         _contributions[contributionId] = contribution;
         _contributionsInPeriod[currentPeriodId()].push(contributionId);
 
-        // TODO: write to ContributionManager
-        ITaskManager(taskManager).addContribution(contribution, contributionId);
+        ITaskManager(taskManager()).addContribution(contribution, contributionId);
 
         // TODO: emit events
 

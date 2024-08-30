@@ -8,6 +8,7 @@ contract AccessUtils {
     error NotHub();
     error NotMember();
     error NotAutId();
+    error NotTaskFactory();
 
     struct AccessUtilsStorage {
         address hub;
@@ -48,12 +49,40 @@ contract AccessUtils {
         return $.autId;
     }
 
+    function taskRegistry() public view returns (address) {
+        return IHub(hub()).taskRegistry();
+    }
+
+    function globalParameters() public view returns (address) {
+        return IHub(hub()).globalParameters();
+    }
+
+    function participation() public view returns (address) {
+        return IHub(hub()).participation();
+    }
+
+    function membership() public view returns (address) {
+        return IHub(hub()).membership();
+    }
+
+    function taskFactory() public view returns (address) {
+        return IHub(hub()).taskFactory();
+    }
+
+    function taskManager() public view returns (address) {
+        return IHub(hub()).taskManager();
+    }
+
     function _revertIfNotAdmin() internal view {
         if (!_isAdmin(msg.sender)) revert NotAdmin();
     }
 
     function _revertIfNotHub() internal view {
         if (msg.sender != hub()) revert NotHub();
+    }
+
+    function _revertIfNotTaskFactory() internal view {
+        if (msg.sender != taskFactory()) revert NotTaskFactory();
     }
 
     function _revertIfNotMember(address who) internal view {

@@ -26,8 +26,8 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         _disableInitializers();
     }
 
-    function initialize(address _hub, address _autId, uint32 _period0Start, uint32 _initPeriodId) external initializer {
-        _init_AccessUtils({_hub: _hub, _autId: _autId});
+    function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
+        _init_AccessUtils({_hub: _hub, _autId: address(0)});
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 

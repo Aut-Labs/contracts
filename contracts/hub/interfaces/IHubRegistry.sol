@@ -5,12 +5,13 @@ interface IHubRegistry {
     function initialize(
         address autId_,
         address hubLogic,
-        address pluginRegistry_,
         address hubDomainsRegistry_,
+        address taskRegistry_,
         address interactionRegistry_,
         address globalParameters_,
         address _membershipImplementation,
         address _participationImplementation,
+        address _taskFactoryImplementation,
         address _taskManagerImplementation
     ) external;
 

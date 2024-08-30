@@ -6,14 +6,6 @@ interface IMembership {
 
     event Join(address who, uint256 role, uint8 commitment);
 
-    function initialize(
-        address _taskManager,
-        address _hub,
-        address _autId,
-        uint32 _period0Start,
-        uint32 _initPeriodId
-    ) external;
-
     function join(address who, uint256 role, uint8 commitment) external;
     function members() external view returns (address[] memory);
     function isMember(address who) external view returns (bool);

@@ -10,16 +10,6 @@ struct MemberParticipation {
 interface IParticipation {
     error InvalidCommitment();
 
-    function initialize(
-        address _globalParameters,
-        address _membership,
-        address _taskManager,
-        address _hub,
-        address _autId,
-        uint32 _period0Start,
-        uint32 _initPeriodId
-    ) external;
-
     function join(address who) external;
 
     function calcPerformanceInPeriod(
