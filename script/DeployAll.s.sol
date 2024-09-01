@@ -20,6 +20,8 @@ import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 import {Membership} from "../contracts/membership/Membership.sol";
 import {Participation} from "../contracts/participation/Participation.sol";
+import {TaskRegistry} from "../contracts/tasks/TaskRegistry.sol";
+import {TaskFactory} from "../contracts/tasks/TaskFactory.sol";
 import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 
 
@@ -33,12 +35,14 @@ contract DeployAll is Script {
     // state variables
     address membershipImplementation;
     address participationImplementation;
+    address taskFactoryImplementation;
     address taskManagerImplementation;
 
     AutID public autId;
     PluginRegistry pluginRegistry;
     HubRegistry public hubRegistry;
     HubDomainsRegistry public hubDomainsRegistry;
+    TaskRegistry public taskRegistry;
     InteractionRegistry public interactionRegistry;
     GlobalParameters public globalParameters;
     BasicOnboarding public basicOnboarding;
@@ -77,23 +81,26 @@ contract DeployAll is Script {
         autId = deployAutId(trustedForwarder, vm.addr(privateKey));
         pluginRegistry = deployPluginRegistry(owner);
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
+        taskRegistry = deployTaskRegistry();
         interactionRegistry = deployInteractionRegistry(owner);
         globalParameters = deployGlobalParameters(owner);
         (
             membershipImplementation,
             participationImplementation,
+            taskFactoryImplementation,
             taskManagerImplementation
         ) = deployHubDependencyImplementations();
         hubRegistry = deployHubRegistry({
             _trustedForwarder: trustedForwarder,
             _owner: owner,
             _autIdAddress: address(autId),
-            _pluginRegistryAddress: address(pluginRegistry),
             _hubDomainsRegistryAddress: address(hubDomainsRegistry),
+            _taskRegistryAddress: address(taskRegistry),
             _interactionRegistryAddress: address(interactionRegistry),
             _globalParametersAddress: address(globalParameters),
             _membershipImplementation: membershipImplementation,
             _participationImplementation: participationImplementation,
+            _taskFactoryImplementation: taskFactoryImplementation,
             _taskManagerImplementation: taskManagerImplementation
         });
         basicOnboarding = deployBasicOnboarding(owner);
@@ -156,8 +163,13 @@ function deployHubDomainsRegistry(
     address _owner
 ) returns (HubDomainsRegistry) {
     // address hubDomainsRegistry = address(new HubDomainsRegistry(hubImpl));
-    HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(address(1)); // TODO
+    HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(_owner);
     return hubDomainsRegistry;
+}
+
+function deployTaskRegistry() returns (TaskRegistry) {
+    TaskRegistry taskRegistry = new TaskRegistry();
+    return taskRegistry;
 }
 
 function deployInteractionRegistry(address _owner) returns (InteractionRegistry) {
@@ -178,10 +190,12 @@ function deployGlobalParameters(address _owner) returns (GlobalParameters) {
 function deployHubDependencyImplementations() returns (
     address membershipImplementation,
     address participationImplementation,
+    address taskFactoryImplementation,
     address taskManagerImplementation
 ) {
     membershipImplementation = address(new Membership());
     participationImplementation = address(new Participation());
+    taskFactoryImplementation = address(new TaskFactory());
     taskManagerImplementation = address(new TaskManager());
 }
 
@@ -189,12 +203,13 @@ function deployHubRegistry(
     address _trustedForwarder,
     address _owner,
     address _autIdAddress,
-    address _pluginRegistryAddress,
     address _hubDomainsRegistryAddress,
+    address _taskRegistryAddress,
     address _interactionRegistryAddress,
     address _globalParametersAddress,
     address _membershipImplementation,
     address _participationImplementation,
+    address _taskFactoryImplementation,
     address _taskManagerImplementation
 ) returns (HubRegistry) {
     address hubImplementation = address(new Hub());
@@ -207,12 +222,13 @@ function deployHubRegistry(
             (
                 _autIdAddress,
                 hubImplementation,
-                _pluginRegistryAddress,
                 _hubDomainsRegistryAddress,
+                _taskRegistryAddress,
                 _interactionRegistryAddress,
                 _globalParametersAddress,
                 _membershipImplementation,
                 _participationImplementation,
+                _taskFactoryImplementation,
                 _taskManagerImplementation
             )
         )
