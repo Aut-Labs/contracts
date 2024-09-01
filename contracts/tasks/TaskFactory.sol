@@ -54,62 +54,50 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         if (contribution.quantity == 0) revert InvalidContributionQuantity(); // TODO: max quantity?
         if (contribution.points == 0 || contribution.points > 10) revert InvalidContributionPoints();
 
-        bytes32 contributionId = encodeContribution(contribution);
+        bytes memory encodedContribution = encodeContribution(contribution);
+        bytes32 contributionId = keccak256(encodedContribution);
         if (!_contributionIds.add(contributionId)) revert ContributionIdAlreadyExists();
 
         _contributions[contributionId] = contribution;
         _contributionsInPeriod[currentPeriodId()].push(contributionId);
 
-        ITaskManager(taskManager()).addContribution(contribution, contributionId);
+        ITaskManager(taskManager()).addContribution(contributionId, contribution);
 
-        // TODO: emit events
+        emit CreateContribution(_msgSender(), contributionId, encodedContribution);
 
         return contributionId;
     }
 
-    /// @notice convert a Contribution struct into its' bytes32 identifier
-    function encodeContribution(Contribution memory contribution) public pure returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(
-                    contribution.taskId,
-                    contribution.role,
-                    contribution.startDate,
-                    contribution.endDate,
-                    contribution.points,
-                    contribution.quantity,
-                    contribution.description
-                )
-            );
+    /// @notice convert a Contribution struct to its' encoded type to hash / events
+    function encodeContribution(Contribution memory contribution) public pure returns (bytes memory) {
+        return abi.encodePacked(
+            contribution.taskId,
+            contribution.role,
+            contribution.startDate,
+            contribution.endDate,
+            contribution.points,
+            contribution.quantity,
+            contribution.description
+        );
+    }
+
+    function calcContributionId(Contribution memory contribution) public pure returns (bytes32) {
+        return keccak256(encodeContribution(contribution));
     }
 
     function getContributionById(bytes32 contributionId) external view returns (Contribution memory) {
         return _contributions[contributionId];
     }
 
-    function getContributionByIdAsTuple(
+    function getContributionByIdEncoded(
         bytes32 contributionId
     )
         external
         view
-        returns (
-            bytes32 taskId,
-            uint256 role,
-            uint32 startDate,
-            uint32 endDate,
-            uint32 points,
-            uint128 quantity,
-            string memory description
-        )
+        returns (bytes memory)
     {
         Contribution memory contribution = _contributions[contributionId];
-        taskId = contribution.taskId;
-        role = contribution.role;
-        startDate = contribution.startDate;
-        endDate = contribution.endDate;
-        points = contribution.points;
-        quantity = contribution.quantity;
-        description = contribution.description;
+        return encodeContribution(contribution);
     }
 
     function isContributionId(bytes32 contributionId) public view returns (bool) {

@@ -59,6 +59,14 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         return contributionsGivenInPeriod[periodId];
     }
 
+    function encodeContributionStatus(ContributionStatus memory contributionStatus) public pure returns (bytes memory) {
+        return abi.encodePacked(
+            contributionStatus.status,
+            contributionStatus.points,
+            contributionStatus.quantityRemaining
+        );
+    }
+
     function addContribution(Contribution calldata contribution, bytes32 contributionId) public {
         // TODO: must be called from TaskFactory
         writePointSummary();
@@ -66,12 +74,15 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         _addContribution(contribution, contributionId);
     }
 
-    function _addContribution(Contribution memory contribution, bytes32 contributionId) internal {
-        contributionStatuses[contributionId] = ContributionStatus({
+    function _addContribution(bytes32 contributionId, Contribution memory contribution) internal {
+        ContributionStatus memory contributionStatus = ContributionStatus({
             status: Status.Open,
             points: contribution.points,
             quantityRemaining: contribution.quantity
         });
+        contributionStatuses[contributionId] = contributionStatus;
+
+        emit AddContribution(encodeContributionStatus(contributionStatus));
     }
 
     function removeContributions(bytes32[] memory contributionIds) external {
