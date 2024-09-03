@@ -1,13 +1,19 @@
+type HubJoinedInfo @entity {
+  id: ID!
+  autID: AutID!
+  role: BigInt!
+  commitment: BigInt!
+  hubAddress: Bytes!
+}
+
+
 type AutID @entity(immutable: false) {
   id: ID!
   owner: Bytes!
   tokenID: BigInt!
   username: String!
-  novaAddress: Bytes
-  role: BigInt
-  commitment: BigInt
-  joinedNovas: [Bytes!] @default(value: [])
   metadataUri: String
+  joinedHubs: [HubJoinedInfo!] @derivedFrom(field: "autID")
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

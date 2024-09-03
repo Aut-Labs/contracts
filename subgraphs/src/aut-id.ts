@@ -4,7 +4,7 @@ import {
   RecordCreated,
   TokenMetadataUpdated,
 } from "../generated/AutID/AutID";
-import { AutID } from "../generated/schema";
+import { AutID, HubJoinedInfo } from "../generated/schema";
 
 export function handleRecordCreated(event: RecordCreated): void {
   let id = event.params.account.toHexString();
@@ -27,26 +27,19 @@ export function handleRecordCreated(event: RecordCreated): void {
 }
 export function handleNovaJoined(event: NovaJoined): void {
   let id = event.params.account.toHexString();
-
   let autID = AutID.load(id);
+
   if (autID == null) {
     autID = new AutID(id);
-    autID.joinedNovas = [];
   }
 
-  autID.role = event.params.role;
-  autID.commitment = event.params.commitment;
-  autID.novaAddress = event.params.nova as Bytes;
-
-  if (autID.joinedNovas == null) {
-    autID.joinedNovas = [];
-  }
-
-  let novaAddress = event.params.nova as Bytes;
-  let novas = autID.joinedNovas as Array<Bytes>;
-  novas.push(novaAddress);
-  autID.joinedNovas = novas;
-
+  // Create a new HubJoinedInfo entity
+  let novaJoinedInfo = new HubJoinedInfo(event.transaction.hash.toHex() + "-" + event.logIndex.toString());
+  novaJoinedInfo.autID = autID.id;
+  novaJoinedInfo.role = event.params.role;
+  novaJoinedInfo.commitment = event.params.commitment;
+  novaJoinedInfo.hubAddress = event.params.nova as Bytes;
+  novaJoinedInfo.save();
   autID.save();
 }
 
