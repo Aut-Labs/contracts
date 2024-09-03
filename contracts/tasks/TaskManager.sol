@@ -32,7 +32,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     }
 
     function addContribution(bytes32 contributionId, Contribution calldata contribution) public {
-        // TODO: must be called from TaskFactory
+        _revertIfNotTaskFactory();
         writePointSummary();
 
         _addContribution(contributionId, contribution);

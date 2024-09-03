@@ -9,7 +9,6 @@ import {AccessUtils} from "../utils/AccessUtils.sol";
 import {PeriodUtils} from "../utils/PeriodUtils.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-// TODO: name to ContributionFactory
 contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
@@ -28,7 +27,6 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
-    // TODO: view of active contribtions based on expiration date
 
     // TODO: should access control be Hub.Admin?
 
@@ -66,6 +64,48 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         emit CreateContribution(contributionId, msg.sender, encodedContribution);
 
         return contributionId;
+    }
+
+    /// @dev off-chain helper
+    function getContributionIdsBeforeEndDate(uint32 timestamp) external view returns (bytes32[] memory) {
+        uint256 length = _contributionIds.length();
+        bytes32[] memory tempContributionIds = new bytes32[](length);
+        uint256 count;
+
+        for (uint256 i=0; i<length; i++) {
+            bytes32 contributionId = _contributionIds.at(i);
+            Contribution storage contribution = _contributions[contributionId];
+            if (timestamp < contribution.endDate) {
+                tempContributionIds[count++] = contributionId;
+            }
+        }
+
+        bytes32[] memory result = new bytes32[](count);
+        for (uint256 i=0; i<count; i++) {
+            result[i] = tempContributionIds[i];
+        }
+        return result;
+    }
+
+    /// @dev off-chain helper
+    function getContributionIdsActive(uint32 timestamp) external view returns (bytes32[] memory) {
+        uint256 length = _contributionIds.length();
+        bytes32[] memory tempContributionIds = new bytes32[](length);
+        uint256 count;
+
+        for (uint256 i=0; i<length; i++) {
+            bytes32 contributionId = _contributionIds.at(i);
+            Contribution storage contribution = _contributions[contributionId];
+            if (timestamp > contribution.startDate && timestamp < contribution.endDate) {
+                tempContributionIds[count++] = contributionId;
+            }
+        }
+
+        bytes32[] memory result = new bytes32[](count);
+        for (uint256 i=0; i<count; i++) {
+            result[i] = tempContributionIds[i];
+        }
+        return result;
     }
 
     function getContributionById(bytes32 contributionId) external view returns (Contribution memory) {

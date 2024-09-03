@@ -28,6 +28,9 @@ interface ITaskFactory {
     /// @return bytes32 contributionId of the contribution
     function createContribution(Contribution calldata contribution) external returns (bytes32);
 
+    function getContributionIdsBeforeEndDate(uint32 timestamp) external view returns (bytes32[] memory);
+    function getContributionIdsActive(uint32 timestamp) external view returns (bytes32[] memory);
+
     /// @notice Using the unique identifier of a contribution, get the data associated to it
     function getContributionById(bytes32 contributionId) external view returns (Contribution memory);
 
