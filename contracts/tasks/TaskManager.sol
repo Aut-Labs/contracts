@@ -31,47 +31,11 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
-    function getContributionStatus(bytes32 contributionId) external view returns (ContributionStatus memory) {
-        return contributionStatuses[contributionId];
-    }
-
-    function getContributionWeight(bytes32 contributionId) external view returns (uint128) {
-        return contributionStatuses[contributionId].points;
-    }
-
-    function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128) {
-        return memberActivities[who][periodId].pointsGiven;
-    }
-
-    function getMemberContributionIds(address who, uint32 periodId) external view returns (bytes32[] memory) {
-        return memberActivities[who][periodId].contributionIds;
-    }
-
-    function getPointsActive(uint32 periodId) external view returns (uint128) {
-        return pointSummaries[periodId].pointsActive;
-    }
-
-    function getPointsGiven(uint32 periodId) external view returns (uint128) {
-        return pointSummaries[periodId].pointsGiven;
-    }
-
-    function getGivenContributions(uint32 periodId) external view returns (bytes32[] memory) {
-        return contributionsGivenInPeriod[periodId];
-    }
-
-    function encodeContributionStatus(ContributionStatus memory contributionStatus) public pure returns (bytes memory) {
-        return abi.encodePacked(
-            contributionStatus.status,
-            contributionStatus.points,
-            contributionStatus.quantityRemaining
-        );
-    }
-
-    function addContribution(Contribution calldata contribution, bytes32 contributionId) public {
+    function addContribution(bytes32 contributionId, Contribution calldata contribution) public {
         // TODO: must be called from TaskFactory
         writePointSummary();
 
-        _addContribution(contribution, contributionId);
+        _addContribution(contributionId, contribution);
     }
 
     function _addContribution(bytes32 contributionId, Contribution memory contribution) internal {
@@ -82,7 +46,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         });
         contributionStatuses[contributionId] = contributionStatus;
 
-        emit AddContribution(encodeContributionStatus(contributionStatus));
+        emit AddContribution(contributionId, encodeContributionStatus(contributionStatus));
     }
 
     function removeContributions(bytes32[] memory contributionIds) external {
@@ -110,7 +74,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         periodPointsRemoved += sumPointsRemoved;
         contributionStatus.status = Status.Inactive;
 
-        // TODO: event
+        emit RemoveContribution(contributionId, encodeContributionStatus(contributionStatus));
     }
 
     function giveContributions(bytes32[] memory contributionIds, address[] memory whos) external {
@@ -159,7 +123,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             contributionStatus.status = Status.Complete;
         }
 
-        // TODO: events
+        emit GiveContribution(contributionId, who, currentPeriodId_, encodeContributionStatus(contributionStatus));
     }
 
     /// @notice write sums to history when needed
@@ -212,5 +176,42 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             delete periodPointsGiven;
             delete periodPointsRemoved;
         }
+    }
+
+    function getContributionStatus(bytes32 contributionId) external view returns (ContributionStatus memory) {
+        return contributionStatuses[contributionId];
+    }
+
+    function getContributionPoints(bytes32 contributionId) external view returns (uint128) {
+        return contributionStatuses[contributionId].points;
+    }
+
+    function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128) {
+        return memberActivities[who][periodId].pointsGiven;
+    }
+
+    function getMemberContributionIds(address who, uint32 periodId) external view returns (bytes32[] memory) {
+        return memberActivities[who][periodId].contributionIds;
+    }
+
+    function getPointsActive(uint32 periodId) external view returns (uint128) {
+        return pointSummaries[periodId].pointsActive;
+    }
+
+    function getPointsGiven(uint32 periodId) external view returns (uint128) {
+        return pointSummaries[periodId].pointsGiven;
+    }
+
+    function getGivenContributions(uint32 periodId) external view returns (bytes32[] memory) {
+        return contributionsGivenInPeriod[periodId];
+    }
+
+    function encodeContributionStatus(ContributionStatus memory contributionStatus) public pure returns (bytes memory) {
+        return
+            abi.encodePacked(
+                contributionStatus.status,
+                contributionStatus.points,
+                contributionStatus.quantityRemaining
+            );
     }
 }

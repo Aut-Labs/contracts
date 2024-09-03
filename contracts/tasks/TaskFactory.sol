@@ -50,7 +50,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     }
 
     function _createContribution(Contribution memory contribution) internal returns (bytes32) {
-        if (!ITaskRegistry(taskRegistry()).isRegisteredTask(contribution.taskId)) revert TaskIdNotRegistered();
+        if (!ITaskRegistry(taskRegistry()).isTaskId(contribution.taskId)) revert TaskIdNotRegistered();
         if (contribution.quantity == 0) revert InvalidContributionQuantity(); // TODO: max quantity?
         if (contribution.points == 0 || contribution.points > 10) revert InvalidContributionPoints();
 
@@ -63,39 +63,16 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
 
         ITaskManager(taskManager()).addContribution(contributionId, contribution);
 
-        emit CreateContribution(_msgSender(), contributionId, encodedContribution);
+        emit CreateContribution(contributionId, msg.sender, encodedContribution);
 
         return contributionId;
-    }
-
-    /// @notice convert a Contribution struct to its' encoded type to hash / events
-    function encodeContribution(Contribution memory contribution) public pure returns (bytes memory) {
-        return abi.encodePacked(
-            contribution.taskId,
-            contribution.role,
-            contribution.startDate,
-            contribution.endDate,
-            contribution.points,
-            contribution.quantity,
-            contribution.description
-        );
-    }
-
-    function calcContributionId(Contribution memory contribution) public pure returns (bytes32) {
-        return keccak256(encodeContribution(contribution));
     }
 
     function getContributionById(bytes32 contributionId) external view returns (Contribution memory) {
         return _contributions[contributionId];
     }
 
-    function getContributionByIdEncoded(
-        bytes32 contributionId
-    )
-        external
-        view
-        returns (bytes memory)
-    {
+    function getContributionByIdEncoded(bytes32 contributionId) external view returns (bytes memory) {
         Contribution memory contribution = _contributions[contributionId];
         return encodeContribution(contribution);
     }
@@ -110,5 +87,22 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
 
     function contributionsInPeriod(uint32 periodId) external view returns (bytes32[] memory) {
         return _contributionsInPeriod[periodId];
+    }
+
+    function encodeContribution(Contribution memory contribution) public pure returns (bytes memory) {
+        return
+            abi.encodePacked(
+                contribution.taskId,
+                contribution.role,
+                contribution.startDate,
+                contribution.endDate,
+                contribution.points,
+                contribution.quantity,
+                contribution.description
+            );
+    }
+
+    function calcContributionId(Contribution memory contribution) public pure returns (bytes32) {
+        return keccak256(encodeContribution(contribution));
     }
 }
