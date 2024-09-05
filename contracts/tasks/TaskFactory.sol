@@ -27,7 +27,6 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
-
     // TODO: should access control be Hub.Admin?
 
     function createContributions(Contribution[] calldata contributions) external returns (bytes32[] memory) {
@@ -72,7 +71,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         bytes32[] memory tempContributionIds = new bytes32[](length);
         uint256 count;
 
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             bytes32 contributionId = _contributionIds.at(i);
             Contribution storage contribution = _contributions[contributionId];
             if (timestamp < contribution.endDate) {
@@ -81,7 +80,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         }
 
         bytes32[] memory result = new bytes32[](count);
-        for (uint256 i=0; i<count; i++) {
+        for (uint256 i = 0; i < count; i++) {
             result[i] = tempContributionIds[i];
         }
         return result;
@@ -93,7 +92,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         bytes32[] memory tempContributionIds = new bytes32[](length);
         uint256 count;
 
-        for (uint256 i=0; i<length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             bytes32 contributionId = _contributionIds.at(i);
             Contribution storage contribution = _contributions[contributionId];
             if (timestamp > contribution.startDate && timestamp < contribution.endDate) {
@@ -102,7 +101,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         }
 
         bytes32[] memory result = new bytes32[](count);
-        for (uint256 i=0; i<count; i++) {
+        for (uint256 i = 0; i < count; i++) {
             result[i] = tempContributionIds[i];
         }
         return result;
