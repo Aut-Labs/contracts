@@ -190,7 +190,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
     }
 
     // TODO: visibility?
-    function _writeMemberParticipation(address who, uint32 _currentPeriodId) public {
+    function _writeMemberParticipation(address who, uint32 _currentPeriodId) internal {
         // TODO: algorithm
         // NOTE: in periodIdJoined, participation score is default 100.  Only write to following periods
         uint32 periodIdJoined = IMembership(membership()).getPeriodIdJoined(who);

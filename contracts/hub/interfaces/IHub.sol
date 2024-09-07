@@ -20,6 +20,8 @@ interface IHub {
     error MemberHasNotYetCommited();
     error PeriodAlreadySealed();
     error UnequalLengths();
+    error ConstraintFactorOutOfRange();
+    event SetConstraintFactor(uint128 oldConstraintFactor, uint128 newConstraintFactor);
 
     event AdminGranted(address to);
     event AdminRenounced(address from);
@@ -33,6 +35,8 @@ interface IHub {
     event MarketSet(uint256);
     event CommitmentSet(uint256);
     event ChangeCommitmentLevel(address indexed who, uint32 oldCommitmentLevel, uint32 newCommitmentLevel);
+    error PenaltyFactorOutOfRange();
+    event SetPenaltyFactor(uint128 oldPenaltyFactor, uint128 newPenaltyFactor);
 
     function initialize(
         address _initialOwner,

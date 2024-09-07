@@ -39,11 +39,13 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     address public membership;
     address public taskFactory;
     address public taskManager;
-    // address public prestige;
-    // address public taskRegistry;
 
-    uint256 public archetype;
+    uint128 public localConstraintFactor;
+    uint128 public localPenaltyFactor;
+
+    // TODO: these 4 variables to be defined
     uint256 public commitment;
+    uint256 public archetype;
     uint256 public market;
     string public metadataUri;
 
@@ -203,12 +205,13 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         return true;
     }
 
-    function constraintFactor() external pure returns (uint128) {
-        return 4e17; // TODO: setters in here vs. calling globalParameters
+    function constraintFactor() external view returns (uint128) {
+        return
+            localConstraintFactor == 0 ? IGlobalParameters(globalParameters).constraintFactor() : localConstraintFactor;
     }
 
-    function penaltyFactor() external pure returns (uint128) {
-        return 4e17; // TODO
+    function penaltyFactor() external view returns (uint128) {
+        return localPenaltyFactor == 0 ? IGlobalParameters(globalParameters).penaltyFactor() : localPenaltyFactor;
     }
 
     // -----------------------------------------------------------
@@ -222,6 +225,24 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     ) external onlyOwner {
         // also revert if not deployer
         IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, hubAddress_, metadataUri_);
+    }
+
+    function setConstraintFactor(uint128 newConstraintFactor) external {
+        if (!isAdmin(msg.sender)) revert NotAdmin();
+        if (newConstraintFactor != 0 && (newConstraintFactor < 1e16 || newConstraintFactor > 1e18))
+            revert ConstraintFactorOutOfRange();
+        uint128 oldConstraintFactor = localConstraintFactor;
+        localConstraintFactor = newConstraintFactor;
+        emit SetConstraintFactor(oldConstraintFactor, newConstraintFactor);
+    }
+
+    function setPenaltyFactor(uint128 newPenaltyFactor) external {
+        if (!isAdmin(msg.sender)) revert NotAdmin();
+        if (newPenaltyFactor != 0 && (newPenaltyFactor < 1e16 || newPenaltyFactor < 1e18))
+            revert PenaltyFactorOutOfRange();
+        uint128 oldPenaltyFactor = localPenaltyFactor;
+        localPenaltyFactor = newPenaltyFactor;
+        emit SetPenaltyFactor(oldPenaltyFactor, newPenaltyFactor);
     }
 
     function addUrl(string memory url) external {

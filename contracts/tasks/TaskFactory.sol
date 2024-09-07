@@ -12,8 +12,6 @@ import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet
 contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
-    uint128 public periodPointsCreated; // TODO
-
     EnumerableSet.Bytes32Set private _contributionIds;
     mapping(bytes32 => Contribution) public _contributions;
     mapping(uint32 periodId => bytes32[] contributionIds) public _contributionsInPeriod;
@@ -27,9 +25,8 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
-    // TODO: should access control be Hub.Admin?
-
     function createContributions(Contribution[] calldata contributions) external returns (bytes32[] memory) {
+        _revertIfNotAdmin();
         uint256 length = contributions.length;
         bytes32[] memory newContributionIds = new bytes32[](length);
         for (uint256 i = 0; i < length; ) {
@@ -43,6 +40,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     }
 
     function createContribution(Contribution calldata contribution) external returns (bytes32) {
+        _revertIfNotAdmin();
         return _createContribution(contribution);
     }
 

@@ -54,6 +54,11 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
     function initialize() external initializer {
         period0Start = TimeLibrary.periodStart({timestamp: uint32(block.timestamp)});
         periodDuration = TimeLibrary.FOUR_WEEKS;
+
+        constraintFactor = 4e17; // 40%
+        penaltyFactor = 4e17; // 40%
+
+        // TODO: define these
         steepnessDegree3Exp = 300;
         penaltyFactor3Exp = 600; // TODO: scale properly
         constrainingFactor6Exp = 1_400_000;

@@ -37,7 +37,7 @@ interface IGlobalParameters {
     function period0Start() external view returns (uint32);
     function currentPeriodId() external view returns (uint32);
     function constraintFactor() external view returns (uint128);
-    function penaltyFactor() external view returns (uint128); // TODO
+    function penaltyFactor() external view returns (uint128);
 
     function steepnessDegree3Exp() external view returns (uint16);
     function penaltyFactor3Exp() external view returns (uint16);
