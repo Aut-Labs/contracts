@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {IAllowlist} from "../../contracts/utils/IAllowlist.sol";
-import {INovaRegistry} from "../../contracts/nova/INovaRegistry.sol";
+import {IHubRegistry} from "../../contracts/hub/interfaces/IHubRegistry.sol";
 
 import {Allowlist} from "../../contracts/utils/Allowlist.sol";
 
@@ -27,7 +27,7 @@ contract DeployAllowlist is Script {
         vm.startBroadcast(vm.envUint("PVK_A1"));
 
         address allowlistImpl = address(new Allowlist());
-        INovaRegistry novaRegistry = INovaRegistry(0x3d299cA87A62bd0fB005e6e7b081e794c15456DA);
-        novaRegistry.setAllowlistAddress(allowlistImpl);
+        IHubRegistry hubRegistry = IHubRegistry(0x3d299cA87A62bd0fB005e6e7b081e794c15456DA);
+        hubRegistry.setAllowlistAddress(allowlistImpl);
     }
 }

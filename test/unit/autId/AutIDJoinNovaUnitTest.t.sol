@@ -2,10 +2,10 @@ pragma solidity ^0.8.20;
 
 import "../../BaseTest.sol";
 
-contract AutIDJoinNovaUnitTest is BaseTest {
+contract AutIDJoinHubUnitTest is BaseTest {
 
     constructor() {
-        // TODO: createRecordAndJoinNova
+        // TODO: createRecordAndJoinHub
     }
 
     function setUp() public virtual override {

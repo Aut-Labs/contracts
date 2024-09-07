@@ -2,7 +2,7 @@ pragma solidity ^0.8.20;
 
 import "../../BaseTest.sol";
 
-contract AutIDCreateRecordandJoinNovaUnitTest is BaseTest {
+contract AutIDCreateRecordandJoinHubUnitTest is BaseTest {
 
     constructor() {}
 
@@ -10,29 +10,29 @@ contract AutIDCreateRecordandJoinNovaUnitTest is BaseTest {
         super.setUp();
     }
 
-    function test_createRecordAndJoinNova_succeeds() public {
+    function test_createRecordAndJoinHub_succeeds() public {
         // TODO
 
         // check autId.mintedAt()
 
         // check state change from _createRecord()
 
-        // check state change from _joinNova
+        // check state change from _joinHub
     }
 
-    function test_createRecordAndJoinNova_InvalidNova_reverts() public {
+    function test_createRecordAndJoinHub_InvalidHub_reverts() public {
         // TODO
     }
 
-    function test_createRecordAndJoinNova_InvalidCommitment_reverts() public {
+    function test_createRecordAndJoinHub_InvalidCommitment_reverts() public {
         // TODO
     }
 
-    function test_createRecordAndJoinNova_CanNotJoinNova_reverts() public {
+    function test_createRecordAndJoinHub_CanNotJoinHub_reverts() public {
         // TODO
     }
 
-    function test_createRecordAndJoinNova_MinCommitmentNotReached_reverts() public {
+    function test_createRecordAndJoinHub_MinCommitmentNotReached_reverts() public {
         // TODO
     }
 
