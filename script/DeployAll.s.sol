@@ -20,7 +20,7 @@ import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 import {Membership} from "../contracts/membership/Membership.sol";
 import {Participation} from "../contracts/participation/Participation.sol";
-import {TaskRegistry} from "../contracts/tasks/TaskRegistry.sol";
+import {Task, TaskRegistry} from "../contracts/tasks/TaskRegistry.sol";
 import {TaskFactory} from "../contracts/tasks/TaskFactory.sol";
 import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 
@@ -81,7 +81,7 @@ contract DeployAll is Script {
         autId = deployAutId(trustedForwarder, vm.addr(privateKey));
         pluginRegistry = deployPluginRegistry(owner);
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
-        taskRegistry = deployTaskRegistry();
+        taskRegistry = deployTaskRegistry(owner);
         interactionRegistry = deployInteractionRegistry(owner);
         globalParameters = deployGlobalParameters(owner);
         (
@@ -113,10 +113,23 @@ contract DeployAll is Script {
         Allowlist allowlist = new Allowlist();
         hubRegistry.setAllowlistAddress(address(allowlist));
 
+        // Setup initial tasks
+        Task[] memory tasks = new Task[](3);
+        tasks[0] = Task({
+            uri: "ipfs://bafkreia2si4nhqjdxg543z7pp5kchvx4auwm7gn54wftfa2vykfkjc4ppe"
+        });
+        tasks[1] = Task({
+            uri: "ipfs://bafkreihxcz6eytmf6lm5oyqee67jujxepuczl42lw2orlfsw6yds5gm46i"
+        });
+        tasks[2] = Task({
+            uri: "ipfs://bafkreieg7dwphs4554g726kalv5ez22hd55k3bksepa6rrvon6gf4mupey"
+        });
+        taskRegistry.registerTasks(tasks);
+
         // todo: convert to helper function
         if (deploying) {
             string memory filename = "deployments.txt";
-            TNamedAddress[7] memory na;
+            TNamedAddress[8] memory na;
             na[0] = TNamedAddress({name: "globalParametersProxy", target: address(globalParameters)});
             na[1] = TNamedAddress({name: "autIDProxy", target: address(autId)});
             na[2] = TNamedAddress({name: "hubRegistryProxy", target: address(hubRegistry)});
@@ -124,6 +137,7 @@ contract DeployAll is Script {
             na[4] = TNamedAddress({name: "allowlist", target: address(allowlist)});
             na[5] = TNamedAddress({name: "basicOnboarding", target: address(basicOnboarding)});
             na[6] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
+            na[7] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
             for (uint256 i = 0; i != na.length; ++i) {
                 vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));
@@ -167,9 +181,14 @@ function deployHubDomainsRegistry(
     return hubDomainsRegistry;
 }
 
-function deployTaskRegistry() returns (TaskRegistry) {
-    TaskRegistry taskRegistry = new TaskRegistry();
-    return taskRegistry;
+function deployTaskRegistry(address _owner) returns (TaskRegistry) {
+    address taskRegistryImplementation = address(new TaskRegistry());
+    AutProxy taskRegistryProxy = new AutProxy(
+        taskRegistryImplementation,
+        _owner,
+        ""
+    );
+    return TaskRegistry(address(taskRegistryProxy));
 }
 
 function deployInteractionRegistry(address _owner) returns (InteractionRegistry) {
@@ -178,9 +197,9 @@ function deployInteractionRegistry(address _owner) returns (InteractionRegistry)
 }
 
 function deployGlobalParameters(address _owner) returns (GlobalParameters) {
-    GlobalParameters globalParametersImplementation = new GlobalParameters();
+    address globalParametersImplementation = address(new GlobalParameters());
     AutProxy globalParametersProxy = new AutProxy(
-        address(globalParametersImplementation),
+        globalParametersImplementation,
         _owner,
         ""
     );
