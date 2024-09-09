@@ -34,12 +34,7 @@ interface ITaskManager {
 
     event AddContribution(bytes32 indexed contributionId, bytes encodedContributionStatus);
     event RemoveContribution(bytes32 indexed contributionId, bytes encodedContributionStatus);
-    event CommitContribution(
-        bytes32 indexed contributionId,
-        address indexed who,
-        bytes encodedContributionStatus,
-        bytes data
-    );
+    event CommitContribution(bytes32 indexed contributionId, address indexed who, bytes data);
     event GiveContribution(
         bytes32 indexed contributionId,
         address indexed who,

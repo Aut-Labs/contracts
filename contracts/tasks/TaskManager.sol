@@ -94,7 +94,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     function _commitContribution(bytes32 contributionId, bytes memory data) internal {
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
-        emit CommitContribution(contributionId, msg.sender, encodeContributionStatus(contributionStatus), data);
+        emit CommitContribution(contributionId, msg.sender, data);
     }
 
     function giveContributions(bytes32[] calldata contributionIds, address[] calldata whos) external {
