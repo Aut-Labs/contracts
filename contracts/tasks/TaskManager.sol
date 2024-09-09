@@ -49,7 +49,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         emit AddContribution(contributionId, encodeContributionStatus(contributionStatus));
     }
 
-    function removeContributions(bytes32[] memory contributionIds) external {
+    function removeContributions(bytes32[] calldata contributionIds) external {
         _revertIfNotAdmin();
         writePointSummary();
         for (uint256 i = 0; i < contributionIds.length; i++) {
@@ -65,7 +65,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
     function _removeContribution(bytes32 contributionId) internal {
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
-        if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotActive();
+        if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
 
         // NOTE: does not subtract from created contributions
         uint128 sumPointsRemoved = contributionStatus.points * contributionStatus.quantityRemaining;
@@ -77,7 +77,27 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         emit RemoveContribution(contributionId, encodeContributionStatus(contributionStatus));
     }
 
-    function giveContributions(bytes32[] memory contributionIds, address[] memory whos) external {
+    function commitContributions(bytes32[] calldata contributionIds, bytes[] calldata datas) external {
+        _revertIfNotMember(msg.sender);
+        uint256 length = contributionIds.length;
+        if (length != datas.length) revert UnequalLengths();
+        for (uint256 i = 0; i < length; i++) {
+            _commitContribution(contributionIds[i], datas[i]);
+        }
+    }
+
+    function commitContribution(bytes32 contributionId, bytes calldata data) external {
+        _revertIfNotMember(msg.sender);
+        _commitContribution(contributionId, data);
+    }
+
+    function _commitContribution(bytes32 contributionId, bytes memory data) internal {
+        ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
+        if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
+        emit CommitContribution(contributionId, msg.sender, encodeContributionStatus(contributionStatus), data);
+    }
+
+    function giveContributions(bytes32[] calldata contributionIds, address[] calldata whos) external {
         _revertIfNotAdmin();
         writePointSummary();
 
@@ -98,7 +118,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         _revertIfNotMember(who);
 
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
-        if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotActive();
+        if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
         uint32 points = contributionStatus.points;
 
         uint32 currentPeriodId_ = currentPeriodId();

@@ -30,10 +30,16 @@ struct MemberActivity {
 interface ITaskManager {
     error UnequalLengths();
     error MemberAlreadyContributed();
-    error ContributionNotActive();
+    error ContributionNotOpen();
 
     event AddContribution(bytes32 indexed contributionId, bytes encodedContributionStatus);
     event RemoveContribution(bytes32 indexed contributionId, bytes encodedContributionStatus);
+    event CommitContribution(
+        bytes32 indexed contributionId,
+        address indexed who,
+        bytes encodedContributionStatus,
+        bytes data
+    );
     event GiveContribution(
         bytes32 indexed contributionId,
         address indexed who,
@@ -60,8 +66,14 @@ interface ITaskManager {
     /// @notice Remove an outstanding contribution from being completed, deeming it Inactive
     function removeContribution(bytes32 contributionId) external;
 
+    /// @notice Commit to a set of open contributions with associated data
+    function commitContributions(bytes32[] calldata contributionIds, bytes[] calldata datas) external;
+
+    /// @notice Commit to an open contribution with associated data
+    function commitContribution(bytes32 contributionId, bytes calldata data) external;
+
     /// @notice Give contribution points to members who have completed the contribution requirements
-    function giveContributions(bytes32[] memory contributionIds, address[] memory whos) external;
+    function giveContributions(bytes32[] calldata contributionIds, address[] calldata whos) external;
 
     /// @notice Give contribution points to a member who has completed the contribution requirements
     function giveContribution(bytes32 contributionId, address who) external;
