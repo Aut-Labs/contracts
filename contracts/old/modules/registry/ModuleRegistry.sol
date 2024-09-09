@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "./IModuleRegistry.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import {IAllowlist} from "../../utils/IAllowlist.sol";
+import {IAllowlist} from "../../IAllowlist.sol";
 
 contract ModuleRegistry is IModuleRegistry, Ownable {
     ModuleDefinition[] public modules;

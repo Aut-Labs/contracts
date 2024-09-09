@@ -2,10 +2,11 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./interfaces/IHubDomainsRegistry.sol";
+import "./interfaces/IHubRegistry.sol";
 
-contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
+contract HubDomainsRegistry is IHubDomainsRegistry, OwnableUpgradeable {
     struct Domain {
         string name;
         address hubAddress;
@@ -17,7 +18,7 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
     mapping(address => string[]) private hubAddressToDomains;
     mapping(uint256 => string) private tokenIdToDomain;
     uint256 private tokenIdCounter;
-    address private permittedContract;
+    address private hubRegistry;
 
     event DomainRegistered(
         address indexed hubAddress,
@@ -27,14 +28,17 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
         string metadataUri
     );
 
-    constructor(address _permittedContract) Ownable(msg.sender) {
-        require(_permittedContract != address(0), "Permitted contract address cannot be zero");
-        tokenIdCounter = 0;
-        permittedContract = _permittedContract;
+    constructor() {
+        _disableInitializers();
     }
 
-    modifier onlyPermittedContract() {
-        require(msg.sender == permittedContract, "Caller is not the permitted contract");
+    function initialize(address _hubRegistry) external initializer {
+        __Ownable_init(msg.sender);
+        hubRegistry = _hubRegistry;
+    }
+
+    modifier onlyFromHub() {
+        require(IHubRegistry(hubRegistry).checkHub(msg.sender));
         _;
     }
 
@@ -42,7 +46,7 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Ownable {
         string calldata domain,
         address hubAddress,
         string calldata metadataUri
-    ) external override(IHubDomainsRegistry) onlyPermittedContract {
+    ) external override(IHubDomainsRegistry) onlyFromHub {
         require(domains[domain].hubAddress == address(0), "Domain already registered");
         require(hubAddressToDomains[hubAddress].length == 0, "Domain already registered");
         require(_isValidDomain(domain), "Invalid domain format");
