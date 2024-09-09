@@ -10,6 +10,8 @@ interface IReputationMining {
         address _peerValueContract
     ) external;
 
+    function period() external view returns (uint256);
+
     function updatePeriod() external;
 
     function claimUtilityToken() external;
@@ -17,4 +19,9 @@ interface IReputationMining {
     function claim() external;
 
     function getTokensForPeriod(uint256 _period) external pure returns (uint256);
+
+    function getClaimableUtilityTokenForPeriod(
+        address _account,
+        uint256 _period
+    ) external view returns (uint256 amount);
 }
