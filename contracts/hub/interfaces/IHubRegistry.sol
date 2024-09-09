@@ -7,7 +7,6 @@ interface IHubRegistry {
         address hubLogic,
         address hubDomainsRegistry_,
         address taskRegistry_,
-        address interactionRegistry_,
         address globalParameters_,
         address _membershipImplementation,
         address _participationImplementation,
@@ -22,6 +21,4 @@ interface IHubRegistry {
     function join(address hub, address member, uint256 role, uint8 commitment) external;
 
     function listUserHubs(address user) external view returns (address[] memory);
-
-    function setAllowlistAddress(address) external;
 }

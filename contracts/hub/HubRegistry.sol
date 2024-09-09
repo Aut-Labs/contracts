@@ -10,11 +10,8 @@ import {
     ContextUpgradeable
 } from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
 
-import {IModuleRegistry} from "../modules/registry/IModuleRegistry.sol";
 import {IHubRegistry} from "./interfaces/IHubRegistry.sol";
-import {IInteractionRegistry} from "../interactions/InteractionRegistry.sol";
 import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
-import {IAllowlist} from "../utils/IAllowlist.sol";
 
 import {IHub} from "./interfaces/IHub.sol";
 import {IHubModule} from "./interfaces/IHubModule.sol";
@@ -22,10 +19,7 @@ import {IHubModule} from "./interfaces/IHubModule.sol";
 /// @title HubRegistry
 contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
     event HubCreated(address deployer, address hubAddress, uint256 market, uint256 commitment, string metadata);
-    event AllowlistSet(address allowlist);
 
-    // just for interface compatibility
-    // actually there is no need to store it in the contract
     mapping(address => address[]) public hubDeployers;
     mapping(address => address[]) internal _userHubList;
     mapping(address => mapping(address => uint256)) internal _userHubListIds;
@@ -44,14 +38,12 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     address public autId;
     address public hubDomainsRegistry;
     address public taskRegistry;
-    address public interactionRegistry;
     address public globalParameters;
     address public membershipImplementation;
     address public participationImplementation;
     address public taskFactoryImplementation;
     address public taskManagerImplementation;
     UpgradeableBeacon public upgradeableBeacon;
-    IAllowlist public allowlist;
 
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
@@ -60,7 +52,6 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         address hubLogic,
         address hubDomainsRegistry_,
         address taskRegistry_,
-        address interactionRegistry_,
         address globalParameters_,
         address _membershipImplementation,
         address _participationImplementation,
@@ -75,7 +66,6 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         autId = autId_;
         hubDomainsRegistry = hubDomainsRegistry_;
         taskRegistry = taskRegistry_;
-        interactionRegistry = interactionRegistry_;
         globalParameters = globalParameters_;
         upgradeableBeacon = new UpgradeableBeacon(hubLogic, address(this));
 
@@ -83,8 +73,6 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         participationImplementation = _participationImplementation;
         taskFactoryImplementation = _taskFactoryImplementation;
         taskManagerImplementation = _taskManagerImplementation;
-        // allowlist =
-        // IAllowlist(IModuleRegistry(IPluginRegistry(pluginRegistry_).modulesRegistry()).getAllowListAddress());
     }
 
     function currentPeriodId() public view returns (uint32) {
@@ -93,10 +81,6 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
 
     function period0Start() public view returns (uint32) {
         return IGlobalParameters(globalParameters).period0Start();
-    }
-
-    function isInteractionId(bytes32 interactionId) external view returns (bool) {
-        return IInteractionRegistry(interactionRegistry).isInteractionId(interactionId);
     }
 
     // the only reason for this function is to keep interface compatible with sdk
@@ -185,32 +169,10 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         upgradeableBeacon.upgradeTo(newLogic);
     }
 
-    /// @dev sets a new allowlist
-    function setAllowlistAddress(address newAllowlist) external onlyOwner {
-        // inactive, if set to `address(0)`
-        allowlist = IAllowlist(newAllowlist);
-
-        emit AllowlistSet(newAllowlist);
-    }
-
-    /// @dev transfer beacon ownership (hopefuly to a new and better-implemented registry)
-    function tranferBeaconOwnership(address newOwner) external onlyOwner {
+    /// @dev transfer beacon ownership
+    function transferBeaconOwnership(address newOwner) external onlyOwner {
         require(newOwner != address(0), "HubRegistry: address zero");
         upgradeableBeacon.transferOwnership(newOwner);
-    }
-
-    function _checkAllowlist() internal view {
-        if (_msgSender() == deployerAddress || _msgSender() == upgradeableBeacon.owner()) return;
-        if (address(allowlist) != address(0)) {
-            // if (!allowlist.isAllowed(_msgSender())) {
-            //     revert IAllowlist.Unallowed();
-            // }
-            if ((hubDeployers[_msgSender()].length != 0)) {
-                revert IAllowlist.AlreadyDeployedAHub();
-                // `hubDeployers` state is not stored within allowlist,
-                //  although the error belongs to allowlist
-            }
-        }
     }
 
     function _validateHubDeploymentParams(uint256 market, string memory metadata, uint256 commitment) internal pure {

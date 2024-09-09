@@ -7,7 +7,7 @@ import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IMembership} from "../membership/IMembership.sol";
-import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
+// import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
 import {HubUtils} from "./HubUtils.sol";
 import {IHub} from "./interfaces/IHub.sol";
 import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
@@ -196,12 +196,13 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
             return false;
         }
 
-        if (onboarding != address(0)) {
-            if (OnboardingModule(onboarding).isActive()) {
-                return OnboardingModule(onboarding).isOnboarded(who, role);
-            }
-            return false;
-        }
+        // TODO: onboarding module
+        // if (onboarding != address(0)) {
+        //     if (OnboardingModule(onboarding).isActive()) {
+        //         return OnboardingModule(onboarding).isOnboarded(who, role);
+        //     }
+        //     return false;
+        // }
         return true;
     }
 

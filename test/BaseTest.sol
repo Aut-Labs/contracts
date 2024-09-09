@@ -9,8 +9,6 @@ abstract contract BaseTest is Test {
     HubRegistry public hubRegistry;
     GlobalParameters public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
-    InteractionRegistry public interactionRegistry;
-    BasicOnboarding public basicOnboarding;
 
     address public owner = address(this);
     address public alice = address(0x411Ce);
@@ -27,8 +25,6 @@ abstract contract BaseTest is Test {
         hubRegistry = deploy.hubRegistry();
         globalParameters = deploy.globalParameters();
         hubDomainsRegistry = deploy.hubDomainsRegistry();
-        interactionRegistry = deploy.interactionRegistry();
-        basicOnboarding = deploy.basicOnboarding();
 
         // labeling
         vm.label(owner, "Owner");
@@ -38,6 +34,5 @@ abstract contract BaseTest is Test {
         vm.label(address(hubRegistry), "hubRegistry");
         vm.label(address(globalParameters), "globalParameters");
         vm.label(address(hubDomainsRegistry), "hubDomainsRegistry");
-        vm.label(address(basicOnboarding), "basicOnboarding");
     }
 }
