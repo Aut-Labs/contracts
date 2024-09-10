@@ -13,6 +13,7 @@ type AutID @entity(immutable: false) {
   tokenID: BigInt!
   username: String!
   metadataUri: String
+  metadataJson: String
   joinedHubs: [HubJoinedInfo!] @derivedFrom(field: "autID")
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -40,4 +41,19 @@ type Domain @entity {
   owner: Bytes!
   metadataUri: String!
   tokenId: BigInt!
+}
+
+type Contribution @entity {
+  id: ID!
+  taskId: Bytes!
+  role: String!
+  startDate: BigInt!
+  endDate: BigInt!
+  points: Int!
+  quantity: Int!
+  description: String!
+  creator: Bytes!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }

@@ -1,21 +1,21 @@
-import { NovaCreated } from "../generated/NovaRegistry/NovaRegistry";
+import { HubCreated } from "../generated/HubRegistry/HubRegistry";
 import {
   CommitmentSet,
   MarketSet,
   MetadataUriSet,
   ArchetypeSet,
-} from "../generated/Nova/Nova";
+} from "../generated/Hub/Hub";
 import { Hub } from "../generated/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
 
-export function handleNovaCreated(event: NovaCreated): void {
-  let id = event.params.novaAddress.toHexString();
+export function handleHubCreated(event: HubCreated): void {
+  let id = event.params.hubAddress.toHexString();
   let hub = Hub.load(id);
   if (hub == null) {
     hub = new Hub(id);
   }
   hub.deployer = event.params.deployer;
-  hub.address = event.params.novaAddress;
+  hub.address = event.params.hubAddress;
   hub.market = event.params.market;
   hub.metadataUri = event.params.metadata;
   hub.minCommitment = event.params.commitment;
@@ -29,7 +29,7 @@ export function handleNovaCreated(event: NovaCreated): void {
 }
 
 export function handleMarketSet(event: MarketSet): void {
-  let txTo = event.transaction.to; // novaAddress
+  let txTo = event.transaction.to; // hubAddress
 
   if (txTo) {
     let id = txTo.toHexString();
@@ -43,7 +43,7 @@ export function handleMarketSet(event: MarketSet): void {
 }
 
 export function handleMetadataUriSet(event: MetadataUriSet): void {
-  let txTo = event.transaction.to; // novaAddress
+  let txTo = event.transaction.to; // hubAddress
 
   if (txTo) {
     let id = txTo.toHexString();
@@ -57,7 +57,7 @@ export function handleMetadataUriSet(event: MetadataUriSet): void {
 }
 
 export function handleCommitmentSet(event: CommitmentSet): void {
-  let txTo = event.transaction.to; // novaAddress
+  let txTo = event.transaction.to; // hubAddress
 
   if (txTo) {
     let id = txTo.toHexString();

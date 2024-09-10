@@ -21,17 +21,17 @@ dataSources:
       eventHandlers:
         - event: RecordCreated(uint256,address,string,string)
           handler: handleRecordCreated
-        - event: NovaJoined(address,uint256,uint256,address)
-          handler: handleNovaJoined
+        - event: HubJoined(address,uint256,uint8,address)
+          handler: handleHubJoined
         - event: TokenMetadataUpdated(uint256,address,string)
           handler: handleTokenMetadataUpdated
       file: ./src/aut-id.ts
   - kind: ethereum
-    name: NovaRegistry
+    name: HubRegistry
     network: polygon-amoy
     source:
       address: "0xd72983055d3d81b5cb10f65945f4550C28A28E61"
-      abi: NovaRegistry
+      abi: HubRegistry
       startBlock: 11208807
     mapping:
       kind: ethereum/events
@@ -40,17 +40,17 @@ dataSources:
       entities:
         - Hub
       abis:
-        - name: NovaRegistry
-          file: ../volumes/out/NovaRegistry.sol/NovaRegistry.json
+        - name: HubRegistry
+          file: ../volumes/out/HubRegistry.sol/HubRegistry.json
       eventHandlers:
-        - event: NovaCreated(address,address,uint256,uint256,string)
-          handler: handleNovaCreated
-      file: ./src/nova.ts
+        - event: HubCreated(address,address,uint256,uint256,string)
+          handler: handleHubCreated
+      file: ./src/hub.ts
   - kind: ethereum
-    name: Nova
+    name: Hub
     network: polygon-amoy
     source:
-      abi: Nova
+      abi: Hub
       startBlock: 11208807
     mapping:
       kind: ethereum/events
@@ -59,8 +59,8 @@ dataSources:
       entities:
         - Hub
       abis:
-        - name: Nova
-          file: ../volumes/out/Nova.sol/Nova.json
+        - name: Hub
+          file: ../volumes/out/Hub.sol/Hub.json
       eventHandlers:
         - event: MetadataUriSet(string)
           handler: handleMetadataUriSet
@@ -68,7 +68,7 @@ dataSources:
           handler: handleCommitmentSet
         - event: MarketSet(uint256)
           handler: handleMarketSet
-      file: ./src/nova.ts
+      file: ./src/hub.ts
   - kind: ethereum
     name: HubDomainsRegistry
     network: polygon-amoy
@@ -88,4 +88,23 @@ dataSources:
       eventHandlers:
         - event: DomainRegistered(indexed address,address,string,uint256,string)
           handler: handleDomainRegistered
-      file: ./src/hubDomainsRegistry.ts
+      file: ./src/hub-domains-registry.ts
+  - kind: ethereum
+    name: TaskFactory
+    network: polygon-amoy
+    source:
+      abi: TaskFactory
+      startBlock: 11208807
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - Contribution
+      abis:
+        - name: TaskFactory
+          file: ../volumes/out/TaskFactory.sol/TaskFactory.json
+      eventHandlers:
+        - event: CreateContribution(indexed bytes32,indexed address,bytes)
+          handler: handleCreateContribution
+      file: ./src/task-factory.ts
