@@ -17,7 +17,8 @@ abstract contract BaseTest is Test {
     function setUp() public virtual {
         // setup and run deployment script
         DeployAll deploy = new DeployAll();
-        deploy.setUpTest(owner);
+        deploy.setUp();
+        deploy.setOwner(owner);
         deploy.run();
 
         // set env

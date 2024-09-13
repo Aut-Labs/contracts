@@ -43,7 +43,7 @@ contract DeployAll is Script {
         string name;
     }
 
-    function setUpTest(address _owner) public {
+    function setOwner(address _owner) public {
         owner = _owner;
     }
 
@@ -55,9 +55,9 @@ contract DeployAll is Script {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
         } else {
-            // revert("invalid chainid");
-            owner = vm.envAddress("OWNER");
-            privateKey = vm.envUint("PRIVATE_KEY");
+            // testing
+            owner = address(123456);
+            privateKey = 567890;
         }
         console.log("setUp -- done");
 
