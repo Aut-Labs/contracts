@@ -28,24 +28,8 @@ contract TaskRegistry is ITaskRegistry {
         if (!_taskIds.add(taskId)) revert TaskAlreadyRegistered();
 
         _tasks[taskId] = task;
-    }
 
-    function unregisterTasks(Task[] calldata tasks) external {
-        for (uint256 i = 0; i < tasks.length; i++) {
-            _unregisterTask(tasks[i]);
-        }
-    }
-
-    function unregisterTask(Task calldata task) external {
-        _unregisterTask(task);
-    }
-
-    function _unregisterTask(Task memory task) internal {
-        bytes32 taskId = calcTaskId(task);
-
-        if (!_taskIds.remove(taskId)) revert TaskNotRegistered();
-
-        delete _tasks[taskId];
+        emit RegisterTask(taskId, msg.sender);
     }
 
     function getTaskById(bytes32 taskId) external view returns (Task memory) {
