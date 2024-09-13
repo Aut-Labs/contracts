@@ -23,14 +23,28 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
 
     IReputationMining public reputationMining;
 
+    uint256 public totalStakes;
+
+    mapping(uint256 stakeId => Stake stake) private stakes;
+
+    event StakeAdded(uint256 indexed stakeId, address indexed staker, address indexed stakee, Stake stake);
+
+    event StakeClaimed(
+        uint256 indexed stakeId,
+        address indexed staker,
+        address indexed stakee,
+        Stake stake,
+        uint256 rewardAmount
+    );
+
     struct Stake {
-        uint256 stakeId;
         address staker;
         address stakee;
         uint256 amount;
         uint256 timestamp;
         uint256 estimatedGlobalReputation;
         uint256 duration;
+        bool active;
     }
 
     using SafeERC20 for IERC20;
@@ -66,8 +80,13 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         uint256 amount,
         address stakee,
         uint256 duration,
-        uint256 expectedGrowth
+        uint256 estimatedGlobalReputation
     ) external returns (uint256 stakeId) {
+        require(amount > 0, "amount must be bigger than 0");
+        require(stakee != address(0), "invalid staker");
+        require(duration > 0, "duration is not long enough");
+        require(estimatedGlobalReputation > 0, "expected growth is too low");
+
         // get current period
         uint256 currentPeriod = reputationMining.period();
         //ToDo: Investments are possible only on stakees whose ĀutID is 5 periods or older
@@ -78,15 +97,47 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         //ToDo: put a check to make sure the msg.sender is not the stakee? I don't think it's worth it as there are other ways to do it beyond our control
 
         // save the stake in storage
+        Stake memory newStake = Stake(
+            msg.sender,
+            stakee,
+            amount,
+            currentPeriod,
+            estimatedGlobalReputation,
+            duration,
+            true
+        );
+        stakeId = totalStakes;
 
+        stakes[stakeId] = newStake;
+
+        totalStakes++;
+
+        emit StakeAdded(stakeId, msg.sender, stakee, newStake);
         repFiToken.safeTransferFrom(msg.sender, address(this), amount);
     }
 
     function unstake(uint256 stakeId) external {
-        // ToDo: make sure the duration has passed
-        // ToDo: check the stakee's global reputation and compare with the bet that was placed
-        // ToDo: reward or slash the staker depending on the outcome
+        // get current period
+        uint256 currentPeriod = reputationMining.period();
+        // check if the stake exists
+        Stake storage currentStake = stakes[stakeId];
+        require(currentStake.amount > 0, "Stake not found");
+        require(currentStake.active, "stake is not active");
+        require(currentStake.staker == msg.sender, "msg.sender is not the owner of the stake");
+        // make sure the duration has passed
+        require(currentStake.timestamp + currentStake.duration >= currentPeriod, "stake is still ongoing");
+        // check the stakee's global reputation and compare with the bet that was placed and reward or slash the staking reward depending on the outcome, using a random number for now
         uint256 earnedAmount = 0;
+        uint256 actualPeerValue = randomNumberGenerator.getRandomNumberForAccount(currentStake.stakee, 80, 160);
+        if (currentStake.estimatedGlobalReputation >= actualPeerValue) {
+            // ToDo: reward
+        } else {
+            // ToDo slash
+        }
+
+        // set active to false
+        currentStake.active = false;
+        emit StakeClaimed(stakeId, msg.sender, currentStake.stakee, currentStake, earnedAmount);
         repFiToken.safeTransfer(msg.sender, earnedAmount);
     }
 }
