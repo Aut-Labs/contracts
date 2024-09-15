@@ -272,6 +272,11 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         emit ArchetypeSet(input[0]);
     }
 
+    function setMetadataUri(string memory metadataUri_) external {
+        if (!isAdmin(msg.sender)) revert NotAdmin();
+        _setMetadataUri(metadataUri_);
+    }
+
     /// internal
 
     function _setRoles(uint256[] memory roles_) internal {

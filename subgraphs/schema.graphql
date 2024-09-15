@@ -37,7 +37,7 @@ type Hub @entity(immutable: false) {
 
 type Domain @entity {
   id: ID!
-  novaAddress: Bytes!
+  hubAddress: Bytes!
   owner: Bytes!
   metadataUri: String!
   tokenId: BigInt!
@@ -52,6 +52,17 @@ type Contribution @entity {
   points: Int!
   quantity: Int!
   description: String!
+  creator: Bytes!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Task @entity {
+  id: ID!
+  metadataUri: String!
+  metadataJson: String
+  taskId: Bytes!
   creator: Bytes!
   blockNumber: BigInt!
   blockTimestamp: BigInt!

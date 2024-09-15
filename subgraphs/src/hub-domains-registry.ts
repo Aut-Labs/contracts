@@ -4,7 +4,7 @@ import { Domain, Hub } from '../generated/schema'
 export function handleDomainRegistered(event: DomainRegistered): void {
   // Create or update the Domain entity
   let domain = new Domain(event.params.domain)
-  domain.novaAddress = event.params.hubAddress
+  domain.hubAddress = event.params.hubAddress
   domain.metadataUri = event.params.metadataUri
   domain.tokenId = event.params.tokenId
   domain.save()
