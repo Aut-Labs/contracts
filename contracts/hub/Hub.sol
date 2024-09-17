@@ -192,7 +192,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     }
 
     function canJoin(address who, uint256 role) public view returns (bool) {
-        if (IMembership(participation).currentRole(who) != 0) {
+        if (IMembership(membership).currentRole(who) != 0) {
             return false;
         }
 

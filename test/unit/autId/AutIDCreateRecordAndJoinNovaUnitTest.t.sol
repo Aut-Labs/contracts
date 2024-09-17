@@ -11,7 +11,15 @@ contract AutIDCreateRecordandJoinHubUnitTest is BaseTest {
     }
 
     function test_createRecordAndJoinHub_succeeds() public {
-        // TODO
+        
+        vm.prank(alice);
+        autId.createRecordAndJoinHub({
+            role: 1,
+            commitment: 1,
+            hub: address(hub),
+            username: "alice",
+            optionalURI: "https://facebook.com/alice"
+        });
 
         // check autId.mintedAt()
 
