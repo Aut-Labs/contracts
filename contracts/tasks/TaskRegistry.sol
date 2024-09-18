@@ -29,7 +29,7 @@ contract TaskRegistry is ITaskRegistry {
 
         _tasks[taskId] = task;
 
-        emit RegisterTask(taskId, msg.sender);
+        emit RegisterTask(taskId, msg.sender, task.uri);
     }
 
     function getTaskById(bytes32 taskId) external view returns (Task memory) {

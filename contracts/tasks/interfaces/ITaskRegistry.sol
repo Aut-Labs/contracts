@@ -9,7 +9,7 @@ interface ITaskRegistry {
     error TaskAlreadyRegistered();
     error TaskNotRegistered();
 
-    event RegisterTask(bytes32 indexed taskId, address indexed who);
+    event RegisterTask(bytes32 indexed taskId, address indexed who, string uri);
 
     function registerTasks(Task[] calldata tasks) external;
     function registerTask(Task memory task) external;

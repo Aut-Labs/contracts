@@ -102,13 +102,13 @@ contract DeployAll is Script {
         // Setup initial tasks
         Task[] memory tasks = new Task[](3);
         tasks[0] = Task({
-            uri: "ipfs://bafkreia2si4nhqjdxg543z7pp5kchvx4auwm7gn54wftfa2vykfkjc4ppe"
+            uri: "ipfs://QmScDABgjA3MuiEDsLUDMpfe8cAKL1FgtSzLnGJVUF54Nx"
         });
         tasks[1] = Task({
-            uri: "ipfs://bafkreihxcz6eytmf6lm5oyqee67jujxepuczl42lw2orlfsw6yds5gm46i"
+            uri: "ipfs://QmQZ2wXMsie8EGpbWk9GsRWQUj6JrJuBo7o3xCmnmZVWB7"
         });
         tasks[2] = Task({
-            uri: "ipfs://bafkreieg7dwphs4554g726kalv5ez22hd55k3bksepa6rrvon6gf4mupey"
+            uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"
         });
         taskRegistry.registerTasks(tasks);
 
