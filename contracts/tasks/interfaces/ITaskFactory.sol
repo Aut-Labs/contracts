@@ -7,8 +7,7 @@ struct Contribution {
     uint32 endDate;
     uint32 points;
     uint128 quantity;
-    string description;
-    // TODO: further identifiers
+    string uri;
 }
 
 interface ITaskFactory {

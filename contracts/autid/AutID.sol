@@ -74,10 +74,10 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         uint256 role,
         uint8 commitment,
         address hub,
-        string memory username_,
+        string memory username,
         string memory optionalURI
     ) external {
-        createRecordAndJoinHub(role, commitment, hub, username_, optionalURI);
+        createRecordAndJoinHub(role, commitment, hub, username, optionalURI);
     }
 
     /// @inheritdoc IAutID
@@ -85,14 +85,14 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         uint256 role,
         uint8 commitment,
         address hub,
-        string memory username_,
+        string memory username,
         string memory optionalURI
     ) public {
         address account = _msgSender();
         AutIDUtils._revertForZeroAddress(account);
         mintedAt[account] = uint32(block.timestamp);
 
-        _createRecord(account, username_, optionalURI);
+        _createRecord(account, username, optionalURI);
         _joinHub(account, role, commitment, hub);
     }
 
@@ -146,28 +146,27 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _revertForMinCommitmentNotReached(hub, commitment);
 
         IHubRegistry(hubRegistryAddress).join({hub: hub, member: account, role: role, commitment: commitment});
-        IHub(hub).join(account, role, commitment);
 
         emit HubJoined(account, role, commitment, hub);
     }
 
-    function _createRecord(address account, string memory username_, string memory optionalURI) internal {
-        _revertForInvalidUsername(username_);
-        bytes32 username;
+    function _createRecord(address account, string memory username, string memory optionalURI) internal {
+        _revertForInvalidUsername(username);
+        bytes32 username_;
         assembly {
-            username := mload(add(username_, 32))
+            username_ := mload(add(username, 32))
         }
-        if (tokenIdForUsername[username] != 0 || tokenIdForAccount[account] != 0) {
+        if (tokenIdForUsername[username_] != 0 || tokenIdForAccount[account] != 0) {
             revert ConflictingRecord();
         }
 
         uint256 tokenId = ++_tokenId;
         _mint(account, tokenId);
         _setTokenURI(tokenId, optionalURI);
-        tokenIdForUsername[username] = tokenId;
+        tokenIdForUsername[username_] = tokenId;
         tokenIdForAccount[account] = tokenId;
 
-        emit RecordCreated(tokenId, account, username_, optionalURI);
+        emit RecordCreated(tokenId, account, username, optionalURI);
     }
 
     function _msgSender() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (address) {
