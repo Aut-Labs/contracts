@@ -135,7 +135,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
                 contribution.endDate,
                 contribution.points,
                 contribution.quantity,
-                contribution.description
+                contribution.uri
             );
     }
 
