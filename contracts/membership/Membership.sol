@@ -20,7 +20,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     EnumerableSet.AddressSet private _members;
 
     struct MemberDetail {
-        uint128 role;
+        uint256 role;
         uint8 commitment;
     }
     mapping(address who => mapping(uint32 periodId => MemberDetail)) public memberDetails;
@@ -120,7 +120,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     //                          MUTATIVE
     // -----------------------------------------------------------
 
-    function join(address who, uint128 role, uint8 commitment) public virtual {
+    function join(address who, uint256 role, uint8 commitment) public virtual {
         _revertIfNotHub();
 
         currentRole[who] = role;
