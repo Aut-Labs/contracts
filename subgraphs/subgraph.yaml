@@ -1,13 +1,15 @@
 specVersion: 0.0.8
 schema:
   file: ./schema.graphql
+features:
+  - ipfsOnEthereumContracts
 dataSources:
   - kind: ethereum
     name: AutID
     network: polygon-amoy
     source:
-      address: "0xDf8610E895094Be04A206bE2eBa16B8749799499"
-      startBlock: 6486436
+      address: "0x1CC5566beEE06bFC8ADecE5D1FC762998ed74A3E"
+      startBlock: 12131793
       abi: AutID
     mapping:
       kind: ethereum/events
@@ -21,18 +23,18 @@ dataSources:
       eventHandlers:
         - event: RecordCreated(uint256,address,string,string)
           handler: handleRecordCreated
-        - event: NovaJoined(address,uint256,uint256,address)
-          handler: handleNovaJoined
+        - event: HubJoined(address,uint256,uint8,address)
+          handler: handleHubJoined
         - event: TokenMetadataUpdated(uint256,address,string)
           handler: handleTokenMetadataUpdated
       file: ./src/aut-id.ts
   - kind: ethereum
-    name: NovaRegistry
+    name: HubRegistry
     network: polygon-amoy
     source:
-      address: "0x5f57801530CeF74703424cc5FaB09bF4F003E181"
-      abi: NovaRegistry
-      startBlock: 6486436
+      address: "0x98F716B5836d963d986E648d43aaA43c57D8E259"
+      abi: HubRegistry
+      startBlock: 12131793
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -40,18 +42,18 @@ dataSources:
       entities:
         - Hub
       abis:
-        - name: NovaRegistry
-          file: ../volumes/out/NovaRegistry.sol/NovaRegistry.json
+        - name: HubRegistry
+          file: ../volumes/out/HubRegistry.sol/HubRegistry.json
       eventHandlers:
-        - event: NovaCreated(address,address,uint256,uint256,string)
-          handler: handleNovaCreated
-      file: ./src/nova.ts
+        - event: HubCreated(address,address,uint256,uint256,string)
+          handler: handleHubCreated
+      file: ./src/hub.ts
   - kind: ethereum
-    name: Nova
+    name: Hub
     network: polygon-amoy
     source:
-      abi: Nova
-      startBlock: 6486436
+      abi: Hub
+      startBlock: 12131793
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -59,8 +61,8 @@ dataSources:
       entities:
         - Hub
       abis:
-        - name: Nova
-          file: ../volumes/out/Nova.sol/Nova.json
+        - name: Hub
+          file: ../volumes/out/Hub.sol/Hub.json
       eventHandlers:
         - event: MetadataUriSet(string)
           handler: handleMetadataUriSet
@@ -68,13 +70,14 @@ dataSources:
           handler: handleCommitmentSet
         - event: MarketSet(uint256)
           handler: handleMarketSet
-      file: ./src/nova.ts
+      file: ./src/hub.ts
   - kind: ethereum
     name: HubDomainsRegistry
     network: polygon-amoy
     source:
       abi: HubDomainsRegistry
-      startBlock: 6486436
+      address: "0xFd62B048D87bD002927B7867a9B3958f5b7481B7"
+      startBlock: 12131793
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -88,4 +91,43 @@ dataSources:
       eventHandlers:
         - event: DomainRegistered(indexed address,address,string,uint256,string)
           handler: handleDomainRegistered
-      file: ./src/hubDomainsRegistry.ts
+      file: ./src/hub-domains-registry.ts
+  - kind: ethereum
+    name: TaskFactory
+    network: polygon-amoy
+    source:
+      abi: TaskFactory
+      startBlock: 12131793
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - Contribution
+      abis:
+        - name: TaskFactory
+          file: ../volumes/out/TaskFactory.sol/TaskFactory.json
+      eventHandlers:
+        - event: CreateContribution(indexed bytes32,indexed address,bytes)
+          handler: handleCreateContribution
+      file: ./src/task-factory.ts
+  - kind: ethereum
+    name: TaskRegistry
+    network: polygon-amoy
+    source:
+      abi: TaskRegistry
+      address: "0xf14D863E4C3af3d62950B7d01688C4E9941Da67b"
+      startBlock: 12131793
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - Task
+      abis:
+        - name: TaskRegistry
+          file: ../volumes/out/TaskRegistry.sol/TaskRegistry.json
+      eventHandlers:
+        - event: RegisterTask(indexed bytes32,indexed address,string)
+          handler: handleRegisterTask
+      file: ./src/task-registry.ts

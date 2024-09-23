@@ -2,6 +2,7 @@
 pragma solidity ^0.8.21;
 
 import "script/DeployAll.s.sol";
+import {Hub} from "contracts/hub/Hub.sol";
 import {
     console,
     StdAssertions,
@@ -22,10 +23,11 @@ import {
 
 abstract contract BaseTest is Test {
     AutID public autId;
-    NovaRegistry public novaRegistry;
-    GlobalParametersAlpha public globalParameters;
+    HubRegistry public hubRegistry;
+    GlobalParameters public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
-    BasicOnboarding public basicOnboarding;
+
+    Hub public hub;
 
     RepFiRegistry public repFiRegistry;
     RepFi public repFi;
@@ -45,15 +47,18 @@ abstract contract BaseTest is Test {
     function setUp() public virtual {
         // setup and run deployment script
         DeployAll deploy = new DeployAll();
-        deploy.setUpTest(owner);
+        deploy.setUp();
+        deploy.setOwner(owner);
         deploy.run();
+        vm.stopBroadcast();
 
         // set env
         autId = deploy.autId();
-        novaRegistry = deploy.novaRegistry();
+        hubRegistry = deploy.hubRegistry();
         globalParameters = deploy.globalParameters();
         hubDomainsRegistry = deploy.hubDomainsRegistry();
-        basicOnboarding = deploy.basicOnboarding();
+
+        _deployHub();
 
         repFiRegistry = deploy.repFiRegistry();
 
@@ -74,10 +79,20 @@ abstract contract BaseTest is Test {
         vm.label(alice, "Alice");
         vm.label(bob, "Bob");
         vm.label(address(autId), "autId");
-        vm.label(address(novaRegistry), "novaRegistry");
+        vm.label(address(hubRegistry), "hubRegistry");
         vm.label(address(globalParameters), "globalParameters");
         vm.label(address(hubDomainsRegistry), "hubDomainsRegistry");
-        vm.label(address(basicOnboarding), "basicOnboarding");
+    }
+
+    /// @dev deploy a basic hub
+    function _deployHub() internal {
+        uint256[] memory roles = new uint256[](3);
+        roles[0] = 1;
+        roles[1] = 2;
+        roles[2] = 3;
+
+        address hubAddress = hubRegistry.deployHub({roles: roles, market: 1, metadata: "Mock Metadata", commitment: 1});
+        hub = Hub(hubAddress);
         vm.label(address(repFiRegistry), "repFiRegistry");
         vm.label(address(repFi), "repFi");
         vm.label(address(pRepFi), "pRepFi");

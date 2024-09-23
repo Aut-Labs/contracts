@@ -1,22 +1,23 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {INova} from "../contracts/nova/INova.sol";
+import {IHub} from "../contracts/hub/interfaces/IHub.sol";
 import {IAutID} from "../contracts/autid/IAutID.sol";
-import {INovaRegistry} from "../contracts/nova/INovaRegistry.sol";
-import {IAllowlist} from "../contracts/utils/IAllowlist.sol";
-import {IGlobalParametersAlpha} from "../contracts/globalParameters/IGlobalParametersAlpha.sol";
-import {SimpleAllowlistOnboarding} from "../contracts/onboarding/SimpleAllowlistOnboarding.sol";
-import {BasicOnboarding} from "../contracts/onboarding/BasicOnboarding.sol";
-import {Nova} from "../contracts/nova/Nova.sol";
+import {IHubRegistry} from "../contracts/hub/interfaces/IHubRegistry.sol";
+import {IGlobalParameters} from "../contracts/globalParameters/IGlobalParameters.sol";
+import {Hub} from "../contracts/hub/Hub.sol";
 import {AutID} from "../contracts/autid/AutID.sol";
-import {NovaRegistry} from "../contracts/nova/NovaRegistry.sol";
-import {Allowlist} from "../contracts/utils/Allowlist.sol";
-import {GlobalParametersAlpha} from "../contracts/globalParameters/GlobalParametersAlpha.sol";
-import {PluginRegistry} from "../contracts/pluginRegistry/PluginRegistry.sol";
-import {HubDomainsRegistry} from "../contracts/hubContracts/HubDomainsRegistry.sol";
+import {HubRegistry} from "../contracts/hub/HubRegistry.sol";
+import {GlobalParameters} from "../contracts/globalParameters/GlobalParameters.sol";
+import {HubDomainsRegistry} from "../contracts/hub/HubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
+import {Membership} from "../contracts/membership/Membership.sol";
+import {Participation} from "../contracts/participation/Participation.sol";
+import {Task, TaskRegistry} from "../contracts/tasks/TaskRegistry.sol";
+import {TaskFactory} from "../contracts/tasks/TaskFactory.sol";
+import {TaskManager} from "../contracts/tasks/TaskManager.sol";
+
 import {RepFiRegistry} from "../contracts/repfi/repFiRegistry/RepFiRegistry.sol";
 import {RepFi} from "../contracts/repfi/token/REPFI.sol";
 import {PRepFi} from "../contracts/repfi/token/pREPFI.sol";
@@ -34,12 +35,16 @@ contract DeployAll is Script {
     bool public deploying;
 
     // state variables
+    address membershipImplementation;
+    address participationImplementation;
+    address taskFactoryImplementation;
+    address taskManagerImplementation;
+
     AutID public autId;
-    PluginRegistry pluginRegistry;
-    NovaRegistry public novaRegistry;
-    GlobalParametersAlpha public globalParameters;
+    HubRegistry public hubRegistry;
     HubDomainsRegistry public hubDomainsRegistry;
-    BasicOnboarding public basicOnboarding;
+    TaskRegistry public taskRegistry;
+    GlobalParameters public globalParameters;
     RepFiRegistry public repFiRegistry;
     RepFi public repFi;
     PRepFi public pRepFi;
@@ -61,7 +66,7 @@ contract DeployAll is Script {
         string name;
     }
 
-    function setUpTest(address _owner) public {
+    function setOwner(address _owner) public {
         owner = _owner;
         projectMultisig = owner;
     }
@@ -76,7 +81,9 @@ contract DeployAll is Script {
             privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
             projectMultisig = vm.envAddress("TESTNET_PROJECT_MULTISIG_ADDRESS");
         } else {
-            revert("invalid chainid");
+            // testing
+            owner = address(123456);
+            privateKey = 567890;
         }
         console.log("setUp -- done");
 
@@ -88,26 +95,42 @@ contract DeployAll is Script {
         address trustedForwarder = address(new TrustedForwarder());
 
         // Deploy AutID
-        autId = deployAutId(trustedForwarder, owner);
-        pluginRegistry = deployPluginRegistry(owner);
-        hubDomainsRegistry = deployHubDomainsRegistry();
+        autId = deployAutId(trustedForwarder, vm.addr(privateKey));
+        hubDomainsRegistry = deployHubDomainsRegistry(owner);
+        taskRegistry = deployTaskRegistry(owner);
         globalParameters = deployGlobalParameters(owner);
-        novaRegistry = deployNovaRegistry({
+        (
+            membershipImplementation,
+            participationImplementation,
+            taskFactoryImplementation,
+            taskManagerImplementation
+        ) = deployHubDependencyImplementations();
+        hubRegistry = deployHubRegistry({
             _trustedForwarder: trustedForwarder,
             _owner: owner,
             _autIdAddress: address(autId),
-            _pluginRegistryAddress: address(pluginRegistry),
             _hubDomainsRegistryAddress: address(hubDomainsRegistry),
-            _globalParametersAddress: address(globalParameters)
+            _taskRegistryAddress: address(taskRegistry),
+            _globalParametersAddress: address(globalParameters),
+            _membershipImplementation: membershipImplementation,
+            _participationImplementation: participationImplementation,
+            _taskFactoryImplementation: taskFactoryImplementation,
+            _taskManagerImplementation: taskManagerImplementation
         });
-        basicOnboarding = deployBasicOnboarding(owner);
 
-        // set novaRegistry to autId (assumes msg.sender == owner [TODO: change this])
-        // autId.setNovaRegistry(address(novaRegistry));
+        // set hubRegistry to autId and transfer ownership
+        autId.setHubRegistry(address(hubRegistry));
+        autId.transferOwnership(owner);
 
-        // Create and set the allowlist
-        Allowlist allowlist = new Allowlist();
-        novaRegistry.setAllowlistAddress(address(allowlist));
+        // init hubDomainsRegistry now that hubRegistry is deployed
+        hubDomainsRegistry.initialize(address(hubRegistry));
+
+        // Setup initial tasks
+        Task[] memory tasks = new Task[](3);
+        tasks[0] = Task({uri: "ipfs://QmScDABgjA3MuiEDsLUDMpfe8cAKL1FgtSzLnGJVUF54Nx"});
+        tasks[1] = Task({uri: "ipfs://QmQZ2wXMsie8EGpbWk9GsRWQUj6JrJuBo7o3xCmnmZVWB7"});
+        tasks[2] = Task({uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"});
+        taskRegistry.registerTasks(tasks);
 
         repFiRegistry = deployRepFiRegistry(owner);
 
@@ -184,11 +207,9 @@ contract DeployAll is Script {
             TNamedAddress[24] memory na;
             na[0] = TNamedAddress({name: "globalParametersProxy", target: address(globalParameters)});
             na[1] = TNamedAddress({name: "autIDProxy", target: address(autId)});
-            na[2] = TNamedAddress({name: "novaRegistryProxy", target: address(novaRegistry)});
-            na[3] = TNamedAddress({name: "pluginRegistryProxy", target: address(pluginRegistry)});
-            na[4] = TNamedAddress({name: "allowlist", target: address(allowlist)});
-            na[5] = TNamedAddress({name: "basicOnboarding", target: address(basicOnboarding)});
-            na[9] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
+            na[2] = TNamedAddress({name: "hubRegistryProxy", target: address(hubRegistry)});
+            na[3] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
+            na[4] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
             na[10] = TNamedAddress({name: "repFiRegistry", target: address(repFiRegistry)});
             na[11] = TNamedAddress({name: "repFi", target: address(repFi)});
             na[12] = TNamedAddress({name: "pRepFi", target: address(pRepFi)});
@@ -217,74 +238,80 @@ contract DeployAll is Script {
 }
 
 function deployAutId(address _trustedForwarder, address _owner) returns (AutID) {
-    AutID autIdImplementation = new AutID(_trustedForwarder);
+    address autIdImplementation = address(new AutID(_trustedForwarder));
     AutProxy autIdProxy = new AutProxy(
-        address(autIdImplementation),
+        autIdImplementation,
         _owner,
-        abi.encodeWithSelector(AutID.initialize.selector, msg.sender)
+        abi.encodeWithSelector(AutID.initialize.selector, _owner)
     );
     return AutID(address(autIdProxy));
 }
 
-function deployPluginRegistry(address _owner) returns (PluginRegistry) {
-    PluginRegistry pluginRegistryImplementation = new PluginRegistry();
-    AutProxy pluginRegistryProxy = new AutProxy(
-        address(pluginRegistryImplementation),
-        _owner,
-        abi.encodeWithSelector(PluginRegistry.initialize.selector, _owner)
-    );
-    return PluginRegistry(address(pluginRegistryProxy));
+function deployHubDomainsRegistry(address _owner) returns (HubDomainsRegistry) {
+    address hubDomainsRegistryImplementation = address(new HubDomainsRegistry());
+    AutProxy hubDomainsRegistryProxy = new AutProxy(hubDomainsRegistryImplementation, _owner, "");
+    return HubDomainsRegistry(address(hubDomainsRegistryProxy));
 }
 
-function deployHubDomainsRegistry() returns (HubDomainsRegistry) {
-    // address hubDomainsRegistry = address(new HubDomainsRegistry(novaImpl));
-    HubDomainsRegistry hubDomainsRegistry = new HubDomainsRegistry(address(1)); // TODO
-    return hubDomainsRegistry;
+function deployTaskRegistry(address _owner) returns (TaskRegistry) {
+    address taskRegistryImplementation = address(new TaskRegistry());
+    AutProxy taskRegistryProxy = new AutProxy(taskRegistryImplementation, _owner, "");
+    return TaskRegistry(address(taskRegistryProxy));
 }
 
-function deployGlobalParameters(address _owner) returns (GlobalParametersAlpha) {
-    GlobalParametersAlpha globalParametersImplementation = new GlobalParametersAlpha();
-    AutProxy globalParametersProxy = new AutProxy(address(globalParametersImplementation), _owner, "");
-    return GlobalParametersAlpha(address(globalParametersProxy));
+function deployGlobalParameters(address _owner) returns (GlobalParameters) {
+    address globalParametersImplementation = address(new GlobalParameters());
+    AutProxy globalParametersProxy = new AutProxy(globalParametersImplementation, _owner, "");
+    return GlobalParameters(address(globalParametersProxy));
 }
 
-function deployNovaRegistry(
+function deployHubDependencyImplementations()
+    returns (
+        address membershipImplementation,
+        address participationImplementation,
+        address taskFactoryImplementation,
+        address taskManagerImplementation
+    )
+{
+    membershipImplementation = address(new Membership());
+    participationImplementation = address(new Participation());
+    taskFactoryImplementation = address(new TaskFactory());
+    taskManagerImplementation = address(new TaskManager());
+}
+
+function deployHubRegistry(
     address _trustedForwarder,
     address _owner,
     address _autIdAddress,
-    address _pluginRegistryAddress,
     address _hubDomainsRegistryAddress,
-    address _globalParametersAddress
-) returns (NovaRegistry) {
-    address novaImplementation = address(new Nova());
-    address novaRegistryImplementation = address(new NovaRegistry(_trustedForwarder));
-    AutProxy novaRegistryProxy = new AutProxy(
-        novaRegistryImplementation,
+    address _taskRegistryAddress,
+    address _globalParametersAddress,
+    address _membershipImplementation,
+    address _participationImplementation,
+    address _taskFactoryImplementation,
+    address _taskManagerImplementation
+) returns (HubRegistry) {
+    address hubImplementation = address(new Hub());
+    address hubRegistryImplementation = address(new HubRegistry(_trustedForwarder));
+    AutProxy hubRegistryProxy = new AutProxy(
+        hubRegistryImplementation,
         _owner,
-        abi.encodeWithSelector(
-            NovaRegistry.initialize.selector,
-            _autIdAddress,
-            novaImplementation,
-            _pluginRegistryAddress,
-            _hubDomainsRegistryAddress,
-            _globalParametersAddress
+        abi.encodeCall(
+            IHubRegistry.initialize,
+            (
+                _autIdAddress,
+                hubImplementation,
+                _hubDomainsRegistryAddress,
+                _taskRegistryAddress,
+                _globalParametersAddress,
+                _membershipImplementation,
+                _participationImplementation,
+                _taskFactoryImplementation,
+                _taskManagerImplementation
+            )
         )
     );
-    return NovaRegistry(address(novaRegistryProxy));
-}
-
-function deployBasicOnboarding(address _owner) returns (BasicOnboarding) {
-    address onboardingRole1 = address(new SimpleAllowlistOnboarding(_owner));
-    address onboardingRole2 = address(new SimpleAllowlistOnboarding(_owner));
-    address onboardingRole3 = address(new SimpleAllowlistOnboarding(_owner));
-
-    address[] memory addresses = new address[](3);
-    addresses[0] = onboardingRole1;
-    addresses[1] = onboardingRole2;
-    addresses[2] = onboardingRole3;
-    BasicOnboarding basicOnboarding = new BasicOnboarding(addresses);
-
-    return basicOnboarding;
+    return HubRegistry(address(hubRegistryProxy));
 }
 
 function deployRepFiRegistry(address _owner) returns (RepFiRegistry) {

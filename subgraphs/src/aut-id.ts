@@ -1,10 +1,11 @@
-import { Bytes } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, ipfs, json } from "@graphprotocol/graph-ts";
 import {
-  NovaJoined,
+  HubJoined,
   RecordCreated,
   TokenMetadataUpdated,
 } from "../generated/AutID/AutID";
-import { AutID } from "../generated/schema";
+import { AutID, HubJoinedInfo } from "../generated/schema";
+import { fetchMetadataFromIpfs } from "./fetch-metadata";
 
 export function handleRecordCreated(event: RecordCreated): void {
   let id = event.params.account.toHexString();
@@ -22,31 +23,25 @@ export function handleRecordCreated(event: RecordCreated): void {
   autID.blockNumber = event.block.number;
   autID.blockTimestamp = event.block.timestamp;
   autID.transactionHash = event.transaction.hash;
+  autID.metadataJson = fetchMetadataFromIpfs(event.params.uri);
 
   autID.save();
 }
-export function handleNovaJoined(event: NovaJoined): void {
+export function handleHubJoined(event: HubJoined): void {
   let id = event.params.account.toHexString();
-
   let autID = AutID.load(id);
+
   if (autID == null) {
     autID = new AutID(id);
-    autID.joinedNovas = [];
   }
 
-  autID.role = event.params.role;
-  autID.commitment = event.params.commitment;
-  autID.novaAddress = event.params.nova as Bytes;
-
-  if (autID.joinedNovas == null) {
-    autID.joinedNovas = [];
-  }
-
-  let novaAddress = event.params.nova as Bytes;
-  let novas = autID.joinedNovas as Array<Bytes>;
-  novas.push(novaAddress);
-  autID.joinedNovas = novas;
-
+  // Create a new HubJoinedInfo entity
+  let hubJoinedInfo = new HubJoinedInfo(event.transaction.hash.toHex() + "-" + event.logIndex.toString());
+  hubJoinedInfo.autID = autID.id;
+  hubJoinedInfo.role = event.params.role;
+  hubJoinedInfo.commitment = BigInt.fromI32(event.params.commitment);
+  hubJoinedInfo.hubAddress = event.params.hub as Bytes;
+  hubJoinedInfo.save();
   autID.save();
 }
 
@@ -60,7 +55,7 @@ export function handleNovaJoined(event: NovaJoined): void {
 // }
 
 export function handleTokenMetadataUpdated(event: TokenMetadataUpdated): void {
-  let txFrom = event.transaction.from; // novaAddress
+  let txFrom = event.transaction.from; // hubAddress
 
   if (txFrom) {
     let id = txFrom.toHexString();
@@ -72,13 +67,13 @@ export function handleTokenMetadataUpdated(event: TokenMetadataUpdated): void {
   }
 }
 
-// export function handleNovaWithdrawn(event: NovaWithdrawn): void {
+// export function handleHubWithdrawn(event: HubWithdrawn): void {
 //   let id = event.params.member.toHexString();
 //   let autID = AutID.load(id);
 
 //   if (autID) {
 //     autID.commitment = BigInt.fromI32(0);
-//     autID.novaAddress = Address.zero();
+//     autID.hubAddress = Address.zero();
 //     autID.save();
 //   }
 // }
