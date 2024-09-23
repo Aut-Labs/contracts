@@ -9,6 +9,7 @@ import {IReputationMining} from "../reputationMining/IReputationMining.sol";
 import {IRandomNumberGenerator} from "../../randomNumberGenerator/IRandomNumberGenerator.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IPeerStaking} from "./IPeerStaking.sol";
+import {IPeerValue} from "../PeerValue/IPeerValue.sol";
 
 contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     /// @notice the RepFi token contract
@@ -19,7 +20,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     address public circular;
     /// @notice random generator contract where we can get a random value for "peer value" as well was the "total value"
     /// @dev this contract will be replaced with the PeerValue contract in the near future, this is just for testing the functionality in the meantime
-    IRandomNumberGenerator randomNumberGenerator;
+    IPeerValue peerValue;
 
     IReputationMining public reputationMining;
 
@@ -58,21 +59,21 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     /// @param _repFiToken the address of the RepFi token contract
     /// @param _pRepFiToken the address of the pRepFi token contract
     /// @param _circular the address of the circular contract
-    /// @param _randomNumberGenerator the address of the RandomNumberGenerator contract
+    /// @param _peerValue the address of the PeerValue contract
     /// @param _reputationMining the address of the reputation mining contract
     function initialize(
         address initialOwner,
         address _repFiToken,
         address _pRepFiToken,
         address _circular,
-        address _randomNumberGenerator,
+        address _peerValue,
         address _reputationMining
     ) external initializer {
         __Ownable_init(initialOwner);
         repFiToken = IERC20(_repFiToken);
         pRepFiToken = IPREPFI(_pRepFiToken);
         circular = _circular;
-        randomNumberGenerator = IRandomNumberGenerator(_randomNumberGenerator);
+        peerValue = IPeerValue(_peerValue);
         reputationMining = IReputationMining(_reputationMining);
     }
 
@@ -94,7 +95,6 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         // limit the stake to be equal to or lower than the monthly reward of the staker
         uint256 montlyRewardForStaker = reputationMining.getClaimableUtilityTokenForPeriod(msg.sender, currentPeriod);
         require(montlyRewardForStaker >= amount, "amount is higher than montly staker reward");
-        //ToDo: put a check to make sure the msg.sender is not the stakee? I don't think it's worth it as there are other ways to do it beyond our control
 
         // save the stake in storage
         Stake memory newStake = Stake(
@@ -128,7 +128,10 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         require(currentStake.timestamp + currentStake.duration >= currentPeriod, "stake is still ongoing");
         // check the stakee's global reputation and compare with the bet that was placed and reward or slash the staking reward depending on the outcome, using a random number for now
         uint256 earnedAmount = 0;
-        uint256 actualPeerValue = randomNumberGenerator.getRandomNumberForAccount(currentStake.stakee, 80, 160);
+
+        uint256 actualPeerValue = peerValue.getPeerValue(currentStake.stakee, currentPeriod);
+        require(actualPeerValue > 0, "Peer value does not exist for user");
+
         if (currentStake.estimatedGlobalReputation >= actualPeerValue) {
             // ToDo: reward
         } else {
