@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "Running forge build..."
+if ! forge build; then
+  echo "Forge build failed. Please fix the errors before committing."
+  exit 1
+fi
+
+echo "Running forge test for AutTests..."
+if ! forge test; then
+  echo "Forge tests failed on AutTests. Please fix the errors before committing."
+  exit 1
+fi
