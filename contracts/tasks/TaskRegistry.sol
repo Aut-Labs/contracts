@@ -10,19 +10,23 @@ contract TaskRegistry is ITaskRegistry {
     EnumerableSet.Bytes32Set private _taskIds;
     mapping(bytes32 => Task) private _tasks;
 
-    // TODO: access control
+    // TODO: access control ?
 
-    function registerTasks(Task[] calldata tasks) external {
-        for (uint256 i = 0; i < tasks.length; i++) {
-            _registerTask(tasks[i]);
+    function registerTasks(Task[] calldata tasks) external returns (bytes32[] memory) {
+        uint256 length = tasks.length;
+        bytes32[] memory newTaskIds = new bytes32[](length);
+        for (uint256 i = 0; i < length; i++) {
+            newTaskIds[i] = _registerTask(tasks[i]);
         }
+
+        return newTaskIds;
     }
 
-    function registerTask(Task memory task) external {
-        _registerTask(task);
+    function registerTask(Task memory task) external returns (bytes32) {
+        return _registerTask(task);
     }
 
-    function _registerTask(Task memory task) internal {
+    function _registerTask(Task memory task) internal returns (bytes32) {
         bytes32 taskId = calcTaskId(task);
 
         if (!_taskIds.add(taskId)) revert TaskAlreadyRegistered();
@@ -30,6 +34,8 @@ contract TaskRegistry is ITaskRegistry {
         _tasks[taskId] = task;
 
         emit RegisterTask(taskId, msg.sender, task.uri);
+
+        return taskId;
     }
 
     function getTaskById(bytes32 taskId) external view returns (Task memory) {
