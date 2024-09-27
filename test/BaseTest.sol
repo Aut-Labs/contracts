@@ -5,6 +5,7 @@ import "script/DeployAll.s.sol";
 import { Hub } from "contracts/hub/Hub.sol";
 import { TaskRegistry, ITaskRegistry, Task } from "contracts/tasks/TaskRegistry.sol";
 import { TaskFactory, ITaskFactory, Contribution } from "contracts/tasks/TaskFactory.sol";
+import { TaskManager, ITaskManager, MemberActivity } from "contracts/tasks/TaskManager.sol";
 
 import { console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, stdJson, stdMath, StdStorage, stdStorage, StdUtils, Vm, StdStyle, TestBase, Test } from "forge-std/Test.sol";
 
@@ -17,10 +18,12 @@ abstract contract BaseTest is Test {
 
     Hub public hub;
     TaskFactory public taskFactory;
+    TaskManager public taskManager;
 
     address public owner = address(this);
     address public alice = address(0x411Ce);
     address public bob = address(0xb0b);
+    address public bot = address(0xb01);
 
     function setUp() public virtual {
         // setup and run deployment script
@@ -39,7 +42,9 @@ abstract contract BaseTest is Test {
 
         hub = _deployHub();
         taskFactory = TaskFactory(hub.taskFactory());
+        taskManager = TaskManager(hub.taskManager());
 
+        // initial setup: alice is first member
         _joinHub(alice, address(hub), "alice");
 
         // labeling
