@@ -14,7 +14,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
 
     EnumerableSet.Bytes32Set private _contributionIds;
     mapping(bytes32 => Contribution) public _contributions;
-    mapping(uint32 periodId => bytes32[] contributionIds) public _contributionsInPeriod;
+    mapping(uint32 periodId => bytes32[] contributionIds) public _contributionIdsInPeriod;
 
     constructor() {
         _disableInitializers();
@@ -48,13 +48,18 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         if (!ITaskRegistry(taskRegistry()).isTaskId(contribution.taskId)) revert TaskIdNotRegistered();
         if (contribution.quantity == 0) revert InvalidContributionQuantity(); // TODO: max quantity?
         if (contribution.points == 0 || contribution.points > 10) revert InvalidContributionPoints();
+        /// @dev: startDate can be in the past but endDate must be in the future
+        if (block.timestamp > contribution.endDate || contribution.startDate >= contribution.endDate) revert InvalidContributionPeriod();
+        // TODO: additional contribution checks
 
         bytes memory encodedContribution = encodeContribution(contribution);
         bytes32 contributionId = keccak256(encodedContribution);
         if (!_contributionIds.add(contributionId)) revert ContributionIdAlreadyExists();
 
         _contributions[contributionId] = contribution;
-        _contributionsInPeriod[currentPeriodId()].push(contributionId);
+        // TODO: for each period contribution is active, push
+        _contributionIdsInPeriod[currentPeriodId()].push(contributionId);
+
 
         ITaskManager(taskManager()).addContribution(contributionId, contribution);
 
@@ -122,8 +127,8 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return _contributionIds.values();
     }
 
-    function contributionsInPeriod(uint32 periodId) external view returns (bytes32[] memory) {
-        return _contributionsInPeriod[periodId];
+    function contributionIdsInPeriod(uint32 periodId) external view returns (bytes32[] memory) {
+        return _contributionIdsInPeriod[periodId];
     }
 
     function encodeContribution(Contribution memory contribution) public pure returns (bytes memory) {
