@@ -16,6 +16,7 @@ abstract contract BaseTest is Test {
     HubDomainsRegistry public hubDomainsRegistry;
 
     Hub public hub;
+    TaskFactory public taskFactory;
 
     address public owner = address(this);
     address public alice = address(0x411Ce);
@@ -37,7 +38,9 @@ abstract contract BaseTest is Test {
         taskRegistry = deploy.taskRegistry();
 
         hub = _deployHub();
-        _joinHub(address(hub), alice, "alice");
+        taskFactory = TaskFactory(hub.taskFactory());
+
+        _joinHub(alice, address(hub), "alice");
 
         // labeling
         vm.label(owner, "Owner");
@@ -51,7 +54,7 @@ abstract contract BaseTest is Test {
 
     /// @dev deploy a basic hub
     function _deployHub() internal returns (Hub) {
-        uint128[] memory roles = new uint128[](3);
+        uint256[] memory roles = new uint256[](3);
         roles[0] = 1;
         roles[1] = 2;
         roles[2] = 3;
@@ -66,8 +69,8 @@ abstract contract BaseTest is Test {
     }
 
     function _joinHub(
-        address hubAddress,
         address who,
+        address hubAddress,
         string memory username) internal {
         vm.prank(who);
         autId.createRecordAndJoinHub({
@@ -77,5 +80,29 @@ abstract contract BaseTest is Test {
             username: username,
             optionalURI: "https://facebook.com/someUser"
         });
+    }
+
+    function _createContribution(
+        address who,
+        address hubAddress,
+        bytes32 taskId,
+        uint256 role,
+        uint32 startDate,
+        uint32 endDate,
+        uint32 points,
+        uint128 quantity
+    ) internal {
+        vm.prank(who);
+        Contribution memory contribution = Contribution({
+            taskId: taskId,
+            role: role,
+            startDate: startDate,
+            endDate: endDate,
+            points: points,
+            quantity: quantity,
+            uri: ""
+        });
+        TaskFactory(Hub(hubAddress).taskFactory()).createContribution(contribution);
+
     }
 }
