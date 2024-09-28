@@ -7,10 +7,12 @@ import {IPeerValue} from "./IPeerValue.sol";
 contract PeerValue is IPeerValue {
     uint256 constant DEFAULT_LOWER_BOUND = 60;
     uint256 constant DEFAULT_UPPER_BOUND = 200;
+    uint256 constant DENOMINATOR = 1000;
 
     IRandomNumberGenerator public randomNumberGenerator;
     mapping(address account => mapping(uint256 period => PeerValueParams)) private peerValueParams;
     mapping(address account => mapping(uint256 period => uint256 peerValue)) public peerValues;
+    mapping(address account => uint256[] periods) numberOfPeriodsPerAccount;
 
     constructor(IRandomNumberGenerator _randomNumberGenerator) {
         randomNumberGenerator = _randomNumberGenerator;
@@ -77,6 +79,52 @@ contract PeerValue is IPeerValue {
         uint256 peerValue = ((params.participationScore + params.prestige + params.a_ring) * 100) / 3;
 
         peerValues[account][period] = peerValue;
+        numberOfPeriodsPerAccount[account].push(period);
         return peerValue;
+    }
+
+    function getAge(address account) public view returns (uint256) {
+        // return the amount of periods there's a peer value available for this account
+        return numberOfPeriodsPerAccount[account].length;
+    }
+
+    function getGrowthLikelyhood(
+        address account,
+        uint256 estimatedGrowth,
+        uint256 duration
+    ) external view returns (uint256 segments, uint256 highestContinuousSegment, uint256 fDgj, uint256 gLi) {
+        uint256 age = getAge(account);
+        // ToDo: restrict duration to avoid DOS?
+        // we want to check "duration" amount of periods but have to compare to the previous period so we're adding 1 to make sure we don't go out of bounds
+        require(age >= duration + 1, "duration is too high compared to the age of the autID");
+        uint256 continuousSegments = 0;
+
+        // start comparing periods for "duration" amount of periods until the last one
+        for (uint i = age - duration - 1; i < age; i++) {
+            uint256 period = numberOfPeriodsPerAccount[account][i];
+            // calculate growth compared to previous period
+            uint256 currentPeerValue = peerValues[account][period];
+            uint256 previousPeerValue = peerValues[account][period - 1];
+            if (((currentPeerValue - previousPeerValue) * 100) / previousPeerValue >= estimatedGrowth) {
+                segments++;
+                continuousSegments++;
+            } else {
+                if (continuousSegments > highestContinuousSegment) {
+                    highestContinuousSegment = continuousSegments;
+                    continuousSegments = 0;
+                }
+            }
+        }
+
+        // check again if the amount of continuous segments is greater than the higestContinuousSegment value
+        if (continuousSegments > highestContinuousSegment) {
+            highestContinuousSegment = continuousSegments;
+        }
+
+        // amount of continuous segments of T of the same extension of D
+        fDgj = (age * DENOMINATOR) / highestContinuousSegment;
+
+        // number of continious segments / total amount of segments where the PeerValue was greater than or equal to the estimatedPeerValue
+        gLi = fDgj / segments;
     }
 }

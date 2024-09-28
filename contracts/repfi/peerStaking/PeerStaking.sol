@@ -12,6 +12,7 @@ import {IPeerStaking} from "./IPeerStaking.sol";
 import {IPeerValue} from "../PeerValue/IPeerValue.sol";
 
 contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
+    uint256 constant DENOMINATOR = 1000;
     /// @notice the RepFi token contract
     IERC20 public repFiToken;
     /// @notice the pRepFi token contract
@@ -43,7 +44,8 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         address stakee;
         uint256 amount;
         uint256 timestamp;
-        uint256 estimatedGlobalReputation;
+        // ToDo: perhaps it makes more sense to use int so we can also use negative numbers?
+        uint256 estimatedGrowth;
         uint256 duration;
         bool active;
     }
@@ -81,31 +83,27 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         uint256 amount,
         address stakee,
         uint256 duration,
-        uint256 estimatedGlobalReputation
+        uint256 estimatedGrowth
     ) external returns (uint256 stakeId) {
         require(amount > 0, "amount must be bigger than 0");
         require(stakee != address(0), "invalid staker");
         require(duration > 0, "duration is not long enough");
-        require(estimatedGlobalReputation > 0, "expected growth is too low");
+        require(estimatedGrowth > 0, "expected growth is too low");
+
+        // Stakes are possible only on stakees whose ĀutID is 5 periods or older
+        uint256 age = peerValue.getAge(stakee);
+        require(age >= 5, "stakee has been active for less than 5 periods");
+        // limit period (D) of future growth prediction to be lower than or equal to the Age (A) of stakee’s ĀutID.
+        require(age >= duration, "duration is longer than the stakee's age");
 
         // get current period
         uint256 currentPeriod = reputationMining.period();
-        //ToDo: Investments are possible only on stakees whose ĀutID is 5 periods or older
-        //ToDo: limit period (D) of future growth prediction to be lower than or equal to the Age (A) of stakee’s ĀutID.
         // limit the stake to be equal to or lower than the monthly reward of the staker
         uint256 montlyRewardForStaker = reputationMining.getClaimableUtilityTokenForPeriod(msg.sender, currentPeriod);
         require(montlyRewardForStaker >= amount, "amount is higher than montly staker reward");
 
         // save the stake in storage
-        Stake memory newStake = Stake(
-            msg.sender,
-            stakee,
-            amount,
-            currentPeriod,
-            estimatedGlobalReputation,
-            duration,
-            true
-        );
+        Stake memory newStake = Stake(msg.sender, stakee, amount, currentPeriod, estimatedGrowth, duration, true);
         stakeId = totalStakes;
 
         stakes[stakeId] = newStake;
@@ -129,13 +127,37 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         // check the stakee's global reputation and compare with the bet that was placed and reward or slash the staking reward depending on the outcome, using a random number for now
         uint256 earnedAmount = 0;
 
+        uint256 startPeerValue = peerValue.getPeerValue(currentStake.stakee, currentStake.timestamp);
+        require(startPeerValue > 0, "start peer value does not exist for user");
         uint256 actualPeerValue = peerValue.getPeerValue(currentStake.stakee, currentPeriod);
-        require(actualPeerValue > 0, "Peer value does not exist for user");
+        require(actualPeerValue > 0, "Actual peer value does not exist for user");
+        uint256 actualGrowth = (actualPeerValue * DENOMINATOR) / startPeerValue;
 
-        if (currentStake.estimatedGlobalReputation >= actualPeerValue) {
-            // ToDo: reward
+        uint256 age = peerValue.getAge(currentStake.stakee);
+        (uint256 segments, uint256 highestContinuousSegment, uint256 fDgj, uint256 gLi) = peerValue.getGrowthLikelyhood(
+            currentStake.stakee,
+            currentStake.estimatedGrowth,
+            currentStake.duration
+        );
+
+        if (currentStake.estimatedGrowth >= actualGrowth) {
+            // staker's prediction was correct, thus will be rewarded
+            if (highestContinuousSegment == 0) {
+                earnedAmount = (currentStake.amount * 1500) / DENOMINATOR;
+            } else {
+                earnedAmount =
+                    (currentStake.amount * (DENOMINATOR + gLi + ((currentStake.duration * DENOMINATOR) / age))) /
+                    DENOMINATOR;
+            }
         } else {
-            // ToDo slash
+            // staker's prediction was wrong thus the staked amount will be slashed
+            if (highestContinuousSegment == 0) {
+                earnedAmount = (currentStake.amount * 750) / DENOMINATOR;
+            } else {
+                earnedAmount =
+                    (currentStake.amount * (DENOMINATOR - gLi + ((currentStake.duration * DENOMINATOR) / age))) /
+                    DENOMINATOR;
+            }
         }
 
         // set active to false
