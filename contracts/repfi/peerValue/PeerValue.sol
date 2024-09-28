@@ -12,7 +12,7 @@ contract PeerValue is IPeerValue {
     IRandomNumberGenerator public randomNumberGenerator;
     mapping(address account => mapping(uint256 period => PeerValueParams)) private peerValueParams;
     mapping(address account => mapping(uint256 period => uint256 peerValue)) public peerValues;
-    mapping(address account => uint256[] periods) numberOfPeriodsPerAccount;
+    mapping(address account => uint256[] periods) periodsForAccount;
 
     constructor(IRandomNumberGenerator _randomNumberGenerator) {
         randomNumberGenerator = _randomNumberGenerator;
@@ -79,18 +79,18 @@ contract PeerValue is IPeerValue {
         uint256 peerValue = ((params.participationScore + params.prestige + params.a_ring) * 100) / 3;
 
         peerValues[account][period] = peerValue;
-        numberOfPeriodsPerAccount[account].push(period);
+        periodsForAccount[account].push(period);
         return peerValue;
     }
 
     function getAge(address account) public view returns (uint256) {
         // return the amount of periods there's a peer value available for this account
-        return numberOfPeriodsPerAccount[account].length;
+        return periodsForAccount[account].length;
     }
 
     function getGrowthLikelyhood(
         address account,
-        uint256 estimatedGrowth,
+        int256 estimatedGrowth,
         uint256 duration
     ) external view returns (uint256 segments, uint256 highestContinuousSegment, uint256 fDgj, uint256 gLi) {
         uint256 age = getAge(account);
@@ -98,14 +98,15 @@ contract PeerValue is IPeerValue {
         // we want to check "duration" amount of periods but have to compare to the previous period so we're adding 1 to make sure we don't go out of bounds
         require(age >= duration + 1, "duration is too high compared to the age of the autID");
         uint256 continuousSegments = 0;
+        uint256 firstPeerValue = peerValues[account][age - duration - 1];
 
         // start comparing periods for "duration" amount of periods until the last one
-        for (uint i = age - duration - 1; i < age; i++) {
-            uint256 period = numberOfPeriodsPerAccount[account][i];
+        for (uint i = age - duration; i < age; i++) {
+            uint256 period = periodsForAccount[account][i];
             // calculate growth compared to previous period
             uint256 currentPeerValue = peerValues[account][period];
-            uint256 previousPeerValue = peerValues[account][period - 1];
-            if (((currentPeerValue - previousPeerValue) * 100) / previousPeerValue >= estimatedGrowth) {
+
+            if (int256(((currentPeerValue - firstPeerValue) * 100) / firstPeerValue) >= estimatedGrowth) {
                 segments++;
                 continuousSegments++;
             } else {

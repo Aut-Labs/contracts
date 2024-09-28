@@ -39,17 +39,6 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         uint256 rewardAmount
     );
 
-    struct Stake {
-        address staker;
-        address stakee;
-        uint256 amount;
-        uint256 timestamp;
-        // ToDo: perhaps it makes more sense to use int so we can also use negative numbers?
-        uint256 estimatedGrowth;
-        uint256 duration;
-        bool active;
-    }
-
     using SafeERC20 for IERC20;
     using SafeERC20 for IPREPFI;
 
@@ -83,7 +72,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         uint256 amount,
         address stakee,
         uint256 duration,
-        uint256 estimatedGrowth
+        int256 estimatedGrowth
     ) external returns (uint256 stakeId) {
         require(amount > 0, "amount must be bigger than 0");
         require(stakee != address(0), "invalid staker");
@@ -131,7 +120,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         require(startPeerValue > 0, "start peer value does not exist for user");
         uint256 actualPeerValue = peerValue.getPeerValue(currentStake.stakee, currentPeriod);
         require(actualPeerValue > 0, "Actual peer value does not exist for user");
-        uint256 actualGrowth = (actualPeerValue * DENOMINATOR) / startPeerValue;
+        int256 actualGrowth = int256(((actualPeerValue - startPeerValue) * 100) / startPeerValue);
 
         uint256 age = peerValue.getAge(currentStake.stakee);
         (uint256 segments, uint256 highestContinuousSegment, uint256 fDgj, uint256 gLi) = peerValue.getGrowthLikelyhood(
