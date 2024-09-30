@@ -4,9 +4,21 @@ import {
   MarketSet,
   MetadataUriSet,
   ArchetypeSet,
+  AdminGranted,
 } from "../generated/Hub/Hub";
-import { Hub } from "../generated/schema";
+import { Hub, HubAdmin } from "../generated/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
+
+export function handleAdminGranted(event: AdminGranted): void {
+  let id = event.params.to.toHexString();
+  let hubAdmin = HubAdmin.load(id);
+  if (hubAdmin == null) {
+    hubAdmin = new HubAdmin(id);
+  }
+  hubAdmin.autID = id;
+  hubAdmin.hubAddress = event.params.hubAddress;
+  hubAdmin.save();
+}
 
 export function handleHubCreated(event: HubCreated): void {
   let id = event.params.hubAddress.toHexString();
@@ -20,6 +32,13 @@ export function handleHubCreated(event: HubCreated): void {
   hub.metadataUri = event.params.metadata;
   hub.minCommitment = event.params.commitment;
   hub.domain = '';
+
+  // Create a new HubAdmin entity
+  let autIDAddress = event.params.deployer.toHexString();
+  let hubAdmin = new HubAdmin(autIDAddress);
+  hubAdmin.autID = autIDAddress;
+  hubAdmin.hubAddress = hub.address;
+  hubAdmin.save();
 
   // system
   hub.blockNumber = event.block.number;
