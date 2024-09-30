@@ -101,15 +101,26 @@ contract DeployAll is Script {
 
         // Setup initial tasks
         Task[] memory tasks = new Task[](3);
+        // open tasks
         tasks[0] = Task({
             uri: "ipfs://QmScDABgjA3MuiEDsLUDMpfe8cAKL1FgtSzLnGJVUF54Nx"
         });
+        // quiz tasks
         tasks[1] = Task({
             uri: "ipfs://QmQZ2wXMsie8EGpbWk9GsRWQUj6JrJuBo7o3xCmnmZVWB7"
         });
+        // join discord tasks
         tasks[2] = Task({
             uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"
         });
+        // polls
+        // tasks[3] = Task({
+        //     uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"
+        // });
+        // // gathering tasks
+        // tasks[4] = Task({
+        //     uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"
+        // });
         taskRegistry.registerTasks(tasks);
 
         // todo: convert to helper function
