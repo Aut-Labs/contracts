@@ -13,7 +13,7 @@ type AutID @entity(immutable: false) {
   tokenID: BigInt!
   username: String!
   metadataUri: String
-  metadataJson: String
+  # metadataJson: String
   joinedHubs: [HubJoinedInfo!] @derivedFrom(field: "autID")
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -61,10 +61,22 @@ type Contribution @entity {
 type Task @entity {
   id: ID!
   metadataUri: String!
-  metadataJson: String
+  # metadataJson: String
   taskId: Bytes!
   creator: Bytes!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
+}
+
+type HubAdmin @entity {
+  id: ID!
+  hubAddress: Bytes!
+  autID: AutID!
+}
+
+type HubMember @entity {
+  id: ID!
+  hubAddress: Bytes!
+  autID: AutID!
 }

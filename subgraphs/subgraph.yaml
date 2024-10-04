@@ -8,8 +8,8 @@ dataSources:
     name: AutID
     network: polygon-amoy
     source:
-      address: "0x1CC5566beEE06bFC8ADecE5D1FC762998ed74A3E"
-      startBlock: 12131793
+      address: "0x5Eb0d591aAdffe9012d73fd3c32931E97A97Bfec"
+      startBlock: 12236817
       abi: AutID
     mapping:
       kind: ethereum/events
@@ -32,9 +32,9 @@ dataSources:
     name: HubRegistry
     network: polygon-amoy
     source:
-      address: "0x98F716B5836d963d986E648d43aaA43c57D8E259"
+      address: "0xd0510466b9575c53013216Dc48c299C3B82ACcE6"
       abi: HubRegistry
-      startBlock: 12131793
+      startBlock: 12236817
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -53,7 +53,7 @@ dataSources:
     network: polygon-amoy
     source:
       abi: Hub
-      startBlock: 12131793
+      startBlock: 12236817
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -70,14 +70,16 @@ dataSources:
           handler: handleCommitmentSet
         - event: MarketSet(uint256)
           handler: handleMarketSet
+        # - event: AdminGranted(address,address)
+        #   handler: handleAdminGranted
       file: ./src/hub.ts
   - kind: ethereum
     name: HubDomainsRegistry
     network: polygon-amoy
     source:
       abi: HubDomainsRegistry
-      address: "0xFd62B048D87bD002927B7867a9B3958f5b7481B7"
-      startBlock: 12131793
+      address: "0x3A4490F8b60F131c9f352e20056649131c2FEfc7"
+      startBlock: 12236817
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -97,7 +99,7 @@ dataSources:
     network: polygon-amoy
     source:
       abi: TaskFactory
-      startBlock: 12131793
+      startBlock: 12236817
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -116,8 +118,8 @@ dataSources:
     network: polygon-amoy
     source:
       abi: TaskRegistry
-      address: "0xf14D863E4C3af3d62950B7d01688C4E9941Da67b"
-      startBlock: 12131793
+      address: "0xb510b6B6f7f74F15f808c0b610F5BF7466675970"
+      startBlock: 12236817
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8

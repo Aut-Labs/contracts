@@ -23,7 +23,7 @@ export function handleRecordCreated(event: RecordCreated): void {
   autID.blockNumber = event.block.number;
   autID.blockTimestamp = event.block.timestamp;
   autID.transactionHash = event.transaction.hash;
-  autID.metadataJson = fetchMetadataFromIpfs(event.params.uri);
+  // autID.metadataJson = fetchMetadataFromIpfs(event.params.uri);
 
   autID.save();
 }
