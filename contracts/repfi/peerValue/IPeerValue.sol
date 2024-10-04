@@ -18,5 +18,5 @@ interface IPeerValue {
         address account,
         int256 estimatedGrowth,
         uint256 duration
-    ) external view returns (uint256 segments, uint256 highestContinuousSegment, uint256 fDgj, uint256 gLi);
+    ) external view returns (uint256 highestContinuousSegment, uint256 gLi);
 }

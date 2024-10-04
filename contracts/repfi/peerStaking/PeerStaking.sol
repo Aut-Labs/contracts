@@ -68,6 +68,11 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         reputationMining = IReputationMining(_reputationMining);
     }
 
+    /// @notice Enables users to stake their tokens and gamble on the future growth of an āut user.
+    /// @param amount the amount of tokens to stake
+    /// @param stakee the address of the user that we're tracking the growth of
+    /// @param duration duration of the stake, in amount of periods
+    /// @param estimatedGrowth the estimated growth percentage denomincated to 1000 => 100%
     function stake(
         uint256 amount,
         address stakee,
@@ -77,7 +82,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         require(amount > 0, "amount must be bigger than 0");
         require(stakee != address(0), "invalid staker");
         require(duration > 0, "duration is not long enough");
-        require(estimatedGrowth > 0, "expected growth is too low");
+        require(estimatedGrowth > 0, "expected growth is too low"); // should be used with denominator, so 20% => 200
 
         // Stakes are possible only on stakees whose ĀutID is 5 periods or older
         uint256 age = peerValue.getAge(stakee);
@@ -103,6 +108,8 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         repFiToken.safeTransferFrom(msg.sender, address(this), amount);
     }
 
+    /// @notice Enables users to unstake the stake they have placed earlier. Funds are only claimable once the duration is past
+    /// @param stakeId The stake ID which was returned after staking
     function unstake(uint256 stakeId) external {
         // get current period
         uint256 currentPeriod = reputationMining.period();
@@ -123,7 +130,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         int256 actualGrowth = int256(((actualPeerValue - startPeerValue) * 100) / startPeerValue);
 
         uint256 age = peerValue.getAge(currentStake.stakee);
-        (uint256 segments, uint256 highestContinuousSegment, uint256 fDgj, uint256 gLi) = peerValue.getGrowthLikelyhood(
+        (uint256 highestContinuousSegment, uint256 gLi) = peerValue.getGrowthLikelyhood(
             currentStake.stakee,
             currentStake.estimatedGrowth,
             currentStake.duration

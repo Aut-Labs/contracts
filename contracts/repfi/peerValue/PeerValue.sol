@@ -92,21 +92,26 @@ contract PeerValue is IPeerValue {
         address account,
         int256 estimatedGrowth,
         uint256 duration
-    ) external view returns (uint256 segments, uint256 highestContinuousSegment, uint256 fDgj, uint256 gLi) {
+    ) external view returns (uint256 highestContinuousSegment, uint256 gLi) {
+        uint256 segments = 0;
+        uint256 fDgj = 0;
         uint256 age = getAge(account);
         // ToDo: restrict duration to avoid DOS?
         // we want to check "duration" amount of periods but have to compare to the previous period so we're adding 1 to make sure we don't go out of bounds
         require(age >= duration + 1, "duration is too high compared to the age of the autID");
         uint256 continuousSegments = 0;
-        uint256 firstPeerValue = peerValues[account][age - duration - 1];
 
-        // start comparing periods for "duration" amount of periods until the last one
-        for (uint i = age - duration; i < age; i++) {
-            uint256 period = periodsForAccount[account][i];
-            // calculate growth compared to previous period
-            uint256 currentPeerValue = peerValues[account][period];
+        // take D amount of random segments for the duration and count how many times the growth was equal to or higher than the estimated growth
+        for (uint i; i < duration; i++) {
+            // using age - duration -1 because we start counting from 0 in the array
+            uint256 randomIndex = randomNumberGenerator.getRandomNumberForAccount(account, 0, age - duration - 1);
+            uint256 firstPeriod = periodsForAccount[account][randomIndex];
+            uint256 lastPeriod = periodsForAccount[account][randomIndex + duration];
 
-            if (int256(((currentPeerValue - firstPeerValue) * 100) / firstPeerValue) >= estimatedGrowth) {
+            uint256 firstPeerValue = peerValues[account][firstPeriod];
+            uint256 lastPeerValue = peerValues[account][lastPeriod];
+
+            if (int256(((lastPeerValue - firstPeerValue) * 100) / firstPeerValue) >= estimatedGrowth) {
                 segments++;
                 continuousSegments++;
             } else {
