@@ -16,6 +16,7 @@ interface ITaskFactory {
     error ContributionIdAlreadyExists();
     error InvalidContributionQuantity();
     error InvalidContributionPoints();
+    error InvalidContributionPeriod();
 
     event CreateContribution(bytes32 indexed contributionId, address indexed sender, bytes encodedContribution);
 
@@ -43,7 +44,7 @@ interface ITaskFactory {
     function contributionIds() external view returns (bytes32[] memory);
 
     /// @notice return all contributions created within a given period
-    function contributionsInPeriod(uint32 periodId) external view returns (bytes32[] memory);
+    function contributionIdsInPeriod(uint32 periodId) external view returns (bytes32[] memory);
 
     /// @notice convert a Contribution struct to its' encoded type to hash / events
     function encodeContribution(Contribution memory contribution) external pure returns (bytes memory);
