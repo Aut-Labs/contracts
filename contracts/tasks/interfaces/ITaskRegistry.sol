@@ -11,8 +11,8 @@ interface ITaskRegistry {
 
     event RegisterTask(bytes32 indexed taskId, address indexed who, string uri);
 
-    function registerTasks(Task[] calldata tasks) external;
-    function registerTask(Task memory task) external;
+    function registerTasks(Task[] calldata tasks) external returns (bytes32[] memory);
+    function registerTask(Task memory task) external returns (bytes32);
 
     function getTaskById(bytes32 taskId) external view returns (Task memory);
     function getTaskByIdEncoded(bytes32 taskId) external view returns (bytes memory);
