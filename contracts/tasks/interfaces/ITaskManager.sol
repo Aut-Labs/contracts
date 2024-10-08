@@ -31,12 +31,12 @@ interface ITaskManager {
     error UnequalLengths();
     error MemberAlreadyContributed();
     error ContributionNotOpen();
-    error AlreadyContributor();
-    error NotContributor();
-    error UnauthorizedContributor();
+    error AlreadyContributionManager();
+    error NotContributionManager();
+    error UnauthorizedContributionManager();
 
-    event AddContributor(address who);
-    event RemoveContributor(address who);
+    event AddContributionManager(address who);
+    event RemoveContributionManager(address who);
     event AddContribution(bytes32 indexed contributionId, bytes encodedContributionStatus);
     event RemoveContribution(bytes32 indexed contributionId, bytes encodedContributionStatus);
     event CommitContribution(bytes32 indexed contributionId, address indexed sender, address indexed who, bytes data);
@@ -56,13 +56,13 @@ interface ITaskManager {
     /// @notice Get the amount of contribution points removed for the current period
     function periodPointsRemoved() external view returns (uint128);
 
-    function addContributor(address who) external;
+    function addContributionManager(address who) external;
 
-    function removeContributor(address who) external;
+    function removeContributionManager(address who) external;
 
-    function isContributor(address who) external view returns (bool);
+    function isContributionManager(address who) external view returns (bool);
 
-    function contributors() external view returns (address[] memory);
+    function contributionManagers() external view returns (address[] memory);
 
     /// @notice Add a contribution to the manager
     /// @dev is called via TaskFactory
