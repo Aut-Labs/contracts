@@ -23,8 +23,8 @@ interface IHub {
     error ConstraintFactorOutOfRange();
     event SetConstraintFactor(uint128 oldConstraintFactor, uint128 newConstraintFactor);
 
-    event AdminGranted(address to);
-    event AdminRenounced(address from);
+    event AdminGranted(address to, address where);
+    event AdminRenounced(address from, address where);
     event MemberGranted(address to, uint256 role);
     event ArchetypeSet(uint8 parameter);
     event ParameterSet(uint8 num, uint8 value);
