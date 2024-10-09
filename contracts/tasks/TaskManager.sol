@@ -11,6 +11,7 @@ import {Contribution} from "./interfaces/ITaskFactory.sol";
 
 contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.Bytes32Set;
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     uint128 public pointsActive;
     uint128 public periodPointsGiven;
@@ -22,6 +23,8 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     mapping(address member => EnumerableSet.Bytes32Set) private memberContributions;
     mapping(uint32 periodId => bytes32[] contributionIds) public contributionsGivenInPeriod;
 
+    EnumerableSet.AddressSet private _contributionManagers;
+
     constructor() {
         _disableInitializers();
     }
@@ -30,6 +33,32 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
+
+    // ContributionManager-management
+
+    function addContributionManager(address who) external {
+        _revertIfNotAdmin();
+        if (!_contributionManagers.add(who)) revert AlreadyContributionManager();
+
+        emit AddContributionManager(who);
+    }
+
+    function removeContributionManager(address who) external {
+        _revertIfNotAdmin();
+        if (!_contributionManagers.remove(who)) revert NotContributionManager();
+
+        emit RemoveContributionManager(who);
+    }
+
+    function isContributionManager(address who) public view returns (bool) {
+        return _contributionManagers.contains(who);
+    }
+
+    function contributionManagers() external view returns (address[] memory) {
+        return _contributionManagers.values();
+    }
+
+    // Contribution-management
 
     function addContribution(bytes32 contributionId, Contribution calldata contribution) public {
         _revertIfNotTaskFactory();
@@ -77,28 +106,34 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         emit RemoveContribution(contributionId, encodeContributionStatus(contributionStatus));
     }
 
-    function commitContributions(bytes32[] calldata contributionIds, bytes[] calldata datas) external {
-        _revertIfNotMember(msg.sender);
+    function commitContributions(
+        bytes32[] calldata contributionIds,
+        address[] calldata whos,
+        bytes[] calldata datas
+    ) external {
         uint256 length = contributionIds.length;
-        if (length != datas.length) revert UnequalLengths();
+        if (length != whos.length || length != datas.length) revert UnequalLengths();
         for (uint256 i = 0; i < length; i++) {
-            _commitContribution(contributionIds[i], datas[i]);
+            _commitContribution(contributionIds[i], whos[i], datas[i]);
         }
     }
 
-    function commitContribution(bytes32 contributionId, bytes calldata data) external {
-        _revertIfNotMember(msg.sender);
-        _commitContribution(contributionId, data);
+    function commitContribution(bytes32 contributionId, address who, bytes calldata data) external {
+        _commitContribution(contributionId, who, data);
     }
 
-    function _commitContribution(bytes32 contributionId, bytes memory data) internal {
+    function _commitContribution(bytes32 contributionId, address who, bytes memory data) internal {
+        if (msg.sender != who && !isContributionManager(msg.sender) && !_isAdmin(msg.sender))
+            revert UnauthorizedContributionManager();
+        _revertIfNotMember(who);
+
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
-        emit CommitContribution(contributionId, msg.sender, data);
+        emit CommitContribution(contributionId, msg.sender, who, data);
     }
 
     function giveContributions(bytes32[] calldata contributionIds, address[] calldata whos) external {
-        _revertIfNotAdmin();
+        if (!isContributionManager(msg.sender) && _isAdmin(msg.sender)) revert UnauthorizedContributionManager();
         writePointSummary();
 
         uint256 length = contributionIds.length;
@@ -109,7 +144,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     }
 
     function giveContribution(bytes32 contributionId, address who) external {
-        _revertIfNotAdmin();
+        if (!isContributionManager(msg.sender) && _isAdmin(msg.sender)) revert UnauthorizedContributionManager();
         writePointSummary();
         _giveContribution(contributionId, who);
     }
