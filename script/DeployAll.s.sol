@@ -23,6 +23,7 @@ import "forge-std/Script.sol";
 
 contract DeployAll is Script {
     address public owner;
+    address public initialContributionManager;
     uint256 public privateKey;
     bool public deploying;
 
@@ -50,13 +51,16 @@ contract DeployAll is Script {
     function setUp() public {
         if (block.chainid == 137) {
             owner = vm.envAddress("MAINNET_OWNER_ADDRESS");
+            initialContributionManager = vm.envAddress("MAINNET_INITIAL_CONTRIBUTION_MANAGER");
             privateKey = vm.envUint("MAINNET_PRIVATE_KEY");
         } else if (block.chainid == 80002) {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
+            initialContributionManager = vm.envAddress("TESTNET_INITIAL_CONTRIBUTION_MANAGER");
             privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
         } else {
             // testing
             owner = address(123456);
+            initialContributionManager = address(11111111);
             privateKey = 567890;
         }
         console.log("setUp -- done");
@@ -86,6 +90,7 @@ contract DeployAll is Script {
             _hubDomainsRegistryAddress: address(hubDomainsRegistry),
             _taskRegistryAddress: address(taskRegistry),
             _globalParametersAddress: address(globalParameters),
+            _initialContributionManager: initialContributionManager,
             _membershipImplementation: membershipImplementation,
             _participationImplementation: participationImplementation,
             _taskFactoryImplementation: taskFactoryImplementation,
@@ -205,6 +210,7 @@ function deployHubRegistry(
     address _hubDomainsRegistryAddress,
     address _taskRegistryAddress,
     address _globalParametersAddress,
+    address _initialContributionManager,
     address _membershipImplementation,
     address _participationImplementation,
     address _taskFactoryImplementation,
@@ -223,6 +229,7 @@ function deployHubRegistry(
                 _hubDomainsRegistryAddress,
                 _taskRegistryAddress,
                 _globalParametersAddress,
+                _initialContributionManager,
                 _membershipImplementation,
                 _participationImplementation,
                 _taskFactoryImplementation,

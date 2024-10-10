@@ -8,6 +8,7 @@ interface IHubRegistry {
         address hubDomainsRegistry_,
         address taskRegistry_,
         address globalParameters_,
+        address _initialContributionManager,
         address _membershipImplementation,
         address _participationImplementation,
         address _taskFactoryImplementation,
