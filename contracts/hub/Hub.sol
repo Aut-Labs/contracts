@@ -144,7 +144,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         if (!isMember(who)) revert NotMember();
         if (!_admins.add(who)) revert AlreadyAdmin();
 
-        emit AdminGranted(who);
+        emit AdminGranted(who, address(this));
     }
 
     function removeAdmin(address who) external {
@@ -152,7 +152,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         if (msg.sender == who) revert AdminCannotRenounceSelf();
         if (!_admins.remove(who)) revert CannotRemoveNonAdmin();
 
-        emit AdminRenounced(who);
+        emit AdminRenounced(who, address(this));
     }
 
     // -----------------------------------------------------------
