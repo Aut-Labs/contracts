@@ -17,6 +17,7 @@ import {
 import {AutIDUtils} from "./AutIDUtils.sol";
 import {IHub} from "../hub/interfaces/IHub.sol";
 import {IHubRegistry} from "../hub/interfaces/IHubRegistry.sol";
+import {IMembership} from "../membership/IMembership.sol";
 
 contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, ERC2771ContextUpgradeable, IAutID {
     error ConflictingRecord();
@@ -60,16 +61,6 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     /// @inheritdoc IAutID
-    function updateTokenURI(string memory uri) external {
-        address account = _msgSender();
-        _revertForZeroAddress(account);
-        uint256 tokenId = tokenIdForAccount[account];
-        _revertForInvalidTokenId(tokenId);
-
-        _setTokenURI(tokenId, uri);
-    }
-
-    /// @inheritdoc IAutID
     function mint(
         uint256 role,
         uint8 commitment,
@@ -96,8 +87,12 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _joinHub(account, role, commitment, hub);
     }
 
-    function listUserHubs(address user) external view returns (address[] memory) {
-        return IHubRegistry(hubRegistry).listUserHubs(user);
+    function getUserHubs(address user) external view returns (address[] memory) {
+        return IHubRegistry(hubRegistry).getUserHubs(user);
+    }
+
+    function currentRole(address hub, address user) external view returns (uint256) {
+        return IMembership(hub).currentRole(user);
     }
 
     // function userHubRole(address hub, address user) external view returns (uint256) {
@@ -116,6 +111,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         revert UntransferableToken();
     }
 
+    /// @inheritdoc IAutID
     function setTokenURI(string memory uri) external {
         address account = _msgSender();
         _revertForZeroAddress(account);
@@ -141,7 +137,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _revertForZeroAddress(hubRegistryAddress);
         _revertForZeroAddress(hub);
         _revertForInvalidCommitment(commitment);
-        _revertForUncheckedHub(hubRegistryAddress, hub);
+        _revertIfHubDoesNotExist(hubRegistryAddress, hub);
         _revertForCanNotJoinHub(hub, account, role);
         _revertForMinCommitmentNotReached(hub, commitment);
 

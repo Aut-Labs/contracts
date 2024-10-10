@@ -175,12 +175,12 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         return _roles.values();
     }
 
-    function roleOf(address who) external view returns (uint256) {
+    function currentRole(address who) public view returns (uint256) {
         return IMembership(membership).currentRole(who);
     }
 
     function hasRole(address who, uint256 role) external view returns (bool) {
-        // TODO
+        return currentRole(who) == role;
     }
 
     function hadRole(address who, uint256 role, uint32 periodId) external view returns (bool) {

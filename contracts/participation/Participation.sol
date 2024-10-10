@@ -148,7 +148,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
     }
 
     function commitmentSum(uint32 periodId) internal view returns (uint128) {
-        return IMembership(membership()).commitmentSums(periodId);
+        return IMembership(membership()).getCommitmentSum(periodId);
     }
 
     /// @notice off-chain helper to check which members to write participation score to

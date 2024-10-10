@@ -6,6 +6,8 @@ import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Own
 import "./interfaces/IHubDomainsRegistry.sol";
 import "./interfaces/IHubRegistry.sol";
 
+// TODO: register properly from a hub
+// TODO: is verifier needed?
 contract HubDomainsRegistry is IHubDomainsRegistry, OwnableUpgradeable {
     struct Domain {
         string name;
@@ -38,10 +40,11 @@ contract HubDomainsRegistry is IHubDomainsRegistry, OwnableUpgradeable {
     }
 
     modifier onlyFromHub() {
-        require(IHubRegistry(hubRegistry).checkHub(msg.sender));
+        require(IHubRegistry(hubRegistry).isHub(msg.sender));
         _;
     }
 
+    /// @inheritdoc IHubDomainsRegistry
     function registerDomain(
         string calldata domain,
         address hubAddress,
@@ -59,6 +62,7 @@ contract HubDomainsRegistry is IHubDomainsRegistry, OwnableUpgradeable {
         emit DomainRegistered(hubAddress, msg.sender, domain, tokenIdCounter, metadataUri);
     }
 
+    /// @inheritdoc IHubDomainsRegistry
     function getDomain(string calldata domain) external view returns (address, string memory) {
         return (domains[domain].hubAddress, domains[domain].metadataUri);
     }
