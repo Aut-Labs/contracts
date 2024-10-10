@@ -47,6 +47,9 @@ interface ITaskManager {
         bytes encodedContributionStatus
     );
 
+    /// @notice Set the initial contribution manager from the hub registry
+    function initialize2(address _initialContributionManager) external;
+
     /// @notice Get the amount of outstanding contribution points for the current period
     function pointsActive() external view returns (uint128);
 
