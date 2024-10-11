@@ -34,12 +34,20 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
+    /// @dev set the initial contribution manager from the hub registry
+    function initialize2(address initialContributionManager) external reinitializer(2) {
+        _addContributionManager(initialContributionManager);
+    }
+
     // ContributionManager-management
 
     function addContributionManager(address who) external {
         _revertIfNotAdmin();
-        if (!_contributionManagers.add(who)) revert AlreadyContributionManager();
+        _addContributionManager(who);
+    }
 
+    function _addContributionManager(address who) internal {
+        if (!_contributionManagers.add(who)) revert AlreadyContributionManager();
         emit AddContributionManager(who);
     }
 
