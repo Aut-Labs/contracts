@@ -25,6 +25,8 @@ import {TokenVesting} from "../contracts/repfi/vesting/TokenVesting.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
 import {InitialDistribution} from "../contracts/repfi/token/InitialDistribution.sol";
 import {RandomNumberGenerator} from "../contracts/randomNumberGenerator/RandomNumberGenerator.sol";
+import {PeerValue} from "../contracts/repfi/peerValue/PeerValue.sol";
+import {PeerStaking} from "../contracts/repfi/peerStaking/PeerStaking.sol";
 
 import "forge-std/Script.sol";
 
@@ -60,6 +62,8 @@ contract DeployAll is Script {
     ReputationMining public reputationMining;
     InitialDistribution public initialDistribution;
     RandomNumberGenerator public randomNumberGenerator;
+    PeerValue public peerValue;
+    PeerStaking public peerStaking;
 
     struct TNamedAddress {
         address target;
@@ -191,6 +195,19 @@ contract DeployAll is Script {
             ecosystem
         );
 
+        // deploy PeerValue
+        peerValue = deployPeerValue(randomNumberGenerator);
+
+        // deploy PeerStaking
+        peerStaking = deployPeerStaking(
+            owner,
+            address(repFi),
+            address(pRepFi),
+            address(circular),
+            address(peerValue),
+            address(reputationMining)
+        );
+
         // register repfi plugins, more to add later
         vm.startPrank(owner);
         // ToDo: give burner role to reputationmining in prepfi
@@ -199,6 +216,9 @@ contract DeployAll is Script {
         repFiRegistry.registerPlugin(address(address(this)), "DeployContract");
         repFiRegistry.registerPlugin(address(initialDistribution), "InitialDistribution");
         repFiRegistry.registerPlugin(address(reputationMining), "ReputationMining");
+        repFiRegistry.registerPlugin(address(peerValue), "PeerValue");
+        repFiRegistry.registerPlugin(address(peerStaking), "PeerStaking");
+
         vm.stopPrank();
 
         // send tokens to distribution contract
@@ -400,4 +420,34 @@ function deployInitialDistribution(
         _ecosystem
     );
     return initialDistribution;
+}
+
+function deployPeerValue(RandomNumberGenerator randomNumberGenerator) returns (PeerValue) {
+    PeerValue peerValue = new PeerValue(randomNumberGenerator);
+    return peerValue;
+}
+
+function deployPeerStaking(
+    address _owner,
+    address _repFiToken,
+    address _pRepFiToken,
+    address _circular,
+    address _peerValue,
+    address _reputationMining
+) returns (PeerStaking) {
+    PeerStaking peerStakingImplementation = new PeerStaking();
+    AutProxy peerStakingProxy = new AutProxy(
+        address(peerStakingImplementation),
+        _owner,
+        abi.encodeWithSelector(
+            PeerStaking.initialize.selector,
+            _owner,
+            _repFiToken,
+            _pRepFiToken,
+            _circular,
+            _peerValue,
+            _reputationMining
+        )
+    );
+    return PeerStaking(address(peerStakingProxy));
 }
