@@ -36,6 +36,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
     // ContributionManager-management
 
+    /// @inheritdoc ITaskManager
     function addContributionManager(address who) external {
         _revertIfNotAdmin();
         if (!_contributionManagers.add(who)) revert AlreadyContributionManager();
@@ -43,6 +44,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         emit AddContributionManager(who);
     }
 
+    /// @inheritdoc ITaskManager
     function removeContributionManager(address who) external {
         _revertIfNotAdmin();
         if (!_contributionManagers.remove(who)) revert NotContributionManager();
@@ -50,16 +52,19 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         emit RemoveContributionManager(who);
     }
 
+    /// @inheritdoc ITaskManager
     function isContributionManager(address who) public view returns (bool) {
         return _contributionManagers.contains(who);
     }
 
+    /// @inheritdoc ITaskManager
     function contributionManagers() external view returns (address[] memory) {
         return _contributionManagers.values();
     }
 
     // Contribution-management
 
+    /// @inheritdoc ITaskManager
     function addContribution(bytes32 contributionId, Contribution calldata contribution) public {
         _revertIfNotTaskFactory();
         writePointSummary();
@@ -78,6 +83,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         emit AddContribution(contributionId, encodeContributionStatus(contributionStatus));
     }
 
+    /// @inheritdoc ITaskManager
     function removeContributions(bytes32[] calldata contributionIds) external {
         _revertIfNotAdmin();
         writePointSummary();
@@ -86,6 +92,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    /// @inheritdoc ITaskManager
     function removeContribution(bytes32 contributionId) external {
         _revertIfNotAdmin();
         writePointSummary();
@@ -106,6 +113,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         emit RemoveContribution(contributionId, encodeContributionStatus(contributionStatus));
     }
 
+    /// @inheritdoc ITaskManager
     function commitContributions(
         bytes32[] calldata contributionIds,
         address[] calldata whos,
@@ -118,6 +126,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    /// @inheritdoc ITaskManager
     function commitContribution(bytes32 contributionId, address who, bytes calldata data) external {
         _commitContribution(contributionId, who, data);
     }
@@ -132,6 +141,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         emit CommitContribution(contributionId, msg.sender, who, data);
     }
 
+    /// @inheritdoc ITaskManager
     function giveContributions(bytes32[] calldata contributionIds, address[] calldata whos) external {
         if (!isContributionManager(msg.sender) && _isAdmin(msg.sender)) revert UnauthorizedContributionManager();
         writePointSummary();
@@ -143,6 +153,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    /// @inheritdoc ITaskManager
     function giveContribution(bytes32 contributionId, address who) external {
         if (!isContributionManager(msg.sender) && _isAdmin(msg.sender)) revert UnauthorizedContributionManager();
         writePointSummary();
@@ -181,7 +192,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         emit GiveContribution(contributionId, who, currentPeriodId_, encodeContributionStatus(contributionStatus));
     }
 
-    /// @notice write sums to history when needed
+    /// @inheritdoc ITaskManager
     function writePointSummary() public {
         _writePointSummary(currentPeriodId());
     }
@@ -233,34 +244,42 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    /// @inheritdoc ITaskManager
     function getContributionStatus(bytes32 contributionId) external view returns (ContributionStatus memory) {
         return contributionStatuses[contributionId];
     }
 
+    /// @inheritdoc ITaskManager
     function getContributionPoints(bytes32 contributionId) external view returns (uint128) {
         return contributionStatuses[contributionId].points;
     }
 
+    /// @inheritdoc ITaskManager
     function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128) {
         return memberActivities[who][periodId].pointsGiven;
     }
 
+    /// @inheritdoc ITaskManager
     function getMemberContributionIds(address who, uint32 periodId) external view returns (bytes32[] memory) {
         return memberActivities[who][periodId].contributionIds;
     }
 
+    /// @inheritdoc ITaskManager
     function getPointsActive(uint32 periodId) external view returns (uint128) {
         return pointSummaries[periodId].pointsActive;
     }
 
+    /// @inheritdoc ITaskManager
     function getPointsGiven(uint32 periodId) external view returns (uint128) {
         return pointSummaries[periodId].pointsGiven;
     }
 
+    /// @inheritdoc ITaskManager
     function getGivenContributions(uint32 periodId) external view returns (bytes32[] memory) {
         return contributionsGivenInPeriod[periodId];
     }
 
+    /// @inheritdoc ITaskManager
     function encodeContributionStatus(ContributionStatus memory contributionStatus) public pure returns (bytes memory) {
         return
             abi.encodePacked(
