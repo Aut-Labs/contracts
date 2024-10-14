@@ -12,6 +12,7 @@ import {
 
 import {IHubRegistry} from "./interfaces/IHubRegistry.sol";
 import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
+import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
 
 import {IHub} from "./interfaces/IHub.sol";
 import {IHubModule} from "./interfaces/IHubModule.sol";
@@ -38,6 +39,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     address public hubDomainsRegistry;
     address public taskRegistry;
     address public globalParameters;
+    address public initialContributionManager;
     address public membershipImplementation;
     address public participationImplementation;
     address public taskFactoryImplementation;
@@ -53,6 +55,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         address hubDomainsRegistry_,
         address taskRegistry_,
         address globalParameters_,
+        address _initialContributionManager,
         address _membershipImplementation,
         address _participationImplementation,
         address _taskFactoryImplementation,
@@ -69,10 +72,17 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         globalParameters = globalParameters_;
         upgradeableBeacon = new UpgradeableBeacon(hubLogic, address(this));
 
+        setInitialContributionManager(_initialContributionManager);
+
         membershipImplementation = _membershipImplementation;
         participationImplementation = _participationImplementation;
         taskFactoryImplementation = _taskFactoryImplementation;
         taskManagerImplementation = _taskManagerImplementation;
+    }
+
+    /// @inheritdoc IHubRegistry
+    function setInitialContributionManager(address _initialContributionManager) public onlyOwner {
+        initialContributionManager = _initialContributionManager;
     }
 
     /// @inheritdoc IHubRegistry
@@ -139,6 +149,9 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
             _participation: participation,
             _membership: membership
         });
+
+        // Set the initial contribution manager as stored in this contract
+        ITaskManager(taskManager).initialize2(initialContributionManager);
 
         hubsDeployed[_msgSender()].push(hub);
         hubs.push(hub);

@@ -12,11 +12,16 @@ interface IHubRegistry {
         address hubDomainsRegistry_,
         address taskRegistry_,
         address globalParameters_,
+        address _initialContributionManager,
         address _membershipImplementation,
         address _participationImplementation,
         address _taskFactoryImplementation,
         address _taskManagerImplementation
     ) external;
+
+    /// @notice set the initial contribution manager, who will be added to each new hub deployment
+    /// @dev only callable by Hub owner
+    function setInitialContributionManager(address _initialContributionManager) external;
 
     /// @notice return the current period id (as stored globally)
     function currentPeriodId() external view returns (uint32);
