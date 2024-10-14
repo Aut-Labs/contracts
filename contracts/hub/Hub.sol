@@ -112,6 +112,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     //                         MUTATIVE
     // -----------------------------------------------------------
 
+    /// @inheritdoc IHub
     function join(address who, uint256 role, uint8 _commitment) external {
         IMembership(membership).join(who, role, _commitment);
     }
@@ -120,14 +121,17 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     //                     ADMIN-MANAGEMENT
     // -----------------------------------------------------------
 
+    /// @inheritdoc IHub
     function admins() external view returns (address[] memory) {
         return _admins.values();
     }
 
+    /// @inheritdoc IHub
     function isAdmin(address who) public view returns (bool) {
         return _admins.contains(who);
     }
 
+    /// @inheritdoc IHub
     function addAdmins(address[] calldata whos) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
         for (uint256 i = 0; i < whos.length; i++) {
@@ -135,6 +139,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         }
     }
 
+    /// @inheritdoc IHub
     function addAdmin(address who) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
         _addAdmin(who);
@@ -147,6 +152,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         emit AdminGranted(who, address(this));
     }
 
+    /// @inheritdoc IHub
     function removeAdmin(address who) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
         if (msg.sender == who) revert AdminCannotRenounceSelf();
@@ -159,28 +165,29 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     //                        VIEWS
     // -----------------------------------------------------------
 
+    /// @inheritdoc IHub
     function membersCount() external view returns (uint256) {
         return IMembership(membership).membersCount();
     }
 
+    /// @inheritdoc IHub
     function isMember(address who) public view override returns (bool) {
         return IMembership(membership).isMember(who);
     }
 
-    function periodCount() external view returns (uint32) {
-        return TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-    }
-
+    /// @inheritdoc IHub
     function roles() external view returns (uint256[] memory) {
         return _roles.values();
     }
 
-    function roleOf(address who) external view returns (uint256) {
+    /// @inheritdoc IHub
+    function currentRole(address who) public view returns (uint256) {
         return IMembership(membership).currentRole(who);
     }
 
+    /// @inheritdoc IHub
     function hasRole(address who, uint256 role) external view returns (bool) {
-        // TODO
+        return currentRole(who) == role;
     }
 
     function hadRole(address who, uint256 role, uint32 periodId) external view returns (bool) {
@@ -191,6 +198,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         // TODO
     }
 
+    /// @inheritdoc IHub
     function canJoin(address who, uint256 role) public view returns (bool) {
         if (IMembership(membership).currentRole(who) != 0) {
             return false;
@@ -206,11 +214,13 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         return true;
     }
 
+    /// @inheritdoc IHub
     function constraintFactor() external view returns (uint128) {
         return
             localConstraintFactor == 0 ? IGlobalParameters(globalParameters).constraintFactor() : localConstraintFactor;
     }
 
+    /// @inheritdoc IHub
     function penaltyFactor() external view returns (uint128) {
         return localPenaltyFactor == 0 ? IGlobalParameters(globalParameters).penaltyFactor() : localPenaltyFactor;
     }
@@ -228,6 +238,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, hubAddress_, metadataUri_);
     }
 
+    /// @inheritdoc IHub
     function setConstraintFactor(uint128 newConstraintFactor) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
         if (newConstraintFactor != 0 && (newConstraintFactor < 1e16 || newConstraintFactor > 1e18))
@@ -237,6 +248,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         emit SetConstraintFactor(oldConstraintFactor, newConstraintFactor);
     }
 
+    /// @inheritdoc IHub
     function setPenaltyFactor(uint128 newPenaltyFactor) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
         if (newPenaltyFactor != 0 && (newPenaltyFactor < 1e16 || newPenaltyFactor < 1e18))
@@ -281,7 +293,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
 
     function _setRoles(uint256[] memory roles_) internal {
         for (uint256 i = 0; i < roles_.length; i++) {
-            _roles.add(roles_[i]);
+            require(_roles.add(roles_[i]), "Cannot add duplicate roles");
         }
     }
 
@@ -347,6 +359,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     //                           VIEWS
     // -----------------------------------------------------------
 
+    // TODO: figure these out
     function getDomain(string calldata domain) external view returns (address, string memory) {
         return IHubDomainsRegistry(hubDomainsRegistry).getDomain(domain);
     }

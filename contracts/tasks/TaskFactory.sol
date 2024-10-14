@@ -28,6 +28,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
+    /// @inheritdoc ITaskFactory
     function registerDescriptions(Description[] calldata descriptions) external returns (bytes32[] memory) {
         uint256 length = descriptions.length;
         bytes32[] memory newDescriptionIds = new bytes32[](length);
@@ -38,6 +39,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return newDescriptionIds;
     }
 
+    /// @inheritdoc ITaskFactory
     function registerDescription(Description calldata description) external returns (bytes32) {
         return _registerDescription(description);
     }
@@ -52,6 +54,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         emit RegisterDescription(descriptionId);
     }
 
+    /// @inheritdoc ITaskFactory
     function createContributions(Contribution[] calldata contributions) external returns (bytes32[] memory) {
         _revertIfNotAdmin();
         uint256 length = contributions.length;
@@ -66,6 +69,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return newContributionIds;
     }
 
+    /// @inheritdoc ITaskFactory
     function createContribution(Contribution calldata contribution) external returns (bytes32) {
         _revertIfNotAdmin();
         return _createContribution(contribution);
@@ -90,7 +94,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return contributionId;
     }
 
-    /// @dev off-chain helper
+    /// @inheritdoc ITaskFactory
     function getContributionIdsBeforeEndDate(uint32 timestamp) external view returns (bytes32[] memory) {
         uint256 length = _contributionIds.length();
         bytes32[] memory tempContributionIds = new bytes32[](length);
@@ -111,7 +115,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return result;
     }
 
-    /// @dev off-chain helper
+    /// @inheritdoc ITaskFactory
     function getContributionIdsActive(uint32 timestamp) external view returns (bytes32[] memory) {
         uint256 length = _contributionIds.length();
         bytes32[] memory tempContributionIds = new bytes32[](length);
@@ -132,48 +136,59 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return result;
     }
 
+    /// @inheritdoc ITaskFactory
     function getDescriptionById(bytes32 descriptionId) external view returns (Description memory) {
         return _descriptions[descriptionId];
     }
 
+    /// @inheritdoc ITaskFactory
     function getContributionById(bytes32 contributionId) external view returns (Contribution memory) {
         return _contributions[contributionId];
     }
 
+    /// @inheritdoc ITaskFactory
     function getDescriptionByIdEncoded(bytes32 descriptionId) external view returns (bytes memory) {
         Description memory description = _descriptions[descriptionId];
         return encodeDescription(description);
     }
 
+    /// @inheritdoc ITaskFactory
     function getContributionByIdEncoded(bytes32 contributionId) external view returns (bytes memory) {
         Contribution memory contribution = _contributions[contributionId];
         return encodeContribution(contribution);
     }
 
+    /// @inheritdoc ITaskFactory
     function isDescriptionId(bytes32 descriptionId) public view returns (bool) {
         return _descriptionIds.contains(descriptionId);
     }
 
+    /// @inheritdoc ITaskFactory
     function isContributionId(bytes32 contributionId) public view returns (bool) {
         return _contributionIds.contains(contributionId);
     }
 
+    /// @inheritdoc ITaskFactory
     function descriptionIds() external view returns (bytes32[] memory) {
         return _descriptionIds.values();
     }
 
+    /// @inheritdoc ITaskFactory
     function contributionIds() external view returns (bytes32[] memory) {
         return _contributionIds.values();
     }
 
+    /// @inheritdoc ITaskFactory
     function contributionsInPeriod(uint32 periodId) external view returns (bytes32[] memory) {
         return _contributionsInPeriod[periodId];
     }
 
+    /// @inheritdoc ITaskFactory
     function encodeDescription(Description memory description) public pure returns (bytes memory) {
         return abi.encodePacked(description.uri);
     }
 
+    /// @inheritdoc ITaskFactory
     function encodeContribution(Contribution memory contribution) public pure returns (bytes memory) {
         return
             abi.encodePacked(
@@ -187,10 +202,12 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
             );
     }
 
+    /// @inheritdoc ITaskFactory
     function calcDescriptionId(Description memory description) public pure returns (bytes32) {
         return keccak256(encodeDescription(description));
     }
 
+    /// @inheritdoc ITaskFactory
     function calcContributionId(Contribution memory contribution) public pure returns (bytes32) {
         return keccak256(encodeContribution(contribution));
     }

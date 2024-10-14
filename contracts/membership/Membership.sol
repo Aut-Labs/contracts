@@ -5,8 +5,9 @@ import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet
 import {PeriodUtils} from "../utils/PeriodUtils.sol";
 import {AccessUtils} from "../utils/AccessUtils.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {IMembership} from "./IMembership.sol";
 
-contract Membership is Initializable, PeriodUtils, AccessUtils {
+contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
 
@@ -26,12 +27,6 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     mapping(address who => mapping(uint32 periodId => MemberDetail)) public memberDetails;
     mapping(uint32 periodId => uint128 commitmentSum) public commitmentSums;
 
-    error MemberDoesNotExist();
-    error MemberHasNotYetCommited();
-    error SenderNotHub();
-
-    event Join(address, uint256, uint8);
-
     function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
@@ -41,25 +36,29 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     //                          VIEWS
     // -----------------------------------------------------------
 
+    /// @inheritdoc IMembership
     function members() external view returns (address[] memory) {
         return _members.values();
     }
 
+    /// @inheritdoc IMembership
     function isMember(address who) public view returns (bool) {
         return _members.contains(who);
     }
 
+    /// @inheritdoc IMembership
     function membersCount() external view returns (uint256) {
         return _members.length();
     }
 
-    /// @notice return the period id the member joined the hub
+    /// @inheritdoc IMembership
     function getPeriodIdJoined(address who) public view returns (uint32) {
         uint32 periodIdJoined = getPeriodId(joinedAt[who]);
         if (periodIdJoined == 0) revert MemberDoesNotExist();
         return periodIdJoined;
     }
 
+    /// @inheritdoc IMembership
     function getPeriodIdsJoined(address[] calldata whos) external view returns (uint32[] memory) {
         uint256 length = whos.length;
         uint32[] memory pis = new uint32[](length);
@@ -69,7 +68,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         return pis;
     }
 
-    /// @notice get the commitment level of a member at a particular period id
+    /// @inheritdoc IMembership
     function getCommitment(address who, uint32 periodId) public view returns (uint8) {
         if (periodId < getPeriodIdJoined(who)) revert MemberHasNotYetCommited();
 
@@ -84,6 +83,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    /// @inheritdoc IMembership
     function getCommitments(
         address[] calldata whos,
         uint32[] calldata periodIds
@@ -97,6 +97,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         return commitments;
     }
 
+    /// @inheritdoc IMembership
     function getCommitmentSum(uint32 periodId) public view returns (uint128) {
         uint32 currentPeriodId_ = currentPeriodId();
         if (periodId < initPeriodId() || periodId > currentPeriodId_) revert InvalidPeriodId();
@@ -107,6 +108,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    /// @inheritdoc IMembership
     function getCommitmentSums(uint32[] calldata periodIds) external view returns (uint128[] memory) {
         uint256 length = periodIds.length;
         uint128[] memory sums = new uint128[](length);
@@ -120,6 +122,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
     //                          MUTATIVE
     // -----------------------------------------------------------
 
+    /// @inheritdoc IMembership
     function join(address who, uint256 role, uint8 commitment) public virtual {
         _revertIfNotHub();
 
@@ -136,6 +139,7 @@ contract Membership is Initializable, PeriodUtils, AccessUtils {
         emit Join(who, role, commitment);
     }
 
+    // TODO
     // function changeCommitment(uint8 newCommitment) external {
     //     uint8 oldCommitment = currentCommitments[msg.sender];
     //     if (newCommitment == oldCommitment) revert SameCommitment();

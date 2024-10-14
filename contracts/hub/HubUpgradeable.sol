@@ -5,9 +5,11 @@ import {StorageSlot} from "@openzeppelin/contracts/utils/StorageSlot.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 abstract contract HubUpgradeable is Initializable {
-    // 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50
-    bytes32 private constant _BEACON_SLOT = bytes32(uint256(keccak256("eip1967.proxy.beacon")));
-    bytes32 private constant _IMPLEMENTATION_SLOT = bytes32(uint256(keccak256("id.aut.os.proxy.implementation")) - 1);
+    // bytes32(uint256(keccak256("eip1967.proxy.beacon")))
+    bytes32 private constant _BEACON_SLOT = 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50;
+
+    // bytes32(uint256(keccak256("aut.hub.implementation")) - 1)
+    bytes32 private constant _IMPLEMENTATION_SLOT = 0xcd0912f71386cff9878081e1c75800d1c9ded2720c4f877d0b3f713d15203c60;
 
     function implementation() external view returns (address) {
         return _getImplementationSlot().value;
