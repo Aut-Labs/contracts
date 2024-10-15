@@ -86,8 +86,8 @@ contract DeployAll is Script {
             projectMultisig = vm.envAddress("TESTNET_PROJECT_MULTISIG_ADDRESS");
         } else {
             // testing
-            owner = address(123456);
             privateKey = 567890;
+            owner = vm.addr(privateKey);
         }
         console.log("setUp -- done");
 
@@ -209,17 +209,23 @@ contract DeployAll is Script {
         );
 
         // register repfi plugins, more to add later
+
+        vm.stopBroadcast();
         vm.startPrank(owner);
         // ToDo: give burner role to reputationmining in prepfi
         pRepFi.grantRole(pRepFi.BURNER_ROLE(), address(reputationMining));
 
         repFiRegistry.registerPlugin(address(address(this)), "DeployContract");
+        // this is needed for tests because in BaseTest.sol the owner will be changed to the BaseTest contract
+        repFiRegistry.registerPlugin(address(vm.addr(privateKey)), "owner");
         repFiRegistry.registerPlugin(address(initialDistribution), "InitialDistribution");
         repFiRegistry.registerPlugin(address(reputationMining), "ReputationMining");
         repFiRegistry.registerPlugin(address(peerValue), "PeerValue");
         repFiRegistry.registerPlugin(address(peerStaking), "PeerStaking");
 
         vm.stopPrank();
+
+        vm.startBroadcast(privateKey);
 
         // send tokens to distribution contract
         repFi.transfer(address(initialDistribution), 100000000 ether); // 100 million repfi tokens
