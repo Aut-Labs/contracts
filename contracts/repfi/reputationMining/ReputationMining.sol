@@ -12,7 +12,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 /// @title Reputation Mining
 /// @author Āut Labs
 /// @notice This contract distributes an allocation of pRepFi tokens to Āut users depending on their peer value every period
-/// users can then utilize these tokens using the plugins defined in the RepFiRegistry contract. When the period has ended
+/// users can then utilize these tokens using the plugins defined in the UtilsRegistry contract. When the period has ended
 /// the admin will update the period after which users can claim the RepFi tokens they have earned in the previous period
 /// based on their usage and can receive new pRepFi tokens and put them to use in the next period.
 contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining {

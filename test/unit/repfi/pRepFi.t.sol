@@ -9,11 +9,11 @@ contract PRepFiTest is BaseTest {
 
     function setUp() public override {
         super.setUp();
-        pRepfiToken = new PRepFi(address(this), address(repFiRegistry));
+        pRepfiToken = new PRepFi(address(this), address(utilsRegistry));
     }
 
     function test_deployToken() public {
-        pRepfiToken = new PRepFi(address(this), address(repFiRegistry));
+        pRepfiToken = new PRepFi(address(this), address(utilsRegistry));
         assert(address(pRepfiToken) != address(0));
     }
 
@@ -53,14 +53,14 @@ contract PRepFiTest is BaseTest {
     function test_transferAllowed() public {
         uint256 balanceBefore = pRepfiToken.balanceOf(address(alice));
         // add this contract as a plugin for now
-        repFiRegistry.registerPlugin(address(this), "test");
+        utilsRegistry.registerPlugin(address(this), "test");
         // try to send tokens to alice
         pRepfiToken.transfer(address(alice), 100 ether);
 
         uint256 balanceAfter = pRepfiToken.balanceOf(address(alice));
 
         // remove this contract as a plugin
-        repFiRegistry.removePlugin(address(this));
+        utilsRegistry.removePlugin(address(this));
         assertEq(pRepfiToken.balanceOf(address(alice)), 100 ether, "tokens were not transfered");
         assertEq(balanceAfter - balanceBefore, 100 ether, "tokens were not transfered");
     }

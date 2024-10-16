@@ -18,7 +18,7 @@ import {Task, TaskRegistry} from "../contracts/tasks/TaskRegistry.sol";
 import {TaskFactory} from "../contracts/tasks/TaskFactory.sol";
 import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 
-import {RepFiRegistry} from "../contracts/repfi/repFiRegistry/RepFiRegistry.sol";
+import {UtilsRegistry} from "../contracts/repfi/utilsRegistry/UtilsRegistry.sol";
 import {RepFi} from "../contracts/repfi/token/REPFI.sol";
 import {PRepFi} from "../contracts/repfi/token/pREPFI.sol";
 import {PrivateSale} from "../contracts/repfi/vesting/PrivateSale.sol";
@@ -51,7 +51,7 @@ contract DeployAll is Script {
     HubDomainsRegistry public hubDomainsRegistry;
     TaskRegistry public taskRegistry;
     GlobalParameters public globalParameters;
-    RepFiRegistry public repFiRegistry;
+    UtilsRegistry public utilsRegistry;
     RepFi public repFi;
     PRepFi public pRepFi;
     PrivateSale public privateSale;
@@ -151,11 +151,11 @@ contract DeployAll is Script {
         // });
         taskRegistry.registerTasks(tasks);
 
-        repFiRegistry = deployRepFiRegistry(owner);
+        utilsRegistry = deployRepFiRegistry(owner);
 
         // deploy token contracts
         repFi = deployRepFiToken();
-        pRepFi = deployPRepFiToken(address(owner), address(repFiRegistry));
+        pRepFi = deployPRepFiToken(address(owner), address(utilsRegistry));
 
         // deploy vesting contracts
         privateSale = deployPrivateSale(address(repFi), projectMultisig);
@@ -219,13 +219,13 @@ contract DeployAll is Script {
         // ToDo: give burner role to reputationmining in prepfi
         pRepFi.grantRole(pRepFi.BURNER_ROLE(), address(reputationMining));
 
-        repFiRegistry.registerPlugin(address(address(this)), "DeployContract");
+        utilsRegistry.registerPlugin(address(address(this)), "DeployContract");
         // this is needed for tests because in BaseTest.sol the owner will be changed to the BaseTest contract
-        repFiRegistry.registerPlugin(address(vm.addr(privateKey)), "owner");
-        repFiRegistry.registerPlugin(address(initialDistribution), "InitialDistribution");
-        repFiRegistry.registerPlugin(address(reputationMining), "ReputationMining");
-        repFiRegistry.registerPlugin(address(peerValue), "PeerValue");
-        repFiRegistry.registerPlugin(address(peerStaking), "PeerStaking");
+        utilsRegistry.registerPlugin(address(vm.addr(privateKey)), "owner");
+        utilsRegistry.registerPlugin(address(initialDistribution), "InitialDistribution");
+        utilsRegistry.registerPlugin(address(reputationMining), "ReputationMining");
+        utilsRegistry.registerPlugin(address(peerValue), "PeerValue");
+        utilsRegistry.registerPlugin(address(peerStaking), "PeerStaking");
 
         vm.stopPrank();
 
@@ -251,7 +251,7 @@ contract DeployAll is Script {
             na[2] = TNamedAddress({name: "hubRegistryProxy", target: address(hubRegistry)});
             na[3] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
             na[4] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
-            na[10] = TNamedAddress({name: "repFiRegistry", target: address(repFiRegistry)});
+            na[10] = TNamedAddress({name: "utilsRegistry", target: address(utilsRegistry)});
             na[11] = TNamedAddress({name: "repFi", target: address(repFi)});
             na[12] = TNamedAddress({name: "pRepFi", target: address(pRepFi)});
             na[13] = TNamedAddress({name: "privateSale", target: address(privateSale)});
@@ -355,14 +355,14 @@ function deployHubRegistry(
     return HubRegistry(address(hubRegistryProxy));
 }
 
-function deployRepFiRegistry(address _owner) returns (RepFiRegistry) {
-    RepFiRegistry repFiRegistryImplementation = new RepFiRegistry();
+function deployRepFiRegistry(address _owner) returns (UtilsRegistry) {
+    UtilsRegistry repFiRegistryImplementation = new UtilsRegistry();
     AutProxy repFiRegistryProxy = new AutProxy(
         address(repFiRegistryImplementation),
         _owner,
-        abi.encodeWithSelector(RepFiRegistry.initialize.selector, _owner)
+        abi.encodeWithSelector(UtilsRegistry.initialize.selector, _owner)
     );
-    return RepFiRegistry(address(repFiRegistryProxy));
+    return UtilsRegistry(address(repFiRegistryProxy));
 }
 
 function deployRepFiToken() returns (RepFi) {

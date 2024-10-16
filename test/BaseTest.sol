@@ -29,7 +29,7 @@ abstract contract BaseTest is Test {
 
     Hub public hub;
 
-    RepFiRegistry public repFiRegistry;
+    UtilsRegistry public utilsRegistry;
     RepFi public repFi;
     PRepFi public pRepFi;
     PrivateSale public privateSale;
@@ -63,7 +63,7 @@ abstract contract BaseTest is Test {
 
         _deployHub();
 
-        repFiRegistry = deploy.repFiRegistry();
+        utilsRegistry = deploy.utilsRegistry();
 
         repFi = deploy.repFi();
         pRepFi = deploy.pRepFi();
@@ -99,7 +99,7 @@ abstract contract BaseTest is Test {
 
         address hubAddress = hubRegistry.deployHub({roles: roles, market: 1, metadata: "Mock Metadata", commitment: 1});
         hub = Hub(hubAddress);
-        vm.label(address(repFiRegistry), "repFiRegistry");
+        vm.label(address(utilsRegistry), "utilsRegistry");
         vm.label(address(repFi), "repFi");
         vm.label(address(pRepFi), "pRepFi");
         vm.label(address(privateSale), "privateSale");

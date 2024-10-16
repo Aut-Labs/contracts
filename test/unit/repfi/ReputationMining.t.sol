@@ -14,7 +14,7 @@ contract ReputationMiningTest is BaseTest {
     function setUp() public override {
         super.setUp();
         repfiToken = new RepFi();
-        pRepfiToken = new PRepFi(address(this), address(repFiRegistry));
+        pRepfiToken = new PRepFi(address(this), address(utilsRegistry));
         reputationMiningContract = new ReputationMining();
         circular = makeAddr("circular");
 
@@ -37,8 +37,8 @@ contract ReputationMiningTest is BaseTest {
         pRepfiToken.grantRole(pRepfiToken.BURNER_ROLE(), address(reputationMiningContract));
 
         // configure reputationMining as a plugin
-        repFiRegistry.registerPlugin(address(reputationMiningContract), "ReputationMiningTest");
-        repFiRegistry.registerPlugin(address(this), "test contract");
+        utilsRegistry.registerPlugin(address(reputationMiningContract), "ReputationMiningTest");
+        utilsRegistry.registerPlugin(address(this), "test contract");
 
         // send tokens to reputationMining
         repfiToken.transfer(address(reputationMiningContract), initialPRepFiBalance);

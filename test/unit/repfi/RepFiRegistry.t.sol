@@ -13,38 +13,38 @@ contract RepFiRegistryTest is BaseTest {
     function test_registerPluginNoAccess() public {
         vm.expectRevert();
         vm.prank(alice);
-        repFiRegistry.registerPlugin(address(plugin), "test plugin");
+        utilsRegistry.registerPlugin(address(plugin), "test plugin");
     }
 
     function test_registerPluginZeroAddress() public {
         vm.expectRevert("contractAddress must be a valid address");
-        repFiRegistry.registerPlugin(address(0), "test plugin");
+        utilsRegistry.registerPlugin(address(0), "test plugin");
     }
 
     function test_registerPluginSuccess() public {
-        repFiRegistry.registerPlugin(address(plugin), "test plugin");
+        utilsRegistry.registerPlugin(address(plugin), "test plugin");
     }
 
     function test_registerPluginTwiceFail() public {
-        repFiRegistry.registerPlugin(address(plugin), "test plugin");
+        utilsRegistry.registerPlugin(address(plugin), "test plugin");
 
         vm.expectRevert("plugin is already registered");
-        repFiRegistry.registerPlugin(address(plugin), "test plugin");
-        assertEq(repFiRegistry.isPlugin(address(plugin)), true);
+        utilsRegistry.registerPlugin(address(plugin), "test plugin");
+        assertEq(utilsRegistry.isPlugin(address(plugin)), true);
     }
 
     function test_removePluginZeroAddress() public {
         vm.expectRevert("contractAddress must be a valid address");
-        repFiRegistry.removePlugin(address(0));
+        utilsRegistry.removePlugin(address(0));
     }
 
     function test_removePluginUnknown() public {
         vm.expectRevert("plugin does not exist");
-        repFiRegistry.removePlugin(address(plugin));
+        utilsRegistry.removePlugin(address(plugin));
     }
 
     function test_getPluginDescription() public {
-        repFiRegistry.registerPlugin(address(plugin), "test plugin");
-        assertEq(repFiRegistry.getPluginDescription(address(plugin)), "test plugin");
+        utilsRegistry.registerPlugin(address(plugin), "test plugin");
+        assertEq(utilsRegistry.getPluginDescription(address(plugin)), "test plugin");
     }
 }

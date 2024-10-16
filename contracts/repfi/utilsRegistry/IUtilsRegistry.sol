@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IRepFiRegistry {
+interface IUtilsRegistry {
     function initialize(address) external;
 
     function registerPlugin(address) external;
