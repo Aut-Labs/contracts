@@ -21,7 +21,11 @@ import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 import {RepFiRegistry} from "../contracts/repfi/repFiRegistry/RepFiRegistry.sol";
 import {RepFi} from "../contracts/repfi/token/REPFI.sol";
 import {PRepFi} from "../contracts/repfi/token/pREPFI.sol";
-import {TokenVesting} from "../contracts/repfi/vesting/TokenVesting.sol";
+import {PrivateSale} from "../contracts/repfi/vesting/PrivateSale.sol";
+import {PublicSale} from "../contracts/repfi/vesting/PublicSale.sol";
+import {Investors} from "../contracts/repfi/vesting/Investors.sol";
+import {Team} from "../contracts/repfi/vesting/Team.sol";
+import {Ecosystem} from "../contracts/repfi/vesting/Ecosystem.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
 import {InitialDistribution} from "../contracts/repfi/token/InitialDistribution.sol";
 import {RandomNumberGenerator} from "../contracts/randomNumberGenerator/RandomNumberGenerator.sol";
@@ -50,13 +54,13 @@ contract DeployAll is Script {
     RepFiRegistry public repFiRegistry;
     RepFi public repFi;
     PRepFi public pRepFi;
-    TokenVesting public privateSale;
-    TokenVesting public community;
-    TokenVesting public investors;
-    TokenVesting public team;
+    PrivateSale public privateSale;
+    PublicSale public community;
+    Investors public investors;
+    Team public team;
     address public airdrop; // merkle
     address public partners; // multisig
-    address public ecosystem; // multisig
+    Ecosystem public ecosystem;
     address public profitSharing;
     address public circular;
     ReputationMining public reputationMining;
@@ -154,10 +158,11 @@ contract DeployAll is Script {
         pRepFi = deployPRepFiToken(address(owner), address(repFiRegistry));
 
         // deploy vesting contracts
-        privateSale = deployTokenVesting(address(repFi), projectMultisig);
-        community = deployTokenVesting(address(repFi), projectMultisig);
-        investors = deployTokenVesting(address(repFi), projectMultisig);
-        team = deployTokenVesting(address(repFi), projectMultisig);
+        privateSale = deployPrivateSale(address(repFi), projectMultisig);
+        community = deployPublicSale(address(repFi), projectMultisig);
+        investors = deployInvestors(address(repFi), projectMultisig);
+        team = deployTeam(address(repFi), projectMultisig);
+        ecosystem = deployEcosystem(address(repFi), projectMultisig);
 
         // deploy circular contract
         circular = makeAddr("circular"); // ToDo: update to Circular contract later
@@ -167,7 +172,6 @@ contract DeployAll is Script {
 
         airdrop = makeAddr("airdrop"); // ToDo: update to Airdrop contract later
         partners = makeAddr("partners"); // ToDo: update to partners multisig later
-        ecosystem = makeAddr("ecosystem"); // ToDo: update to ecosystem multisig later
 
         // ToDo: change this to the real contract when it's ready
 
@@ -371,12 +375,28 @@ function deployPRepFiToken(address _owner, address _repFiRegistry) returns (PRep
     return pRepFi;
 }
 
-function deployTokenVesting(address _repFiToken, address _owner) returns (TokenVesting) {
-    TokenVesting vesting = new TokenVesting(_repFiToken, _owner);
+function deployPrivateSale(address _repFiToken, address _owner) returns (PrivateSale) {
+    PrivateSale vesting = new PrivateSale(_repFiToken, _owner);
+    return vesting;
+}
 
-    // ToDo: set owner to multisig
-    // vesting.transferOwnership(multisig);
+function deployPublicSale(address _repFiToken, address _owner) returns (PublicSale) {
+    PublicSale vesting = new PublicSale(_repFiToken, _owner);
+    return vesting;
+}
 
+function deployInvestors(address _repFiToken, address _owner) returns (Investors) {
+    Investors vesting = new Investors(_repFiToken, _owner);
+    return vesting;
+}
+
+function deployTeam(address _repFiToken, address _owner) returns (Team) {
+    Team vesting = new Team(_repFiToken, _owner);
+    return vesting;
+}
+
+function deployEcosystem(address _repFiToken, address _owner) returns (Ecosystem) {
+    Ecosystem vesting = new Ecosystem(_repFiToken, _owner);
     return vesting;
 }
 
@@ -405,14 +425,14 @@ function deployReputationMining(
 
 function deployInitialDistribution(
     RepFi _repFi,
-    TokenVesting _privateSale,
-    TokenVesting _community,
+    PrivateSale _privateSale,
+    PublicSale _community,
     ReputationMining _reputationMining,
     address _airdrop,
-    TokenVesting _investors,
-    TokenVesting _team,
+    Investors _investors,
+    Team _team,
     address _partners,
-    address _ecosystem
+    Ecosystem _ecosystem
 ) returns (InitialDistribution) {
     InitialDistribution initialDistribution = new InitialDistribution(
         _repFi,

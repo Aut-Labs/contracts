@@ -8,7 +8,6 @@ contract InitialDistributionTest is BaseTest {
 
     address airdrop;
     address partners;
-    address ecosystem;
 
     InitialDistribution initialDistributionContract;
     uint256 privatesaleAmount = 8000000 ether;
@@ -24,7 +23,6 @@ contract InitialDistributionTest is BaseTest {
         // let's pretend these addresses are multisigs
         airdrop = makeAddr("airdrop");
         partners = makeAddr("partners");
-        ecosystem = makeAddr("ecosystem");
 
         super.setUp();
         repfiToken = new RepFi();

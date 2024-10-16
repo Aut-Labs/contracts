@@ -32,10 +32,11 @@ abstract contract BaseTest is Test {
     RepFiRegistry public repFiRegistry;
     RepFi public repFi;
     PRepFi public pRepFi;
-    TokenVesting public privateSale;
-    TokenVesting public community;
-    TokenVesting public investors;
-    TokenVesting public team;
+    PrivateSale public privateSale;
+    PublicSale public community;
+    Investors public investors;
+    Team public team;
+    Ecosystem public ecosystem;
     ReputationMining public reputationMining;
     InitialDistribution public initialDistribution;
     RandomNumberGenerator public randomNumberGenerator;
@@ -71,6 +72,7 @@ abstract contract BaseTest is Test {
         community = deploy.community();
         investors = deploy.investors();
         team = deploy.team();
+        ecosystem = deploy.ecosystem();
 
         randomNumberGenerator = deploy.randomNumberGenerator();
         reputationMining = deploy.reputationMining();

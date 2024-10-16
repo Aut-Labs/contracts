@@ -35,7 +35,7 @@ contract InitialDistribution {
     /// @notice  partners multisig contract
     address public immutable partners;
     /// @notice  ecosystem multisig contract
-    address public immutable ecosystem;
+    TokenVesting public immutable ecosystem;
 
     /// @notice creates a new initial distribution contract
     /// @param _repFi RepFi token address
@@ -57,7 +57,7 @@ contract InitialDistribution {
         TokenVesting _investors,
         TokenVesting _team,
         address _partners,
-        address _ecosystem
+        TokenVesting _ecosystem
     ) {
         owner = msg.sender;
         repFi = _repFi;
