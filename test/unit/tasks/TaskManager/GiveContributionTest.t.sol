@@ -13,6 +13,7 @@ contract TaskManagerGiveContributionTest is BaseTest {
     uint128 quantity = 10;
     string uri = "DiscordJoinIPFSUri";
     Contribution contribution;
+    bytes32 contributionId;
 
     function setUp() public override {
         super.setUp();
@@ -32,7 +33,7 @@ contract TaskManagerGiveContributionTest is BaseTest {
             taskId: taskId,
             role: role,
             startDate: startDate,
-            endDate: endate,
+            endDate: endDate,
             points: points,
             quantity: quantity,
             uri: uri
@@ -55,7 +56,7 @@ contract TaskManagerGiveContributionTest is BaseTest {
         uint32 currentPeriodId = taskManager.currentPeriodId();
 
         // pre-action asserts
-        MemberActivity memory memberActivity = taskManager.memberActivities(bob, currentPeriodId);
+        MemberActivity memory memberActivity = taskManager.getMemberActivity(bob, currentPeriodId);
         assertEq(memberActivity.pointsGiven, 0);
         assertEq(memberActivity.contributionIds.length, 0);
 
@@ -67,7 +68,7 @@ contract TaskManagerGiveContributionTest is BaseTest {
         });
 
         // post-action asserts (TODO)
-        memberActivity = taskManager.memberActivities(bob, currentPeriodId);
+        memberActivity = taskManager.getMemberActivity(bob, currentPeriodId);
         assertEq(memberActivity.pointsGiven, points);
         assertEq(memberActivity.contributionIds.length, 1);
         assertEq(memberActivity.contributionIds[0], contributionId);

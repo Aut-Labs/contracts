@@ -13,6 +13,7 @@ contract TaskManagerCommitContributionTest is BaseTest {
     uint128 quantity = 10;
     string uri = "DiscordJoinIPFSUri";
     Contribution contribution;
+    bytes32 contributionId;
 
     function setUp() public override {
         super.setUp();
@@ -32,7 +33,7 @@ contract TaskManagerCommitContributionTest is BaseTest {
             taskId: taskId,
             role: role,
             startDate: startDate,
-            endDate: endate,
+            endDate: endDate,
             points: points,
             quantity: quantity,
             uri: uri

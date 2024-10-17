@@ -30,7 +30,7 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
             taskId: taskId,
             role: role,
             startDate: startDate,
-            endDate: endate,
+            endDate: endDate,
             points: points,
             quantity: quantity,
             uri: uri

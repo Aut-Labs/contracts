@@ -202,6 +202,10 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         return contributionStatuses[contributionId];
     }
 
+    function getMemberActivity(address who, uint32 periodId) external view returns (MemberActivity memory) {
+        return memberActivities[who][periodId];
+    }
+
     function getContributionPoints(bytes32 contributionId) external view returns (uint128) {
         return contributionStatuses[contributionId].points;
     }
