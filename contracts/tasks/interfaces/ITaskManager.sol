@@ -107,6 +107,9 @@ interface ITaskManager {
     /// @notice return the ContributionStatus of a given contributionId
     function getContributionStatus(bytes32 contributionId) external view returns (ContributionStatus memory);
 
+    /// @notice Return the MemberActivity of a given address and periodId
+    function getMemberActivity(address who, uint32 periodId) external view returns (MemberActivity memory);
+
     /// @notice return the amount of points associated to a contributionId
     function getContributionPoints(bytes32 contributionId) external view returns (uint128);
 

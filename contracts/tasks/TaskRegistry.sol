@@ -10,6 +10,8 @@ contract TaskRegistry is ITaskRegistry {
     EnumerableSet.Bytes32Set private _taskIds;
     mapping(bytes32 => Task) private _tasks;
 
+    // TODO: access control ?
+
     /// @inheritdoc ITaskRegistry
     function registerTasks(Task[] calldata tasks) external returns (bytes32[] memory) {
         uint256 length = tasks.length;

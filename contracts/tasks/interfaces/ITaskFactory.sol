@@ -20,6 +20,7 @@ interface ITaskFactory {
     error ContributionIdAlreadyExists();
     error InvalidContributionQuantity();
     error InvalidContributionPoints();
+    error InvalidContributionPeriod();
     error DescriptionAlreadyRegistered();
 
     event CreateContribution(bytes32 indexed contributionId, address indexed sender, bytes encodedContribution);
@@ -72,7 +73,7 @@ interface ITaskFactory {
     function contributionIds() external view returns (bytes32[] memory);
 
     /// @notice return all Contribution ids created within a given period
-    function contributionsInPeriod(uint32 periodId) external view returns (bytes32[] memory);
+    function contributionIdsInPeriod(uint32 periodId) external view returns (bytes32[] memory);
 
     /// @notice convert a Description struct into its' respective bytes
     function encodeDescription(Description memory description) external pure returns (bytes memory);

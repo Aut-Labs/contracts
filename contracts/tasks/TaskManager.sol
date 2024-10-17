@@ -87,6 +87,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             quantityRemaining: contribution.quantity
         });
         contributionStatuses[contributionId] = contributionStatus;
+        pointsActive += contribution.points * contribution.quantity;
 
         emit AddContribution(contributionId, encodeContributionStatus(contributionStatus));
     }
@@ -151,7 +152,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
     /// @inheritdoc ITaskManager
     function giveContributions(bytes32[] calldata contributionIds, address[] calldata whos) external {
-        if (!isContributionManager(msg.sender) && _isAdmin(msg.sender)) revert UnauthorizedContributionManager();
+        if (!isContributionManager(msg.sender) && !_isAdmin(msg.sender)) revert UnauthorizedContributionManager();
         writePointSummary();
 
         uint256 length = contributionIds.length;
@@ -163,7 +164,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
     /// @inheritdoc ITaskManager
     function giveContribution(bytes32 contributionId, address who) external {
-        if (!isContributionManager(msg.sender) && _isAdmin(msg.sender)) revert UnauthorizedContributionManager();
+        if (!isContributionManager(msg.sender) && !_isAdmin(msg.sender)) revert UnauthorizedContributionManager();
         writePointSummary();
         _giveContribution(contributionId, who);
     }
@@ -255,6 +256,11 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     /// @inheritdoc ITaskManager
     function getContributionStatus(bytes32 contributionId) external view returns (ContributionStatus memory) {
         return contributionStatuses[contributionId];
+    }
+
+    /// @inheritdoc ITaskManager
+    function getMemberActivity(address who, uint32 periodId) external view returns (MemberActivity memory) {
+        return memberActivities[who][periodId];
     }
 
     /// @inheritdoc ITaskManager

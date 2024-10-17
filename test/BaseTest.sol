@@ -1,21 +1,29 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.21;
+pragma solidity ^0.8.20;
 
 import "script/DeployAll.s.sol";
 import { Hub } from "contracts/hub/Hub.sol";
+import { TaskRegistry, ITaskRegistry, Task } from "contracts/tasks/TaskRegistry.sol";
+import { TaskFactory, ITaskFactory, Contribution, Description } from "contracts/tasks/TaskFactory.sol";
+import { TaskManager, ITaskManager, MemberActivity } from "contracts/tasks/TaskManager.sol";
+
 import { console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, stdJson, stdMath, StdStorage, stdStorage, StdUtils, Vm, StdStyle, TestBase, Test } from "forge-std/Test.sol";
 
 abstract contract BaseTest is Test {
     AutID public autId;
     HubRegistry public hubRegistry;
+    TaskRegistry public taskRegistry;
     GlobalParameters public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
 
     Hub public hub;
+    TaskFactory public taskFactory;
+    TaskManager public taskManager;
 
     address public owner = address(this);
     address public alice = address(0x411Ce);
     address public bob = address(0xb0b);
+    address public bot = address(0xb01);
 
     function setUp() public virtual {
         // setup and run deployment script
@@ -30,8 +38,14 @@ abstract contract BaseTest is Test {
         hubRegistry = deploy.hubRegistry();
         globalParameters = deploy.globalParameters();
         hubDomainsRegistry = deploy.hubDomainsRegistry();
+        taskRegistry = deploy.taskRegistry();
 
-        _deployHub();
+        hub = _deployHub();
+        taskFactory = TaskFactory(hub.taskFactory());
+        taskManager = TaskManager(hub.taskManager());
+
+        // initial setup: alice is first member
+        _joinHub(alice, address(hub), "alice");
 
         // labeling
         vm.label(owner, "Owner");
@@ -44,7 +58,7 @@ abstract contract BaseTest is Test {
     }
 
     /// @dev deploy a basic hub
-    function _deployHub() internal {
+    function _deployHub() internal returns (Hub) {
         uint256[] memory roles = new uint256[](3);
         roles[0] = 1;
         roles[1] = 2;
@@ -56,6 +70,45 @@ abstract contract BaseTest is Test {
             metadata: "Mock Metadata",
             commitment: 1
         });
-        hub = Hub(hubAddress);
+        return Hub(hubAddress);
+    }
+
+    function _joinHub(
+        address who,
+        address hubAddress,
+        string memory username) internal {
+        vm.prank(who);
+        autId.createRecordAndJoinHub({
+            role: 1,
+            commitment: 1,
+            hub: hubAddress,
+            username: username,
+            optionalURI: "https://facebook.com/someUser"
+        });
+    }
+
+    function _createContribution(
+        address who,
+        address hubAddress,
+        bytes32 taskId,
+        bytes32 descriptionId,
+        uint256 role,
+        uint32 startDate,
+        uint32 endDate,
+        uint32 points,
+        uint128 quantity
+    ) internal {
+        vm.prank(who);
+        Contribution memory contribution = Contribution({
+            taskId: taskId,
+            descriptionId: descriptionId,
+            role: role,
+            startDate: startDate,
+            endDate: endDate,
+            points: points,
+            quantity: quantity
+        });
+        TaskFactory(Hub(hubAddress).taskFactory()).createContribution(contribution);
+
     }
 }

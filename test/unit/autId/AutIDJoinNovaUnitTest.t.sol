@@ -8,15 +8,13 @@ contract AutIDJoinHubUnitTest is BaseTest {
     }
 
     function test_CreateRecordAndJoinHub_Succeeds() public {
-        vm.prank(alice);
-        autId.createRecordAndJoinHub(
-            {
-                role: 1,
-                commitment: 3,
-                hub: address(hub),
-                username: "alice",
-                optionalURI: "ipfs://QmXZnZ"
-            }
-        );
+        vm.prank(bob);
+        autId.createRecordAndJoinHub({
+            role: 1,
+            commitment: 3,
+            hub: address(hub),
+            username: "bob",
+            optionalURI: "https://facebook.com/bob"
+        });
     }
 }
