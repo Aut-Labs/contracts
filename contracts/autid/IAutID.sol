@@ -30,8 +30,8 @@ interface IAutID {
     /// @notice Set LocalReputation contract address
     function setLocalReputation(address) external;
 
-    /// @notice Update a metadata URI string associated with the sender's AutID NFT
-    function updateTokenURI(string memory uri) external;
+    /// @notice Set the metadata URI string associated with the sender's AutID NFT
+    function setTokenURI(string memory uri) external;
 
     /// @notice Mint an AutID NFT and join a Hub community
     /// @param role Role to join the Hub

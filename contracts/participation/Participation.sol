@@ -19,6 +19,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
+    /// @inheritdoc IParticipation
     function join(address who) external {
         _revertIfNotHub();
 
@@ -26,7 +27,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         memberParticipations[who][currentPeriodId()] = MemberParticipation({score: 1e18, performance: 0});
     }
 
-    /// @notice helper to predict performance score for any user
+    /// @inheritdoc IParticipation
     function calcPerformanceInPeriod(
         uint32 commitment,
         uint128 pointsGiven,
@@ -36,6 +37,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return _calcPerformanceInPeriod({commitment: commitment, pointsGiven: pointsGiven, periodId: periodId});
     }
 
+    /// @inheritdoc IParticipation
     function calcPerformancesInPeriod(
         uint32[] calldata commitments,
         uint128[] calldata pointsGiven,
@@ -63,7 +65,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return performance;
     }
 
-    /// @dev returned with 1e18 precision
+    /// @inheritdoc IParticipation
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
         _revertIfNotMember(who);
         if (periodId < IMembership(membership()).getPeriodIdJoined(who) || periodId > currentPeriodId())
@@ -71,6 +73,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return _calcPerformanceInPeriod(who, periodId);
     }
 
+    /// @inheritdoc IParticipation
     function calcPerformanceInPeriods(
         address who,
         uint32[] calldata periodIds
@@ -83,6 +86,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return performances;
     }
 
+    /// @inheritdoc IParticipation
     function calcPerformancesInPeriod(
         address[] calldata whos,
         uint32 periodId
@@ -104,13 +108,14 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
             });
     }
 
-    // fiCL * TCP
+    /// @inheritdoc IParticipation
     function calcExpectedPoints(uint32 commitment, uint32 periodId) public view returns (uint128) {
         if (commitment < 1 || commitment > 10) revert InvalidCommitment();
         if (periodId == 0 || periodId > currentPeriodId()) revert InvalidPeriodId();
         return _calcExpectedPoints(commitment, periodId);
     }
 
+    /// @inheritdoc IParticipation
     function calcsExpectedPoints(
         uint32[] calldata commitments,
         uint32[] calldata periodIds
@@ -130,10 +135,12 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
                 ITaskManager(taskManager()).getPointsActive(periodId)) / 1e18;
     }
 
+    /// @inheritdoc IParticipation
     function fractionalCommitment(uint32 commitment, uint32 periodId) public view returns (uint128) {
-        return (1e18 * uint128(commitment)) / commitmentSum(periodId);
+        return (1e18 * uint128(commitment)) / IMembership(membership()).getCommitmentSum(periodId);
     }
 
+    /// @inheritdoc IParticipation
     function fractionalsCommitments(
         uint32[] calldata commitments,
         uint32[] calldata periodIds
@@ -147,12 +154,8 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return fcs;
     }
 
-    function commitmentSum(uint32 periodId) internal view returns (uint128) {
-        return IMembership(membership()).commitmentSums(periodId);
-    }
-
-    /// @notice off-chain helper to check which members to write participation score to
     // TODO: seal member participation if all written?
+    /// @inheritdoc IParticipation
     function getMembersToWriteMemberParticipation(uint32 periodId) external view returns (address[] memory) {
         uint256 numMembersToWrite = 0;
         address[] memory members = IMembership(membership()).members();
@@ -172,6 +175,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return arrMembersToWrite;
     }
 
+    /// @inheritdoc IParticipation
     function writeMemberParticipation(address who) external {
         // update historical periods if necessary
         ITaskManager(taskManager()).writePointSummary();
@@ -179,6 +183,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         _writeMemberParticipation(who, currentPeriodId());
     }
 
+    /// @inheritdoc IParticipation
     function writeMemberParticipations(address[] calldata whos) external {
         // update historical periods if necessary
         ITaskManager(taskManager()).writePointSummary();
@@ -189,7 +194,6 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         }
     }
 
-    // TODO: visibility?
     function _writeMemberParticipation(address who, uint32 _currentPeriodId) internal {
         // TODO: algorithm
         // NOTE: in periodIdJoined, participation score is default 100.  Only write to following periods
@@ -249,12 +253,12 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         }
     }
 
-    // TODO: make these configurable
-
+    /// @inheritdoc IParticipation
     function constraintFactor() public view returns (uint128) {
         return IGlobalParameters(hub()).constraintFactor();
     }
 
+    /// @inheritdoc IParticipation
     function penaltyFactor() public view returns (uint128) {
         return IGlobalParameters(hub()).penaltyFactor();
     }

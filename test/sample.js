@@ -1,6 +1,6 @@
 const { ethers } = require("ethers");
-const AutID = require("./out/AutID.sol/AutID.json");
-const HubRegistry = require("./out/HubRegistry.sol/HubRegistry.json");
+const AutID = require("../out/AutID.sol/AutID.json");
+const HubRegistry = require("../out/HubRegistry.sol/HubRegistry.json");
 const fs = require("fs");
 require("dotenv").config();
 
@@ -38,7 +38,7 @@ const loadDeployedContracts = () => {
   return latestContracts;
 };
 
-async function getOverrides(provider, percentageIncrease = 2000) {
+async function getOverrides(provider, percentageIncrease = 3000) {
   const feeData = await provider.getFeeData();
   const percentageMultiplier = BigInt(100 + percentageIncrease);
   const hundred = BigInt(100);

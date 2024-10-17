@@ -6,7 +6,9 @@ import "test/BaseTest.sol";
 contract TaskRegistryRegisterTasksUnitTest is BaseTest {
 
     function setUp() public override {
-        super.setUp();        
+        super.setUp();
+        bytes32[] memory taskIds = taskRegistry.taskIds();
+        assertEq(taskIds.length, 3); // registered in DeployAll
     }
 
     function test_RegisterTasks_succeeds() public {

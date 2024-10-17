@@ -12,6 +12,7 @@ import {
 
 import {IHubRegistry} from "./interfaces/IHubRegistry.sol";
 import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
+import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
 
 import {IHub} from "./interfaces/IHub.sol";
 import {IHubModule} from "./interfaces/IHubModule.sol";
@@ -20,10 +21,9 @@ import {IHubModule} from "./interfaces/IHubModule.sol";
 contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradeable {
     event HubCreated(address deployer, address hubAddress, uint256 market, uint256 commitment, string metadata);
 
-    mapping(address => address[]) public hubDeployers;
-    mapping(address => address[]) internal _userHubList;
-    mapping(address => mapping(address => uint256)) internal _userHubListIds;
-    mapping(address => bool) public checkHub;
+    mapping(address => address[]) public hubsDeployed;
+    mapping(address => address[]) public userHubs;
+    mapping(address => bool) public isHub;
     address[] public hubs;
 
     struct HubContracts {
@@ -39,6 +39,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     address public hubDomainsRegistry;
     address public taskRegistry;
     address public globalParameters;
+    address public initialContributionManager;
     address public membershipImplementation;
     address public participationImplementation;
     address public taskFactoryImplementation;
@@ -47,12 +48,14 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
 
     constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
 
+    /// @inheritdoc IHubRegistry
     function initialize(
         address autId_,
         address hubLogic,
         address hubDomainsRegistry_,
         address taskRegistry_,
         address globalParameters_,
+        address _initialContributionManager,
         address _membershipImplementation,
         address _participationImplementation,
         address _taskFactoryImplementation,
@@ -69,33 +72,45 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         globalParameters = globalParameters_;
         upgradeableBeacon = new UpgradeableBeacon(hubLogic, address(this));
 
+        setInitialContributionManager(_initialContributionManager);
+
         membershipImplementation = _membershipImplementation;
         participationImplementation = _participationImplementation;
         taskFactoryImplementation = _taskFactoryImplementation;
         taskManagerImplementation = _taskManagerImplementation;
     }
 
+    /// @inheritdoc IHubRegistry
+    function setInitialContributionManager(address _initialContributionManager) public onlyOwner {
+        initialContributionManager = _initialContributionManager;
+    }
+
+    /// @inheritdoc IHubRegistry
     function currentPeriodId() public view returns (uint32) {
         return IGlobalParameters(globalParameters).currentPeriodId();
     }
 
+    /// @inheritdoc IHubRegistry
     function period0Start() public view returns (uint32) {
         return IGlobalParameters(globalParameters).period0Start();
     }
 
-    // the only reason for this function is to keep interface compatible with sdk
-    // `hubs` variable is public anyway
-    // the only reason for `hubs` variable is that TheGraph is not connected
+    /// @inheritdoc IHubRegistry
     function getHubs() public view returns (address[] memory) {
         return hubs;
     }
 
-    // the same comment as for `getHubs` method
-    function getHubByDeployer(address deployer) public view returns (address[] memory) {
-        return hubDeployers[deployer];
+    /// @inheritdoc IHubRegistry
+    function getHubsDeployed(address who) public view returns (address[] memory) {
+        return hubsDeployed[who];
     }
 
-    /// @dev depoloy beacon proxy for a new hub
+    /// @inheritdoc IHubRegistry
+    function getUserHubs(address who) external view returns (address[] memory) {
+        return userHubs[who];
+    }
+
+    /// @inheritdoc IHubRegistry
     function deployHub(
         uint256[] calldata roles,
         uint256 market,
@@ -135,9 +150,12 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
             _membership: membership
         });
 
-        hubDeployers[_msgSender()].push(hub);
+        // Set the initial contribution manager as stored in this contract
+        ITaskManager(taskManager).initialize2(initialContributionManager);
+
+        hubsDeployed[_msgSender()].push(hub);
         hubs.push(hub);
-        checkHub[hub] = true;
+        isHub[hub] = true;
         hubContracts[hub] = HubContracts({
             taskFactory: taskFactory,
             taskManager: taskManager,
@@ -148,18 +166,14 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         emit HubCreated(_msgSender(), hub, market, commitment, metadata);
     }
 
-    function listUserHubs(address user) external view returns (address[] memory) {
-        return _userHubList[user];
-    }
+    /// @inheritdoc IHubRegistry
+    function join(address hub, address who, uint256 role, uint8 commitment) external {
+        require(msg.sender == autId, "HubRegistry: sender not autId");
+        require(isHub[hub], "HubRegistry: hub does not exist");
 
-    function join(address hub, address member, uint256 role, uint8 commitment) external {
-        require(checkHub[hub], "HubRegistry: sender not a hub");
+        IHub(hub).join({who: who, role: role, _commitment: commitment});
 
-        IHub(hub).join({who: member, role: role, _commitment: commitment});
-
-        uint256 position = _userHubList[member].length;
-        _userHubList[member].push(hub);
-        _userHubListIds[member][hub] = position;
+        userHubs[who].push(hub);
     }
 
     /// @dev upgrades hub beacon to the new logic contract

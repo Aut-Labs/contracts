@@ -7,12 +7,12 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
 
     // Generic contribution values
     bytes32 taskId;
+    bytes32 descriptionId;
     uint256 role = 1;
     uint32 startDate;
     uint32 endDate;
     uint32 points = 6;
     uint128 quantity = 10;
-    string uri = "someUri";
     Contribution contribution;
 
     function setUp() public override {
@@ -24,16 +24,18 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
 
         // init Contribution for testing
         taskId = taskRegistry.registerTask(Task({uri: "abcde"}));
+        descriptionId = taskFactory.registerDescription(Description({uri: "fghij"}));
+
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;
         contribution = Contribution({
             taskId: taskId,
+            descriptionId: descriptionId,
             role: role,
             startDate: startDate,
             endDate: endDate,
             points: points,
-            quantity: quantity,
-            uri: uri
+            quantity: quantity
         });
     }
 
@@ -56,15 +58,12 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
 
         Contribution memory queriedContribution = taskFactory.getContributionById(contributionId);
         assertEq(queriedContribution.taskId, taskId);
+        assertEq(queriedContribution.descriptionId, descriptionId);
         assertEq(queriedContribution.role, role);
         assertEq(queriedContribution.startDate, startDate);
         assertEq(queriedContribution.endDate, endDate);
         assertEq(queriedContribution.points, points);
         assertEq(queriedContribution.quantity, quantity);
-        assertEq(
-            keccak256(abi.encodePacked(queriedContribution.uri)),
-            keccak256(abi.encodePacked(uri))
-        );
 
         contributionIds = taskFactory.contributionIds();
         assertEq(contributionIds.length, 1);

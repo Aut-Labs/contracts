@@ -12,6 +12,7 @@ contract TaskRegistry is ITaskRegistry {
 
     // TODO: access control ?
 
+    /// @inheritdoc ITaskRegistry
     function registerTasks(Task[] calldata tasks) external returns (bytes32[] memory) {
         uint256 length = tasks.length;
         bytes32[] memory newTaskIds = new bytes32[](length);
@@ -22,6 +23,7 @@ contract TaskRegistry is ITaskRegistry {
         return newTaskIds;
     }
 
+    /// @inheritdoc ITaskRegistry
     function registerTask(Task memory task) external returns (bytes32) {
         return _registerTask(task);
     }
@@ -38,27 +40,33 @@ contract TaskRegistry is ITaskRegistry {
         return taskId;
     }
 
+    /// @inheritdoc ITaskRegistry
     function getTaskById(bytes32 taskId) external view returns (Task memory) {
         return _tasks[taskId];
     }
 
+    /// @inheritdoc ITaskRegistry
     function getTaskByIdEncoded(bytes32 taskId) external view returns (bytes memory) {
         Task memory task = _tasks[taskId];
         return encodeTask(task);
     }
 
+    /// @inheritdoc ITaskRegistry
     function taskIds() external view returns (bytes32[] memory) {
         return _taskIds.values();
     }
 
+    /// @inheritdoc ITaskRegistry
     function isTaskId(bytes32 taskId) public view returns (bool) {
         return _taskIds.contains(taskId);
     }
 
+    /// @inheritdoc ITaskRegistry
     function encodeTask(Task memory task) public pure returns (bytes memory) {
         return abi.encodePacked(task.uri);
     }
 
+    /// @inheritdoc ITaskRegistry
     function calcTaskId(Task memory task) public pure returns (bytes32) {
         return keccak256(encodeTask(task));
     }
