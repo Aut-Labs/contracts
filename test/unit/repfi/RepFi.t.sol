@@ -18,7 +18,7 @@ contract RepFiTest is BaseTest {
     }
 
     function test_tokenName() public view {
-        assertEq("Reputation Finance", repfiToken.name(), "Token name does not match");
+        assertEq("Aut Labs", repfiToken.name(), "Token name does not match");
     }
 
     function test_tokenSymbol() public view {
