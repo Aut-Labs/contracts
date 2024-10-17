@@ -24,8 +24,8 @@ contract TaskRegistryRegisterTasksUnitTest is BaseTest {
         bytes32[] memory taskIds = taskRegistry.taskIds();
         assertEq({
             left: taskIds.length,
-            right: 3,
-            err: "Incorrect ammount of task ids"
+            right: 6, // 3 registered in DeployAll, 3 registered here
+            err: "Incorrect amount of task ids"
         });
     }
 
@@ -36,7 +36,7 @@ contract TaskRegistryRegisterTasksUnitTest is BaseTest {
         taskRegistry.registerTask(task);
     }
 
-    function _verifyTask(Task memory task) internal {
+    function _verifyTask(Task memory task) internal view {
         bytes32 taskId = taskRegistry.calcTaskId(task);
 
         assertTrue(taskRegistry.isTaskId(taskId));

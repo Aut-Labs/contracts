@@ -45,6 +45,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             quantityRemaining: contribution.quantity
         });
         contributionStatuses[contributionId] = contributionStatus;
+        pointsActive += contribution.points * contribution.quantity;
 
         emit AddContribution(contributionId, encodeContributionStatus(contributionStatus));
     }
