@@ -32,11 +32,10 @@ abstract contract BaseTest is Test {
     UtilsRegistry public utilsRegistry;
     RepFi public repFi;
     PRepFi public pRepFi;
-    PrivateSale public privateSale;
-    PublicSale public community;
+    address public sales;
     Investors public investors;
     Team public team;
-    Ecosystem public ecosystem;
+    address public ecosystem;
     ReputationMining public reputationMining;
     Distributor public distributor;
     RandomNumberGenerator public randomNumberGenerator;
@@ -68,8 +67,7 @@ abstract contract BaseTest is Test {
         repFi = deploy.repFi();
         pRepFi = deploy.pRepFi();
 
-        privateSale = deploy.privateSale();
-        community = deploy.community();
+        sales = deploy.sales();
         investors = deploy.investors();
         team = deploy.team();
         ecosystem = deploy.ecosystem();
@@ -102,8 +100,7 @@ abstract contract BaseTest is Test {
         vm.label(address(utilsRegistry), "utilsRegistry");
         vm.label(address(repFi), "repFi");
         vm.label(address(pRepFi), "pRepFi");
-        vm.label(address(privateSale), "privateSale");
-        vm.label(address(community), "community");
+        vm.label(address(sales), "sales");
         vm.label(address(investors), "investors");
         vm.label(address(team), "team");
         vm.label(address(reputationMining), "reputationMining");

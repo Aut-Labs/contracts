@@ -21,11 +21,8 @@ import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 import {UtilsRegistry} from "../contracts/repfi/utilsRegistry/UtilsRegistry.sol";
 import {RepFi} from "../contracts/repfi/token/REPFI.sol";
 import {PRepFi} from "../contracts/repfi/token/pREPFI.sol";
-import {PrivateSale} from "../contracts/repfi/vesting/PrivateSale.sol";
-import {PublicSale} from "../contracts/repfi/vesting/PublicSale.sol";
 import {Investors} from "../contracts/repfi/vesting/Investors.sol";
 import {Team} from "../contracts/repfi/vesting/Team.sol";
-import {Ecosystem} from "../contracts/repfi/vesting/Ecosystem.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
 import {Distributor} from "../contracts/repfi/token/Distributor.sol";
 import {RandomNumberGenerator} from "../contracts/randomNumberGenerator/RandomNumberGenerator.sol";
@@ -54,13 +51,12 @@ contract DeployAll is Script {
     UtilsRegistry public utilsRegistry;
     RepFi public repFi;
     PRepFi public pRepFi;
-    PrivateSale public privateSale;
-    PublicSale public community;
+    address public sales;
     Investors public investors;
     Team public team;
     address public airdrop; // merkle
     address public partners; // multisig
-    Ecosystem public ecosystem;
+    address public ecosystem;
     address public profitSharing;
     address public circular;
     ReputationMining public reputationMining;
@@ -158,14 +154,13 @@ contract DeployAll is Script {
         pRepFi = deployPRepFiToken(address(owner), address(utilsRegistry));
 
         // deploy vesting contracts
-        privateSale = deployPrivateSale(address(repFi), projectMultisig);
-        community = deployPublicSale(address(repFi), projectMultisig);
         investors = deployInvestors(address(repFi), projectMultisig);
         team = deployTeam(address(repFi), projectMultisig);
-        ecosystem = deployEcosystem(address(repFi), projectMultisig);
 
         // deploy circular contract
         circular = makeAddr("circular"); // ToDo: update to Circular contract later
+        sales = makeAddr("sales"); // ToDo: update to multisig later
+        ecosystem = makeAddr("ecosystem"); // ToDo: update to multisig later
 
         // deploy profitSharing
         profitSharing = makeAddr("profitSharing"); // ToDo: update to ProfitSharing contract later
@@ -187,17 +182,7 @@ contract DeployAll is Script {
         );
 
         // deploy distributor
-        distributor = deployInitialDistribution(
-            repFi,
-            privateSale,
-            community,
-            reputationMining,
-            airdrop,
-            investors,
-            team,
-            partners,
-            ecosystem
-        );
+        distributor = deployDistributor(repFi, sales, reputationMining, airdrop, investors, team, partners, ecosystem);
 
         // deploy PeerValue
         peerValue = deployPeerValue(randomNumberGenerator);
@@ -254,8 +239,7 @@ contract DeployAll is Script {
             na[10] = TNamedAddress({name: "utilsRegistry", target: address(utilsRegistry)});
             na[11] = TNamedAddress({name: "repFi", target: address(repFi)});
             na[12] = TNamedAddress({name: "pRepFi", target: address(pRepFi)});
-            na[13] = TNamedAddress({name: "privateSale", target: address(privateSale)});
-            na[14] = TNamedAddress({name: "community", target: address(community)});
+            na[13] = TNamedAddress({name: "sales", target: address(sales)});
             na[15] = TNamedAddress({name: "investors", target: address(investors)});
             na[16] = TNamedAddress({name: "team", target: address(team)});
             na[17] = TNamedAddress({name: "airdrop", target: address(airdrop)});
@@ -375,16 +359,6 @@ function deployPRepFiToken(address _owner, address _repFiRegistry) returns (PRep
     return pRepFi;
 }
 
-function deployPrivateSale(address _repFiToken, address _owner) returns (PrivateSale) {
-    PrivateSale vesting = new PrivateSale(_repFiToken, _owner);
-    return vesting;
-}
-
-function deployPublicSale(address _repFiToken, address _owner) returns (PublicSale) {
-    PublicSale vesting = new PublicSale(_repFiToken, _owner);
-    return vesting;
-}
-
 function deployInvestors(address _repFiToken, address _owner) returns (Investors) {
     Investors vesting = new Investors(_repFiToken, _owner);
     return vesting;
@@ -392,11 +366,6 @@ function deployInvestors(address _repFiToken, address _owner) returns (Investors
 
 function deployTeam(address _repFiToken, address _owner) returns (Team) {
     Team vesting = new Team(_repFiToken, _owner);
-    return vesting;
-}
-
-function deployEcosystem(address _repFiToken, address _owner) returns (Ecosystem) {
-    Ecosystem vesting = new Ecosystem(_repFiToken, _owner);
     return vesting;
 }
 
@@ -423,21 +392,19 @@ function deployReputationMining(
     return ReputationMining(address(reputationMiningProxy));
 }
 
-function deployInitialDistribution(
+function deployDistributor(
     RepFi _repFi,
-    PrivateSale _privateSale,
-    PublicSale _community,
+    address _sales,
     ReputationMining _reputationMining,
     address _airdrop,
     Investors _investors,
     Team _team,
     address _partners,
-    Ecosystem _ecosystem
+    address _ecosystem
 ) returns (Distributor) {
     Distributor distributor = new Distributor(
         _repFi,
-        _privateSale,
-        _community,
+        _sales,
         _reputationMining,
         _airdrop,
         _investors,

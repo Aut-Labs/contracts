@@ -3,21 +3,21 @@ pragma solidity ^0.8.21;
 
 import "../../BaseTest.sol";
 
-contract InitialDistributionTest is BaseTest {
+contract DistributorTest is BaseTest {
     RepFi repfiToken;
 
     address airdrop;
     address partners;
 
     Distributor initialDistributionContract;
-    uint256 privatesaleAmount = 8000000 ether;
+    uint256 salesAmount = 15000000 ether;
     uint256 communityAmount = 7000000 ether;
     uint256 reputationMiningAmount = 36000000 ether;
     uint256 airdropAmount = 4000000 ether;
     uint256 investorsAmount = 10000000 ether;
     uint256 teamAmount = 5000000 ether;
-    uint256 partnersAmount = 15000000 ether;
-    uint256 ecosystemAmount = 15000000 ether;
+    uint256 partnersAmount = 10000000 ether;
+    uint256 ecosystemAmount = 20000000 ether;
 
     function setUp() public override {
         // let's pretend these addresses are multisigs
@@ -28,8 +28,7 @@ contract InitialDistributionTest is BaseTest {
         repfiToken = new RepFi();
         initialDistributionContract = new Distributor(
             repfiToken,
-            privateSale,
-            community,
+            sales,
             reputationMining,
             airdrop,
             investors,
@@ -42,8 +41,7 @@ contract InitialDistributionTest is BaseTest {
     function test_deploy() public {
         initialDistributionContract = new Distributor(
             repfiToken,
-            privateSale,
-            community,
+            sales,
             reputationMining,
             airdrop,
             investors,
@@ -53,8 +51,7 @@ contract InitialDistributionTest is BaseTest {
         );
 
         assert(address(initialDistributionContract) != address(0));
-        assertEq(address(initialDistributionContract.privateSale()), address(privateSale));
-        assertEq(address(initialDistributionContract.community()), address(community));
+        assertEq(address(initialDistributionContract.sales()), address(sales));
         assertEq(address(initialDistributionContract.reputationMining()), address(reputationMining));
         assertEq(address(initialDistributionContract.airdrop()), address(airdrop));
         assertEq(address(initialDistributionContract.investors()), address(investors));
@@ -80,8 +77,7 @@ contract InitialDistributionTest is BaseTest {
         initialDistributionContract.distribute();
 
         assertEq(repfiToken.balanceOf(address(initialDistributionContract)), 0);
-        assertEq(repfiToken.balanceOf(address(privateSale)), privatesaleAmount);
-        assertEq(repfiToken.balanceOf(address(community)), communityAmount);
+        assertEq(repfiToken.balanceOf(address(sales)), salesAmount);
         assertEq(repfiToken.balanceOf(address(reputationMining)), reputationMiningAmount);
         assertEq(repfiToken.balanceOf(address(airdrop)), airdropAmount);
         assertEq(repfiToken.balanceOf(address(investors)), investorsAmount);

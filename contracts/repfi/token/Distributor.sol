@@ -20,10 +20,8 @@ contract Distributor {
     IERC20 public immutable repFi;
     // IERC20 public immutable pRepFi;
 
-    /// @notice private sale contract
-    TokenVesting public immutable privateSale;
-    /// @notice community sale contract
-    TokenVesting public immutable community;
+    /// sales multisig
+    address public immutable sales;
     /// @notice Reputation Mining contract
     IReputationMining public immutable reputationMining;
     /// @notice airdrop merkle contract
@@ -35,12 +33,11 @@ contract Distributor {
     /// @notice  partners multisig contract
     address public immutable partners;
     /// @notice  ecosystem multisig contract
-    TokenVesting public immutable ecosystem;
+    address public immutable ecosystem;
 
     /// @notice creates a new initial distribution contract
     /// @param _repFi RepFi token address
-    /// @param _privateSale private sale contract
-    /// @param _community community sale contract
+    /// @param _sales sales multisig
     /// @param _reputationMining reputation mining contract
     /// @param _airdrop merkle contract
     /// @param _investors TokenVesting contract for investors
@@ -50,21 +47,19 @@ contract Distributor {
     constructor(
         IERC20 _repFi,
         // IERC20 _pRepFi,
-        TokenVesting _privateSale,
-        TokenVesting _community,
+        address _sales,
         IReputationMining _reputationMining,
         address _airdrop,
         TokenVesting _investors,
         TokenVesting _team,
         address _partners,
-        TokenVesting _ecosystem
+        address _ecosystem
     ) {
         owner = msg.sender;
         repFi = _repFi;
         // pRepFi = _pRepFi;
 
-        privateSale = _privateSale;
-        community = _community;
+        sales = _sales;
         reputationMining = _reputationMining;
         airdrop = _airdrop;
         investors = _investors;
@@ -81,11 +76,8 @@ contract Distributor {
             "not enough RepFI in the contract for distribution"
         );
 
-        // 8 million for private sale
-        sendTokens(address(privateSale), 8 * MILLION_ETHER);
-
-        // 7 million for public sale
-        sendTokens(address(community), 7 * MILLION_ETHER);
+        // 15 million for token sales
+        sendTokens(address(sales), 15 * MILLION_ETHER);
 
         // 36 million for reputation mining
         sendTokens(address(reputationMining), 36 * MILLION_ETHER);
@@ -99,11 +91,11 @@ contract Distributor {
         // 5 million for team and contributors
         sendTokens(address(team), 5 * MILLION_ETHER);
 
-        // 15 million for partners and listing
-        sendTokens(address(partners), 15 * MILLION_ETHER);
+        // 10 million for partners and listing
+        sendTokens(address(partners), 10 * MILLION_ETHER);
 
-        // 15 million for ecosystem fund
-        sendTokens(address(ecosystem), 15 * MILLION_ETHER);
+        // 20 million for ecosystem fund
+        sendTokens(address(ecosystem), 20 * MILLION_ETHER);
     }
 
     /// @notice sends RepFi tokens to the receiver
