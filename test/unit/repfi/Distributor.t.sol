@@ -9,7 +9,7 @@ contract InitialDistributionTest is BaseTest {
     address airdrop;
     address partners;
 
-    InitialDistribution initialDistributionContract;
+    Distributor initialDistributionContract;
     uint256 privatesaleAmount = 8000000 ether;
     uint256 communityAmount = 7000000 ether;
     uint256 reputationMiningAmount = 36000000 ether;
@@ -26,7 +26,7 @@ contract InitialDistributionTest is BaseTest {
 
         super.setUp();
         repfiToken = new RepFi();
-        initialDistributionContract = new InitialDistribution(
+        initialDistributionContract = new Distributor(
             repfiToken,
             privateSale,
             community,
@@ -40,7 +40,7 @@ contract InitialDistributionTest is BaseTest {
     }
 
     function test_deploy() public {
-        initialDistributionContract = new InitialDistribution(
+        initialDistributionContract = new Distributor(
             repfiToken,
             privateSale,
             community,

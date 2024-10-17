@@ -38,7 +38,7 @@ abstract contract BaseTest is Test {
     Team public team;
     Ecosystem public ecosystem;
     ReputationMining public reputationMining;
-    InitialDistribution public initialDistribution;
+    Distributor public distributor;
     RandomNumberGenerator public randomNumberGenerator;
     PeerValue public peerValue;
     PeerStaking public peerStaking;
@@ -76,7 +76,7 @@ abstract contract BaseTest is Test {
 
         randomNumberGenerator = deploy.randomNumberGenerator();
         reputationMining = deploy.reputationMining();
-        initialDistribution = deploy.initialDistribution();
+        distributor = deploy.distributor();
         peerValue = deploy.peerValue();
         peerStaking = deploy.peerStaking();
 
@@ -107,7 +107,7 @@ abstract contract BaseTest is Test {
         vm.label(address(investors), "investors");
         vm.label(address(team), "team");
         vm.label(address(reputationMining), "reputationMining");
-        vm.label(address(initialDistribution), "initialDistribution");
+        vm.label(address(distributor), "distributor");
         vm.label(address(peerValue), "peerValueContract");
         vm.label(address(peerStaking), "peerStakingContract");
     }

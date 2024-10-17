@@ -8,7 +8,7 @@ import {IReputationMining} from "../reputationMining/IReputationMining.sol";
 /// @title Initial Distribution
 /// @author Āut Labs
 /// @notice takes care of the initial distribution of the RepFi token
-contract InitialDistribution {
+contract Distributor {
     using SafeERC20 for IERC20;
 
     /// @notice one million tokens

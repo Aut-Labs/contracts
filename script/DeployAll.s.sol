@@ -27,7 +27,7 @@ import {Investors} from "../contracts/repfi/vesting/Investors.sol";
 import {Team} from "../contracts/repfi/vesting/Team.sol";
 import {Ecosystem} from "../contracts/repfi/vesting/Ecosystem.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
-import {InitialDistribution} from "../contracts/repfi/token/InitialDistribution.sol";
+import {Distributor} from "../contracts/repfi/token/Distributor.sol";
 import {RandomNumberGenerator} from "../contracts/randomNumberGenerator/RandomNumberGenerator.sol";
 import {PeerValue} from "../contracts/repfi/peerValue/PeerValue.sol";
 import {PeerStaking} from "../contracts/repfi/peerStaking/PeerStaking.sol";
@@ -64,7 +64,7 @@ contract DeployAll is Script {
     address public profitSharing;
     address public circular;
     ReputationMining public reputationMining;
-    InitialDistribution public initialDistribution;
+    Distributor public distributor;
     RandomNumberGenerator public randomNumberGenerator;
     PeerValue public peerValue;
     PeerStaking public peerStaking;
@@ -186,8 +186,8 @@ contract DeployAll is Script {
             address(randomNumberGenerator)
         );
 
-        // deploy initialDistribution
-        initialDistribution = deployInitialDistribution(
+        // deploy distributor
+        distributor = deployInitialDistribution(
             repFi,
             privateSale,
             community,
@@ -222,7 +222,7 @@ contract DeployAll is Script {
         utilsRegistry.registerPlugin(address(address(this)), "DeployContract");
         // this is needed for tests because in BaseTest.sol the owner will be changed to the BaseTest contract
         utilsRegistry.registerPlugin(address(vm.addr(privateKey)), "owner");
-        utilsRegistry.registerPlugin(address(initialDistribution), "InitialDistribution");
+        utilsRegistry.registerPlugin(address(distributor), "Distributor");
         utilsRegistry.registerPlugin(address(reputationMining), "ReputationMining");
         utilsRegistry.registerPlugin(address(peerValue), "PeerValue");
         utilsRegistry.registerPlugin(address(peerStaking), "PeerStaking");
@@ -232,7 +232,7 @@ contract DeployAll is Script {
         vm.startBroadcast(privateKey);
 
         // send tokens to distribution contract
-        repFi.transfer(address(initialDistribution), 100000000 ether); // 100 million repfi tokens
+        repFi.transfer(address(distributor), 100000000 ether); // 100 million repfi tokens
 
         // send pRepFi to reputationMining
         pRepFi.transfer(address(reputationMining), 36000000 ether);
@@ -240,7 +240,7 @@ contract DeployAll is Script {
         // transfer ownership to multisig for all contracts that have an owner
 
         // distribute tokens
-        initialDistribution.distribute();
+        distributor.distribute();
 
         // todo: convert to helper function
         if (deploying) {
@@ -264,7 +264,7 @@ contract DeployAll is Script {
             na[20] = TNamedAddress({name: "profitSharing", target: address(profitSharing)});
             na[21] = TNamedAddress({name: "circular", target: address(circular)});
             na[22] = TNamedAddress({name: "reputationMining", target: address(reputationMining)});
-            na[23] = TNamedAddress({name: "initialDistribution", target: address(initialDistribution)});
+            na[23] = TNamedAddress({name: "distributor", target: address(distributor)});
 
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
             for (uint256 i = 0; i != na.length; ++i) {
@@ -433,8 +433,8 @@ function deployInitialDistribution(
     Team _team,
     address _partners,
     Ecosystem _ecosystem
-) returns (InitialDistribution) {
-    InitialDistribution initialDistribution = new InitialDistribution(
+) returns (Distributor) {
+    Distributor distributor = new Distributor(
         _repFi,
         _privateSale,
         _community,
@@ -445,7 +445,7 @@ function deployInitialDistribution(
         _partners,
         _ecosystem
     );
-    return initialDistribution;
+    return distributor;
 }
 
 function deployPeerValue(RandomNumberGenerator randomNumberGenerator) returns (PeerValue) {
