@@ -1,41 +1,26 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "./interfaces/IHubDomainsRegistry.sol";
-import "./interfaces/IHubRegistry.sol";
+// import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {Domain, IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
+import {IHubRegistry} from "./interfaces/IHubRegistry.sol";
 
-// TODO: register properly from a hub
-// TODO: is verifier needed?
-contract HubDomainsRegistry is IHubDomainsRegistry, OwnableUpgradeable {
-    struct Domain {
-        string name;
-        address hubAddress;
-        address verifier;
-        string metadataUri;
-    }
+contract HubDomainsRegistry is IHubDomainsRegistry, Initializable {
+    mapping(address => Domain) public domains;
+    mapping(string => address) public nameToHub;
+    mapping(uint256 => address) private tokenIdToHub;
 
-    mapping(string => Domain) private domains;
-    mapping(address => string[]) private hubAddressToDomains;
-    mapping(uint256 => string) private tokenIdToDomain;
-    uint256 private tokenIdCounter;
+    uint256 private tokenId;
     address private hubRegistry;
 
-    event DomainRegistered(
-        address indexed hubAddress,
-        address verifier,
-        string domain,
-        uint256 tokenId,
-        string metadataUri
-    );
+    event DomainRegistered(address indexed hub, uint256 indexed tokenId, string name, string uri);
 
     constructor() {
         _disableInitializers();
     }
 
     function initialize(address _hubRegistry) external initializer {
-        __Ownable_init(msg.sender);
         hubRegistry = _hubRegistry;
     }
 
@@ -45,54 +30,47 @@ contract HubDomainsRegistry is IHubDomainsRegistry, OwnableUpgradeable {
     }
 
     /// @inheritdoc IHubDomainsRegistry
-    function registerDomain(
-        string calldata domain,
-        address hubAddress,
-        string calldata metadataUri
-    ) external override(IHubDomainsRegistry) onlyFromHub {
-        require(domains[domain].hubAddress == address(0), "Domain already registered");
-        require(hubAddressToDomains[hubAddress].length == 0, "Domain already registered");
-        require(_isValidDomain(domain), "Invalid domain format");
+    function registerDomain(string calldata _name, string calldata _uri) external onlyFromHub {
+        require(domains[msg.sender].tokenId == 0, "Domain already registered");
+        require(_isValidDomain(_name), "Invalid _name format");
 
-        tokenIdCounter++;
-        domains[domain] = Domain(domain, hubAddress, msg.sender, metadataUri);
-        hubAddressToDomains[hubAddress].push(domain);
-        tokenIdToDomain[tokenIdCounter] = domain;
+        uint256 tokenId_ = ++tokenId; // gas
+        domains[msg.sender] = Domain({tokenId: tokenId_, name: _name, uri: _uri});
+        nameToHub[_name] = msg.sender;
+        tokenIdToHub[tokenId_] = msg.sender;
 
-        emit DomainRegistered(hubAddress, msg.sender, domain, tokenIdCounter, metadataUri);
+        emit DomainRegistered({hub: msg.sender, tokenId: tokenId_, name: _name, uri: _uri});
     }
 
-    /// @inheritdoc IHubDomainsRegistry
-    function getDomain(string calldata domain) external view returns (address, string memory) {
-        return (domains[domain].hubAddress, domains[domain].metadataUri);
+    function getDomain(address hub) external view returns (Domain memory) {
+        return domains[hub];
     }
 
-    function verifierOf(uint256 tokenId) external view returns (address verifier) {
-        return domains[tokenIdToDomain[tokenId]].verifier;
+    function getHubByName(string memory name) external view returns (address) {
+        return nameToHub[name];
     }
 
-    function _isValidDomain(string memory domain) internal pure returns (bool) {
-        bytes memory b = bytes(domain);
+    function _isValidDomain(string memory _name) internal pure returns (bool) {
+        bytes memory b = bytes(_name);
         if (b.length == 0 || b.length > 20) return false; // Adjust length as needed
-        if (!(_endsWithHub(domain))) return false; // Ends with ".hub"
+        if (!(_endsWithHub(_name))) return false; // Ends with ".hub"
         for (uint i; i < b.length - 4; i++) {
             // Skip ".hub"
             if (
                 !(b[i] >= 0x30 && b[i] <= 0x39) && // 0-9
                 !(b[i] >= 0x41 && b[i] <= 0x5A) && // A-Z
-                !(b[i] >= 0x61 && b[i] <= 0x7A)
+                !(b[i] >= 0x61 && b[i] <= 0x7A) // a-z
             ) {
-                // a-z
                 return false;
             }
         }
         return true;
     }
 
-    function _endsWithHub(string memory domain) internal pure returns (bool) {
-        bytes memory b = bytes(domain);
+    function _endsWithHub(string memory _name) internal pure returns (bool) {
+        bytes memory b = bytes(_name);
         return
-            b.length >= 4 &&
+            b.length > 4 &&
             b[b.length - 1] == "b" &&
             b[b.length - 2] == "u" &&
             b[b.length - 3] == "h" &&

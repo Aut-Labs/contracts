@@ -11,11 +11,11 @@ import {IMembership} from "../membership/IMembership.sol";
 import {HubUtils} from "./HubUtils.sol";
 import {IHub} from "./interfaces/IHub.sol";
 import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
-import {IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
+import {Domain, IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
 
 /*
 TODO:
-- Are market, commitment, metadataUri modifiable?
+- Are market, commitment, uri modifiable?
 - Should the deployer be allowed to transfer their deployer role ownership?
 - max/min values of parameters
 */
@@ -47,7 +47,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     uint256 public commitment;
     uint256 public archetype;
     uint256 public market;
-    string public metadataUri;
+    string public uri;
 
     uint32 public initTimestamp;
     uint32 public initPeriodId;
@@ -73,7 +73,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         uint256[] calldata roles_,
         uint256 _market,
         uint256 _commitment,
-        string memory _metadataUri
+        string memory _uri
     ) external initializer {
         // ownership
         __Ownable_init(_initialOwner);
@@ -88,7 +88,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         _setRoles(roles_);
         _setMarket(_market);
         _setCommitment(_commitment);
-        _setMetadataUri(_metadataUri);
+        _setUri(_uri);
 
         initTimestamp = uint32(block.timestamp);
         period0Start = IGlobalParameters(_globalParameters).period0Start();
@@ -229,13 +229,9 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     //                        HUB-MANAGEMENT
     // -----------------------------------------------------------
 
-    function registerDomain(
-        string calldata domain_,
-        address hubAddress_,
-        string calldata metadataUri_
-    ) external onlyOwner {
+    function registerDomain(string calldata _name, string calldata _uri) external onlyOwner {
         // also revert if not deployer
-        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, hubAddress_, metadataUri_);
+        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(_name, _uri);
     }
 
     /// @inheritdoc IHub
@@ -284,9 +280,9 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         emit ArchetypeSet(input[0]);
     }
 
-    function setMetadataUri(string memory metadataUri_) external {
+    function setUri(string memory _uri) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
-        _setMetadataUri(metadataUri_);
+        _setUri(_uri);
     }
 
     /// internal
@@ -313,12 +309,12 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         emit CommitmentSet(commitment_);
     }
 
-    function _setMetadataUri(string memory metadataUri_) internal {
-        _revertForInvalidMetadataUri(metadataUri_);
+    function _setUri(string memory _uri) internal {
+        _revertForInvalidMetadataUri(_uri);
 
-        metadataUri = metadataUri_;
+        uri = _uri;
 
-        emit MetadataUriSet(metadataUri_);
+        emit MetadataUriSet(_uri);
     }
 
     function _addUrl(string memory url) internal {
@@ -359,9 +355,8 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     //                           VIEWS
     // -----------------------------------------------------------
 
-    // TODO: figure these out
-    function getDomain(string calldata domain) external view returns (address, string memory) {
-        return IHubDomainsRegistry(hubDomainsRegistry).getDomain(domain);
+    function getDomain() external view returns (Domain memory) {
+        return IHubDomainsRegistry(hubDomainsRegistry).getDomain(address(this));
     }
 
     function getUrls() external view returns (string[] memory) {
