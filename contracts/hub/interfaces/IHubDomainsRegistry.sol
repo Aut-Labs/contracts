@@ -10,7 +10,7 @@ struct Domain {
 interface IHubDomainsRegistry {
     /// @notice register an "X.hub" domain
     /// @dev must be called through the hub
-    function registerDomain(string calldata _name, string calldata _uri) external;
+    function registerDomain(string calldata _name, string calldata _uri, address _owner) external;
 
     /// @notice get the Domain of a given hub
     function getDomain(address hub) external view returns (Domain memory);

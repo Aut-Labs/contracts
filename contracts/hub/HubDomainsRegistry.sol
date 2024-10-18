@@ -2,11 +2,12 @@
 pragma solidity ^0.8.20;
 
 // import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {Domain, IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
 import {IHubRegistry} from "./interfaces/IHubRegistry.sol";
 
-contract HubDomainsRegistry is IHubDomainsRegistry, Initializable {
+contract HubDomainsRegistry is IHubDomainsRegistry, Initializable, ERC721Upgradeable {
     mapping(address => Domain) public domains;
     mapping(string => address) public nameToHub;
     mapping(uint256 => address) private tokenIdToHub;
@@ -20,8 +21,14 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Initializable {
         _disableInitializers();
     }
 
-    function initialize(address _hubRegistry) external initializer {
+    function initialize(
+        address _hubRegistry,
+        string memory name_,
+        string memory symbol_
+    ) external initializer {
         hubRegistry = _hubRegistry;
+
+        __ERC721_init(name_, symbol_);
     }
 
     modifier onlyFromHub() {
@@ -30,7 +37,11 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Initializable {
     }
 
     /// @inheritdoc IHubDomainsRegistry
-    function registerDomain(string calldata _name, string calldata _uri) external onlyFromHub {
+    function registerDomain(
+        string calldata _name,
+        string calldata _uri,
+        address _owner
+    ) external onlyFromHub {
         require(domains[msg.sender].tokenId == 0, "Domain already registered");
         require(_isValidDomain(_name), "Invalid _name format");
 
@@ -38,6 +49,8 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Initializable {
         domains[msg.sender] = Domain({tokenId: tokenId_, name: _name, uri: _uri});
         nameToHub[_name] = msg.sender;
         tokenIdToHub[tokenId_] = msg.sender;
+
+        _mint(_owner, tokenId_);
 
         emit DomainRegistered({hub: msg.sender, tokenId: tokenId_, name: _name, uri: _uri});
     }

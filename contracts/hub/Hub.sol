@@ -231,7 +231,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
 
     function registerDomain(string calldata _name, string calldata _uri) external onlyOwner {
         // also revert if not deployer
-        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(_name, _uri);
+        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(_name, _uri, owner());
     }
 
     /// @inheritdoc IHub
