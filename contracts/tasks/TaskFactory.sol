@@ -30,6 +30,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
 
     /// @inheritdoc ITaskFactory
     function registerDescriptions(Description[] calldata descriptions) external returns (bytes32[] memory) {
+        _revertIfNotAdmin();
         uint256 length = descriptions.length;
         bytes32[] memory newDescriptionIds = new bytes32[](length);
         for (uint256 i = 0; i < length; i++) {
@@ -41,6 +42,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
 
     /// @inheritdoc ITaskFactory
     function registerDescription(Description calldata description) external returns (bytes32) {
+        _revertIfNotAdmin();
         return _registerDescription(description);
     }
 

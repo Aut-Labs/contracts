@@ -3,17 +3,38 @@ pragma solidity ^0.8.20;
 
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {Task, ITaskRegistry} from "./interfaces/ITaskRegistry.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract TaskRegistry is ITaskRegistry {
+contract TaskRegistry is ITaskRegistry, Ownable {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
     EnumerableSet.Bytes32Set private _taskIds;
     mapping(bytes32 => Task) private _tasks;
 
-    // TODO: access control ?
+    address public approved;
+
+    constructor() Ownable(msg.sender) {}
+
+    // Access control to register tasks
+
+    function setApproved(address _approved) external onlyOwner {
+        approved = _approved;
+    }
+
+    error NotApproved();
+    modifier onlyApproved() {
+        if (!_isApproved(msg.sender)) revert NotApproved();
+        _;
+    }
+
+    /// @dev returns true if the approved address set to 0 or the msg.sender is the approved address
+    function _isApproved(address who) internal view returns (bool) {
+        address approved_ = approved; // gas
+        return (approved_ == address(0) || approved_ == msg.sender);
+    }
 
     /// @inheritdoc ITaskRegistry
-    function registerTasks(Task[] calldata tasks) external returns (bytes32[] memory) {
+    function registerTasks(Task[] calldata tasks) external onlyApproved returns (bytes32[] memory) {
         uint256 length = tasks.length;
         bytes32[] memory newTaskIds = new bytes32[](length);
         for (uint256 i = 0; i < length; i++) {
@@ -24,7 +45,7 @@ contract TaskRegistry is ITaskRegistry {
     }
 
     /// @inheritdoc ITaskRegistry
-    function registerTask(Task memory task) external returns (bytes32) {
+    function registerTask(Task memory task) external onlyApproved returns (bytes32) {
         return _registerTask(task);
     }
 
