@@ -274,6 +274,16 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskManager
+    function isMemberGivenContributionId(address who, bytes32 contributionId) external view returns (bool) {
+        return memberContributions[who].contains(contributionId);
+    }
+
+    /// @inheritdoc ITaskManager
+    function getMemberContributionIds(address who) external view returns (bytes32[] memory) {
+        return memberContributions[who].values();
+    }
+
+    /// @inheritdoc ITaskManager
     function getMemberContributionIds(address who, uint32 periodId) external view returns (bytes32[] memory) {
         return memberActivities[who][periodId].contributionIds;
     }
