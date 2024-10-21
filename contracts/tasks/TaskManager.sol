@@ -89,7 +89,14 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         contributionStatuses[contributionId] = contributionStatus;
         pointsActive += contribution.points * contribution.quantity;
 
-        emit AddContribution(contributionId, encodeContributionStatus(contributionStatus));
+        emit AddContribution({
+            contributionId: contributionId,
+            sender: msg.sender,
+            hub: hub(),
+            status: Status.Open,
+            points: contribution.points,
+            quantityRemaining: contribution.quantity
+        });
     }
 
     /// @inheritdoc ITaskManager
@@ -119,7 +126,14 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         periodPointsRemoved += sumPointsRemoved;
         contributionStatus.status = Status.Inactive;
 
-        emit RemoveContribution(contributionId, encodeContributionStatus(contributionStatus));
+        emit RemoveContribution({
+            contributionId: contributionId,
+            sender: msg.sender,
+            hub: hub(),
+            status: Status.Inactive,
+            points: contributionStatus.points,
+            quantityRemaining: contributionStatus.quantityRemaining
+        });
     }
 
     /// @inheritdoc ITaskManager
@@ -147,7 +161,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
-        emit CommitContribution(contributionId, msg.sender, who, data);
+        emit CommitContribution({contributionId: contributionId, sender: msg.sender, hub: hub(), who: who, data: data});
     }
 
     /// @inheritdoc ITaskManager
@@ -197,8 +211,16 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         if (contributionStatus.quantityRemaining == 0) {
             contributionStatus.status = Status.Complete;
         }
-
-        emit GiveContribution(contributionId, who, currentPeriodId_, encodeContributionStatus(contributionStatus));
+        emit GiveContribution({
+            contributionId: contributionId,
+            sender: msg.sender,
+            hub: hub(),
+            periodId: currentPeriodId_,
+            who: who,
+            status: contributionStatus.status,
+            points: contributionStatus.points,
+            quantityRemaining: contributionStatus.quantityRemaining
+        });
     }
 
     /// @inheritdoc ITaskManager
@@ -291,15 +313,5 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     /// @inheritdoc ITaskManager
     function getGivenContributions(uint32 periodId) external view returns (bytes32[] memory) {
         return contributionsGivenInPeriod[periodId];
-    }
-
-    /// @inheritdoc ITaskManager
-    function encodeContributionStatus(ContributionStatus memory contributionStatus) public pure returns (bytes memory) {
-        return
-            abi.encodePacked(
-                contributionStatus.status,
-                contributionStatus.points,
-                contributionStatus.quantityRemaining
-            );
     }
 }

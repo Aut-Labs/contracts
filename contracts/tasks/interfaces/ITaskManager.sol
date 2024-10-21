@@ -37,14 +37,38 @@ interface ITaskManager {
 
     event AddContributionManager(address who);
     event RemoveContributionManager(address who);
-    event AddContribution(bytes32 indexed contributionId, bytes encodedContributionStatus);
-    event RemoveContribution(bytes32 indexed contributionId, bytes encodedContributionStatus);
-    event CommitContribution(bytes32 indexed contributionId, address indexed sender, address indexed who, bytes data);
+    event AddContribution(
+        bytes32 indexed contributionId,
+        address indexed sender,
+        address indexed hub,
+        Status status,
+        uint32 points,
+        uint128 quantityRemaining
+    );
+    event RemoveContribution(
+        bytes32 indexed contributionId,
+        address indexed sender,
+        address indexed hub,
+        Status status,
+        uint32 points,
+        uint128 quantityRemaining
+    );
+    event CommitContribution(
+        bytes32 indexed contributionId,
+        address indexed sender,
+        address indexed hub,
+        address who,
+        bytes data
+    );
     event GiveContribution(
         bytes32 indexed contributionId,
-        address indexed who,
+        address indexed sender,
+        address indexed hub,
         uint32 periodId,
-        bytes encodedContributionStatus
+        address who,
+        Status status,
+        uint32 points,
+        uint128 quantityRemaining
     );
 
     /// @notice Set the initial contribution manager from the hub registry
@@ -127,9 +151,4 @@ interface ITaskManager {
 
     /// @notice return the contributionId's given for the whole hub for a provided periodId
     function getGivenContributions(uint32 periodId) external view returns (bytes32[] memory);
-
-    /// @notice Encode a ContributionStatus to its' corresponding bytes array
-    function encodeContributionStatus(
-        ContributionStatus memory contributionStatus
-    ) external pure returns (bytes memory);
 }
