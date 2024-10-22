@@ -96,7 +96,18 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
 
         ITaskManager(taskManager()).addContribution(contributionId, contribution);
 
-        emit CreateContribution(contributionId, msg.sender, encodedContribution);
+        emit CreateContribution({
+            contributionId: contributionId,
+            sender: msg.sender,
+            hub: hub(),
+            taskId: contribution.taskId,
+            descriptionId: contribution.descriptionId,
+            role: contribution.role,
+            startDate: contribution.startDate,
+            endDate: contribution.endDate,
+            points: contribution.points,
+            quantity: contribution.quantity
+        });
 
         return contributionId;
     }

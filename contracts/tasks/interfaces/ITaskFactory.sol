@@ -23,7 +23,18 @@ interface ITaskFactory {
     error InvalidContributionPeriod();
     error DescriptionAlreadyRegistered();
 
-    event CreateContribution(bytes32 indexed contributionId, address indexed sender, bytes encodedContribution);
+    event CreateContribution(
+        bytes32 indexed contributionId,
+        address indexed sender,
+        address indexed hub,
+        bytes32 taskId,
+        bytes32 descriptionId,
+        uint256 role,
+        uint32 startDate,
+        uint32 endDate,
+        uint32 points,
+        uint128 quantity
+    );
     event RegisterDescription(bytes32 indexed descriptionId);
 
     /// @notice register descriptions of contributions to be used in `createContribution(s)`
