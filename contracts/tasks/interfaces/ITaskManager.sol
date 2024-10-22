@@ -140,6 +140,13 @@ interface ITaskManager {
     /// @notice return the amount of points a member has been given for a provided periodId
     function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128);
 
+    /// @notice return true if a member has been given a specific contributionId
+    /// @dev each member can only receive a unique contributionId once
+    function isMemberGivenContributionId(address who, bytes32 contributionId) external view returns (bool);
+
+    /// @notice return the contributionId's given to a member across all periods
+    function getMemberContributionIds(address who) external view returns (bytes32[] memory);
+
     /// @notice return the contributionId's given to a member for a provided periodId
     function getMemberContributionIds(address who, uint32 periodId) external view returns (bytes32[] memory);
 
