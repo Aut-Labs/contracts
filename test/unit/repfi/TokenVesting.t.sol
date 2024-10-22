@@ -10,7 +10,7 @@ contract TokenVestingTest is BaseTest {
     TokenVesting tokenvesting;
     uint startTime;
 
-    uint256 totalAmount = 100000000 ether;
+    uint256 totalAmount = 10000000 ether;
     uint256 amountAlice = 300000 ether;
     uint256 amountBob = 100000 ether;
     uint256 duration = 6 * 28 days;
@@ -173,11 +173,36 @@ contract TokenVestingTest is BaseTest {
         tokenvesting.revoke(vestingAtIndexForBob);
     }
 
-    // function test_revokeVestingScheduleRevertNonRevocableSchedule() public {
-    //     bytes32 vestingAtIndexForAlice = tokenvesting.getVestingIdAtIndex(0);
-    //     vm.expectRevert("TokenVesting: vesting is not revocable");
-    //     tokenvesting.revoke(vestingAtIndexForAlice);
-    // }
+    function test_revokeVestingScheduleRevertNonRevocableSchedule() public {
+        uint amount = 100;
+        TokenVesting tokenvestingWithoutRevoke = new TokenVesting(
+            address(repfiToken),
+            address(this),
+            duration,
+            releaseInterval,
+            false
+        ); // vesting is not revocable
+
+        repfiToken.transfer(address(tokenvestingWithoutRevoke), amount);
+
+        // create token vesting for bob and alice
+        address[] memory recipients = new address[](1);
+        recipients[0] = address(alice);
+
+        uint256[] memory allocations = new uint256[](1);
+        allocations[0] = 100;
+        tokenvestingWithoutRevoke.addRecipients(
+            recipients,
+            allocations,
+            block.timestamp, // start now
+            0, // no cliff
+            amount
+        );
+
+        bytes32 vestingAtIndexForAlice = tokenvestingWithoutRevoke.getVestingIdAtIndex(0);
+        vm.expectRevert("TokenVesting: vesting is not revocable");
+        tokenvestingWithoutRevoke.revoke(vestingAtIndexForAlice);
+    }
 
     function test_revokeVestingScheduleAlreadyRevoked() public {
         bytes32 vestingAtIndexForBob = tokenvesting.getVestingIdAtIndex(1);
@@ -187,18 +212,18 @@ contract TokenVestingTest is BaseTest {
         tokenvesting.revoke(vestingAtIndexForBob);
     }
 
-    // function test_revokeVestingScheduleAfter3Periods() public {
-    //     uint256 newtime = block.timestamp + (3 * 28 days);
-    //     vm.warp(newtime);
+    function test_revokeVestingScheduleAfter3Periods() public {
+        uint256 newtime = block.timestamp + (3 * 28 days);
+        vm.warp(newtime);
 
-    //     bytes32 vestingAtIndexForBob = tokenvesting.getVestingIdAtIndex(1);
-    //     tokenvesting.revoke(vestingAtIndexForBob);
+        bytes32 vestingAtIndexForBob = tokenvesting.getVestingIdAtIndex(1);
+        tokenvesting.revoke(vestingAtIndexForBob);
 
-    //     uint256 estimatedVesting = amountBob / 6;
-    //     uint256 actualVested = repfiToken.balanceOf(address(bob));
+        uint256 estimatedVesting = (amountBob * 3) / 6;
+        uint256 actualVested = repfiToken.balanceOf(address(bob));
 
-    //     assertEq(estimatedVesting, actualVested, "vested amounts do not match");
-    // }
+        assertEq(estimatedVesting, actualVested, "vested amounts do not match");
+    }
 
     function test_vestingEnded() public {
         uint256 newtime = block.timestamp + (6 * 28 days);
@@ -240,13 +265,14 @@ contract TokenVestingTest is BaseTest {
     }
 
     function test_OwnerCanWithdrawRemainingBalance() public {
+        uint256 ownerbalanceBefore = repfiToken.balanceOf(address(this));
         uint256 withdrawableAmount = tokenvesting.getWithdrawableAmount();
         assertEq(withdrawableAmount, totalAmount - amountAlice - amountBob);
 
         tokenvesting.withdraw(withdrawableAmount);
 
-        uint256 ownerbalance = repfiToken.balanceOf(address(this));
-        assertEq(ownerbalance, withdrawableAmount);
+        uint256 ownerbalanceAfter = repfiToken.balanceOf(address(this));
+        assertEq(ownerbalanceAfter - ownerbalanceBefore, withdrawableAmount);
         assertEq(repfiToken.balanceOf(address(tokenvesting)), totalAmount - withdrawableAmount);
     }
 
