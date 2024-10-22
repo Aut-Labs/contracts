@@ -104,6 +104,9 @@ contract DeployAll is Script {
         // init hubDomainsRegistry now that hubRegistry is deployed
         hubDomainsRegistry.initialize(address(hubRegistry));
 
+        // other inits
+        taskRegistry.initialize();
+
         // Setup initial tasks
         Task[] memory tasks = new Task[](3);
         // open tasks
