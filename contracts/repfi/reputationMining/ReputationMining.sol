@@ -4,29 +4,29 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {IPREPFI} from "../token/IpREPFI.sol";
+import {ICREPFI} from "../token/IcREPFI.sol";
 import {IReputationMining} from "./IReputationMining.sol";
 import {IRandomNumberGenerator} from "../../randomNumberGenerator/IRandomNumberGenerator.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /// @title Reputation Mining
 /// @author Āut Labs
-/// @notice This contract distributes an allocation of pRepFi tokens to Āut users depending on their peer value every period
+/// @notice This contract distributes an allocation of cRepFi tokens to Āut users depending on their peer value every period
 /// users can then utilize these tokens using the plugins defined in the UtilsRegistry contract. When the period has ended
 /// the admin will update the period after which users can claim the RepFi tokens they have earned in the previous period
-/// based on their usage and can receive new pRepFi tokens and put them to use in the next period.
+/// based on their usage and can receive new cRepFi tokens and put them to use in the next period.
 contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining {
     /// @notice the RepFi token contract
     IERC20 public repFiToken;
-    /// @notice the pRepFi token contract
-    IPREPFI public pRepFiToken;
+    /// @notice the cRepFi token contract
+    ICREPFI public pRepFiToken;
     /// @notice address where unclaimed funds will be sent to so they can be used by the platform
     address public circular;
     /// @notice random generator contract where we can get a random value for "peer value" as well was the "total value"
     /// @dev this contract will be replaced with the PeerValue contract in the near future, this is just for testing the functionality in the meantime
     IRandomNumberGenerator randomNumberGenerator;
 
-    /// @notice maximum amount of pRepFi tokens a user can receive each period
+    /// @notice maximum amount of cRepFi tokens a user can receive each period
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether; // to be changed later
     /// @notice denominator for calculations where we will otherwise end up with a decimal between 0 and 1 which is not possible in Solidity
     uint256 public constant DENOMINATOR = 1000;
@@ -43,12 +43,12 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     mapping(address user => mapping(uint256 period => uint256 amount)) public givenBalance;
 
     using SafeERC20 for IERC20;
-    using SafeERC20 for IPREPFI;
+    using SafeERC20 for ICREPFI;
 
     /// @notice ReputationMining contract initializer
     /// @param initialOwner The initial owner of the contract
     /// @param _repFiToken the address of the RepFi token contract
-    /// @param _pRepFiToken the address of the pRepFi token contract
+    /// @param _pRepFiToken the address of the cRepFi token contract
     /// @param _circular the address of the circular contract
     /// @param _randomNumberGenerator the address of the RandomNumberGenerator contract
     function initialize(
@@ -60,7 +60,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     ) external initializer {
         __Ownable_init(initialOwner);
         repFiToken = IERC20(_repFiToken);
-        pRepFiToken = IPREPFI(_pRepFiToken);
+        pRepFiToken = ICREPFI(_pRepFiToken);
         circular = _circular;
         randomNumberGenerator = IRandomNumberGenerator(_randomNumberGenerator);
     }
@@ -94,13 +94,13 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         }
     }
 
-    /// @notice distributes pRepFi tokens to an Āut user once per period based on their peer value and save the givenBalance for later
+    /// @notice distributes cRepFi tokens to an Āut user once per period based on their peer value and save the givenBalance for later
     function claimUtilityToken() external nonReentrant {
-        require(givenBalance[msg.sender][period] == 0, "user already claimed pREPFI");
+        require(givenBalance[msg.sender][period] == 0, "user already claimed cREPFI");
 
         uint256 pRepFiBalance = pRepFiToken.balanceOf(msg.sender);
         if (pRepFiBalance > 0) {
-            // reset pRepFi token balance
+            // reset cRepFi token balance
             bool success = pRepFiToken.burn(msg.sender, pRepFiBalance);
             require(success, "Failed to burn remaining tokens");
 
@@ -138,19 +138,19 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         }
     }
 
-    /// @notice claims the reward tokens (RepFi) for the sender based on the utilisation of the pRepFi token in the previous period and transfers the remaining balance to the circular contract
+    /// @notice claims the reward tokens (RepFi) for the sender based on the utilisation of the cRepFi token in the previous period and transfers the remaining balance to the circular contract
     function claim() external nonReentrant {
-        // calculate how much of the pREPFI tokens the user has used in this period and distribute monthly allocation of REPFI tokens
+        // calculate how much of the cREPFI tokens the user has used in this period and distribute monthly allocation of REPFI tokens
         uint256 givenAmount = givenBalance[msg.sender][period - 1];
         require(givenAmount > 0, "no claims available for this period");
         uint256 pRepFiBalance = pRepFiToken.balanceOf(msg.sender);
-        require(pRepFiBalance <= givenAmount, "pRepFi balance should be smaller or equal to the given balance");
+        require(pRepFiBalance <= givenAmount, "cRepFi balance should be smaller or equal to the given balance");
 
         // set givenBalance for previous period to 0 so the user can't claim twice
         givenBalance[msg.sender][period - 1] = 0;
 
         // calculate rewards based on token utilisation
-        // check pREPFI balance vs allocated tokens for last period unless there's a better way to check this
+        // check cREPFI balance vs allocated tokens for last period unless there's a better way to check this
         uint256 tokensUsed = givenAmount - pRepFiBalance;
         uint256 participation = tokensUsed > 0 ? ((tokensUsed) * 100) / givenAmount : 0;
         uint256 earnedTokens = 0;

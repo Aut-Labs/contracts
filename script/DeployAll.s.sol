@@ -20,7 +20,7 @@ import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 
 import {UtilsRegistry} from "../contracts/repfi/utilsRegistry/UtilsRegistry.sol";
 import {RepFi} from "../contracts/repfi/token/REPFI.sol";
-import {PRepFi} from "../contracts/repfi/token/pREPFI.sol";
+import {PRepFi} from "../contracts/repfi/token/cREPFI.sol";
 import {Investors} from "../contracts/repfi/vesting/Investors.sol";
 import {Team} from "../contracts/repfi/vesting/Team.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
@@ -50,7 +50,7 @@ contract DeployAll is Script {
     GlobalParameters public globalParameters;
     UtilsRegistry public utilsRegistry;
     RepFi public repFi;
-    PRepFi public pRepFi;
+    PRepFi public cRepFi;
     address public sales;
     Investors public investors;
     Team public team;
@@ -151,7 +151,7 @@ contract DeployAll is Script {
 
         // deploy token contracts
         repFi = deployRepFiToken();
-        pRepFi = deployPRepFiToken(address(owner), address(utilsRegistry));
+        cRepFi = deployPRepFiToken(address(owner), address(utilsRegistry));
 
         // deploy vesting contracts
         investors = deployInvestors(address(repFi), projectMultisig);
@@ -176,7 +176,7 @@ contract DeployAll is Script {
         reputationMining = deployReputationMining(
             owner,
             address(repFi),
-            address(pRepFi),
+            address(cRepFi),
             address(circular),
             address(randomNumberGenerator)
         );
@@ -191,7 +191,7 @@ contract DeployAll is Script {
         peerStaking = deployPeerStaking(
             owner,
             address(repFi),
-            address(pRepFi),
+            address(cRepFi),
             address(circular),
             address(peerValue),
             address(reputationMining)
@@ -202,7 +202,7 @@ contract DeployAll is Script {
         vm.stopBroadcast();
         vm.startPrank(owner);
         // ToDo: give burner role to reputationmining in prepfi
-        pRepFi.grantRole(pRepFi.BURNER_ROLE(), address(reputationMining));
+        cRepFi.grantRole(cRepFi.BURNER_ROLE(), address(reputationMining));
 
         utilsRegistry.registerPlugin(address(address(this)), "DeployContract");
         // this is needed for tests because in BaseTest.sol the owner will be changed to the BaseTest contract
@@ -219,8 +219,8 @@ contract DeployAll is Script {
         // send tokens to distribution contract
         repFi.transfer(address(distributor), 100000000 ether); // 100 million repfi tokens
 
-        // send pRepFi to reputationMining
-        pRepFi.transfer(address(reputationMining), 36000000 ether);
+        // send cRepFi to reputationMining
+        cRepFi.transfer(address(reputationMining), 36000000 ether);
 
         // transfer ownership to multisig for all contracts that have an owner
 
@@ -238,7 +238,7 @@ contract DeployAll is Script {
             na[4] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
             na[10] = TNamedAddress({name: "utilsRegistry", target: address(utilsRegistry)});
             na[11] = TNamedAddress({name: "repFi", target: address(repFi)});
-            na[12] = TNamedAddress({name: "pRepFi", target: address(pRepFi)});
+            na[12] = TNamedAddress({name: "cRepFi", target: address(cRepFi)});
             na[13] = TNamedAddress({name: "sales", target: address(sales)});
             na[15] = TNamedAddress({name: "investors", target: address(investors)});
             na[16] = TNamedAddress({name: "team", target: address(team)});
@@ -355,8 +355,8 @@ function deployRepFiToken() returns (RepFi) {
 }
 
 function deployPRepFiToken(address _owner, address _repFiRegistry) returns (PRepFi) {
-    PRepFi pRepFi = new PRepFi(_owner, _repFiRegistry);
-    return pRepFi;
+    PRepFi cRepFi = new PRepFi(_owner, _repFiRegistry);
+    return cRepFi;
 }
 
 function deployInvestors(address _repFiToken, address _owner) returns (Investors) {

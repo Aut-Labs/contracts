@@ -31,7 +31,7 @@ abstract contract BaseTest is Test {
 
     UtilsRegistry public utilsRegistry;
     RepFi public repFi;
-    PRepFi public pRepFi;
+    PRepFi public cRepFi;
     address public sales;
     Investors public investors;
     Team public team;
@@ -65,7 +65,7 @@ abstract contract BaseTest is Test {
         utilsRegistry = deploy.utilsRegistry();
 
         repFi = deploy.repFi();
-        pRepFi = deploy.pRepFi();
+        cRepFi = deploy.cRepFi();
 
         sales = deploy.sales();
         investors = deploy.investors();
@@ -99,7 +99,7 @@ abstract contract BaseTest is Test {
         hub = Hub(hubAddress);
         vm.label(address(utilsRegistry), "utilsRegistry");
         vm.label(address(repFi), "repFi");
-        vm.label(address(pRepFi), "pRepFi");
+        vm.label(address(cRepFi), "cRepFi");
         vm.label(address(sales), "sales");
         vm.label(address(investors), "investors");
         vm.label(address(team), "team");

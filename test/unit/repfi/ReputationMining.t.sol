@@ -114,7 +114,7 @@ contract ReputationMiningTest is BaseTest {
 
         uint256 pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
 
-        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received pRepFi doesn't match");
+        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
         assertLe(
             pRepFiBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
@@ -135,7 +135,7 @@ contract ReputationMiningTest is BaseTest {
 
         uint256 repfiBalanceAfter = repfiToken.balanceOf(address(alice));
 
-        // since alice didn't do anything with her pRepFi tokens, she won't be rewarded any tokens
+        // since alice didn't do anything with her cRepFi tokens, she won't be rewarded any tokens
         // uint256 calculatedRewards = (pRepFiBalanceAfter / 60) * 100;
         uint256 calculatedRewards = 0;
         assertEq(repfiBalanceAfter, 0, "reward amounts do not match");
@@ -174,14 +174,14 @@ contract ReputationMiningTest is BaseTest {
 
         uint256 pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
 
-        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received pRepFi doesn't match");
+        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
         assertLe(
             pRepFiBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
             "distribution exceeded maximum amount"
         );
 
-        // alice stakes 60% pRepFi tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
+        // alice stakes 60% cRepFi tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
         uint256 stakedAmount = (givenAmount * 50) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
@@ -234,7 +234,7 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        // alice stakes 90% pRepFi tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
+        // alice stakes 90% cRepFi tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
         stakedAmount = (givenAmount * 90) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
@@ -290,7 +290,7 @@ contract ReputationMiningTest is BaseTest {
 
         uint256 pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
 
-        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received pRepFi doesn't match");
+        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
         assertLe(
             pRepFiBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
@@ -321,8 +321,8 @@ contract ReputationMiningTest is BaseTest {
 
         pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
 
-        // alice should have a total of 1000 pRepFi tokens again
-        assertEq(pRepFiBalanceAfter, givenAmount, "previously allocated pRepFi was not burned");
+        // alice should have a total of 1000 cRepFi tokens again
+        assertEq(pRepFiBalanceAfter, givenAmount, "previously allocated cRepFi was not burned");
         assertLe(
             pRepFiBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),

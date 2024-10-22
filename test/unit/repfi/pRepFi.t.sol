@@ -2,7 +2,7 @@
 pragma solidity ^0.8.21;
 
 import "../../BaseTest.sol";
-import "../../../contracts/repfi/token/pREPFI.sol";
+import "../../../contracts/repfi/token/cREPFI.sol";
 
 contract PRepFiTest is BaseTest {
     PRepFi pRepfiToken;
@@ -18,11 +18,11 @@ contract PRepFiTest is BaseTest {
     }
 
     function test_tokenName() public view {
-        assertEq("Predictive Reputation Finance", pRepfiToken.name(), "Token name does not match");
+        assertEq("Conditional REPFI", pRepfiToken.name(), "Token name does not match");
     }
 
     function test_tokenSymbol() public view {
-        assertEq("pREPFI", pRepfiToken.symbol(), "Token symbol does not match");
+        assertEq("cREPFI", pRepfiToken.symbol(), "Token symbol does not match");
     }
 
     function test_TokenMint() public view {

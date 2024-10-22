@@ -7,16 +7,16 @@ import {IUtilsRegistry} from "../utilsRegistry/IUtilsRegistry.sol";
 
 /// @title Predictive Reputation Finance token
 /// @author Āut Labs
-/// @notice Predictive Reputation Finance token with symbol pREPFI
+/// @notice Predictive Reputation Finance token with symbol cREPFI
 contract PRepFi is ERC20, AccessControl {
     IUtilsRegistry utilsRegistry;
 
     bytes32 public constant BURNER_ROLE = keccak256("BURNER");
 
-    /// @notice creates the Predictive Reputation Finance token (pREPFI), initializes the sender as the admin, configures the PrepFiRegistry contract, mints 100 million tokens to the sender
+    /// @notice creates the Predictive Reputation Finance token (cREPFI), initializes the sender as the admin, configures the PrepFiRegistry contract, mints 100 million tokens to the sender
     /// @param _owner the owner of the contract
     /// @param _pluginRegistry the address of the plugin registry contract
-    constructor(address _owner, address _pluginRegistry) ERC20("Predictive Reputation Finance", "pREPFI") {
+    constructor(address _owner, address _pluginRegistry) ERC20("Conditional REPFI", "cREPFI") {
         _grantRole(DEFAULT_ADMIN_ROLE, _owner);
         utilsRegistry = IUtilsRegistry(_pluginRegistry);
         _mint(msg.sender, 100_000_000 ether);

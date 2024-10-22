@@ -18,7 +18,7 @@ contract Distributor {
     address public immutable owner;
     /// @notice repFi token contract
     IERC20 public immutable repFi;
-    // IERC20 public immutable pRepFi;
+    // IERC20 public immutable cRepFi;
 
     /// sales multisig
     address public immutable sales;
@@ -57,7 +57,7 @@ contract Distributor {
     ) {
         owner = msg.sender;
         repFi = _repFi;
-        // pRepFi = _pRepFi;
+        // cRepFi = _pRepFi;
 
         sales = _sales;
         reputationMining = _reputationMining;
@@ -104,6 +104,6 @@ contract Distributor {
     function sendTokens(address receiver, uint256 amount) internal {
         repFi.safeTransfer(receiver, amount);
         // // ToDo: this contract should be added to the plugin registry, otherwise the transfer will fail
-        // pRepFi.safeTransfer(receiver, amount);
+        // cRepFi.safeTransfer(receiver, amount);
     }
 }
