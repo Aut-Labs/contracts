@@ -3,7 +3,6 @@ pragma solidity ^0.8.20;
 
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {Task, ITaskRegistry} from "./interfaces/ITaskRegistry.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
@@ -16,7 +15,8 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
     }
 
     // keccak256(abi.encode(uint256(keccak256("aut.storage.TaskRegistry")) - 1))
-    bytes32 private constant TaskRegistryStorageLocation = 0xc1f8b0ede512a55dbbda242577f6b0c5214dd214df36b3a4a3854a073de90410;
+    bytes32 private constant TaskRegistryStorageLocation =
+        0xc1f8b0ede512a55dbbda242577f6b0c5214dd214df36b3a4a3854a073de90410;
 
     function _getTaskRegistryStorage() private pure returns (TaskRegistryStorage storage $) {
         assembly {
@@ -75,7 +75,7 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
 
     function _registerTask(Task memory task) internal returns (bytes32) {
         TaskRegistryStorage storage $ = _getTaskRegistryStorage();
-        
+
         bytes32 taskId = calcTaskId(task);
 
         if (!$.taskIds.add(taskId)) revert TaskAlreadyRegistered();
