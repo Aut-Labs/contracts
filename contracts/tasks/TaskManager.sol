@@ -20,7 +20,8 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     mapping(bytes32 => ContributionStatus) public contributionStatuses;
     mapping(uint32 periodId => PointSummary) public pointSummaries;
     mapping(address member => mapping(uint32 periodId => MemberActivity)) public memberActivities;
-    mapping(address member => EnumerableSet.Bytes32Set) private memberContributions;
+    mapping(address member => EnumerableSet.Bytes32Set) private memberContributionsGiven;
+    mapping(address member => EnumerableSet.Bytes32Set) private memberContributionsCommitted;
     mapping(uint32 periodId => bytes32[] contributionIds) public contributionsGivenInPeriod;
 
     EnumerableSet.AddressSet private _contributionManagers;
@@ -159,9 +160,46 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             revert UnauthorizedContributionManager();
         _revertIfNotMember(who);
 
+        // revert if the contribution is not in open status (NOTE: does not require commitment to be before Contribution.endDate)
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
+
+        // revert if contribution was already given to member
+        if (memberContributionsGiven[who].contains(contributionId)) revert ContributionAlreadyGiven();
+
+        // Add the commitment, revert if already committed
+        if (!memberContributionsCommitted[who].add(contributionId)) revert ContributionAlreadyCommitted();
+
         emit CommitContribution({contributionId: contributionId, sender: msg.sender, hub: hub(), who: who, data: data});
+    }
+
+    /// @inheritdoc ITaskManager
+    function revokeContributions(
+        bytes32[] calldata contributionIds,
+        address[] calldata whos,
+        bytes[] calldata datas
+    ) external {
+        uint256 length = contributionIds.length;
+        if (length != whos.length || length != datas.length) revert UnequalLengths();
+        for (uint256 i = 0; i < length; i++) {
+            _revokeContribution(contributionIds[i], whos[i], datas[i]);
+        }
+    }
+
+    /// @inheritdoc ITaskManager
+    function revokeContribution(bytes32 contributionId, address who, bytes calldata data) external {
+        _revokeContribution(contributionId, who, data);
+    }
+
+    function _revokeContribution(bytes32 contributionId, address who, bytes memory data) internal {
+        if (msg.sender != who && !isContributionManager(msg.sender) && !_isAdmin(msg.sender))
+            revert UnauthorizedContributionManager();
+        _revertIfNotMember(who);
+
+        // Remove the commitment, revert if not committed
+        if (!memberContributionsCommitted[who].remove(contributionId)) revert ContributionNotCommitted();
+
+        emit RevokeContribution({contributionId: contributionId, sender: msg.sender, hub: hub(), who: who, data: data});
     }
 
     /// @inheritdoc ITaskManager
@@ -188,16 +226,17 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
-        uint32 points = contributionStatus.points;
 
+        if (!memberContributionsGiven[who].add(contributionId)) revert ContributionAlreadyGiven();
+        if (!memberContributionsCommitted[who].remove(contributionId)) revert ContributionNotCommitted();
+
+        uint32 points = contributionStatus.points;
         uint32 currentPeriodId_ = currentPeriodId();
 
         // update member activity
         MemberActivity storage memberActivity = memberActivities[who][currentPeriodId_];
         memberActivity.pointsGiven += points;
         memberActivity.contributionIds.push(contributionId);
-
-        if (!memberContributions[who].add(contributionId)) revert MemberAlreadyContributed();
 
         // update "hot" point summary
         pointsActive -= points;
@@ -297,12 +336,12 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
     /// @inheritdoc ITaskManager
     function isMemberGivenContributionId(address who, bytes32 contributionId) external view returns (bool) {
-        return memberContributions[who].contains(contributionId);
+        return memberContributionsGiven[who].contains(contributionId);
     }
 
     /// @inheritdoc ITaskManager
     function getMemberContributionIds(address who) external view returns (bytes32[] memory) {
-        return memberContributions[who].values();
+        return memberContributionsGiven[who].values();
     }
 
     /// @inheritdoc ITaskManager
