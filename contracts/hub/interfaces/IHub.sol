@@ -68,7 +68,7 @@ interface IHub {
     function archetype() external view returns (uint256);
     function commitment() external view returns (uint256);
     function market() external view returns (uint256);
-    function metadataUri() external view returns (string memory);
+    function uri() external view returns (string memory);
 
     // Mutative
 

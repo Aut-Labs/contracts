@@ -102,7 +102,10 @@ contract DeployAll is Script {
         autId.transferOwnership(owner);
 
         // init hubDomainsRegistry now that hubRegistry is deployed
-        hubDomainsRegistry.initialize(address(hubRegistry));
+        hubDomainsRegistry.initialize(address(hubRegistry), "Hub Domains Registry", "HDR");
+
+        // other inits
+        taskRegistry.initialize();
 
         // Setup initial tasks
         Task[] memory tasks = new Task[](3);
