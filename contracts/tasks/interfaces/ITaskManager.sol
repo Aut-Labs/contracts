@@ -29,11 +29,13 @@ struct MemberActivity {
 
 interface ITaskManager {
     error UnequalLengths();
-    error MemberAlreadyContributed();
     error ContributionNotOpen();
     error AlreadyContributionManager();
     error NotContributionManager();
     error UnauthorizedContributionManager();
+    error ContributionAlreadyCommitted();
+    error ContributionAlreadyGiven();
+    error ContributionNotCommitted();
 
     event AddContributionManager(address who);
     event RemoveContributionManager(address who);
@@ -54,6 +56,13 @@ interface ITaskManager {
         uint128 quantityRemaining
     );
     event CommitContribution(
+        bytes32 indexed contributionId,
+        address indexed sender,
+        address indexed hub,
+        address who,
+        bytes data
+    );
+    event RevokeContribution(
         bytes32 indexed contributionId,
         address indexed sender,
         address indexed hub,
@@ -118,6 +127,16 @@ interface ITaskManager {
 
     /// @notice Commit to an open Contribution with associated data
     function commitContribution(bytes32 contributionId, address who, bytes calldata data) external;
+
+    /// @notice Revoke a set of commits to contributions(commitContribution(s))
+    function revokeContributions(
+        bytes32[] calldata contributionIds,
+        address[] calldata wwhos,
+        bytes[] calldata datas
+    ) external;
+
+    /// @notice Revoke a commit to contribution (commitContribution())
+    function revokeContribution(bytes32 contributionId, address who, bytes calldata data) external;
 
     /// @notice Give Contribution points to members who have completed the Contribution requirements
     function giveContributions(bytes32[] calldata contributionIds, address[] calldata whos) external;

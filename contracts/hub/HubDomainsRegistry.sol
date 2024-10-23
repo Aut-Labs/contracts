@@ -21,11 +21,7 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Initializable, ERC721Upgrade
         _disableInitializers();
     }
 
-    function initialize(
-        address _hubRegistry,
-        string memory name_,
-        string memory symbol_
-    ) external initializer {
+    function initialize(address _hubRegistry, string memory name_, string memory symbol_) external initializer {
         hubRegistry = _hubRegistry;
 
         __ERC721_init(name_, symbol_);
@@ -37,11 +33,7 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Initializable, ERC721Upgrade
     }
 
     /// @inheritdoc IHubDomainsRegistry
-    function registerDomain(
-        string calldata _name,
-        string calldata _uri,
-        address _owner
-    ) external onlyFromHub {
+    function registerDomain(string calldata _name, string calldata _uri, address _owner) external onlyFromHub {
         require(domains[msg.sender].tokenId == 0, "Domain already registered");
         require(_isValidDomain(_name), "Invalid _name format");
 
