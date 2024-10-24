@@ -6,7 +6,7 @@ struct MemberParticipation {
     uint128 performance;
 }
 
-interface IParticipation {
+interface IParticipationScore {
     error InvalidCommitment();
 
     /// @notice called when a member joins a hub

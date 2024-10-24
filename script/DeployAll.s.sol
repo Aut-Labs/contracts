@@ -13,7 +13,7 @@ import {HubDomainsRegistry} from "../contracts/hub/HubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 import {Membership} from "../contracts/membership/Membership.sol";
-import {Participation} from "../contracts/participation/Participation.sol";
+import {ParticipationScore} from "../contracts/participationScore/ParticipationScore.sol";
 import {Task, TaskRegistry} from "../contracts/tasks/TaskRegistry.sol";
 import {TaskFactory} from "../contracts/tasks/TaskFactory.sol";
 import {TaskManager} from "../contracts/tasks/TaskManager.sol";
@@ -201,7 +201,7 @@ function deployHubDependencyImplementations() returns (
     address taskManagerImplementation
 ) {
     membershipImplementation = address(new Membership());
-    participationImplementation = address(new Participation());
+    participationImplementation = address(new ParticipationScore());
     taskFactoryImplementation = address(new TaskFactory());
     taskManagerImplementation = address(new TaskManager());
 }

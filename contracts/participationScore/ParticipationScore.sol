@@ -9,9 +9,9 @@ import {AccessUtils} from "../utils/AccessUtils.sol";
 import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IMembership} from "../membership/IMembership.sol";
 import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
-import {IParticipation, MemberParticipation} from "./IParticipation.sol";
+import {IParticipationScore, MemberParticipation} from "./IParticipationScore.sol";
 
-contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtils {
+contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, AccessUtils {
     mapping(address who => mapping(uint32 periodId => MemberParticipation)) public memberParticipations;
 
     function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
@@ -19,7 +19,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function join(address who) external {
         _revertIfNotHub();
 
@@ -27,7 +27,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         memberParticipations[who][currentPeriodId()] = MemberParticipation({score: 1e18, performance: 0});
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function calcPerformanceInPeriod(
         uint32 commitment,
         uint128 pointsGiven,
@@ -37,7 +37,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return _calcPerformanceInPeriod({commitment: commitment, pointsGiven: pointsGiven, periodId: periodId});
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function calcPerformancesInPeriod(
         uint32[] calldata commitments,
         uint128[] calldata pointsGiven,
@@ -65,7 +65,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return performance;
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
         _revertIfNotMember(who);
         if (periodId < IMembership(membership()).getPeriodIdJoined(who) || periodId > currentPeriodId())
@@ -73,7 +73,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return _calcPerformanceInPeriod(who, periodId);
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function calcPerformanceInPeriods(
         address who,
         uint32[] calldata periodIds
@@ -86,7 +86,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return performances;
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function calcPerformancesInPeriod(
         address[] calldata whos,
         uint32 periodId
@@ -108,14 +108,14 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
             });
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function calcExpectedPoints(uint32 commitment, uint32 periodId) public view returns (uint128) {
         if (commitment < 1 || commitment > 10) revert InvalidCommitment();
         if (periodId == 0 || periodId > currentPeriodId()) revert InvalidPeriodId();
         return _calcExpectedPoints(commitment, periodId);
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function calcsExpectedPoints(
         uint32[] calldata commitments,
         uint32[] calldata periodIds
@@ -135,12 +135,12 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
                 ITaskManager(taskManager()).getPointsActive(periodId)) / 1e18;
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function fractionalCommitment(uint32 commitment, uint32 periodId) public view returns (uint128) {
         return (1e18 * uint128(commitment)) / IMembership(membership()).getCommitmentSum(periodId);
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function fractionalsCommitments(
         uint32[] calldata commitments,
         uint32[] calldata periodIds
@@ -155,7 +155,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
     }
 
     // TODO: seal member participation if all written?
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function getMembersToWriteMemberParticipation(uint32 periodId) external view returns (address[] memory) {
         uint256 numMembersToWrite = 0;
         address[] memory members = IMembership(membership()).members();
@@ -175,7 +175,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         return arrMembersToWrite;
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function writeMemberParticipation(address who) external {
         // update historical periods if necessary
         ITaskManager(taskManager()).writePointSummary();
@@ -183,7 +183,7 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         _writeMemberParticipation(who, currentPeriodId());
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function writeMemberParticipations(address[] calldata whos) external {
         // update historical periods if necessary
         ITaskManager(taskManager()).writePointSummary();
@@ -253,12 +253,12 @@ contract Participation is IParticipation, Initializable, PeriodUtils, AccessUtil
         }
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function constraintFactor() public view returns (uint128) {
         return IGlobalParameters(hub()).constraintFactor();
     }
 
-    /// @inheritdoc IParticipation
+    /// @inheritdoc IParticipationScore
     function penaltyFactor() public view returns (uint128) {
         return IGlobalParameters(hub()).penaltyFactor();
     }
