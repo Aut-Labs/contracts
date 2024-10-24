@@ -12,7 +12,23 @@ import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
 import {IParticipationScore, MemberParticipation} from "./IParticipationScore.sol";
 
 contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, AccessUtils {
-    mapping(address who => mapping(uint32 periodId => MemberParticipation)) public memberParticipations;
+    struct ParticipationScoreStorage {
+        mapping(address who => mapping(uint32 periodId => MemberParticipation)) memberParticipations;
+    }
+
+    // keccak256(abi.encode(uint256(keccak256("aut.storage.ParticipationScore")) - 1))
+    bytes32 private constant ParticipationScoreStorageLocation =
+        0x5466d550951de733d9f954489dbcc381088fa34c16e4ea6d7884e8847b39ab74;
+
+    function _getParticipationScoreStorage() private pure returns (ParticipationScoreStorage storage $) {
+        assembly {
+            $.slot := ParticipationScoreStorageLocation
+        }
+    }
+
+    constructor() {
+        _disableInitializers();
+    }
 
     function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
@@ -23,8 +39,15 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
     function join(address who) external {
         _revertIfNotHub();
 
+        ParticipationScoreStorage storage $ = _getParticipationScoreStorage();
+
         // store initial participation
-        memberParticipations[who][currentPeriodId()] = MemberParticipation({score: 1e18, performance: 0});
+        $.memberParticipations[who][currentPeriodId()] = MemberParticipation({score: 1e18, performance: 0});
+    }
+
+    function memberParticipations(address who, uint32 periodId) external view returns (MemberParticipation memory) {
+        ParticipationScoreStorage storage $ = _getParticipationScoreStorage();
+        return $.memberParticipations[who][periodId];
     }
 
     /// @inheritdoc IParticipationScore
@@ -157,13 +180,15 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
     // TODO: seal member participation if all written?
     /// @inheritdoc IParticipationScore
     function getMembersToWriteMemberParticipation(uint32 periodId) external view returns (address[] memory) {
+        ParticipationScoreStorage storage $ = _getParticipationScoreStorage();
         uint256 numMembersToWrite = 0;
         address[] memory members = IMembership(membership()).members();
         uint256 length = members.length;
         address[] memory membersCopy = new address[](length);
+
         for (uint256 i = 0; i < length; i++) {
             address member = members[i];
-            if (memberParticipations[member][periodId].score == 0) {
+            if ($.memberParticipations[member][periodId].score == 0) {
                 membersCopy[numMembersToWrite++] = member;
             }
         }
@@ -195,7 +220,8 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
     }
 
     function _writeMemberParticipation(address who, uint32 _currentPeriodId) internal {
-        // TODO: algorithm
+        ParticipationScoreStorage storage $ = _getParticipationScoreStorage();
+
         // NOTE: in periodIdJoined, participation score is default 100.  Only write to following periods
         uint32 periodIdJoined = IMembership(membership()).getPeriodIdJoined(who);
 
@@ -203,7 +229,7 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         uint32 periodToStartWrite;
         for (uint32 i = _currentPeriodId - 1; i > periodIdJoined; i--) {
             // loop through passed periods and find the oldest period where participation has not yet been written
-            if (memberParticipations[who][i].score == 0) {
+            if ($.memberParticipations[who][i].score == 0) {
                 periodToStartWrite = i;
             } else {
                 // we have reached the end of 0 values
@@ -215,11 +241,11 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         if (periodToStartWrite == 0) return;
 
         // Get previous period participation score to use as a starting weight
-        uint128 previousScore = memberParticipations[who][periodToStartWrite - 1].score;
+        uint128 previousScore = $.memberParticipations[who][periodToStartWrite - 1].score;
 
         // Start at the first empty period and write the participation score given the previous score and c
         for (uint32 i = periodToStartWrite; i < _currentPeriodId; i++) {
-            MemberParticipation storage memberParticipation = memberParticipations[who][i];
+            MemberParticipation storage memberParticipation = $.memberParticipations[who][i];
             uint128 performance = _calcPerformanceInPeriod({
                 commitment: IMembership(membership()).getCommitment({who: who, periodId: i}),
                 pointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, i),
@@ -229,7 +255,7 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
             uint128 delta;
             uint128 factor;
             uint128 score;
-            // TODO: precision
+
             if (performance > 1e18) {
                 // exceeded expectations: raise memberParticipation score
                 delta = performance - 1e18;
