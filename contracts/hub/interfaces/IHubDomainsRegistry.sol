@@ -8,13 +8,21 @@ struct Domain {
 }
 
 interface IHubDomainsRegistry {
+    event DomainRegistered(address indexed hub, uint256 indexed tokenId, string name, string uri);
+
+    function tokenId() external view returns (uint256);
+    function hubRegistry() external view returns (address);
+
     /// @notice register an "X.hub" domain
     /// @dev must be called through the hub
     function registerDomain(string calldata _name, string calldata _uri, address _owner) external;
 
-    /// @notice get the Domain of a given hub
-    function getDomain(address hub) external view returns (Domain memory);
+    /// @notice Return the Domain data relative to a hub
+    function domains(address hub) external view returns (Domain memory);
 
-    /// @notice Get the hub of a given "X.hub" name
-    function getHubByName(string memory name) external view returns (address);
+    /// @notice return the address of a hub given its' name
+    function nameToHub(string memory _name) external view returns (address hub);
+
+    /// @notice return the address of a hub given its' tokenId
+    function tokenIdToHub(uint256 _tokenId) external view returns (address hub);
 }

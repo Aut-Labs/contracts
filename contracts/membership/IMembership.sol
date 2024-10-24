@@ -1,10 +1,20 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
+struct MemberDetail {
+    uint256 role;
+    uint8 commitment;
+}
+
 interface IMembership {
     error MemberDoesNotExist();
     error MemberHasNotYetCommited();
     error SenderNotHub();
+    error TooLateCommitmentChange();
+    error SameCommitment();
+    error InvalidCommitment();
+
+    event ChangeCommitment(address indexed who, uint8 oldCommitment, uint8 newCommitment);
 
     event Join(address who, uint256 role, uint8 commitment);
 
@@ -46,4 +56,7 @@ interface IMembership {
     /// @notice Join the hub
     /// @dev Is called through the hub
     function join(address who, uint256 role, uint8 commitment) external;
+
+    /// @notice Change your commitment level
+    function changeCommitment(uint8 newCommitment) external;
 }

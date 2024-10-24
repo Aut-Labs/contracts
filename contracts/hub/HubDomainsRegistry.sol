@@ -8,51 +8,80 @@ import {Domain, IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol"
 import {IHubRegistry} from "./interfaces/IHubRegistry.sol";
 
 contract HubDomainsRegistry is IHubDomainsRegistry, Initializable, ERC721Upgradeable {
-    mapping(address => Domain) public domains;
-    mapping(string => address) public nameToHub;
-    mapping(uint256 => address) private tokenIdToHub;
+    struct HubDomainsRegistryStorage {
+        uint256 tokenId;
+        address hubRegistry;
+        mapping(address => Domain) domains;
+        mapping(string => address) nameToHub;
+        mapping(uint256 => address) tokenIdToHub;
+    }
 
-    uint256 private tokenId;
-    address private hubRegistry;
+    // keccak256(abi.encode(uint256(keccak256("aut.storage.HubDomainsRegistry")) - 1))
+    bytes32 private constant HubDomainsRegistryStorageLocation =
+        0x7694591d4c1b0211f9ca2c8e969bcf5e9e81a833f253fd4748018791dadd2a28;
 
-    event DomainRegistered(address indexed hub, uint256 indexed tokenId, string name, string uri);
+    function _getHubDomainsRegistryStorage() private pure returns (HubDomainsRegistryStorage storage $) {
+        assembly {
+            $.slot := HubDomainsRegistryStorageLocation
+        }
+    }
+
+    function tokenId() external view returns (uint256) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.tokenId;
+    }
+
+    function hubRegistry() public view returns (address) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.hubRegistry;
+    }
+
+    function domains(address hub) external view returns (Domain memory) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.domains[hub];
+    }
+
+    function nameToHub(string memory name) external view returns (address hub) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.nameToHub[name];
+    }
+
+    function tokenIdToHub(uint256 _tokenId) external view returns (address hub) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.tokenIdToHub[_tokenId];
+    }
 
     constructor() {
         _disableInitializers();
     }
 
     function initialize(address _hubRegistry, string memory name_, string memory symbol_) external initializer {
-        hubRegistry = _hubRegistry;
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        $.hubRegistry = _hubRegistry;
 
         __ERC721_init(name_, symbol_);
     }
 
     modifier onlyFromHub() {
-        require(IHubRegistry(hubRegistry).isHub(msg.sender));
+        require(IHubRegistry(hubRegistry()).isHub(msg.sender));
         _;
     }
 
     /// @inheritdoc IHubDomainsRegistry
     function registerDomain(string calldata _name, string calldata _uri, address _owner) external onlyFromHub {
-        require(domains[msg.sender].tokenId == 0, "Domain already registered");
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+
+        require($.domains[msg.sender].tokenId == 0, "Domain already registered");
         require(_isValidDomain(_name), "Invalid _name format");
 
-        uint256 tokenId_ = ++tokenId; // gas
-        domains[msg.sender] = Domain({tokenId: tokenId_, name: _name, uri: _uri});
-        nameToHub[_name] = msg.sender;
-        tokenIdToHub[tokenId_] = msg.sender;
+        uint256 tokenId_ = ++$.tokenId; // gas
+        $.domains[msg.sender] = Domain({tokenId: tokenId_, name: _name, uri: _uri});
+        $.nameToHub[_name] = msg.sender;
+        $.tokenIdToHub[tokenId_] = msg.sender;
 
         _mint(_owner, tokenId_);
 
         emit DomainRegistered({hub: msg.sender, tokenId: tokenId_, name: _name, uri: _uri});
-    }
-
-    function getDomain(address hub) external view returns (Domain memory) {
-        return domains[hub];
-    }
-
-    function getHubByName(string memory name) external view returns (address) {
-        return nameToHub[name];
     }
 
     function _isValidDomain(string memory _name) internal pure returns (bool) {

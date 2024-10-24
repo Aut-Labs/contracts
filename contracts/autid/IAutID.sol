@@ -2,6 +2,9 @@
 pragma solidity ^0.8.20;
 
 interface IAutID {
+    error ConflictingRecord();
+    error UntransferableToken();
+
     event RecordCreated(uint256 tokenId, address account, string username, string uri);
     event HubJoined(address account, uint256 role, uint8 commitment, address hub);
     event HubRegistrySet(address);

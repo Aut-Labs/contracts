@@ -1,7 +1,16 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+struct HubContracts {
+    address taskFactory;
+    address taskManager;
+    address membership;
+    address participation;
+}
+
 interface IHubRegistry {
+    event HubCreated(address deployer, address hubAddress, uint256 market, uint256 commitment, string metadata);
+
     /// @notice return true if a given address is a hub
     function isHub(address) external view returns (bool);
 
@@ -31,14 +40,14 @@ interface IHubRegistry {
 
     /// @notice return the array of hubs created through the registry
     /// @dev supports subgraph queries
-    function getHubs() external view returns (address[] memory);
+    function hubs() external view returns (address[] memory);
 
     /// @notice return the array of hubs deployed by an address
     /// @dev supports subgraph queries
-    function getHubsDeployed(address who) external view returns (address[] memory);
+    function hubsDeployed(address who) external view returns (address[] memory);
 
     /// @notice return the array of hubs a user is a member of
-    function getUserHubs(address who) external view returns (address[] memory);
+    function userHubs(address who) external view returns (address[] memory);
 
     /// @notice deploy a beacon proxy hub with its' associated contracts
     /// @dev deploys a TaskFactory, TaskManager, Membership, and Participation contract with the hub
