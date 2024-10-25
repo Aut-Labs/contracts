@@ -35,6 +35,36 @@ Deploy subgraphs
     yarn deploy-local
 )
 ```
+# Contracts
+## `AutID.sol`
+The core contract of the protocol. All participants are required to go through the `AutID` contract to create an account and join hubs.
+
+## `GlobalParameters.sol`
+Globally-defined variables used across the protocol.  Variables of note are `period0Start`, `periodDuration`, `constraintFactor`, and `penaltyFactor`.
+
+## `HubRegistry.sol`
+Central point of hubs where the hub implementation is stored and new hubs are created.
+
+## `HubDomainsRegistry.sol`
+Each hub can register an `X.hub` domain, as registered through this contract.
+
+## `TaskRegistry.sol`
+Where all `taskIds` are registered, to be used within a `Contribution`.
+
+## `Hub.sol`
+Stores values related to the hub like admins and hub parameters.  Each hub is connected to a unique `TaskFactory`, `TaskManager`, `ParticipationScore`, and `Membership` contract.
+
+### `TaskFactory.sol`
+Location for hub admins to create `Contributions` and register `Descriptions`.
+
+### `TaskManager.sol`
+Contract where `Contributions` are managed through creation and removal.  Members can commit to a `Contribution`, and are then given the `Contribution`.
+
+### `Membership.sol`
+Here, you can find the hub members, their role and commitment level for the `Hub`.
+
+### `ParticipationScore.sol`
+Hub member participation scores and performance are stored within `ParticipationScore.sol`.
 
 # Setup 
 
@@ -70,7 +100,7 @@ Simulate the deployment locally first by running the command without the `--broa
 `$DEPLOYER_PRIVATE_KEY` The private key of the deploying account (needs to have sufficient gas token balance)
 
 
-### Get Artefacts Using Forge
+### Get Artifacts Using Forge
 
 `forge build`
 Now all artefacts are stored in the `out/` folder (repository root)
