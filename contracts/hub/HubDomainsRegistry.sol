@@ -26,29 +26,8 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Initializable, ERC721Upgrade
         }
     }
 
-    function tokenId() external view returns (uint256) {
-        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
-        return $.tokenId;
-    }
-
-    function hubRegistry() public view returns (address) {
-        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
-        return $.hubRegistry;
-    }
-
-    function domains(address hub) external view returns (Domain memory) {
-        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
-        return $.domains[hub];
-    }
-
-    function nameToHub(string memory name) external view returns (address hub) {
-        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
-        return $.nameToHub[name];
-    }
-
-    function tokenIdToHub(uint256 _tokenId) external view returns (address hub) {
-        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
-        return $.tokenIdToHub[_tokenId];
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 0);
     }
 
     constructor() {
@@ -109,5 +88,30 @@ contract HubDomainsRegistry is IHubDomainsRegistry, Initializable, ERC721Upgrade
             b[b.length - 2] == "u" &&
             b[b.length - 3] == "h" &&
             b[b.length - 4] == ".";
+    }
+
+    function tokenId() external view returns (uint256) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.tokenId;
+    }
+
+    function hubRegistry() public view returns (address) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.hubRegistry;
+    }
+
+    function domains(address hub) external view returns (Domain memory) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.domains[hub];
+    }
+
+    function nameToHub(string memory _name) external view returns (address hub) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.nameToHub[_name];
+    }
+
+    function tokenIdToHub(uint256 _tokenId) external view returns (address hub) {
+        HubDomainsRegistryStorage storage $ = _getHubDomainsRegistryStorage();
+        return $.tokenIdToHub[_tokenId];
     }
 }

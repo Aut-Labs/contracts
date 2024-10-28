@@ -34,6 +34,10 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 0);
+    }
+
     constructor() {
         _disableInitializers();
     }
