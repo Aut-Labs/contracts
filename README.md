@@ -1,10 +1,5 @@
 [![deployed on mumbai testnet](https://github.com/Aut-Labs/contracts/actions/workflows/deploy_contracts_mumbai.yml/badge.svg)](https://github.com/Aut-Labs/contracts/actions/workflows/deploy_contracts_mumbai.yml)
 # Āut Labs - Smart Contracts
-Āut is an expandable protocol for Role-based Membership in Web3 Communities & DAOs.
-
-DAOs can be much more than _Smart Treasuries_, Āut introduces native Roles & Interactions directly at contract level, to power the 2nd generation of DAOs. The DAO 2.0s, or a Coordination Renaissance.
-
-To read more about Āut, visit our [Docs](https://docs.aut.id).
 Below, you'll find a simple walkthrough to get started using Āut's Smart Contracts.
 
 # Docker Setup
@@ -35,6 +30,8 @@ Deploy subgraphs
     yarn deploy-local
 )
 ```
+Here's a simple description of each contract and its function in our contracts suite.
+
 # Contracts
 ## `AutID.sol`
 The core contract of the protocol. All participants are required to go through the `AutID` contract to create an account and join hubs.
