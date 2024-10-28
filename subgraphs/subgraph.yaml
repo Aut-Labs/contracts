@@ -8,8 +8,8 @@ dataSources:
     name: AutID
     network: polygon-amoy
     source:
-      address: "0x5Eb0d591aAdffe9012d73fd3c32931E97A97Bfec"
-      startBlock: 12236817
+      address: "0x5a0edC1b9cBE80bd7121d19708B6CB972Ede8C5A"
+      startBlock: 13733721
       abi: AutID
     mapping:
       kind: ethereum/events
@@ -19,7 +19,7 @@ dataSources:
         - AutID
       abis:
         - name: AutID
-          file: ../volumes/out/AutID.sol/AutID.json
+          file: ../out/AutID.sol/AutID.json
       eventHandlers:
         - event: RecordCreated(uint256,address,string,string)
           handler: handleRecordCreated
@@ -32,9 +32,9 @@ dataSources:
     name: HubRegistry
     network: polygon-amoy
     source:
-      address: "0xd0510466b9575c53013216Dc48c299C3B82ACcE6"
+      address: "0x89A852a3DAA7D68194ce8F0440EA3E09f66246FC"
       abi: HubRegistry
-      startBlock: 12236817
+      startBlock: 13733721
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -43,7 +43,7 @@ dataSources:
         - Hub
       abis:
         - name: HubRegistry
-          file: ../volumes/out/HubRegistry.sol/HubRegistry.json
+          file: ../out/HubRegistry.sol/HubRegistry.json
       eventHandlers:
         - event: HubCreated(address,address,uint256,uint256,string)
           handler: handleHubCreated
@@ -53,7 +53,7 @@ dataSources:
     network: polygon-amoy
     source:
       abi: Hub
-      startBlock: 12236817
+      startBlock: 13733721
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -62,7 +62,7 @@ dataSources:
         - Hub
       abis:
         - name: Hub
-          file: ../volumes/out/Hub.sol/Hub.json
+          file: ../out/Hub.sol/Hub.json
       eventHandlers:
         - event: MetadataUriSet(string)
           handler: handleMetadataUriSet
@@ -78,8 +78,8 @@ dataSources:
     network: polygon-amoy
     source:
       abi: HubDomainsRegistry
-      address: "0x3A4490F8b60F131c9f352e20056649131c2FEfc7"
-      startBlock: 12236817
+      address: "0x6692f0DA83E17170d1aA25509383763d60afF253"
+      startBlock: 13733721
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -89,9 +89,9 @@ dataSources:
         - Hub
       abis:
         - name: HubDomainsRegistry
-          file: ../volumes/out/HubDomainsRegistry.sol/HubDomainsRegistry.json
+          file: ../out/HubDomainsRegistry.sol/HubDomainsRegistry.json
       eventHandlers:
-        - event: DomainRegistered(indexed address,address,string,uint256,string)
+        - event: DomainRegistered(indexed address,indexed uint256,string,string)
           handler: handleDomainRegistered
       file: ./src/hub-domains-registry.ts
   - kind: ethereum
@@ -99,7 +99,7 @@ dataSources:
     network: polygon-amoy
     source:
       abi: TaskFactory
-      startBlock: 12236817
+      startBlock: 13733721
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -108,9 +108,9 @@ dataSources:
         - Contribution
       abis:
         - name: TaskFactory
-          file: ../volumes/out/TaskFactory.sol/TaskFactory.json
+          file: ../out/TaskFactory.sol/TaskFactory.json
       eventHandlers:
-        - event: CreateContribution(indexed bytes32,indexed address,bytes)
+        - event: CreateContribution(indexed bytes32,indexed address,indexed address,bytes32,bytes32,uint256,uint32,uint32,uint32,uint128)
           handler: handleCreateContribution
       file: ./src/task-factory.ts
   - kind: ethereum
@@ -118,8 +118,8 @@ dataSources:
     network: polygon-amoy
     source:
       abi: TaskRegistry
-      address: "0xb510b6B6f7f74F15f808c0b610F5BF7466675970"
-      startBlock: 12236817
+      address: "0x16ba349260FfFA0f760ED0bA212A566BA15E06fc"
+      startBlock: 13733721
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -128,7 +128,7 @@ dataSources:
         - Task
       abis:
         - name: TaskRegistry
-          file: ../volumes/out/TaskRegistry.sol/TaskRegistry.json
+          file: ../out/TaskRegistry.sol/TaskRegistry.json
       eventHandlers:
         - event: RegisterTask(indexed bytes32,indexed address,string)
           handler: handleRegisterTask

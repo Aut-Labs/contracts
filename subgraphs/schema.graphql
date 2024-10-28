@@ -46,12 +46,12 @@ type Domain @entity {
 type Contribution @entity {
   id: ID!
   taskId: Bytes!
-  role: String!
+  role: BigInt!
   startDate: BigInt!
   endDate: BigInt!
-  points: Int!
-  quantity: Int!
-  description: String!
+  points: BigInt!
+  quantity: BigInt!
+  descriptionId: Bytes!
   creator: Bytes!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
