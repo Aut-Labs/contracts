@@ -24,7 +24,7 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
         }
     }
 
-    function version() external view returns (uint256 major, uint256 minor, uint256 patch) {
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
         return (0, 1, 0);
     }
 
@@ -50,12 +50,12 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
 
     error NotApproved();
     modifier onlyApproved() {
-        if (!_isApproved(msg.sender)) revert NotApproved();
+        if (!_isApproved()) revert NotApproved();
         _;
     }
 
     /// @dev returns true if the approved address set to 0 or the msg.sender is the approved address
-    function _isApproved(address who) internal view returns (bool) {
+    function _isApproved() internal view returns (bool) {
         TaskRegistryStorage storage $ = _getTaskRegistryStorage();
         address approved_ = $.approved; // gas
         return (approved_ == address(0) || approved_ == msg.sender);

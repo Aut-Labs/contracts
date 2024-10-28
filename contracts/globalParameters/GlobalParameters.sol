@@ -48,7 +48,7 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
     uint128 public constant PS = 1e18;
     uint128 public constant BASE_PRESTIGE = 1e18;
 
-    function version() external view returns (uint256 major, uint256 minor, uint256 patch) {
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
         return (0, 1, 0);
     }
 

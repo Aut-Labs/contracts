@@ -26,7 +26,7 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         }
     }
 
-    function version() external view returns (uint256 major, uint256 minor, uint256 patch) {
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
         return (0, 1, 0);
     }
 

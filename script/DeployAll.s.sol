@@ -44,6 +44,10 @@ contract DeployAll is Script {
         string name;
     }
 
+    function version() public pure returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 0);
+    }
+
     function setOwner(address _owner) public {
         owner = _owner;
     }

@@ -59,7 +59,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         }
     }
 
-    function version() external view returns (uint256 major, uint256 minor, uint256 patch) {
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
         return (0, 1, 0);
     }
 
@@ -292,7 +292,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     }
 
     /// @inheritdoc IHub
-    function canJoin(address who, uint256 role) public view returns (bool) {
+    function canJoin(address who, uint256 /* role */) public view returns (bool) {
         if (IMembership(membership()).currentRole(who) != 0) {
             return false;
         }

@@ -26,7 +26,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
     EnumerableSet.AddressSet private _contributionManagers;
 
-    function version() external view returns (uint256 major, uint256 minor, uint256 patch) {
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
         return (0, 1, 0);
     }
 
