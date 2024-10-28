@@ -45,7 +45,7 @@ contract DeployAll is Script {
     }
 
     function version() public pure returns (uint256 major, uint256 minor, uint256 patch) {
-        return (0, 1, 0);
+        return (0, 1, 1);
     }
 
     function setOwner(address _owner) public {
@@ -57,10 +57,12 @@ contract DeployAll is Script {
             owner = vm.envAddress("MAINNET_OWNER_ADDRESS");
             initialContributionManager = vm.envAddress("MAINNET_INITIAL_CONTRIBUTION_MANAGER");
             privateKey = vm.envUint("MAINNET_PRIVATE_KEY");
+            deploying = true;
         } else if (block.chainid == 80002) {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             initialContributionManager = vm.envAddress("TESTNET_INITIAL_CONTRIBUTION_MANAGER");
             privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
+            deploying = true;
         } else {
             // testing
             owner = address(123456);
@@ -69,7 +71,6 @@ contract DeployAll is Script {
         }
         console.log("setUp -- done");
 
-        deploying = true;
         vm.startBroadcast(privateKey);
     }
 
@@ -110,38 +111,63 @@ contract DeployAll is Script {
 
         // other inits
         taskRegistry.initialize();
+        taskRegistry.setApproved(owner);
 
-        // Setup initial tasks
-        Task[] memory tasks = new Task[](3);
+// Setup initial tasks
+        Task[] memory tasks = new Task[](11);
         // open tasks
         tasks[0] = Task({
-            uri: "ipfs://QmScDABgjA3MuiEDsLUDMpfe8cAKL1FgtSzLnGJVUF54Nx"
+            uri: "ipfs://QmaDxYAaMhEbz3dH2N9Lz1RRdAXb3Sre5fqCvgsmKCtJvC"
         });
         // quiz tasks
         tasks[1] = Task({
-            uri: "ipfs://QmQZ2wXMsie8EGpbWk9GsRWQUj6JrJuBo7o3xCmnmZVWB7"
+            uri: "ipfs://QmbnM1ZRjZ2X2Fc6zRm7jsZeTWvZSMjJDc6h3nct7gbAMm"
         });
         // join discord tasks
         tasks[2] = Task({
-            uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"
+            uri: "ipfs://QmTe4qYncbW86vgYRvcTTP23sYY9yopYQMwLWh1GKYFmuR"
         });
-        // polls
-        // tasks[3] = Task({
-        //     uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"
-        // });
-        // // gathering tasks
-        // tasks[4] = Task({
-        //     uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"
-        // });
+        // [discord] polls
+        tasks[3] = Task({
+            uri: "ipfs://QmRdkW4jh55oVhPbNLMRcXZ7KHhcPDd82bfqrkDcGTC8Me"
+        });
+        // [discord] gathering
+        tasks[4] = Task({
+            uri: "ipfs://Qme7jXteFKAiSaByMf31cZZgCV2yjGaQcybLS1PmoPCKc2"
+        });
+        // [github] commit
+        tasks[5] = Task({
+            uri: "ipfs://Qme9S8rCPEYmJraCNWUdBT2Nc2FSSHtjAeSmcX1RT6EmGg"
+        });
+        // [github] open pr
+        tasks[6] = Task({
+            uri: "ipfs://QmPksTgWNfY9bnfHxrVNmPzMBW19ZZRChouYQACEcBVtK5"
+        });
+        // [twitter] comment
+        tasks[7] = Task({
+            uri: "ipfs://Qmd28t4X22F54qihKapgaq9d4Sbx4u4rxhWhEozimxfDiQ"
+        });
+        // [twitter] follow
+        tasks[8] = Task({
+            uri: "ipfs://QmR3hzxeR5uKiMhQFL4PPB8eqNsoZxAjJ4KNirjiNBF5a7"
+        });
+        // [twitter] like
+        tasks[9] = Task({
+            uri: "ipfs://QmNepwgZnQ46AjWCDuBVJCb7ozPfXzWtVZx26PSgwVHzPA"
+        });
+        // [twitter] retweet
+        tasks[10] = Task({
+            uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH"
+        });
         taskRegistry.registerTasks(tasks);
 
         // todo: convert to helper function
         if (deploying) {
             string memory filename = "deployments.txt";
             TNamedAddress[5] memory na;
-            na[0] = TNamedAddress({name: "globalParametersProxy", target: address(globalParameters)});
-            na[1] = TNamedAddress({name: "autIDProxy", target: address(autId)});
-            na[2] = TNamedAddress({name: "hubRegistryProxy", target: address(hubRegistry)});
+            na[0] = TNamedAddress({name: "globalParameters", target: address(globalParameters)});
+            na[1] = TNamedAddress({name: "autID", target: address(autId)});
+            na[2] = TNamedAddress({name: "hubRegistry", target: address(hubRegistry)});
             na[3] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
             na[4] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
