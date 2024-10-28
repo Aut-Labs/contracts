@@ -19,6 +19,10 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     mapping(bytes32 => Contribution) public _contributions;
     mapping(uint32 periodId => bytes32[] contributionIds) public _contributionIdsInPeriod;
 
+    function version() external view returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 0);
+    }
+
     constructor() {
         _disableInitializers();
     }

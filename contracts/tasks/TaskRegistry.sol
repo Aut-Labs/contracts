@@ -24,6 +24,10 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
         }
     }
 
+    function version() external view returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 0);
+    }
+
     constructor() {
         _disableInitializers();
     }
