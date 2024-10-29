@@ -7,7 +7,6 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
 
     // Generic contribution values
     bytes32 taskId;
-    bytes32 descriptionId;
     uint256 role = 1;
     uint32 startDate;
     uint32 endDate;
@@ -24,13 +23,12 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
 
         // init Contribution for testing
         taskId = taskRegistry.registerTask(Task({uri: "abcde"}));
-        descriptionId = taskFactory.registerDescription(Description({uri: "fghij"}));
 
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;
         contribution = Contribution({
             taskId: taskId,
-            descriptionId: descriptionId,
+            uri: "fghij",
             role: role,
             startDate: startDate,
             endDate: endDate,
@@ -58,7 +56,7 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
 
         Contribution memory queriedContribution = taskFactory.getContributionById(contributionId);
         assertEq(queriedContribution.taskId, taskId);
-        assertEq(queriedContribution.descriptionId, descriptionId);
+        assertEq(abi.encode(queriedContribution.uri), abi.encode("fghij"));
         assertEq(queriedContribution.role, role);
         assertEq(queriedContribution.startDate, startDate);
         assertEq(queriedContribution.endDate, endDate);
