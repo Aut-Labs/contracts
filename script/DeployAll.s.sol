@@ -65,9 +65,9 @@ contract DeployAll is Script {
             deploying = true;
         } else {
             // testing
-            owner = address(123456);
-            initialContributionManager = address(11111111);
             privateKey = 567890;
+            owner = vm.addr(privateKey);
+            initialContributionManager = address(11111111);
         }
         console.log("setUp -- done");
 
@@ -111,9 +111,11 @@ contract DeployAll is Script {
 
         // other inits
         taskRegistry.initialize();
-        taskRegistry.setApproved(owner);
+        if (deploying) {
+            taskRegistry.setApproved(owner);
+        }
 
-// Setup initial tasks
+        // Setup initial tasks
         Task[] memory tasks = new Task[](11);
         // open tasks
         tasks[0] = Task({

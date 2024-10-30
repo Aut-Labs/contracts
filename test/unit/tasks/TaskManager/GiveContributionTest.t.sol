@@ -6,7 +6,6 @@ import "test/BaseTest.sol";
 contract TaskManagerGiveContributionTest is BaseTest {
     // Generic contribution values
     bytes32 taskId;
-    bytes32 descriptionId;
     uint256 role = 1;
     uint32 startDate;
     uint32 endDate;
@@ -28,12 +27,11 @@ contract TaskManagerGiveContributionTest is BaseTest {
 
         // init Contribution for testing
         taskId = taskRegistry.registerTask(Task({uri: "abcde"}));
-        descriptionId = taskFactory.registerDescription(Description({uri: "fghij"}));
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;
         contribution = Contribution({
             taskId: taskId,
-            descriptionId: descriptionId,
+            uri: uri,
             role: role,
             startDate: startDate,
             endDate: endDate,
