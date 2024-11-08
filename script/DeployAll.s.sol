@@ -201,7 +201,7 @@ contract DeployAll is Script {
 
         vm.stopBroadcast();
         vm.startPrank(owner);
-        // ToDo: give burner role to reputationmining in prepfi
+        // give burner role to reputationmining in prepfi
         cRepFi.grantRole(cRepFi.BURNER_ROLE(), address(reputationMining));
 
         utilsRegistry.registerPlugin(address(address(this)), "DeployContract");

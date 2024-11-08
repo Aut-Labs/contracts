@@ -57,7 +57,6 @@ contract Distributor {
     ) {
         owner = msg.sender;
         repFi = _repFi;
-        // cRepFi = _pRepFi;
 
         sales = _sales;
         reputationMining = _reputationMining;
@@ -103,7 +102,5 @@ contract Distributor {
     /// @param amount the amount of tokens to be transferred
     function sendTokens(address receiver, uint256 amount) internal {
         repFi.safeTransfer(receiver, amount);
-        // // ToDo: this contract should be added to the plugin registry, otherwise the transfer will fail
-        // cRepFi.safeTransfer(receiver, amount);
     }
 }
