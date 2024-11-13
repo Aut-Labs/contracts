@@ -40,7 +40,7 @@ contract UtilsRegistry is OwnableUpgradeable {
     /// @param _description The description of the plugin
     function registerPlugin(address contractAddress, string calldata _description) external onlyOwner {
         require(contractAddress != address(0), "contractAddress must be a valid address");
-        require(plugins[contractAddress].enabled == false, "plugin is already registered");
+        require(!plugins[contractAddress].enabled, "plugin is already registered");
         plugins[contractAddress].description = _description;
         plugins[contractAddress].enabled = true;
         emit PluginAdded(contractAddress);
@@ -50,7 +50,7 @@ contract UtilsRegistry is OwnableUpgradeable {
     /// @param contractAddress the address of the contract
     function removePlugin(address contractAddress) external onlyOwner {
         require(contractAddress != address(0), "contractAddress must be a valid address");
-        require(plugins[contractAddress].enabled == true, "plugin does not exist");
+        require(plugins[contractAddress].enabled, "plugin does not exist");
 
         delete plugins[contractAddress];
         emit PluginRemoved(contractAddress);

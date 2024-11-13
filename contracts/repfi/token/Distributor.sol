@@ -7,6 +7,9 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 /// @author Āut Labs
 /// @notice takes care of the initial distribution of the RepFi token
 contract Distributor {
+    // event triggered when tokens are distributed
+    event TokensDistributed(address indexed receiver, address token, uint256 amount, uint256 timestamp);
+
     /// @notice one million tokens
     uint256 public constant MILLION_ETHER = 1000000 ether;
 
@@ -107,6 +110,7 @@ contract Distributor {
     /// @param receiver the receiver of the tokens
     /// @param amount the amount of tokens to be transferred
     function sendTokens(address receiver, uint256 amount) internal {
+        emit TokensDistributed(receiver, address(repFi), amount, block.timestamp);
         bool success = repFi.transfer(receiver, amount);
         require(success, "token transfer failed");
     }

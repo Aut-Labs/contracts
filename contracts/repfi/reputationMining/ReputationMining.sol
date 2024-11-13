@@ -16,6 +16,25 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 /// the admin will update the period after which users can claim the RepFi tokens they have earned in the previous period
 /// based on their usage and can receive new cRepFi tokens and put them to use in the next period.
 contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining {
+    // event emitted when the period has updated
+    event PeriodUpdated(uint256 indexed periodId, uint256 timestamp, uint256 leftoverTokens);
+    // event emitted when utility tokens are claimed
+    event UtilityTokensClaimed(
+        uint256 indexed periodId,
+        address indexed account,
+        uint256 timestamp,
+        uint256 givenBalance
+    );
+    // event emitted when repfi tokens are claimed
+    event RewardTokensClaimed(
+        uint256 indexed periodId,
+        address indexed account,
+        uint256 timestamp,
+        uint256 amount,
+        uint256 tokensBurned,
+        uint256 tokensRecycled
+    );
+
     /// @notice the RepFi token contract
     IERC20 public repFiToken;
     /// @notice the cRepFi token contract
@@ -105,6 +124,8 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         uint256 leftoverTokens = tokensLeft[period - 1];
         tokensLeft[period - 1] = 0;
 
+        emit PeriodUpdated(period, lastPeriodChange, leftoverTokens);
+
         if (leftoverTokens > 0) {
             cRepFiToken.burn(address(this), leftoverTokens);
             repFiToken.transfer(address(circular), leftoverTokens);
@@ -131,6 +152,8 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
 
         uint256 amount = getClaimableUtilityTokenForPeriod(msg.sender, period);
         require(amount <= tokensLeft[period], "not enough tokens left to distribute for this period");
+
+        emit UtilityTokensClaimed(period, msg.sender, block.timestamp, amount);
 
         // save the allocation amount for later use
         givenBalance[msg.sender][period] = amount;
@@ -192,6 +215,16 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
                 (cRepFiBalance * tokensUsed * PERCENTAGE_DENOMINATOR) /
                 (givenAmount * REDUCED_PARTICIPATION_SCORE_REWARD_PERCENTAGE);
         }
+
+        emit RewardTokensClaimed(
+            period,
+            msg.sender,
+            block.timestamp,
+            earnedTokens,
+            cRepFiBalance,
+            givenAmount - earnedTokens
+        );
+
         // burn cRepFi tokens
         cRepFiToken.burn(msg.sender, cRepFiBalance);
 

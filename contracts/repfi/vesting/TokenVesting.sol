@@ -14,6 +14,20 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 contract TokenVesting is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
+    // event triggered when a new vesting schedule is created
+    event VestingScheduleCreated(bytes32 indexed vestingScheduleId, VestingSchedule schedule);
+    // event triggered when a vestingSchedule is revoked
+    event VestingScheduleRevoked(bytes32 indexed vestingScheduleId, VestingSchedule schedule);
+    // event triggered when tokens are withdrawn
+    event TokensWithdrawn(address indexed account, uint256 amount);
+    // event triggered when tokens are released
+    event TokensReleased(
+        bytes32 indexed vestingScheduleId,
+        address indexed receiver,
+        uint256 amount,
+        uint256 timestamp
+    );
+
     struct VestingSchedule {
         // beneficiary of tokens after they are released
         address beneficiary;
@@ -100,6 +114,8 @@ contract TokenVesting is Ownable, ReentrancyGuard {
         vestingSchedulesIds.push(vestingScheduleId);
         uint256 currentVestingCount = holdersVestingCount[_beneficiary];
         holdersVestingCount[_beneficiary] = currentVestingCount + 1;
+
+        emit VestingScheduleCreated(vestingScheduleId, vestingSchedules[vestingScheduleId]);
     }
 
     /**
@@ -157,6 +173,8 @@ contract TokenVesting is Ownable, ReentrancyGuard {
         uint256 unreleased = vestingSchedule.amountTotal - vestingSchedule.released;
         vestingSchedulesTotalAmount = vestingSchedulesTotalAmount - unreleased;
         vestingSchedule.revoked = true;
+
+        emit VestingScheduleRevoked(vestingScheduleId, vestingSchedule);
     }
 
     /**
@@ -165,6 +183,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
      */
     function withdraw(uint256 amount) external onlyOwner {
         require(getWithdrawableAmount() >= amount, "TokenVesting: not enough withdrawable funds");
+        emit TokensWithdrawn(msg.sender, amount);
         _token.safeTransfer(msg.sender, amount);
     }
 
@@ -186,6 +205,9 @@ contract TokenVesting is Ownable, ReentrancyGuard {
         require(vestedAmount >= amount, "TokenVesting: cannot release tokens, not enough vested tokens");
         vestingSchedule.released = vestingSchedule.released + amount;
         vestingSchedulesTotalAmount = vestingSchedulesTotalAmount - amount;
+
+        emit TokensReleased(vestingScheduleId, vestingSchedule.beneficiary, amount, block.timestamp);
+
         _token.safeTransfer(vestingSchedule.beneficiary, amount);
     }
 
