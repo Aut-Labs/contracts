@@ -9,7 +9,7 @@ import {IUtilsRegistry} from "../utilsRegistry/IUtilsRegistry.sol";
 /// @author Āut Labs
 /// @notice Conditional Reputation Finance token with symbol cREPFI
 contract CRepFi is ERC20, AccessControl {
-    IUtilsRegistry utilsRegistry;
+    IUtilsRegistry immutable utilsRegistry;
 
     bytes32 public constant BURNER_ROLE = keccak256("BURNER");
 
@@ -17,9 +17,10 @@ contract CRepFi is ERC20, AccessControl {
     /// @param _owner the owner of the contract
     /// @param _utilsRegistry the address of the plugin registry contract
     constructor(address _owner, address _utilsRegistry) ERC20("Conditional REPFI", "cREPFI") {
+        require(_owner != address(0) && _utilsRegistry != address(0), "zero address passed as parameter");
         _grantRole(DEFAULT_ADMIN_ROLE, _owner);
         utilsRegistry = IUtilsRegistry(_utilsRegistry);
-        _mint(_owner, 100_000_000 ether);
+        _mint(_owner, 100000000 ether);
     }
 
     /// @notice restricts the transfer between accounts and will fail when the sender is not a registered plugin in the utils registry

@@ -1,16 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {TokenVesting} from "../vesting/TokenVesting.sol";
-import {IReputationMining} from "../reputationMining/IReputationMining.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title Initial Distribution
 /// @author Āut Labs
 /// @notice takes care of the initial distribution of the RepFi token
 contract Distributor {
-    using SafeERC20 for IERC20;
-
     /// @notice one million tokens
     uint256 public constant MILLION_ETHER = 1000000 ether;
 
@@ -23,13 +19,13 @@ contract Distributor {
     /// sales multisig
     address public immutable sales;
     /// @notice Reputation Mining contract
-    IReputationMining public immutable reputationMining;
+    address public immutable reputationMining;
     /// @notice airdrop merkle contract
     address public immutable airdrop;
     /// @notice investors token vesting contract
-    TokenVesting public immutable investors;
+    address public immutable investors;
     /// @notice team token vesting contract
-    TokenVesting public immutable team;
+    address public immutable team;
     /// @notice  partners multisig contract
     address public immutable partners;
     /// @notice  ecosystem multisig contract
@@ -46,15 +42,25 @@ contract Distributor {
     /// @param _ecosystem multisig contract for ecosystem
     constructor(
         IERC20 _repFi,
-        // IERC20 _cRepFi,
         address _sales,
-        IReputationMining _reputationMining,
+        address _reputationMining,
         address _airdrop,
-        TokenVesting _investors,
-        TokenVesting _team,
+        address _investors,
+        address _team,
         address _partners,
         address _ecosystem
     ) {
+        require(
+            address(_repFi) != address(0) &&
+                _sales != address(0) &&
+                _reputationMining != address(0) &&
+                _airdrop != address(0) &&
+                _investors != address(0) &&
+                _team != address(0) &&
+                _partners != address(0) &&
+                _ecosystem != address(0),
+            "zero address passed as parameter"
+        );
         owner = msg.sender;
         repFi = _repFi;
 
@@ -101,6 +107,7 @@ contract Distributor {
     /// @param receiver the receiver of the tokens
     /// @param amount the amount of tokens to be transferred
     function sendTokens(address receiver, uint256 amount) internal {
-        repFi.safeTransfer(receiver, amount);
+        bool success = repFi.transfer(receiver, amount);
+        require(success, "token transfer failed");
     }
 }

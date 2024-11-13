@@ -182,7 +182,16 @@ contract DeployAll is Script {
         );
 
         // deploy distributor
-        distributor = deployDistributor(repFi, sales, reputationMining, airdrop, investors, team, partners, ecosystem);
+        distributor = deployDistributor(
+            repFi,
+            sales,
+            address(reputationMining),
+            airdrop,
+            address(investors),
+            address(team),
+            partners,
+            ecosystem
+        );
 
         // deploy PeerValue
         peerValue = deployPeerValue(randomNumberGenerator);
@@ -396,10 +405,10 @@ function deployReputationMining(
 function deployDistributor(
     RepFi _repFi,
     address _sales,
-    ReputationMining _reputationMining,
+    address _reputationMining,
     address _airdrop,
-    Investors _investors,
-    Team _team,
+    address _investors,
+    address _team,
     address _partners,
     address _ecosystem
 ) returns (Distributor) {

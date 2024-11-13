@@ -17,8 +17,8 @@ contract TokenVesting is Ownable, ReentrancyGuard {
     struct VestingSchedule {
         // beneficiary of tokens after they are released
         address beneficiary;
-        // cliff time of the vesting start in seconds since the UNIX epoch
-        uint256 cliff;
+        // cliff duration of the vesting start in seconds since the UNIX epoch
+        uint256 cliffDuration;
         // start time of the vesting period in seconds since the UNIX epoch
         uint256 start;
         // total amount of tokens to be released at the end of the vesting
@@ -34,6 +34,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
     // constants
     // maximum amount of recipients to add per call
     uint256 constant MAX_ARRAY_LENGTH = 100;
+    uint256 constant PERCENTAGE_DENOMINATOR = 100;
 
     // instance of the ERC20 token
     IERC20 public immutable _token;
@@ -67,7 +68,6 @@ contract TokenVesting is Ownable, ReentrancyGuard {
         uint256 _releaseInterval,
         bool _revocable
     ) Ownable(_owner) {
-        require(_owner != address(0), "invalid owner");
         require(token_ != address(0), "invalid token");
         require(_duration > 0, "invalid duration");
         require(_releaseInterval > 0, "invalid release interval");
@@ -94,8 +94,8 @@ contract TokenVesting is Ownable, ReentrancyGuard {
         require(_amount > 0, "TokenVesting: amount must be > 0");
         require(duration >= _cliff, "TokenVesting: duration must be >= cliff");
         bytes32 vestingScheduleId = computeNextVestingScheduleIdForHolder(_beneficiary);
-        uint256 cliff = _start + _cliff;
-        vestingSchedules[vestingScheduleId] = VestingSchedule(_beneficiary, cliff, _start, _amount, 0, false);
+        uint256 cliffDuration = _start + _cliff;
+        vestingSchedules[vestingScheduleId] = VestingSchedule(_beneficiary, cliffDuration, _start, _amount, 0, false);
         vestingSchedulesTotalAmount = vestingSchedulesTotalAmount + _amount;
         vestingSchedulesIds.push(vestingScheduleId);
         uint256 currentVestingCount = holdersVestingCount[_beneficiary];
@@ -115,6 +115,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
         uint256 _cliff,
         uint256 _amount
     ) external onlyOwner {
+        require(_beneficiary != address(0), "zero address passed as parameter");
         _createVestingSchedule(_beneficiary, _start, _cliff, _amount);
     }
 
@@ -132,12 +133,12 @@ contract TokenVesting is Ownable, ReentrancyGuard {
         uint256 _startTime,
         uint256 _cliff,
         uint256 _vestingAmount
-    ) external nonReentrant onlyOwner {
+    ) external onlyOwner {
         require(_recipients.length == _allocations.length, "array lengths do not match");
         require(_recipients.length <= MAX_ARRAY_LENGTH, "array length is bigger than the maximum allowed");
 
         for (uint256 i = 0; i < _recipients.length; i++) {
-            uint256 amount = (_vestingAmount * _allocations[i]) / 100;
+            uint256 amount = (_vestingAmount * _allocations[i]) / PERCENTAGE_DENOMINATOR;
             _createVestingSchedule(_recipients[i], _startTime, _cliff, amount);
         }
     }
@@ -162,7 +163,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
      * @notice Withdraw the specified amount if possible.
      * @param amount the amount to withdraw
      */
-    function withdraw(uint256 amount) external nonReentrant onlyOwner {
+    function withdraw(uint256 amount) external onlyOwner {
         require(getWithdrawableAmount() >= amount, "TokenVesting: not enough withdrawable funds");
         _token.safeTransfer(msg.sender, amount);
     }
@@ -175,7 +176,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
     function release(
         bytes32 vestingScheduleId,
         uint256 amount
-    ) public nonReentrant onlyIfVestingScheduleNotRevoked(vestingScheduleId) {
+    ) public onlyIfVestingScheduleNotRevoked(vestingScheduleId) {
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
         bool isBeneficiary = msg.sender == vestingSchedule.beneficiary;
 
@@ -226,14 +227,6 @@ contract TokenVesting is Ownable, ReentrancyGuard {
      */
     function getVestingSchedulesTotalAmount() external view returns (uint256) {
         return vestingSchedulesTotalAmount;
-    }
-
-    /**
-     * @dev Returns the address of the ERC20 token managed by the vesting contract.
-     * @return the address of the ERC20 token managed by the vesting contract
-     */
-    function getToken() external view returns (address) {
-        return address(_token);
     }
 
     /**
@@ -304,18 +297,18 @@ contract TokenVesting is Ownable, ReentrancyGuard {
         // Retrieve the current time.
         uint256 currentTime = getCurrentTime();
         // If the current time is before the cliff, no tokens are releasable.
-        if ((currentTime < vestingSchedule.cliff) || vestingSchedule.revoked) {
+        if ((currentTime < vestingSchedule.cliffDuration) || vestingSchedule.revoked) {
             return 0;
         }
         // If the current time is after the vesting period, all tokens are releasable,
         // minus the amount already released.
-        else if (currentTime >= vestingSchedule.cliff + duration) {
+        else if (currentTime >= vestingSchedule.cliffDuration + duration) {
             return vestingSchedule.amountTotal - vestingSchedule.released;
         }
         // Otherwise, some tokens are releasable.
         else {
             // Compute the number of full vesting periods that have elapsed.
-            uint256 timeFromStart = currentTime - vestingSchedule.cliff;
+            uint256 timeFromStart = currentTime - vestingSchedule.cliffDuration;
             uint256 secondsPerSlice = releaseInterval;
             uint256 vestedSlicePeriods = timeFromStart / secondsPerSlice;
             uint256 vestedSeconds = vestedSlicePeriods * secondsPerSlice;

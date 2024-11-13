@@ -53,7 +53,6 @@ contract TokenVestingTest is BaseTest {
             revocable
         );
         assert(address(tokenvestingTest) != address(0));
-        assertEq(tokenvestingTest.getToken(), address(repfiToken));
     }
 
     function test_verifyVestingSchedule() public {

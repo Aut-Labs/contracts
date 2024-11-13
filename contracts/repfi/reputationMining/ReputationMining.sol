@@ -28,6 +28,20 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
 
     /// @notice maximum amount of cRepFi tokens a user can receive each period
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether; // to be changed later
+    // @notice lower bound of random number generator PeerValue
+    uint256 private constant LOWER_BOUND_RANDOM_PEER_VALUE = 80;
+    // @notice upper bound of random number generator PeerValue
+    uint256 private constant UPPER_BOUND_RANDOM_PEER_VALUE = 160;
+    // @notice lower bound of random number generator total PeerValue
+    uint256 private constant LOWER_BOUND_RANDOM_TOTAL_PEER_VALUE = 80000;
+    // @notice upper bound of random number generator total PeerValue
+    uint256 private constant UPPER_BOUND_RANDOM_TOTAL_PEER_VALUE = 160000;
+    // @notice percentage denominator
+    uint256 constant PERCENTAGE_DENOMINATOR = 100;
+    // @notice minimum participation score
+    uint256 constant MIN_PARTICIPATION_SCORE = 60;
+    // @notice reduced multiplier for lower participation score
+    uint256 constant REDUCED_PARTICIPATION_SCORE_REWARD_PERCENTAGE = 60;
     /// @notice the current period
     uint256 public period = 0;
     /// @notice the block timestamp of the previous period change
@@ -56,6 +70,14 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         address _circular,
         address _randomNumberGenerator
     ) external initializer {
+        require(
+            initialOwner != address(0) &&
+                _repFiToken != address(0) &&
+                _cRepFiToken != address(0) &&
+                _circular != address(0) &&
+                _randomNumberGenerator != address(0),
+            "zero address passed as parameter"
+        );
         __Ownable_init(initialOwner);
         repFiToken = IERC20(_repFiToken);
         cRepFiToken = ICREPFI(_cRepFiToken);
@@ -78,17 +100,14 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         lastPeriodChange = block.timestamp;
 
         // initialize amount of tokens unlocked in this period
-        tokensLeft[period] = this.getTokensForPeriod(period);
+        tokensLeft[period] = getTokensForPeriod(period);
 
         uint256 leftoverTokens = tokensLeft[period - 1];
         tokensLeft[period - 1] = 0;
 
         if (leftoverTokens > 0) {
-            bool success = cRepFiToken.burn(address(this), leftoverTokens);
-            require(success, "failed to burn tokens");
-
-            success = repFiToken.transfer(address(circular), leftoverTokens);
-            require(success, "failed to transfer tokens to the circular contract");
+            cRepFiToken.burn(address(this), leftoverTokens);
+            repFiToken.transfer(address(circular), leftoverTokens);
         }
     }
 
@@ -104,12 +123,10 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         uint256 cRepFiBalance = cRepFiToken.balanceOf(msg.sender);
         if (cRepFiBalance > 0) {
             // reset cRepFi token balance
-            bool success = cRepFiToken.burn(msg.sender, cRepFiBalance);
-            require(success, "Failed to burn remaining tokens");
+            cRepFiToken.burn(msg.sender, cRepFiBalance);
 
             // send RepFI tokens for this user to circlular contract
-            success = repFiToken.transfer(address(circular), cRepFiBalance);
-            require(success, "failed to transfer tokens to the circular contract");
+            repFiToken.transfer(address(circular), cRepFiBalance);
         }
 
         uint256 amount = getClaimableUtilityTokenForPeriod(msg.sender, period);
@@ -129,9 +146,17 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     /// @return amount the claimable utility token for a given user in a given period
     function getClaimableUtilityTokenForPeriod(address _account, uint256 _period) public view returns (uint256 amount) {
         // get peer value
-        uint256 peerValue = randomNumberGenerator.getRandomNumberForAccount(_account, 80, 160);
+        uint256 peerValue = randomNumberGenerator.getRandomNumberForAccount(
+            _account,
+            LOWER_BOUND_RANDOM_PEER_VALUE,
+            UPPER_BOUND_RANDOM_PEER_VALUE
+        );
         uint256 totalTokensForPeriod = getTokensForPeriod(_period);
-        uint256 totalPeerValue = randomNumberGenerator.getRandomNumberForAccount(_account, 80000, 160000); // let's assume we have 1000 users with a random between 80 and 160 in peer value
+        uint256 totalPeerValue = randomNumberGenerator.getRandomNumberForAccount(
+            _account,
+            LOWER_BOUND_RANDOM_TOTAL_PEER_VALUE,
+            UPPER_BOUND_RANDOM_TOTAL_PEER_VALUE
+        ); // let's assume we have 1000 users with a random between 80 and 160 in peer value
 
         amount = peerValue * (totalTokensForPeriod / totalPeerValue);
 
@@ -157,17 +182,18 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         // calculate rewards based on token utilisation
         // check cREPFI balance vs allocated tokens for last period unless there's a better way to check this
         uint256 tokensUsed = givenAmount - cRepFiBalance;
-        uint256 participation = tokensUsed > 0 ? ((tokensUsed) * 100) / givenAmount : 0;
+        uint256 participation = tokensUsed > 0 ? ((tokensUsed) * PERCENTAGE_DENOMINATOR) / givenAmount : 0;
         uint256 earnedTokens = 0;
 
-        if (participation >= 60) {
+        if (participation >= MIN_PARTICIPATION_SCORE) {
             earnedTokens = cRepFiBalance;
         } else {
-            earnedTokens = (cRepFiBalance * tokensUsed * 100) / (givenAmount * 60);
+            earnedTokens =
+                (cRepFiBalance * tokensUsed * PERCENTAGE_DENOMINATOR) /
+                (givenAmount * REDUCED_PARTICIPATION_SCORE_REWARD_PERCENTAGE);
         }
         // burn cRepFi tokens
-        bool success = cRepFiToken.burn(msg.sender, cRepFiBalance);
-        require(success, "Failed to burn remaining RepFi");
+        cRepFiToken.burn(msg.sender, cRepFiBalance);
 
         // send repFi tokens
         repFiToken.safeTransfer(msg.sender, earnedTokens);
@@ -179,9 +205,11 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     /// @param _period the period in which we want to know the tokens that are being distributed
     /// @return the amount of tokens that will be distributed within a given period
     function getTokensForPeriod(uint256 _period) public pure returns (uint256) {
+        // 500000 tokens for the first 2 years
         if (_period > 0 && _period <= 24) {
             return 500000 ether;
         }
+        // 1000000 tokens for years 3 and 4
         if (_period > 24 && _period <= 48) {
             return 1000000 ether;
         }

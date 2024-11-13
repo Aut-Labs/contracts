@@ -29,10 +29,10 @@ contract DistributorTest is BaseTest {
         initialDistributionContract = new Distributor(
             repfiToken,
             sales,
-            reputationMining,
+            address(reputationMining),
             airdrop,
-            investors,
-            team,
+            address(investors),
+            address(team),
             partners,
             ecosystem
         );
@@ -42,10 +42,10 @@ contract DistributorTest is BaseTest {
         initialDistributionContract = new Distributor(
             repfiToken,
             sales,
-            reputationMining,
+            address(reputationMining),
             airdrop,
-            investors,
-            team,
+            address(investors),
+            address(team),
             partners,
             ecosystem
         );
