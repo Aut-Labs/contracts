@@ -51,7 +51,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
      * @param vestingScheduleId the ID of the vesting schedule
      */
     modifier onlyIfVestingScheduleNotRevoked(bytes32 vestingScheduleId) {
-        require(!vestingSchedules[vestingScheduleId].revoked);
+        require(!vestingSchedules[vestingScheduleId].revoked, "vesting schedule is revoked");
         _;
     }
 
@@ -253,9 +253,7 @@ contract TokenVesting is Ownable, ReentrancyGuard {
      * @param vestingScheduleId the ID of the vesting schedule
      * @return the vested amount
      */
-    function computeReleasableAmount(
-        bytes32 vestingScheduleId
-    ) external view onlyIfVestingScheduleNotRevoked(vestingScheduleId) returns (uint256) {
+    function computeReleasableAmount(bytes32 vestingScheduleId) external view returns (uint256) {
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
         return _computeReleasableAmount(vestingSchedule);
     }

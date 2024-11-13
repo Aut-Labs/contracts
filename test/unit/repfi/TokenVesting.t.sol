@@ -160,8 +160,7 @@ contract TokenVestingTest is BaseTest {
         vm.expectRevert();
         tokenvesting.release(vestingAtIndexForBob, 1);
 
-        vm.expectRevert();
-        tokenvesting.computeReleasableAmount(vestingAtIndexForBob);
+        assertEq(tokenvesting.computeReleasableAmount(vestingAtIndexForBob), 0, "releasable amount should be 0");
 
         vm.stopPrank();
     }
