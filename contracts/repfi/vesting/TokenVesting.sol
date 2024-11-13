@@ -164,9 +164,6 @@ contract TokenVesting is Ownable, ReentrancyGuard {
      */
     function withdraw(uint256 amount) external nonReentrant onlyOwner {
         require(getWithdrawableAmount() >= amount, "TokenVesting: not enough withdrawable funds");
-        /*
-         * @dev Replaced owner() with msg.sender => address of WITHDRAWER_ROLE
-         */
         _token.safeTransfer(msg.sender, amount);
     }
 
