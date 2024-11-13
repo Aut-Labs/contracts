@@ -204,13 +204,17 @@ contract DeployAll is Script {
         // give burner role to reputationmining in cRepFi
         cRepFi.grantRole(cRepFi.BURNER_ROLE(), address(reputationMining));
 
-        utilsRegistry.registerPlugin(address(address(this)), "DeployContract");
-        // this is needed for tests because in BaseTest.sol the owner will be changed to the BaseTest contract
-        utilsRegistry.registerPlugin(address(vm.addr(privateKey)), "owner");
+        utilsRegistry.registerPlugin(owner, "Deployer");
         utilsRegistry.registerPlugin(address(distributor), "Distributor");
         utilsRegistry.registerPlugin(address(reputationMining), "ReputationMining");
         utilsRegistry.registerPlugin(address(peerValue), "PeerValue");
         utilsRegistry.registerPlugin(address(peerStaking), "PeerStaking");
+
+        // send cRepFi to reputationMining
+        cRepFi.transfer(address(reputationMining), 36000000 ether);
+
+        // remove owner from plugins
+        utilsRegistry.removePlugin(owner);
 
         vm.stopPrank();
 
@@ -218,9 +222,6 @@ contract DeployAll is Script {
 
         // send tokens to distribution contract
         repFi.transfer(address(distributor), 100000000 ether); // 100 million repfi tokens
-
-        // send cRepFi to reputationMining
-        cRepFi.transfer(address(reputationMining), 36000000 ether);
 
         // transfer ownership to multisig for all contracts that have an owner
 

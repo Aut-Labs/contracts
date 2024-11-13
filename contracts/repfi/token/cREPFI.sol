@@ -19,7 +19,7 @@ contract CRepFi is ERC20, AccessControl {
     constructor(address _owner, address _utilsRegistry) ERC20("Conditional REPFI", "cREPFI") {
         _grantRole(DEFAULT_ADMIN_ROLE, _owner);
         utilsRegistry = IUtilsRegistry(_utilsRegistry);
-        _mint(msg.sender, 100_000_000 ether);
+        _mint(_owner, 100_000_000 ether);
     }
 
     /// @notice restricts the transfer between accounts and will fail when the sender is not a registered plugin in the utils registry

@@ -9,11 +9,12 @@ contract CRepFiTest is BaseTest {
 
     function setUp() public override {
         super.setUp();
-        cRepFiToken = new CRepFi(address(this), address(utilsRegistry));
+        cRepFiToken = new CRepFi(owner, address(utilsRegistry));
+        utilsRegistry.registerPlugin(owner, "TestContract");
     }
 
     function test_deployToken() public {
-        cRepFiToken = new CRepFi(address(this), address(utilsRegistry));
+        cRepFiToken = new CRepFi(owner, address(utilsRegistry));
         assert(address(cRepFiToken) != address(0));
     }
 
@@ -45,15 +46,18 @@ contract CRepFiTest is BaseTest {
     }
 
     function test_transferNotAllowed() public {
+        // send tokens to Bob
+        vm.prank(owner);
+        cRepFiToken.transfer(address(bob), 100 ether);
+
         // try to send tokens to alice
         vm.expectRevert("Transfer not allowed");
+        vm.prank(bob);
         cRepFiToken.transfer(address(alice), 100 ether);
     }
 
     function test_transferAllowed() public {
         uint256 balanceBefore = cRepFiToken.balanceOf(address(alice));
-        // add this contract as a plugin for now
-        utilsRegistry.registerPlugin(address(this), "test");
         // try to send tokens to alice
         cRepFiToken.transfer(address(alice), 100 ether);
 
@@ -66,11 +70,17 @@ contract CRepFiTest is BaseTest {
     }
 
     function test_transferFromNotAllowed() public {
+        // send tokens to Bob
+        vm.prank(owner);
+        cRepFiToken.transfer(address(bob), 100 ether);
+
+        vm.startPrank(bob);
         // try to send tokens to alice
         vm.expectRevert("Approve not allowed");
         cRepFiToken.approve(address(alice), 100 ether);
         vm.expectRevert("Transfer not allowed");
-        cRepFiToken.transferFrom(address(alice), address(this), 100 ether);
+        cRepFiToken.transferFrom(address(bob), address(alice), 100 ether);
+        vm.stopPrank();
     }
 
     function test_transferFromAllowed() public {

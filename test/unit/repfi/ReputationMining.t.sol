@@ -38,7 +38,7 @@ contract ReputationMiningTest is BaseTest {
 
         // configure reputationMining as a plugin
         utilsRegistry.registerPlugin(address(reputationMiningContract), "ReputationMiningTest");
-        utilsRegistry.registerPlugin(address(this), "test contract");
+        utilsRegistry.registerPlugin(owner, "TestContract");
 
         // send tokens to reputationMining
         repfiToken.transfer(address(reputationMiningContract), initialCRepFiBalance);
