@@ -96,6 +96,11 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
 
     /// @notice distributes cRepFi tokens to an Āut user once per period based on their peer value and save the givenBalance for later
     function claimUtilityToken() external nonReentrant {
+        require(period > 0, "mining has not started yet");
+
+        //check if there's anything to claim from the previous period
+        require(givenBalance[msg.sender][period - 1] == 0, "unclaimed rewards from previous period");
+
         require(givenBalance[msg.sender][period] == 0, "user already claimed cREPFI");
 
         uint256 cRepFiBalance = cRepFiToken.balanceOf(msg.sender);
@@ -140,6 +145,8 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
 
     /// @notice claims the reward tokens (RepFi) for the sender based on the utilisation of the cRepFi token in the previous period and transfers the remaining balance to the circular contract
     function claim() external nonReentrant {
+        require(period > 0, "mining has not started yet");
+
         // calculate how much of the cREPFI tokens the user has used in this period and distribute monthly allocation of REPFI tokens
         uint256 givenAmount = givenBalance[msg.sender][period - 1];
         require(givenAmount > 0, "no claims available for this period");

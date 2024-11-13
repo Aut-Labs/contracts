@@ -307,26 +307,8 @@ contract ReputationMiningTest is BaseTest {
 
         // alice claims utility tokens again without claiming her rewards first
         vm.startPrank(alice);
+        vm.expectRevert("unclaimed rewards from previous period");
         reputationMiningContract.claimUtilityToken();
-        randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
-        randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
         vm.stopPrank();
-
-        tokensForPeriod = 500000 ether;
-        givenAmount = randomPeerValue * (tokensForPeriod / randomGlobalReputation);
-        if (givenAmount > MAX_MINT_PER_PERIOD) {
-            givenAmount = MAX_MINT_PER_PERIOD;
-        }
-        console.log("given amount", givenAmount);
-
-        cRepFiBalanceAfter = cRepFiToken.balanceOf(address(alice));
-
-        // alice should have a total of 1000 cRepFi tokens again
-        assertEq(cRepFiBalanceAfter, givenAmount, "previously allocated cRepFi was not burned");
-        assertLe(
-            cRepFiBalanceAfter,
-            reputationMiningContract.MAX_MINT_PER_PERIOD(),
-            "distribution exceeded maximum amount"
-        );
     }
 }
