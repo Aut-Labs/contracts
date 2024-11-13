@@ -16,7 +16,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     /// @notice the RepFi token contract
     IERC20 public repFiToken;
     /// @notice the cRepFi token contract
-    ICREPFI public pRepFiToken;
+    ICREPFI public cRepFiToken;
     /// @notice address where unclaimed funds will be sent to so they can be used by the platform
     address public circular;
     /// @notice random generator contract where we can get a random value for "peer value" as well was the "total value"
@@ -48,21 +48,21 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     /// @notice PeerStaking contract initializer
     /// @param initialOwner The initial owner of the contract
     /// @param _repFiToken the address of the RepFi token contract
-    /// @param _pRepFiToken the address of the cRepFi token contract
+    /// @param _cRepFiToken the address of the cRepFi token contract
     /// @param _circular the address of the circular contract
     /// @param _peerValue the address of the PeerValue contract
     /// @param _reputationMining the address of the reputation mining contract
     function initialize(
         address initialOwner,
         address _repFiToken,
-        address _pRepFiToken,
+        address _cRepFiToken,
         address _circular,
         address _peerValue,
         address _reputationMining
     ) external initializer {
         __Ownable_init(initialOwner);
         repFiToken = IERC20(_repFiToken);
-        pRepFiToken = ICREPFI(_pRepFiToken);
+        cRepFiToken = ICREPFI(_cRepFiToken);
         circular = _circular;
         peerValue = IPeerValue(_peerValue);
         reputationMining = IReputationMining(_reputationMining);

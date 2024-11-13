@@ -46,7 +46,7 @@ contract Distributor {
     /// @param _ecosystem multisig contract for ecosystem
     constructor(
         IERC20 _repFi,
-        // IERC20 _pRepFi,
+        // IERC20 _cRepFi,
         address _sales,
         IReputationMining _reputationMining,
         address _airdrop,

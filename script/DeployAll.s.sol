@@ -20,7 +20,7 @@ import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 
 import {UtilsRegistry} from "../contracts/repfi/utilsRegistry/UtilsRegistry.sol";
 import {RepFi} from "../contracts/repfi/token/REPFI.sol";
-import {PRepFi} from "../contracts/repfi/token/cREPFI.sol";
+import {CRepFi} from "../contracts/repfi/token/cREPFI.sol";
 import {Investors} from "../contracts/repfi/vesting/Investors.sol";
 import {Team} from "../contracts/repfi/vesting/Team.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
@@ -50,7 +50,7 @@ contract DeployAll is Script {
     GlobalParameters public globalParameters;
     UtilsRegistry public utilsRegistry;
     RepFi public repFi;
-    PRepFi public cRepFi;
+    CRepFi public cRepFi;
     address public sales;
     Investors public investors;
     Team public team;
@@ -151,7 +151,7 @@ contract DeployAll is Script {
 
         // deploy token contracts
         repFi = deployRepFiToken();
-        cRepFi = deployPRepFiToken(address(owner), address(utilsRegistry));
+        cRepFi = deployCRepFiToken(address(owner), address(utilsRegistry));
 
         // deploy vesting contracts
         investors = deployInvestors(address(repFi), projectMultisig);
@@ -201,7 +201,7 @@ contract DeployAll is Script {
 
         vm.stopBroadcast();
         vm.startPrank(owner);
-        // give burner role to reputationmining in prepfi
+        // give burner role to reputationmining in cRepFi
         cRepFi.grantRole(cRepFi.BURNER_ROLE(), address(reputationMining));
 
         utilsRegistry.registerPlugin(address(address(this)), "DeployContract");
@@ -354,8 +354,8 @@ function deployRepFiToken() returns (RepFi) {
     return repFi;
 }
 
-function deployPRepFiToken(address _owner, address _repFiRegistry) returns (PRepFi) {
-    PRepFi cRepFi = new PRepFi(_owner, _repFiRegistry);
+function deployCRepFiToken(address _owner, address _repFiRegistry) returns (CRepFi) {
+    CRepFi cRepFi = new CRepFi(_owner, _repFiRegistry);
     return cRepFi;
 }
 
@@ -372,7 +372,7 @@ function deployTeam(address _repFiToken, address _owner) returns (Team) {
 function deployReputationMining(
     address _owner,
     address _repFi,
-    address _pRepFi,
+    address _cRepFi,
     address _circular,
     address _randomNumberGenerator
 ) returns (ReputationMining) {
@@ -384,7 +384,7 @@ function deployReputationMining(
             ReputationMining.initialize.selector,
             _owner,
             _repFi,
-            _pRepFi,
+            _cRepFi,
             _circular,
             _randomNumberGenerator
         )
@@ -423,7 +423,7 @@ function deployPeerValue(RandomNumberGenerator randomNumberGenerator) returns (P
 function deployPeerStaking(
     address _owner,
     address _repFiToken,
-    address _pRepFiToken,
+    address _cRepFiToken,
     address _circular,
     address _peerValue,
     address _reputationMining
@@ -436,7 +436,7 @@ function deployPeerStaking(
             PeerStaking.initialize.selector,
             _owner,
             _repFiToken,
-            _pRepFiToken,
+            _cRepFiToken,
             _circular,
             _peerValue,
             _reputationMining

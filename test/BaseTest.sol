@@ -31,7 +31,7 @@ abstract contract BaseTest is Test {
 
     UtilsRegistry public utilsRegistry;
     RepFi public repFi;
-    PRepFi public cRepFi;
+    CRepFi public cRepFi;
     address public sales;
     Investors public investors;
     Team public team;

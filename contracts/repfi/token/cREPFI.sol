@@ -5,24 +5,24 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import {IUtilsRegistry} from "../utilsRegistry/IUtilsRegistry.sol";
 
-/// @title Predictive Reputation Finance token
+/// @title Conditional Reputation Finance token
 /// @author Āut Labs
-/// @notice Predictive Reputation Finance token with symbol cREPFI
-contract PRepFi is ERC20, AccessControl {
+/// @notice Conditional Reputation Finance token with symbol cREPFI
+contract CRepFi is ERC20, AccessControl {
     IUtilsRegistry utilsRegistry;
 
     bytes32 public constant BURNER_ROLE = keccak256("BURNER");
 
-    /// @notice creates the Predictive Reputation Finance token (cREPFI), initializes the sender as the admin, configures the PrepFiRegistry contract, mints 100 million tokens to the sender
+    /// @notice creates the Conditional Reputation Finance token (cREPFI), initializes the sender as the admin, configures the UtilsRegistry contract, mints 100 million tokens to the sender
     /// @param _owner the owner of the contract
-    /// @param _pluginRegistry the address of the plugin registry contract
-    constructor(address _owner, address _pluginRegistry) ERC20("Conditional REPFI", "cREPFI") {
+    /// @param _utilsRegistry the address of the plugin registry contract
+    constructor(address _owner, address _utilsRegistry) ERC20("Conditional REPFI", "cREPFI") {
         _grantRole(DEFAULT_ADMIN_ROLE, _owner);
-        utilsRegistry = IUtilsRegistry(_pluginRegistry);
+        utilsRegistry = IUtilsRegistry(_utilsRegistry);
         _mint(msg.sender, 100_000_000 ether);
     }
 
-    /// @notice restricts the transfer between accounts and will fail when the sender is not a registered plugin in the RepFi registry
+    /// @notice restricts the transfer between accounts and will fail when the sender is not a registered plugin in the utils registry
     /// @param to the address of the receiver
     /// @param value the amount of tokens to transfer
     /// @return bool whether the transfer was successful
@@ -33,7 +33,7 @@ contract PRepFi is ERC20, AccessControl {
         return true;
     }
 
-    /// @notice restricts the transfer between accounts and will fail when the receiver is not a registered plugin in the RepFi registry
+    /// @notice restricts the transfer between accounts and will fail when the receiver is not a registered plugin in the utils registry
     /// @param from the address of the sender
     /// @param to the address of the receiver
     /// @param value the amount of tokens to transfer
@@ -46,7 +46,7 @@ contract PRepFi is ERC20, AccessControl {
         return true;
     }
 
-    /// @notice restricts the approval between accounts and will fail when the spender is not a registered plugin in the RepFi registry
+    /// @notice restricts the approval between accounts and will fail when the spender is not a registered plugin in the utils registry
     /// @param spender the address of the receiver
     /// @param value the amount of tokens to approve
     /// @return bool whether the approval was successful

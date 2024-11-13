@@ -5,16 +5,16 @@ import "../../BaseTest.sol";
 
 contract ReputationMiningTest is BaseTest {
     RepFi repfiToken;
-    PRepFi pRepfiToken;
+    CRepFi cRepFiToken;
     address circular;
     ReputationMining reputationMiningContract;
-    uint256 initialPRepFiBalance = 36000000 ether; // 36 million tokens
+    uint256 initialCRepFiBalance = 36000000 ether; // 36 million tokens
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether;
 
     function setUp() public override {
         super.setUp();
         repfiToken = new RepFi();
-        pRepfiToken = new PRepFi(address(this), address(utilsRegistry));
+        cRepFiToken = new CRepFi(address(this), address(utilsRegistry));
         reputationMiningContract = new ReputationMining();
         circular = makeAddr("circular");
 
@@ -26,23 +26,23 @@ contract ReputationMiningTest is BaseTest {
                 ReputationMining.initialize.selector,
                 address(this),
                 address(repfiToken),
-                address(pRepfiToken),
+                address(cRepFiToken),
                 circular,
                 address(randomNumberGenerator)
             )
         );
         reputationMiningContract = ReputationMining(address(reputationMiningProxy));
 
-        // set reputationMining as burner for pRepFiToken
-        pRepfiToken.grantRole(pRepfiToken.BURNER_ROLE(), address(reputationMiningContract));
+        // set reputationMining as burner for cRepFiToken
+        cRepFiToken.grantRole(cRepFiToken.BURNER_ROLE(), address(reputationMiningContract));
 
         // configure reputationMining as a plugin
         utilsRegistry.registerPlugin(address(reputationMiningContract), "ReputationMiningTest");
         utilsRegistry.registerPlugin(address(this), "test contract");
 
         // send tokens to reputationMining
-        repfiToken.transfer(address(reputationMiningContract), initialPRepFiBalance);
-        pRepfiToken.transfer(address(reputationMiningContract), initialPRepFiBalance);
+        repfiToken.transfer(address(reputationMiningContract), initialCRepFiBalance);
+        cRepFiToken.transfer(address(reputationMiningContract), initialCRepFiBalance);
 
         vm.label(address(this), "ReputationMiningTest");
     }
@@ -54,11 +54,11 @@ contract ReputationMiningTest is BaseTest {
     }
 
     function test_updatePeriod() public {
-        uint256 remainingPRepFiBalance = initialPRepFiBalance;
+        uint256 remainingCRepFiBalance = initialCRepFiBalance;
         // update through all the periods (should mine 0 tokens from period 49 onwards)
         for (uint256 i = 1; i < 50; i++) {
-            remainingPRepFiBalance -= reputationMiningContract.getTokensForPeriod(i - 1);
-            console.log("remaining balance for period", i, remainingPRepFiBalance);
+            remainingCRepFiBalance -= reputationMiningContract.getTokensForPeriod(i - 1);
+            console.log("remaining balance for period", i, remainingCRepFiBalance);
             reputationMiningContract.updatePeriod();
             assertEq(reputationMiningContract.period(), i);
             assertEq(reputationMiningContract.lastPeriodChange(), block.timestamp);
@@ -77,7 +77,7 @@ contract ReputationMiningTest is BaseTest {
 
             // check if tokens from previous period are burned
             assertEq(reputationMiningContract.tokensLeft(i - 1), 0);
-            assertEq(pRepfiToken.balanceOf(address(reputationMiningContract)), remainingPRepFiBalance);
+            assertEq(cRepFiToken.balanceOf(address(reputationMiningContract)), remainingCRepFiBalance);
 
             skip(28 days);
         }
@@ -92,12 +92,12 @@ contract ReputationMiningTest is BaseTest {
         reputationMiningContract.updatePeriod();
     }
 
-    function test_claimPRepFiTokens() public {
+    function test_claimCRepFiTokens() public {
         // start first period
         reputationMiningContract.updatePeriod();
 
-        uint256 pRepFiBalanceBefore = pRepfiToken.balanceOf(address(alice));
-        assertEq(pRepFiBalanceBefore, 0, "initial balance is not zero");
+        uint256 cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
+        assertEq(cRepFiBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
         reputationMiningContract.claimUtilityToken();
@@ -112,11 +112,11 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        uint256 pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
+        uint256 cRepFiBalanceAfter = cRepFiToken.balanceOf(address(alice));
 
-        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
+        assertEq(cRepFiBalanceAfter - cRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
         assertLe(
-            pRepFiBalanceAfter,
+            cRepFiBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
             "distribution exceeded maximum amount"
         );
@@ -136,13 +136,13 @@ contract ReputationMiningTest is BaseTest {
         uint256 repfiBalanceAfter = repfiToken.balanceOf(address(alice));
 
         // since alice didn't do anything with her cRepFi tokens, she won't be rewarded any tokens
-        // uint256 calculatedRewards = (pRepFiBalanceAfter / 60) * 100;
+        // uint256 calculatedRewards = (cRepFiBalanceAfter / 60) * 100;
         uint256 calculatedRewards = 0;
         assertEq(repfiBalanceAfter, 0, "reward amounts do not match");
         // The other 40% should be transferred to the circular contract
         assertEq(
             repfiToken.balanceOf(address(circular)),
-            pRepFiBalanceAfter - calculatedRewards + circularRepfiBalanceBefore,
+            cRepFiBalanceAfter - calculatedRewards + circularRepfiBalanceBefore,
             "circular contract didn't receive appropriate leftover amount"
         );
 
@@ -152,12 +152,12 @@ contract ReputationMiningTest is BaseTest {
     }
 
     function test_claimRepFiTokens() public {
-        // ToDo: add test where the user stakes his prepfi tokens somewhere so we get a different calculation
+        // ToDo: add test where the user stakes his cRepFi tokens somewhere so we get a different calculation
         // start first period
         reputationMiningContract.updatePeriod();
 
-        uint256 pRepFiBalanceBefore = pRepfiToken.balanceOf(address(alice));
-        assertEq(pRepFiBalanceBefore, 0, "initial balance is not zero");
+        uint256 cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
+        assertEq(cRepFiBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
         reputationMiningContract.claimUtilityToken();
@@ -172,11 +172,11 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        uint256 pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
+        uint256 cRepFiBalanceAfter = cRepFiToken.balanceOf(address(alice));
 
-        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
+        assertEq(cRepFiBalanceAfter - cRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
         assertLe(
-            pRepFiBalanceAfter,
+            cRepFiBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
             "distribution exceeded maximum amount"
         );
@@ -185,10 +185,10 @@ contract ReputationMiningTest is BaseTest {
         uint256 stakedAmount = (givenAmount * 50) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
-        pRepfiToken.approve(address(this), stakedAmount);
+        cRepFiToken.approve(address(this), stakedAmount);
 
         // put the tokens in this contract for now
-        pRepfiToken.transferFrom(address(alice), address(this), stakedAmount);
+        cRepFiToken.transferFrom(address(alice), address(this), stakedAmount);
 
         skip(28 days);
 
@@ -216,7 +216,7 @@ contract ReputationMiningTest is BaseTest {
         // The other 40% should be transferred to the circular contract
         assertEq(
             repfiToken.balanceOf(address(circular)),
-            pRepFiBalanceAfter - earnedTokens + circularRepfiBalanceBefore,
+            cRepFiBalanceAfter - earnedTokens + circularRepfiBalanceBefore,
             "circular contract didn't receive appropriate leftover amount"
         );
         uint256 totalBurned = repfiToken.balanceOf(address(circular));
@@ -238,10 +238,10 @@ contract ReputationMiningTest is BaseTest {
         stakedAmount = (givenAmount * 90) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
-        pRepfiToken.approve(address(this), stakedAmount);
+        cRepFiToken.approve(address(this), stakedAmount);
 
         // put the tokens in this contract for now
-        pRepfiToken.transferFrom(address(alice), address(this), stakedAmount);
+        cRepFiToken.transferFrom(address(alice), address(this), stakedAmount);
 
         skip(28 days);
 
@@ -267,12 +267,12 @@ contract ReputationMiningTest is BaseTest {
         reputationMiningContract.claimUtilityToken();
     }
 
-    function test_claimPRepFiTokensWithPreviousBalance() public {
+    function test_claimCRepFiTokensWithPreviousBalance() public {
         // start first period
         reputationMiningContract.updatePeriod();
 
-        uint256 pRepFiBalanceBefore = pRepfiToken.balanceOf(address(alice));
-        assertEq(pRepFiBalanceBefore, 0, "initial balance is not zero");
+        uint256 cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
+        assertEq(cRepFiBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
         reputationMiningContract.claimUtilityToken();
@@ -288,11 +288,11 @@ contract ReputationMiningTest is BaseTest {
             givenAmount = MAX_MINT_PER_PERIOD;
         }
 
-        uint256 pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
+        uint256 cRepFiBalanceAfter = cRepFiToken.balanceOf(address(alice));
 
-        assertEq(pRepFiBalanceAfter - pRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
+        assertEq(cRepFiBalanceAfter - cRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
         assertLe(
-            pRepFiBalanceAfter,
+            cRepFiBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
             "distribution exceeded maximum amount"
         );
@@ -302,8 +302,8 @@ contract ReputationMiningTest is BaseTest {
         // admin updates the period
         reputationMiningContract.updatePeriod();
 
-        pRepFiBalanceBefore = pRepfiToken.balanceOf(address(alice));
-        assertEq(pRepFiBalanceBefore, givenAmount, "balance did not persist across periods");
+        cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
+        assertEq(cRepFiBalanceBefore, givenAmount, "balance did not persist across periods");
 
         // alice claims utility tokens again without claiming her rewards first
         vm.startPrank(alice);
@@ -319,12 +319,12 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        pRepFiBalanceAfter = pRepfiToken.balanceOf(address(alice));
+        cRepFiBalanceAfter = cRepFiToken.balanceOf(address(alice));
 
         // alice should have a total of 1000 cRepFi tokens again
-        assertEq(pRepFiBalanceAfter, givenAmount, "previously allocated cRepFi was not burned");
+        assertEq(cRepFiBalanceAfter, givenAmount, "previously allocated cRepFi was not burned");
         assertLe(
-            pRepFiBalanceAfter,
+            cRepFiBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
             "distribution exceeded maximum amount"
         );

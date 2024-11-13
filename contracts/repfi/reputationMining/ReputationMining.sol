@@ -19,7 +19,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     /// @notice the RepFi token contract
     IERC20 public repFiToken;
     /// @notice the cRepFi token contract
-    ICREPFI public pRepFiToken;
+    ICREPFI public cRepFiToken;
     /// @notice address where unclaimed funds will be sent to so they can be used by the platform
     address public circular;
     /// @notice random generator contract where we can get a random value for "peer value" as well was the "total value"
@@ -48,19 +48,19 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     /// @notice ReputationMining contract initializer
     /// @param initialOwner The initial owner of the contract
     /// @param _repFiToken the address of the RepFi token contract
-    /// @param _pRepFiToken the address of the cRepFi token contract
+    /// @param _cRepFiToken the address of the cRepFi token contract
     /// @param _circular the address of the circular contract
     /// @param _randomNumberGenerator the address of the RandomNumberGenerator contract
     function initialize(
         address initialOwner,
         address _repFiToken,
-        address _pRepFiToken,
+        address _cRepFiToken,
         address _circular,
         address _randomNumberGenerator
     ) external initializer {
         __Ownable_init(initialOwner);
         repFiToken = IERC20(_repFiToken);
-        pRepFiToken = ICREPFI(_pRepFiToken);
+        cRepFiToken = ICREPFI(_cRepFiToken);
         circular = _circular;
         randomNumberGenerator = IRandomNumberGenerator(_randomNumberGenerator);
     }
@@ -86,7 +86,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         tokensLeft[period - 1] = 0;
 
         if (leftoverTokens > 0) {
-            bool success = pRepFiToken.burn(address(this), leftoverTokens);
+            bool success = cRepFiToken.burn(address(this), leftoverTokens);
             require(success, "failed to burn tokens");
 
             success = repFiToken.transfer(address(circular), leftoverTokens);
@@ -98,14 +98,14 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     function claimUtilityToken() external nonReentrant {
         require(givenBalance[msg.sender][period] == 0, "user already claimed cREPFI");
 
-        uint256 pRepFiBalance = pRepFiToken.balanceOf(msg.sender);
-        if (pRepFiBalance > 0) {
+        uint256 cRepFiBalance = cRepFiToken.balanceOf(msg.sender);
+        if (cRepFiBalance > 0) {
             // reset cRepFi token balance
-            bool success = pRepFiToken.burn(msg.sender, pRepFiBalance);
+            bool success = cRepFiToken.burn(msg.sender, cRepFiBalance);
             require(success, "Failed to burn remaining tokens");
 
             // send RepFI tokens for this user to circlular contract
-            success = repFiToken.transfer(address(circular), pRepFiBalance);
+            success = repFiToken.transfer(address(circular), cRepFiBalance);
             require(success, "failed to transfer tokens to the circular contract");
         }
 
@@ -116,7 +116,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         givenBalance[msg.sender][period] = amount;
 
         // send tokens
-        pRepFiToken.safeTransfer(msg.sender, amount);
+        cRepFiToken.safeTransfer(msg.sender, amount);
     }
 
     /// @notice calculates the claimable utility token for a given user in a given period
@@ -143,26 +143,26 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         // calculate how much of the cREPFI tokens the user has used in this period and distribute monthly allocation of REPFI tokens
         uint256 givenAmount = givenBalance[msg.sender][period - 1];
         require(givenAmount > 0, "no claims available for this period");
-        uint256 pRepFiBalance = pRepFiToken.balanceOf(msg.sender);
-        require(pRepFiBalance <= givenAmount, "cRepFi balance should be smaller or equal to the given balance");
+        uint256 cRepFiBalance = cRepFiToken.balanceOf(msg.sender);
+        require(cRepFiBalance <= givenAmount, "cRepFi balance should be smaller or equal to the given balance");
 
         // set givenBalance for previous period to 0 so the user can't claim twice
         givenBalance[msg.sender][period - 1] = 0;
 
         // calculate rewards based on token utilisation
         // check cREPFI balance vs allocated tokens for last period unless there's a better way to check this
-        uint256 tokensUsed = givenAmount - pRepFiBalance;
+        uint256 tokensUsed = givenAmount - cRepFiBalance;
         uint256 participation = tokensUsed > 0 ? ((tokensUsed) * 100) / givenAmount : 0;
         uint256 earnedTokens = 0;
 
         if (participation >= 60) {
-            earnedTokens = pRepFiBalance;
+            earnedTokens = cRepFiBalance;
         } else {
             uint256 ratio = (tokensUsed * DENOMINATOR) / ((givenAmount * 60) / 100);
-            earnedTokens = (ratio * pRepFiBalance) / DENOMINATOR;
+            earnedTokens = (ratio * cRepFiBalance) / DENOMINATOR;
         }
-        // burn pRepFI tokens
-        bool success = pRepFiToken.burn(msg.sender, pRepFiBalance);
+        // burn cRepFi tokens
+        bool success = cRepFiToken.burn(msg.sender, cRepFiBalance);
         require(success, "Failed to burn remaining RepFi");
 
         // send repFi tokens
