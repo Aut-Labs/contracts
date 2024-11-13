@@ -28,8 +28,6 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
 
     /// @notice maximum amount of cRepFi tokens a user can receive each period
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether; // to be changed later
-    /// @notice denominator for calculations where we will otherwise end up with a decimal between 0 and 1 which is not possible in Solidity
-    uint256 public constant DENOMINATOR = 1000;
     /// @notice the current period
     uint256 public period = 0;
     /// @notice the block timestamp of the previous period change
@@ -165,8 +163,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         if (participation >= 60) {
             earnedTokens = cRepFiBalance;
         } else {
-            uint256 ratio = (tokensUsed * DENOMINATOR) / ((givenAmount * 60) / 100);
-            earnedTokens = (ratio * cRepFiBalance) / DENOMINATOR;
+            earnedTokens = (cRepFiBalance * tokensUsed * 100) / (givenAmount * 60);
         }
         // burn cRepFi tokens
         bool success = cRepFiToken.burn(msg.sender, cRepFiBalance);

@@ -206,9 +206,8 @@ contract ReputationMiningTest is BaseTest {
 
         uint256 participation = (stakedAmount * 100) / givenAmount;
         console.log("participation", participation);
-        uint256 denominator = 1000;
-        uint256 ratio = (stakedAmount * denominator) / ((givenAmount * 60) / 100);
-        uint256 earnedTokens = (ratio * (givenAmount - stakedAmount)) / denominator;
+        uint256 earnedTokens = ((givenAmount - stakedAmount) * stakedAmount * 100) / (givenAmount * 60);
+
         uint256 totalEarned = earnedTokens;
         console.log("earnings", earnedTokens);
 
