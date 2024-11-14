@@ -14,7 +14,11 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
 
     EnumerableSet.Bytes32Set private _contributionIds;
     mapping(bytes32 => Contribution) public _contributions;
-    mapping(uint32 periodId => bytes32[] contributionIds) public _contributionsInPeriod;
+    mapping(uint32 periodId => bytes32[] contributionIds) public _contributionIdsInPeriod;
+
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 2);
+    }
 
     constructor() {
         _disableInitializers();
@@ -25,6 +29,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
+    /// @inheritdoc ITaskFactory
     function createContributions(Contribution[] calldata contributions) external returns (bytes32[] memory) {
         _revertIfNotAdmin();
         uint256 length = contributions.length;
@@ -39,6 +44,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return newContributionIds;
     }
 
+    /// @inheritdoc ITaskFactory
     function createContribution(Contribution calldata contribution) external returns (bytes32) {
         _revertIfNotAdmin();
         return _createContribution(contribution);
@@ -48,22 +54,38 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         if (!ITaskRegistry(taskRegistry()).isTaskId(contribution.taskId)) revert TaskIdNotRegistered();
         if (contribution.quantity == 0) revert InvalidContributionQuantity(); // TODO: max quantity?
         if (contribution.points == 0 || contribution.points > 10) revert InvalidContributionPoints();
+        /// @dev: startDate can be in the past but endDate must be in the future
+        if (block.timestamp > contribution.endDate || contribution.startDate >= contribution.endDate)
+            revert InvalidContributionPeriod();
+        // TODO: additional contribution checks
 
         bytes memory encodedContribution = encodeContribution(contribution);
         bytes32 contributionId = keccak256(encodedContribution);
         if (!_contributionIds.add(contributionId)) revert ContributionIdAlreadyExists();
 
         _contributions[contributionId] = contribution;
-        _contributionsInPeriod[currentPeriodId()].push(contributionId);
+        // TODO: for each period contribution is active, push
+        _contributionIdsInPeriod[currentPeriodId()].push(contributionId);
 
         ITaskManager(taskManager()).addContribution(contributionId, contribution);
 
-        emit CreateContribution(contributionId, msg.sender, encodedContribution);
+        emit CreateContribution({
+            contributionId: contributionId,
+            sender: msg.sender,
+            hub: hub(),
+            taskId: contribution.taskId,
+            uri: contribution.uri,
+            role: contribution.role,
+            startDate: contribution.startDate,
+            endDate: contribution.endDate,
+            points: contribution.points,
+            quantity: contribution.quantity
+        });
 
         return contributionId;
     }
 
-    /// @dev off-chain helper
+    /// @inheritdoc ITaskFactory
     function getContributionIdsBeforeEndDate(uint32 timestamp) external view returns (bytes32[] memory) {
         uint256 length = _contributionIds.length();
         bytes32[] memory tempContributionIds = new bytes32[](length);
@@ -84,7 +106,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return result;
     }
 
-    /// @dev off-chain helper
+    /// @inheritdoc ITaskFactory
     function getContributionIdsActive(uint32 timestamp) external view returns (bytes32[] memory) {
         uint256 length = _contributionIds.length();
         bytes32[] memory tempContributionIds = new bytes32[](length);
@@ -105,40 +127,47 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return result;
     }
 
+    /// @inheritdoc ITaskFactory
     function getContributionById(bytes32 contributionId) external view returns (Contribution memory) {
         return _contributions[contributionId];
     }
 
+    /// @inheritdoc ITaskFactory
     function getContributionByIdEncoded(bytes32 contributionId) external view returns (bytes memory) {
         Contribution memory contribution = _contributions[contributionId];
         return encodeContribution(contribution);
     }
 
+    /// @inheritdoc ITaskFactory
     function isContributionId(bytes32 contributionId) public view returns (bool) {
         return _contributionIds.contains(contributionId);
     }
 
+    /// @inheritdoc ITaskFactory
     function contributionIds() external view returns (bytes32[] memory) {
         return _contributionIds.values();
     }
 
-    function contributionsInPeriod(uint32 periodId) external view returns (bytes32[] memory) {
-        return _contributionsInPeriod[periodId];
+    /// @inheritdoc ITaskFactory
+    function contributionIdsInPeriod(uint32 periodId) external view returns (bytes32[] memory) {
+        return _contributionIdsInPeriod[periodId];
     }
 
+    /// @inheritdoc ITaskFactory
     function encodeContribution(Contribution memory contribution) public pure returns (bytes memory) {
         return
             abi.encodePacked(
                 contribution.taskId,
+                contribution.uri,
                 contribution.role,
                 contribution.startDate,
                 contribution.endDate,
                 contribution.points,
-                contribution.quantity,
-                contribution.uri
+                contribution.quantity
             );
     }
 
+    /// @inheritdoc ITaskFactory
     function calcContributionId(Contribution memory contribution) public pure returns (bytes32) {
         return keccak256(encodeContribution(contribution));
     }

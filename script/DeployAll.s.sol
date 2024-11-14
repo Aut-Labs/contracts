@@ -13,7 +13,7 @@ import {HubDomainsRegistry} from "../contracts/hub/HubDomainsRegistry.sol";
 import {AutProxy} from "../contracts/proxy/AutProxy.sol";
 import {TrustedForwarder} from "../contracts/mocks/TrustedForwarder.sol";
 import {Membership} from "../contracts/membership/Membership.sol";
-import {Participation} from "../contracts/participation/Participation.sol";
+import {ParticipationScore} from "../contracts/participationScore/ParticipationScore.sol";
 import {Task, TaskRegistry} from "../contracts/tasks/TaskRegistry.sol";
 import {TaskFactory} from "../contracts/tasks/TaskFactory.sol";
 import {TaskManager} from "../contracts/tasks/TaskManager.sol";
@@ -33,6 +33,7 @@ import "forge-std/Script.sol";
 
 contract DeployAll is Script {
     address public owner;
+    address public initialContributionManager;
     address public projectMultisig;
     uint256 public privateKey;
     bool public deploying;
@@ -70,6 +71,10 @@ contract DeployAll is Script {
         string name;
     }
 
+    function version() public pure returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 1);
+    }
+
     function setOwner(address _owner) public {
         owner = _owner;
         projectMultisig = owner;
@@ -78,20 +83,25 @@ contract DeployAll is Script {
     function setUp() public {
         if (block.chainid == 137) {
             owner = vm.envAddress("MAINNET_OWNER_ADDRESS");
+            initialContributionManager = vm.envAddress("MAINNET_INITIAL_CONTRIBUTION_MANAGER");
             privateKey = vm.envUint("MAINNET_PRIVATE_KEY");
+            deploying = true;
             projectMultisig = vm.envAddress("MAINNET_PROJECT_MULTISIG_ADDRESS");
         } else if (block.chainid == 80002) {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
+            initialContributionManager = vm.envAddress("TESTNET_INITIAL_CONTRIBUTION_MANAGER");
             privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
+            deploying = true;
             projectMultisig = vm.envAddress("TESTNET_PROJECT_MULTISIG_ADDRESS");
         } else {
             // testing
             privateKey = 567890;
             owner = vm.addr(privateKey);
+            initialContributionManager = address(11111111);
+            owner = vm.addr(privateKey);
         }
         console.log("setUp -- done");
 
-        deploying = true;
         vm.startBroadcast(privateKey);
     }
 
@@ -116,6 +126,7 @@ contract DeployAll is Script {
             _hubDomainsRegistryAddress: address(hubDomainsRegistry),
             _taskRegistryAddress: address(taskRegistry),
             _globalParametersAddress: address(globalParameters),
+            _initialContributionManager: initialContributionManager,
             _membershipImplementation: membershipImplementation,
             _participationImplementation: participationImplementation,
             _taskFactoryImplementation: taskFactoryImplementation,
@@ -127,24 +138,38 @@ contract DeployAll is Script {
         autId.transferOwnership(owner);
 
         // init hubDomainsRegistry now that hubRegistry is deployed
-        hubDomainsRegistry.initialize(address(hubRegistry));
+        hubDomainsRegistry.initialize(address(hubRegistry), "Hub Domains Registry", "HDR");
+
+        // other inits
+        taskRegistry.initialize();
+        if (deploying) {
+            taskRegistry.setApproved(owner);
+        }
 
         // Setup initial tasks
-        Task[] memory tasks = new Task[](3);
+        Task[] memory tasks = new Task[](11);
         // open tasks
-        tasks[0] = Task({uri: "ipfs://QmScDABgjA3MuiEDsLUDMpfe8cAKL1FgtSzLnGJVUF54Nx"});
+        tasks[0] = Task({uri: "ipfs://QmaDxYAaMhEbz3dH2N9Lz1RRdAXb3Sre5fqCvgsmKCtJvC"});
         // quiz tasks
-        tasks[1] = Task({uri: "ipfs://QmQZ2wXMsie8EGpbWk9GsRWQUj6JrJuBo7o3xCmnmZVWB7"});
+        tasks[1] = Task({uri: "ipfs://QmbnM1ZRjZ2X2Fc6zRm7jsZeTWvZSMjJDc6h3nct7gbAMm"});
         // join discord tasks
-        tasks[2] = Task({uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"});
-        // polls
-        // tasks[3] = Task({
-        //     uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"
-        // });
-        // // gathering tasks
-        // tasks[4] = Task({
-        //     uri: "ipfs://QmQnvc22SuY6x7qg1ujLFCg3E3QvrgfEEjam7rAbd69Rgu"
-        // });
+        tasks[2] = Task({uri: "ipfs://QmTe4qYncbW86vgYRvcTTP23sYY9yopYQMwLWh1GKYFmuR"});
+        // [discord] polls
+        tasks[3] = Task({uri: "ipfs://QmRdkW4jh55oVhPbNLMRcXZ7KHhcPDd82bfqrkDcGTC8Me"});
+        // [discord] gathering
+        tasks[4] = Task({uri: "ipfs://Qme7jXteFKAiSaByMf31cZZgCV2yjGaQcybLS1PmoPCKc2"});
+        // [github] commit
+        tasks[5] = Task({uri: "ipfs://Qme9S8rCPEYmJraCNWUdBT2Nc2FSSHtjAeSmcX1RT6EmGg"});
+        // [github] open pr
+        tasks[6] = Task({uri: "ipfs://QmPksTgWNfY9bnfHxrVNmPzMBW19ZZRChouYQACEcBVtK5"});
+        // [twitter] comment
+        tasks[7] = Task({uri: "ipfs://Qmd28t4X22F54qihKapgaq9d4Sbx4u4rxhWhEozimxfDiQ"});
+        // [twitter] follow
+        tasks[8] = Task({uri: "ipfs://QmR3hzxeR5uKiMhQFL4PPB8eqNsoZxAjJ4KNirjiNBF5a7"});
+        // [twitter] like
+        tasks[9] = Task({uri: "ipfs://QmNepwgZnQ46AjWCDuBVJCb7ozPfXzWtVZx26PSgwVHzPA"});
+        // [twitter] retweet
+        tasks[10] = Task({uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH"});
         taskRegistry.registerTasks(tasks);
 
         utilsRegistry = deployRepFiRegistry(owner);
@@ -241,9 +266,9 @@ contract DeployAll is Script {
         if (deploying) {
             string memory filename = "deployments.txt";
             TNamedAddress[24] memory na;
-            na[0] = TNamedAddress({name: "globalParametersProxy", target: address(globalParameters)});
-            na[1] = TNamedAddress({name: "autIDProxy", target: address(autId)});
-            na[2] = TNamedAddress({name: "hubRegistryProxy", target: address(hubRegistry)});
+            na[0] = TNamedAddress({name: "globalParameters", target: address(globalParameters)});
+            na[1] = TNamedAddress({name: "autID", target: address(autId)});
+            na[2] = TNamedAddress({name: "hubRegistry", target: address(hubRegistry)});
             na[3] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
             na[4] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
             na[10] = TNamedAddress({name: "utilsRegistry", target: address(utilsRegistry)});
@@ -309,7 +334,7 @@ function deployHubDependencyImplementations()
     )
 {
     membershipImplementation = address(new Membership());
-    participationImplementation = address(new Participation());
+    participationImplementation = address(new ParticipationScore());
     taskFactoryImplementation = address(new TaskFactory());
     taskManagerImplementation = address(new TaskManager());
 }
@@ -321,6 +346,7 @@ function deployHubRegistry(
     address _hubDomainsRegistryAddress,
     address _taskRegistryAddress,
     address _globalParametersAddress,
+    address _initialContributionManager,
     address _membershipImplementation,
     address _participationImplementation,
     address _taskFactoryImplementation,
@@ -339,6 +365,7 @@ function deployHubRegistry(
                 _hubDomainsRegistryAddress,
                 _taskRegistryAddress,
                 _globalParametersAddress,
+                _initialContributionManager,
                 _membershipImplementation,
                 _participationImplementation,
                 _taskFactoryImplementation,

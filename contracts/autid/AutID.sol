@@ -17,23 +17,32 @@ import {
 import {AutIDUtils} from "./AutIDUtils.sol";
 import {IHub} from "../hub/interfaces/IHub.sol";
 import {IHubRegistry} from "../hub/interfaces/IHubRegistry.sol";
+import {IMembership} from "../membership/IMembership.sol";
 
 contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, ERC2771ContextUpgradeable, IAutID {
-    error ConflictingRecord();
-    error UntransferableToken();
+    struct AutIDStorage {
+        uint256 tokenId;
+        address hubRegistry;
+        address localReputation;
+        mapping(bytes32 => uint256) tokenIdForUsername;
+        mapping(address => uint256) tokenIdForAccount;
+        mapping(address => uint32) mintedAt;
+    }
+    // keccak256(abi.encode(uint256(keccak256("aut.storage.AutID")) - 1))
+    bytes32 private constant AutIDStorageLocation = 0x965a41ae9c39ec634f499718a240ff6463f22d8ae786856bf7c0daba4c9f58b3;
 
-    uint256 private _tokenId;
+    function _getAutIDStorage() private pure returns (AutIDStorage storage $) {
+        assembly {
+            $.slot := AutIDStorageLocation
+        }
+    }
 
-    address public hubRegistry;
-    address public localReputation;
-    mapping(bytes32 => uint256) public tokenIdForUsername;
-    mapping(address => uint256) public tokenIdForAccount;
-    mapping(address => uint32) public mintedAt;
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 0);
+    }
 
-    constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {}
-
-    function nextTokenId() external view returns (uint256) {
-        return _tokenId + 1;
+    constructor(address trustedForwarder_) ERC2771ContextUpgradeable(trustedForwarder_) {
+        _disableInitializers();
     }
 
     function initialize(address initialOwner) public initializer {
@@ -45,7 +54,8 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     function setHubRegistry(address newHubRegistry) external onlyOwner {
         _revertForZeroAddress(newHubRegistry);
 
-        hubRegistry = newHubRegistry;
+        AutIDStorage storage $ = _getAutIDStorage();
+        $.hubRegistry = newHubRegistry;
 
         emit HubRegistrySet(newHubRegistry);
     }
@@ -54,19 +64,10 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     function setLocalReputation(address newLocalReputation) external onlyOwner {
         _revertForZeroAddress(newLocalReputation);
 
-        localReputation = newLocalReputation;
+        AutIDStorage storage $ = _getAutIDStorage();
+        $.localReputation = newLocalReputation;
 
         emit LocalReputationSet(newLocalReputation);
-    }
-
-    /// @inheritdoc IAutID
-    function updateTokenURI(string memory uri) external {
-        address account = _msgSender();
-        _revertForZeroAddress(account);
-        uint256 tokenId = tokenIdForAccount[account];
-        _revertForInvalidTokenId(tokenId);
-
-        _setTokenURI(tokenId, uri);
     }
 
     /// @inheritdoc IAutID
@@ -90,14 +91,20 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     ) public {
         address account = _msgSender();
         AutIDUtils._revertForZeroAddress(account);
-        mintedAt[account] = uint32(block.timestamp);
+
+        AutIDStorage storage $ = _getAutIDStorage();
+        $.mintedAt[account] = uint32(block.timestamp);
 
         _createRecord(account, username, optionalURI);
         _joinHub(account, role, commitment, hub);
     }
 
-    function listUserHubs(address user) external view returns (address[] memory) {
-        return IHubRegistry(hubRegistry).listUserHubs(user);
+    function getUserHubs(address user) external view returns (address[] memory) {
+        return IHubRegistry(hubRegistry()).userHubs(user);
+    }
+
+    function currentRole(address hub, address user) external view returns (uint256) {
+        return IMembership(hub).currentRole(user);
     }
 
     // function userHubRole(address hub, address user) external view returns (uint256) {
@@ -116,32 +123,34 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         revert UntransferableToken();
     }
 
+    /// @inheritdoc IAutID
     function setTokenURI(string memory uri) external {
         address account = _msgSender();
         _revertForZeroAddress(account);
-        uint256 tokenId = tokenIdForAccount[account];
-        _revertForInvalidTokenId(tokenId);
-        _setTokenURI(tokenId, uri);
 
-        emit TokenMetadataUpdated(tokenId, account, uri);
+        uint256 tokenId_ = tokenIdForAccount(account);
+        _revertForInvalidTokenId(tokenId_);
+        _setTokenURI(tokenId_, uri);
+
+        emit TokenMetadataUpdated(tokenId_, account, uri);
     }
 
     /// @inheritdoc IAutID
     function joinHub(uint256 role, uint8 commitment, address hub) public {
         address account = _msgSender();
         _revertForZeroAddress(account);
-        uint256 tokenId = tokenIdForAccount[account];
-        _revertForInvalidTokenId(tokenId);
+
+        _revertForInvalidTokenId(tokenIdForAccount(account));
 
         _joinHub(account, role, commitment, hub);
     }
 
     function _joinHub(address account, uint256 role, uint8 commitment, address hub) internal {
-        address hubRegistryAddress = hubRegistry;
+        address hubRegistryAddress = hubRegistry();
         _revertForZeroAddress(hubRegistryAddress);
         _revertForZeroAddress(hub);
         _revertForInvalidCommitment(commitment);
-        _revertForUncheckedHub(hubRegistryAddress, hub);
+        _revertIfHubDoesNotExist(hubRegistryAddress, hub);
         _revertForCanNotJoinHub(hub, account, role);
         _revertForMinCommitmentNotReached(hub, commitment);
 
@@ -156,17 +165,49 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         assembly {
             username_ := mload(add(username, 32))
         }
-        if (tokenIdForUsername[username_] != 0 || tokenIdForAccount[account] != 0) {
+        AutIDStorage storage $ = _getAutIDStorage();
+
+        if ($.tokenIdForUsername[username_] != 0 || $.tokenIdForAccount[account] != 0) {
             revert ConflictingRecord();
         }
 
-        uint256 tokenId = ++_tokenId;
-        _mint(account, tokenId);
-        _setTokenURI(tokenId, optionalURI);
-        tokenIdForUsername[username_] = tokenId;
-        tokenIdForAccount[account] = tokenId;
+        uint256 tokenId_ = ++$.tokenId;
+        _mint(account, tokenId_);
+        _setTokenURI(tokenId_, optionalURI);
+        $.tokenIdForUsername[username_] = tokenId_;
+        $.tokenIdForAccount[account] = tokenId_;
 
-        emit RecordCreated(tokenId, account, username, optionalURI);
+        emit RecordCreated(tokenId_, account, username, optionalURI);
+    }
+
+    function tokenId() external view returns (uint256) {
+        AutIDStorage storage $ = _getAutIDStorage();
+        return $.tokenId;
+    }
+
+    function hubRegistry() public view returns (address) {
+        AutIDStorage storage $ = _getAutIDStorage();
+        return $.hubRegistry;
+    }
+
+    function localReputation() external view returns (address) {
+        AutIDStorage storage $ = _getAutIDStorage();
+        return $.localReputation;
+    }
+
+    function tokenIdForUsername(bytes32 usernameHash) external view returns (uint256) {
+        AutIDStorage storage $ = _getAutIDStorage();
+        return $.tokenIdForUsername[usernameHash];
+    }
+
+    function tokenIdForAccount(address who) public view returns (uint256) {
+        AutIDStorage storage $ = _getAutIDStorage();
+        return $.tokenIdForAccount[who];
+    }
+
+    function mintedAt(address who) external view returns (uint256) {
+        AutIDStorage storage $ = _getAutIDStorage();
+        return $.mintedAt[who];
     }
 
     function _msgSender() internal view override(ERC2771ContextUpgradeable, ContextUpgradeable) returns (address) {
@@ -185,6 +226,4 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     {
         return ERC2771ContextUpgradeable._contextSuffixLength();
     }
-
-    uint256[44] private __gap;
 }

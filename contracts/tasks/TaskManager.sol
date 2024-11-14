@@ -11,6 +11,7 @@ import {Contribution} from "./interfaces/ITaskFactory.sol";
 
 contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.Bytes32Set;
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     uint128 public pointsActive;
     uint128 public periodPointsGiven;
@@ -19,8 +20,15 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     mapping(bytes32 => ContributionStatus) public contributionStatuses;
     mapping(uint32 periodId => PointSummary) public pointSummaries;
     mapping(address member => mapping(uint32 periodId => MemberActivity)) public memberActivities;
-    mapping(address member => EnumerableSet.Bytes32Set) private memberContributions;
+    mapping(address member => EnumerableSet.Bytes32Set) private memberContributionsGiven;
+    mapping(address member => EnumerableSet.Bytes32Set) private memberContributionsCommitted;
     mapping(uint32 periodId => bytes32[] contributionIds) public contributionsGivenInPeriod;
+
+    EnumerableSet.AddressSet private _contributionManagers;
+
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 0);
+    }
 
     constructor() {
         _disableInitializers();
@@ -31,6 +39,45 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
     }
 
+    /// @dev set the initial contribution manager from the hub registry
+    function initialize2(address initialContributionManager) external reinitializer(2) {
+        _addContributionManager(initialContributionManager);
+    }
+
+    // ContributionManager-management
+
+    /// @inheritdoc ITaskManager
+    function addContributionManager(address who) external {
+        _revertIfNotAdmin();
+        _addContributionManager(who);
+    }
+
+    function _addContributionManager(address who) internal {
+        if (!_contributionManagers.add(who)) revert AlreadyContributionManager();
+        emit AddContributionManager(who);
+    }
+
+    /// @inheritdoc ITaskManager
+    function removeContributionManager(address who) external {
+        _revertIfNotAdmin();
+        if (!_contributionManagers.remove(who)) revert NotContributionManager();
+
+        emit RemoveContributionManager(who);
+    }
+
+    /// @inheritdoc ITaskManager
+    function isContributionManager(address who) public view returns (bool) {
+        return _contributionManagers.contains(who);
+    }
+
+    /// @inheritdoc ITaskManager
+    function contributionManagers() external view returns (address[] memory) {
+        return _contributionManagers.values();
+    }
+
+    // Contribution-management
+
+    /// @inheritdoc ITaskManager
     function addContribution(bytes32 contributionId, Contribution calldata contribution) public {
         _revertIfNotTaskFactory();
         writePointSummary();
@@ -45,10 +92,19 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             quantityRemaining: contribution.quantity
         });
         contributionStatuses[contributionId] = contributionStatus;
+        pointsActive += contribution.points * contribution.quantity;
 
-        emit AddContribution(contributionId, encodeContributionStatus(contributionStatus));
+        emit AddContribution({
+            contributionId: contributionId,
+            sender: msg.sender,
+            hub: hub(),
+            status: Status.Open,
+            points: contribution.points,
+            quantityRemaining: contribution.quantity
+        });
     }
 
+    /// @inheritdoc ITaskManager
     function removeContributions(bytes32[] calldata contributionIds) external {
         _revertIfNotAdmin();
         writePointSummary();
@@ -57,6 +113,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    /// @inheritdoc ITaskManager
     function removeContribution(bytes32 contributionId) external {
         _revertIfNotAdmin();
         writePointSummary();
@@ -74,31 +131,84 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         periodPointsRemoved += sumPointsRemoved;
         contributionStatus.status = Status.Inactive;
 
-        emit RemoveContribution(contributionId, encodeContributionStatus(contributionStatus));
+        emit RemoveContribution({
+            contributionId: contributionId,
+            sender: msg.sender,
+            hub: hub(),
+            status: Status.Inactive,
+            points: contributionStatus.points,
+            quantityRemaining: contributionStatus.quantityRemaining
+        });
     }
 
-    function commitContributions(bytes32[] calldata contributionIds, bytes[] calldata datas) external {
-        _revertIfNotMember(msg.sender);
+    /// @inheritdoc ITaskManager
+    function commitContributions(
+        bytes32[] calldata contributionIds,
+        address[] calldata whos,
+        bytes[] calldata datas
+    ) external {
         uint256 length = contributionIds.length;
-        if (length != datas.length) revert UnequalLengths();
+        if (length != whos.length || length != datas.length) revert UnequalLengths();
         for (uint256 i = 0; i < length; i++) {
-            _commitContribution(contributionIds[i], datas[i]);
+            _commitContribution(contributionIds[i], whos[i], datas[i]);
         }
     }
 
-    function commitContribution(bytes32 contributionId, bytes calldata data) external {
-        _revertIfNotMember(msg.sender);
-        _commitContribution(contributionId, data);
+    /// @inheritdoc ITaskManager
+    function commitContribution(bytes32 contributionId, address who, bytes calldata data) external {
+        _commitContribution(contributionId, who, data);
     }
 
-    function _commitContribution(bytes32 contributionId, bytes memory data) internal {
+    function _commitContribution(bytes32 contributionId, address who, bytes memory data) internal {
+        if (msg.sender != who && !isContributionManager(msg.sender) && !_isAdmin(msg.sender))
+            revert UnauthorizedContributionManager();
+        _revertIfNotMember(who);
+
+        // revert if the contribution is not in open status (NOTE: does not require commitment to be before Contribution.endDate)
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
-        emit CommitContribution(contributionId, msg.sender, data);
+
+        // revert if contribution was already given to member
+        if (memberContributionsGiven[who].contains(contributionId)) revert ContributionAlreadyGiven();
+
+        // Add the commitment, revert if already committed
+        if (!memberContributionsCommitted[who].add(contributionId)) revert ContributionAlreadyCommitted();
+
+        emit CommitContribution({contributionId: contributionId, sender: msg.sender, hub: hub(), who: who, data: data});
     }
 
+    /// @inheritdoc ITaskManager
+    function revokeContributions(
+        bytes32[] calldata contributionIds,
+        address[] calldata whos,
+        bytes[] calldata datas
+    ) external {
+        uint256 length = contributionIds.length;
+        if (length != whos.length || length != datas.length) revert UnequalLengths();
+        for (uint256 i = 0; i < length; i++) {
+            _revokeContribution(contributionIds[i], whos[i], datas[i]);
+        }
+    }
+
+    /// @inheritdoc ITaskManager
+    function revokeContribution(bytes32 contributionId, address who, bytes calldata data) external {
+        _revokeContribution(contributionId, who, data);
+    }
+
+    function _revokeContribution(bytes32 contributionId, address who, bytes memory data) internal {
+        if (msg.sender != who && !isContributionManager(msg.sender) && !_isAdmin(msg.sender))
+            revert UnauthorizedContributionManager();
+        _revertIfNotMember(who);
+
+        // Remove the commitment, revert if not committed
+        if (!memberContributionsCommitted[who].remove(contributionId)) revert ContributionNotCommitted();
+
+        emit RevokeContribution({contributionId: contributionId, sender: msg.sender, hub: hub(), who: who, data: data});
+    }
+
+    /// @inheritdoc ITaskManager
     function giveContributions(bytes32[] calldata contributionIds, address[] calldata whos) external {
-        _revertIfNotAdmin();
+        if (!isContributionManager(msg.sender) && !_isAdmin(msg.sender)) revert UnauthorizedContributionManager();
         writePointSummary();
 
         uint256 length = contributionIds.length;
@@ -108,8 +218,9 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    /// @inheritdoc ITaskManager
     function giveContribution(bytes32 contributionId, address who) external {
-        _revertIfNotAdmin();
+        if (!isContributionManager(msg.sender) && !_isAdmin(msg.sender)) revert UnauthorizedContributionManager();
         writePointSummary();
         _giveContribution(contributionId, who);
     }
@@ -119,16 +230,17 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
-        uint32 points = contributionStatus.points;
 
+        if (!memberContributionsGiven[who].add(contributionId)) revert ContributionAlreadyGiven();
+        if (!memberContributionsCommitted[who].remove(contributionId)) revert ContributionNotCommitted();
+
+        uint32 points = contributionStatus.points;
         uint32 currentPeriodId_ = currentPeriodId();
 
         // update member activity
         MemberActivity storage memberActivity = memberActivities[who][currentPeriodId_];
         memberActivity.pointsGiven += points;
         memberActivity.contributionIds.push(contributionId);
-
-        if (!memberContributions[who].add(contributionId)) revert MemberAlreadyContributed();
 
         // update "hot" point summary
         pointsActive -= points;
@@ -142,11 +254,19 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         if (contributionStatus.quantityRemaining == 0) {
             contributionStatus.status = Status.Complete;
         }
-
-        emit GiveContribution(contributionId, who, currentPeriodId_, encodeContributionStatus(contributionStatus));
+        emit GiveContribution({
+            contributionId: contributionId,
+            sender: msg.sender,
+            hub: hub(),
+            periodId: currentPeriodId_,
+            who: who,
+            status: contributionStatus.status,
+            points: contributionStatus.points,
+            quantityRemaining: contributionStatus.quantityRemaining
+        });
     }
 
-    /// @notice write sums to history when needed
+    /// @inheritdoc ITaskManager
     function writePointSummary() public {
         _writePointSummary(currentPeriodId());
     }
@@ -198,40 +318,53 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         }
     }
 
+    /// @inheritdoc ITaskManager
     function getContributionStatus(bytes32 contributionId) external view returns (ContributionStatus memory) {
         return contributionStatuses[contributionId];
     }
 
+    /// @inheritdoc ITaskManager
+    function getMemberActivity(address who, uint32 periodId) external view returns (MemberActivity memory) {
+        return memberActivities[who][periodId];
+    }
+
+    /// @inheritdoc ITaskManager
     function getContributionPoints(bytes32 contributionId) external view returns (uint128) {
         return contributionStatuses[contributionId].points;
     }
 
+    /// @inheritdoc ITaskManager
     function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128) {
         return memberActivities[who][periodId].pointsGiven;
     }
 
+    /// @inheritdoc ITaskManager
+    function isMemberGivenContributionId(address who, bytes32 contributionId) external view returns (bool) {
+        return memberContributionsGiven[who].contains(contributionId);
+    }
+
+    /// @inheritdoc ITaskManager
+    function getMemberContributionIds(address who) external view returns (bytes32[] memory) {
+        return memberContributionsGiven[who].values();
+    }
+
+    /// @inheritdoc ITaskManager
     function getMemberContributionIds(address who, uint32 periodId) external view returns (bytes32[] memory) {
         return memberActivities[who][periodId].contributionIds;
     }
 
+    /// @inheritdoc ITaskManager
     function getPointsActive(uint32 periodId) external view returns (uint128) {
         return pointSummaries[periodId].pointsActive;
     }
 
+    /// @inheritdoc ITaskManager
     function getPointsGiven(uint32 periodId) external view returns (uint128) {
         return pointSummaries[periodId].pointsGiven;
     }
 
+    /// @inheritdoc ITaskManager
     function getGivenContributions(uint32 periodId) external view returns (bytes32[] memory) {
         return contributionsGivenInPeriod[periodId];
-    }
-
-    function encodeContributionStatus(ContributionStatus memory contributionStatus) public pure returns (bytes memory) {
-        return
-            abi.encodePacked(
-                contributionStatus.status,
-                contributionStatus.points,
-                contributionStatus.quantityRemaining
-            );
     }
 }

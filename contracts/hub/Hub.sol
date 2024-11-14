@@ -11,14 +11,7 @@ import {IMembership} from "../membership/IMembership.sol";
 import {HubUtils} from "./HubUtils.sol";
 import {IHub} from "./interfaces/IHub.sol";
 import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
-import {IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
-
-/*
-TODO:
-- Are market, commitment, metadataUri modifiable?
-- Should the deployer be allowed to transfer their deployer role ownership?
-- max/min values of parameters
-*/
+import {Domain, IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
 
 contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -30,36 +23,45 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     uint256 public constant PERFORMANCE_PARAMETER = 4;
     uint256 public constant GROWTH_PARAMETER = 5;
 
-    address public onboarding;
-    /// @dev these addrs are seen as immutable
-    address public hubDomainsRegistry;
-    address public taskRegistry;
-    address public globalParameters;
-    address public participation;
-    address public membership;
-    address public taskFactory;
-    address public taskManager;
+    struct HubStorage {
+        // address public onboarding;
+        /// @dev these addrs are seen as immutable
+        address hubDomainsRegistry;
+        address taskRegistry;
+        address globalParameters;
+        address participation;
+        address membership;
+        address taskFactory;
+        address taskManager;
+        uint128 localConstraintFactor;
+        uint128 localPenaltyFactor;
+        // TODO: these 4 variables to be defined
+        uint256 commitment;
+        uint256 archetype;
+        uint256 market;
+        string uri;
+        uint32 initTimestamp;
+        uint32 initPeriodId;
+        uint32 period0Start;
+        EnumerableSet.AddressSet admins;
+        EnumerableSet.UintSet roles;
+        string[] urls;
+        mapping(bytes32 => uint256) urlHashIndex;
+        mapping(uint256 => uint256) parameterWeight;
+    }
 
-    uint128 public localConstraintFactor;
-    uint128 public localPenaltyFactor;
+    // keccak256(abi.encode(uint256(keccak256("aut.storage.Hub")) - 1));
+    bytes32 private constant HubStorageLocation = 0x38d9e3740f833eae7a0ec62c2a0498ec128d42d8d77ddd0d4b2b946b8261d5a4;
 
-    // TODO: these 4 variables to be defined
-    uint256 public commitment;
-    uint256 public archetype;
-    uint256 public market;
-    string public metadataUri;
+    function _getHubStorage() private pure returns (HubStorage storage $) {
+        assembly {
+            $.slot := HubStorageLocation
+        }
+    }
 
-    uint32 public initTimestamp;
-    uint32 public initPeriodId;
-    uint32 public period0Start;
-
-    EnumerableSet.AddressSet internal _admins;
-    EnumerableSet.UintSet internal _roles;
-
-    string[] private _urls;
-    mapping(bytes32 => uint256) private _urlHashIndex;
-
-    mapping(uint256 => uint256) public parameterWeight;
+    function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
+        return (0, 1, 0);
+    }
 
     constructor() {
         _disableInitializers();
@@ -73,26 +75,28 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         uint256[] calldata roles_,
         uint256 _market,
         uint256 _commitment,
-        string memory _metadataUri
+        string memory _uri
     ) external initializer {
+        HubStorage storage $ = _getHubStorage();
+
         // ownership
         __Ownable_init(_initialOwner);
-        _admins.add(_initialOwner);
+        $.admins.add(_initialOwner);
 
         // set addrs
-        hubDomainsRegistry = _hubDomainsRegistry;
-        taskRegistry = _taskRegistry;
-        globalParameters = _globalParameters;
+        $.hubDomainsRegistry = _hubDomainsRegistry;
+        $.taskRegistry = _taskRegistry;
+        $.globalParameters = _globalParameters;
 
         // set vars
         _setRoles(roles_);
         _setMarket(_market);
         _setCommitment(_commitment);
-        _setMetadataUri(_metadataUri);
+        _setUri(_uri);
 
-        initTimestamp = uint32(block.timestamp);
-        period0Start = IGlobalParameters(_globalParameters).period0Start();
-        initPeriodId = TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
+        $.initTimestamp = uint32(block.timestamp);
+        $.period0Start = IGlobalParameters(_globalParameters).period0Start();
+        $.initPeriodId = TimeLibrary.periodId({period0Start: $.period0Start, timestamp: uint32(block.timestamp)});
     }
 
     /// @dev contracts specific to this hub
@@ -102,32 +106,40 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         address _participation,
         address _membership
     ) external reinitializer(2) {
-        taskFactory = _taskFactory;
-        taskManager = _taskManager;
-        participation = _participation;
-        membership = _membership;
+        HubStorage storage $ = _getHubStorage();
+
+        $.taskFactory = _taskFactory;
+        $.taskManager = _taskManager;
+        $.participation = _participation;
+        $.membership = _membership;
     }
 
     // -----------------------------------------------------------
     //                         MUTATIVE
     // -----------------------------------------------------------
 
+    /// @inheritdoc IHub
     function join(address who, uint256 role, uint8 _commitment) external {
-        IMembership(membership).join(who, role, _commitment);
+        IMembership(membership()).join(who, role, _commitment);
     }
 
     // -----------------------------------------------------------
     //                     ADMIN-MANAGEMENT
     // -----------------------------------------------------------
 
+    /// @inheritdoc IHub
     function admins() external view returns (address[] memory) {
-        return _admins.values();
+        HubStorage storage $ = _getHubStorage();
+        return $.admins.values();
     }
 
+    /// @inheritdoc IHub
     function isAdmin(address who) public view returns (bool) {
-        return _admins.contains(who);
+        HubStorage storage $ = _getHubStorage();
+        return $.admins.contains(who);
     }
 
+    /// @inheritdoc IHub
     function addAdmins(address[] calldata whos) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
         for (uint256 i = 0; i < whos.length; i++) {
@@ -135,6 +147,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         }
     }
 
+    /// @inheritdoc IHub
     function addAdmin(address who) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
         _addAdmin(who);
@@ -142,45 +155,132 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
 
     function _addAdmin(address who) internal {
         if (!isMember(who)) revert NotMember();
-        if (!_admins.add(who)) revert AlreadyAdmin();
 
-        emit AdminGranted(who);
+        HubStorage storage $ = _getHubStorage();
+        if (!$.admins.add(who)) revert AlreadyAdmin();
+
+        emit AdminGranted(who, address(this));
     }
 
+    /// @inheritdoc IHub
     function removeAdmin(address who) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
         if (msg.sender == who) revert AdminCannotRenounceSelf();
-        if (!_admins.remove(who)) revert CannotRemoveNonAdmin();
 
-        emit AdminRenounced(who);
+        HubStorage storage $ = _getHubStorage();
+        if (!$.admins.remove(who)) revert CannotRemoveNonAdmin();
+
+        emit AdminRenounced(who, address(this));
     }
 
     // -----------------------------------------------------------
     //                        VIEWS
     // -----------------------------------------------------------
 
+    function hubDomainsRegistry() public view returns (address) {
+        HubStorage storage $ = _getHubStorage();
+        return $.hubDomainsRegistry;
+    }
+
+    function taskRegistry() external view returns (address) {
+        HubStorage storage $ = _getHubStorage();
+        return $.taskRegistry;
+    }
+
+    function globalParameters() external view returns (address) {
+        HubStorage storage $ = _getHubStorage();
+        return $.globalParameters;
+    }
+
+    function participation() external view returns (address) {
+        HubStorage storage $ = _getHubStorage();
+        return $.participation;
+    }
+
+    function membership() public view returns (address) {
+        HubStorage storage $ = _getHubStorage();
+        return $.membership;
+    }
+
+    function taskFactory() external view returns (address) {
+        HubStorage storage $ = _getHubStorage();
+        return $.taskFactory;
+    }
+
+    function taskManager() external view returns (address) {
+        HubStorage storage $ = _getHubStorage();
+        return $.taskManager;
+    }
+
+    function localConstraintFactor() external view returns (uint128) {
+        HubStorage storage $ = _getHubStorage();
+        return $.localConstraintFactor;
+    }
+
+    function localPenaltyFactor() external view returns (uint128) {
+        HubStorage storage $ = _getHubStorage();
+        return $.localPenaltyFactor;
+    }
+
+    function commitment() external view returns (uint256) {
+        HubStorage storage $ = _getHubStorage();
+        return $.commitment;
+    }
+
+    function archetype() external view returns (uint256) {
+        HubStorage storage $ = _getHubStorage();
+        return $.archetype;
+    }
+
+    function market() external view returns (uint256) {
+        HubStorage storage $ = _getHubStorage();
+        return $.market;
+    }
+
+    function uri() external view returns (string memory) {
+        HubStorage storage $ = _getHubStorage();
+        return $.uri;
+    }
+
+    function initTimestamp() external view returns (uint32) {
+        HubStorage storage $ = _getHubStorage();
+        return $.initTimestamp;
+    }
+
+    function initPeriodId() external view returns (uint32) {
+        HubStorage storage $ = _getHubStorage();
+        return $.initPeriodId;
+    }
+
+    function period0Start() external view returns (uint32) {
+        HubStorage storage $ = _getHubStorage();
+        return $.period0Start;
+    }
+
+    /// @inheritdoc IHub
     function membersCount() external view returns (uint256) {
-        return IMembership(membership).membersCount();
+        return IMembership(membership()).membersCount();
     }
 
+    /// @inheritdoc IHub
     function isMember(address who) public view override returns (bool) {
-        return IMembership(membership).isMember(who);
+        return IMembership(membership()).isMember(who);
     }
 
-    function periodCount() external view returns (uint32) {
-        return TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
-    }
-
+    /// @inheritdoc IHub
     function roles() external view returns (uint256[] memory) {
-        return _roles.values();
+        HubStorage storage $ = _getHubStorage();
+        return $.roles.values();
     }
 
-    function roleOf(address who) external view returns (uint256) {
-        return IMembership(membership).currentRole(who);
+    /// @inheritdoc IHub
+    function currentRole(address who) public view returns (uint256) {
+        return IMembership(membership()).currentRole(who);
     }
 
+    /// @inheritdoc IHub
     function hasRole(address who, uint256 role) external view returns (bool) {
-        // TODO
+        return currentRole(who) == role;
     }
 
     function hadRole(address who, uint256 role, uint32 periodId) external view returns (bool) {
@@ -191,8 +291,9 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         // TODO
     }
 
-    function canJoin(address who, uint256 role) public view returns (bool) {
-        if (IMembership(membership).currentRole(who) != 0) {
+    /// @inheritdoc IHub
+    function canJoin(address who, uint256 /* role */) public view returns (bool) {
+        if (IMembership(membership()).currentRole(who) != 0) {
             return false;
         }
 
@@ -206,43 +307,53 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         return true;
     }
 
+    /// @inheritdoc IHub
     function constraintFactor() external view returns (uint128) {
+        HubStorage storage $ = _getHubStorage();
         return
-            localConstraintFactor == 0 ? IGlobalParameters(globalParameters).constraintFactor() : localConstraintFactor;
+            $.localConstraintFactor == 0
+                ? IGlobalParameters($.globalParameters).constraintFactor()
+                : $.localConstraintFactor;
     }
 
+    /// @inheritdoc IHub
     function penaltyFactor() external view returns (uint128) {
-        return localPenaltyFactor == 0 ? IGlobalParameters(globalParameters).penaltyFactor() : localPenaltyFactor;
+        HubStorage storage $ = _getHubStorage();
+        return $.localPenaltyFactor == 0 ? IGlobalParameters($.globalParameters).penaltyFactor() : $.localPenaltyFactor;
     }
 
     // -----------------------------------------------------------
     //                        HUB-MANAGEMENT
     // -----------------------------------------------------------
 
-    function registerDomain(
-        string calldata domain_,
-        address hubAddress_,
-        string calldata metadataUri_
-    ) external onlyOwner {
+    function registerDomain(string calldata _name, string calldata _uri) external onlyOwner {
         // also revert if not deployer
-        IHubDomainsRegistry(hubDomainsRegistry).registerDomain(domain_, hubAddress_, metadataUri_);
+        IHubDomainsRegistry(hubDomainsRegistry()).registerDomain(_name, _uri, owner());
     }
 
+    /// @inheritdoc IHub
     function setConstraintFactor(uint128 newConstraintFactor) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
+
+        HubStorage storage $ = _getHubStorage();
+
         if (newConstraintFactor != 0 && (newConstraintFactor < 1e16 || newConstraintFactor > 1e18))
             revert ConstraintFactorOutOfRange();
-        uint128 oldConstraintFactor = localConstraintFactor;
-        localConstraintFactor = newConstraintFactor;
+        uint128 oldConstraintFactor = $.localConstraintFactor;
+        $.localConstraintFactor = newConstraintFactor;
         emit SetConstraintFactor(oldConstraintFactor, newConstraintFactor);
     }
 
+    /// @inheritdoc IHub
     function setPenaltyFactor(uint128 newPenaltyFactor) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
+
+        HubStorage storage $ = _getHubStorage();
+
         if (newPenaltyFactor != 0 && (newPenaltyFactor < 1e16 || newPenaltyFactor < 1e18))
             revert PenaltyFactorOutOfRange();
-        uint128 oldPenaltyFactor = localPenaltyFactor;
-        localPenaltyFactor = newPenaltyFactor;
+        uint128 oldPenaltyFactor = $.localPenaltyFactor;
+        $.localPenaltyFactor = newPenaltyFactor;
         emit SetPenaltyFactor(oldPenaltyFactor, newPenaltyFactor);
     }
 
@@ -259,12 +370,14 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     function setArchetypeAndParameters(uint8[] calldata input) external {
         require(input.length == 6, "Hub: incorrect input length");
         if (!isAdmin(msg.sender)) revert NotAdmin();
-
         _revertForInvalidParameter(input[0]);
-        archetype = input[0];
+
+        HubStorage storage $ = _getHubStorage();
+
+        $.archetype = input[0];
         for (uint256 i = 1; i != 6; ++i) {
             _revertForInvalidParameter(input[i]);
-            parameterWeight[uint8(i)] = input[i];
+            $.parameterWeight[uint8(i)] = input[i];
 
             emit ParameterSet(uint8(i), input[i]);
         }
@@ -272,23 +385,26 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         emit ArchetypeSet(input[0]);
     }
 
-    function setMetadataUri(string memory metadataUri_) external {
+    function setUri(string memory _uri) external {
         if (!isAdmin(msg.sender)) revert NotAdmin();
-        _setMetadataUri(metadataUri_);
+        _setUri(_uri);
     }
 
     /// internal
 
     function _setRoles(uint256[] memory roles_) internal {
+        HubStorage storage $ = _getHubStorage();
         for (uint256 i = 0; i < roles_.length; i++) {
-            _roles.add(roles_[i]);
+            require($.roles.add(roles_[i]), "Cannot add duplicate roles");
         }
     }
 
     function _setMarket(uint256 market_) internal {
         _revertForInvalidMarket(market_);
 
-        market = market_;
+        HubStorage storage $ = _getHubStorage();
+
+        $.market = market_;
 
         emit MarketSet(market_);
     }
@@ -296,25 +412,31 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     function _setCommitment(uint256 commitment_) internal {
         _revertForInvalidCommitment(commitment_);
 
-        commitment = commitment_;
+        HubStorage storage $ = _getHubStorage();
+
+        $.commitment = commitment_;
 
         emit CommitmentSet(commitment_);
     }
 
-    function _setMetadataUri(string memory metadataUri_) internal {
-        _revertForInvalidMetadataUri(metadataUri_);
+    function _setUri(string memory _uri) internal {
+        _revertForInvalidMetadataUri(_uri);
 
-        metadataUri = metadataUri_;
+        HubStorage storage $ = _getHubStorage();
 
-        emit MetadataUriSet(metadataUri_);
+        $.uri = _uri;
+
+        emit MetadataUriSet(_uri);
     }
 
     function _addUrl(string memory url) internal {
-        uint256 length = _urls.length;
+        HubStorage storage $ = _getHubStorage();
+
+        uint256 length = $.urls.length;
         bytes32 urlHash = keccak256(abi.encodePacked(url));
-        if (_urlHashIndex[urlHash] == 0) {
-            _urlHashIndex[urlHash] = length + 1;
-            _urls.push(url);
+        if ($.urlHashIndex[urlHash] == 0) {
+            $.urlHashIndex[urlHash] = length + 1;
+            $.urls.push(url);
 
             emit UrlAdded(url);
         }
@@ -323,19 +445,21 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     }
 
     function _removeUrl(string memory url) internal {
-        uint256 length = _urls.length;
+        HubStorage storage $ = _getHubStorage();
+
+        uint256 length = $.urls.length;
         bytes32 urlHash = keccak256(abi.encodePacked(url));
-        uint256 index = _urlHashIndex[urlHash];
+        uint256 index = $.urlHashIndex[urlHash];
 
         if (index != 0) {
             if (index != length) {
-                string memory lastUrl = _urls[length - 1];
+                string memory lastUrl = $.urls[length - 1];
                 bytes32 lastUrlHash = keccak256(abi.encodePacked(lastUrl));
-                _urls[index - 1] = lastUrl;
-                _urlHashIndex[lastUrlHash] = index;
+                $.urls[index - 1] = lastUrl;
+                $.urlHashIndex[lastUrlHash] = index;
             }
-            _urls.pop();
-            delete _urlHashIndex[urlHash];
+            $.urls.pop();
+            delete $.urlHashIndex[urlHash];
 
             emit UrlRemoved(url);
         }
@@ -347,15 +471,13 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
     //                           VIEWS
     // -----------------------------------------------------------
 
-    function getDomain(string calldata domain) external view returns (address, string memory) {
-        return IHubDomainsRegistry(hubDomainsRegistry).getDomain(domain);
-    }
-
     function getUrls() external view returns (string[] memory) {
-        return _urls;
+        HubStorage storage $ = _getHubStorage();
+        return $.urls;
     }
 
     function isUrlListed(string memory url) external view returns (bool) {
-        return _urlHashIndex[keccak256(abi.encodePacked(url))] != 0;
+        HubStorage storage $ = _getHubStorage();
+        return $.urlHashIndex[keccak256(abi.encodePacked(url))] != 0;
     }
 }
