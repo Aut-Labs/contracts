@@ -91,7 +91,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         require(age >= duration, "duration is longer than the stakee's age");
 
         // get current period
-        uint256 currentPeriod = reputationMining.period();
+        uint256 currentPeriod = reputationMining.currentPeriod();
         // limit the stake to be equal to or lower than the monthly reward of the staker
         uint256 montlyRewardForStaker = reputationMining.getClaimableUtilityTokenForPeriod(msg.sender, currentPeriod);
         require(montlyRewardForStaker >= amount, "amount is higher than montly staker reward");
@@ -112,7 +112,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     /// @param stakeId The stake ID which was returned after staking
     function unstake(uint256 stakeId) external {
         // get current period
-        uint256 currentPeriod = reputationMining.period();
+        uint256 currentPeriod = reputationMining.currentPeriod();
         // check if the stake exists
         Stake storage currentStake = stakes[stakeId];
         require(currentStake.amount > 0, "Stake not found");

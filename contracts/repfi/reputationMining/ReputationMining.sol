@@ -17,7 +17,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 /// based on their usage and can receive new cRepFi tokens and put them to use in the next period.
 contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining {
     // event emitted when the period has updated
-    event PeriodUpdated(uint256 indexed periodId, uint256 timestamp, uint256 leftoverTokens);
+    event MiningStarted(uint256 indexed periodId, uint256 timestamp);
     // event emitted when utility tokens are claimed
     event UtilityTokensClaimed(
         uint256 indexed periodId,
@@ -45,7 +45,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     /// @dev this contract will be replaced with the PeerValue contract in the near future, this is just for testing the functionality in the meantime
     IRandomNumberGenerator randomNumberGenerator;
 
-    /// @notice maximum amount of cRepFi tokens a user can receive each period
+    // @notice maximum amount of cRepFi tokens a user can receive each period
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether; // to be changed later
     // @notice lower bound of random number generator PeerValue
     uint256 private constant LOWER_BOUND_RANDOM_PEER_VALUE = 80;
@@ -61,17 +61,21 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     uint256 constant MIN_PARTICIPATION_SCORE = 60;
     // @notice reduced multiplier for lower participation score
     uint256 constant REDUCED_PARTICIPATION_SCORE_REWARD_PERCENTAGE = 60;
-    /// @notice the current period
-    uint256 public period = 0;
-    /// @notice the block timestamp of the previous period change
-    uint256 public lastPeriodChange = 0;
-    /// @notice period duration
+    // @notice amount of months to mine tokens
+    uint256 constant TOTAL_AMOUNT_OF_MINING_IN_MONTHS = 48;
+    // @notice the start of the first period
+    uint256 public firstPeriodStart = 0;
+    // @notice period duration
     uint256 public constant PERIOD_DURATION = 28 days;
-    /// @notice mapping that saves how many tokens were left in every period, to make sure not more tokens are distributed than planned and this can also be used to
-    /// send the remaining tokens for each period to the circular contract
+    // @notice first period id
+    uint256 public firstPeriodId = 1;
+    // @notice mapping that saves how many tokens were left in every period, to make sure not more tokens are distributed than planned and this can also be used to
+    // send the remaining tokens for each period to the circular contract
     mapping(uint256 period => uint256 amount) public tokensLeft;
-    /// @notice mapping with the givenBalance for each user for every period. This way we can check back later how many tokens the user has received for a certain period
+    // @notice mapping with the givenBalance for each user for every period. This way we can check back later how many tokens the user has received for a certain period
     mapping(address user => mapping(uint256 period => uint256 amount)) public givenBalance;
+    // @notice mapping to keep track of the periods that have been initialized
+    mapping(uint256 period => bool initialized) public periodsInitialized;
 
     using SafeERC20 for IERC20;
     using SafeERC20 for ICREPFI;
@@ -107,24 +111,12 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     /// @notice gap used as best practice for upgradeable contracts
     uint256[50] private __gap;
 
-    /// @notice update the period, executed once every 28 days and should only be called by the owner
-    function updatePeriod() external onlyOwner {
-        // check if it's allowed to update period
-        require(
-            (block.timestamp - lastPeriodChange >= PERIOD_DURATION) || (period == 0),
-            "previous period has not ended yet"
-        );
+    // anyone can cleanup the previous periods, no access control needed
+    function cleanupPeriod(uint256 _periodId) external {
+        require(_periodId < currentPeriod(), "period has not ended yet");
 
-        period++;
-        lastPeriodChange = block.timestamp;
-
-        // initialize amount of tokens unlocked in this period
-        tokensLeft[period] = getTokensForPeriod(period);
-
-        uint256 leftoverTokens = tokensLeft[period - 1];
-        tokensLeft[period - 1] = 0;
-
-        emit PeriodUpdated(period, lastPeriodChange, leftoverTokens);
+        uint256 leftoverTokens = tokensLeft[_periodId];
+        tokensLeft[_periodId] = 0;
 
         if (leftoverTokens > 0) {
             cRepFiToken.burn(address(this), leftoverTokens);
@@ -132,8 +124,21 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         }
     }
 
+    function activateMining() external onlyOwner {
+        require(firstPeriodStart == 0, "already activated");
+        firstPeriodStart = block.timestamp;
+
+        // initialize tokensLeft mapping for each period
+        for (uint256 i = firstPeriodId; i <= TOTAL_AMOUNT_OF_MINING_IN_MONTHS; i++) {
+            tokensLeft[i] = getTokensForPeriod(i);
+        }
+
+        emit MiningStarted(currentPeriod(), firstPeriodStart);
+    }
+
     /// @notice distributes cRepFi tokens to an Āut user once per period based on their peer value and save the givenBalance for later
     function claimUtilityToken() external nonReentrant {
+        uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
         //check if there's anything to claim from the previous period
@@ -191,6 +196,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
 
     /// @notice claims the reward tokens (RepFi) for the sender based on the utilisation of the cRepFi token in the previous period and transfers the remaining balance to the circular contract
     function claim() external nonReentrant {
+        uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
         // calculate how much of the cREPFI tokens the user has used in this period and distribute monthly allocation of REPFI tokens
@@ -247,5 +253,14 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
             return 1000000 ether;
         }
         return 0;
+    }
+
+    function currentPeriod() public view returns (uint256) {
+        if (firstPeriodStart == 0) {
+            // mining has not been activated yet
+            return 0;
+        }
+
+        return ((block.timestamp - firstPeriodStart) / PERIOD_DURATION) + 1;
     }
 }

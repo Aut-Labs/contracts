@@ -10,13 +10,15 @@ interface IReputationMining {
         address _peerValueContract
     ) external;
 
-    function period() external view returns (uint256);
+    function currentPeriod() external view returns (uint256);
 
-    function updatePeriod() external;
+    function cleanupPeriod(uint256 periodId) external;
 
     function claimUtilityToken() external;
 
     function claim() external;
+
+    function activateMining() external;
 
     function getTokensForPeriod(uint256 _period) external pure returns (uint256);
 

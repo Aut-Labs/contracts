@@ -47,21 +47,20 @@ contract ReputationMiningTest is BaseTest {
         vm.label(address(this), "ReputationMiningTest");
     }
 
-    function test_updatePeriodNotOwner() public {
+    function test_activateMiningNotOwner() public {
         vm.expectRevert();
         vm.prank(alice);
-        reputationMiningContract.updatePeriod();
+        reputationMiningContract.activateMining();
     }
 
-    function test_updatePeriod() public {
+    function test_activateMining() public {
         uint256 remainingCRepFiBalance = initialCRepFiBalance;
+        reputationMiningContract.activateMining();
         // update through all the periods (should mine 0 tokens from period 49 onwards)
         for (uint256 i = 1; i < 50; i++) {
             remainingCRepFiBalance -= reputationMiningContract.getTokensForPeriod(i - 1);
             console.log("remaining balance for period", i, remainingCRepFiBalance);
-            reputationMiningContract.updatePeriod();
-            assertEq(reputationMiningContract.period(), i);
-            assertEq(reputationMiningContract.lastPeriodChange(), block.timestamp);
+            assertEq(reputationMiningContract.currentPeriod(), i);
 
             uint256 tokensForPeriod = 0;
             if (i <= 24) {
@@ -72,29 +71,24 @@ contract ReputationMiningTest is BaseTest {
                 tokensForPeriod = 1000000 ether;
             }
 
-            assertEq(reputationMiningContract.getTokensForPeriod(i), tokensForPeriod);
-            assertEq(reputationMiningContract.tokensLeft(i), tokensForPeriod);
+            assertEq(reputationMiningContract.getTokensForPeriod(i), tokensForPeriod, "tokensforperiod error");
+            assertEq(reputationMiningContract.tokensLeft(i), tokensForPeriod, "tokensleft currentperiod error");
+
+            if (i > 1) {
+                reputationMiningContract.cleanupPeriod(i - 1);
+            }
 
             // check if tokens from previous period are burned
-            assertEq(reputationMiningContract.tokensLeft(i - 1), 0);
-            assertEq(cRepFiToken.balanceOf(address(reputationMiningContract)), remainingCRepFiBalance);
+            assertEq(reputationMiningContract.tokensLeft(i - 1), 0, "tokensleft error");
+            assertEq(cRepFiToken.balanceOf(address(reputationMiningContract)), remainingCRepFiBalance, "balance error");
 
             skip(28 days);
         }
     }
 
-    function test_updatePeriodTooEarly() public {
-        reputationMiningContract.updatePeriod();
-
-        skip(27 days);
-
-        vm.expectRevert("previous period has not ended yet");
-        reputationMiningContract.updatePeriod();
-    }
-
     function test_claimCRepFiTokens() public {
         // start first period
-        reputationMiningContract.updatePeriod();
+        reputationMiningContract.activateMining();
 
         uint256 cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
         assertEq(cRepFiBalanceBefore, 0, "initial balance is not zero");
@@ -123,9 +117,6 @@ contract ReputationMiningTest is BaseTest {
 
         skip(28 days);
 
-        // admin updates the period
-        reputationMiningContract.updatePeriod();
-
         uint256 repfiBalanceBefore = repfiToken.balanceOf(address(alice));
         uint256 circularRepfiBalanceBefore = repfiToken.balanceOf(address(circular));
         assertEq(repfiBalanceBefore, 0, "initial balance is not zero");
@@ -152,9 +143,8 @@ contract ReputationMiningTest is BaseTest {
     }
 
     function test_claimRepFiTokens() public {
-        // ToDo: add test where the user stakes his cRepFi tokens somewhere so we get a different calculation
         // start first period
-        reputationMiningContract.updatePeriod();
+        reputationMiningContract.activateMining();
 
         uint256 cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
         assertEq(cRepFiBalanceBefore, 0, "initial balance is not zero");
@@ -191,9 +181,6 @@ contract ReputationMiningTest is BaseTest {
         cRepFiToken.transferFrom(address(alice), address(this), stakedAmount);
 
         skip(28 days);
-
-        // admin updates the period
-        reputationMiningContract.updatePeriod();
 
         uint256 repfiBalanceBefore = repfiToken.balanceOf(address(alice));
         uint256 circularRepfiBalanceBefore = repfiToken.balanceOf(address(circular));
@@ -244,9 +231,6 @@ contract ReputationMiningTest is BaseTest {
 
         skip(28 days);
 
-        // admin updates the period
-        reputationMiningContract.updatePeriod();
-
         vm.prank(alice);
         reputationMiningContract.claim();
 
@@ -268,7 +252,7 @@ contract ReputationMiningTest is BaseTest {
 
     function test_claimCRepFiTokensWithPreviousBalance() public {
         // start first period
-        reputationMiningContract.updatePeriod();
+        reputationMiningContract.activateMining();
 
         uint256 cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
         assertEq(cRepFiBalanceBefore, 0, "initial balance is not zero");
@@ -297,9 +281,6 @@ contract ReputationMiningTest is BaseTest {
         );
 
         skip(28 days);
-
-        // admin updates the period
-        reputationMiningContract.updatePeriod();
 
         cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
         assertEq(cRepFiBalanceBefore, givenAmount, "balance did not persist across periods");
