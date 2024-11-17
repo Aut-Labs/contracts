@@ -1,6 +1,6 @@
 // contract taken from https://github.com/AbdelStark/token-vesting-contracts and updated to integrate Openzeppelin contracts instead of Solmate's
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 // OpenZeppelin dependencies
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
