@@ -55,6 +55,32 @@ contract TokenVestingTest is BaseTest {
         assert(address(tokenvestingTest) != address(0));
     }
 
+    function test_totalAllocation() public {
+        tokenvesting = new TokenVesting(address(repfiToken), address(this), duration, releaseInterval, revocable);
+        repfiToken.transfer(address(tokenvesting), totalAmount);
+
+        startTime = block.timestamp;
+
+        // create token vesting for bob and alice
+        address[] memory recipients = new address[](2);
+        recipients[0] = address(alice);
+        recipients[1] = address(bob);
+
+        // make sure that the allocation is higher than 100
+        uint256[] memory allocations = new uint256[](2);
+        allocations[0] = 76;
+        allocations[1] = 25;
+
+        vm.expectRevert("sum of allocations is not equal to 100%");
+        tokenvesting.addRecipients(
+            recipients,
+            allocations,
+            block.timestamp, // start now
+            0, // no cliff
+            amountAlice + amountBob
+        );
+    }
+
     function test_verifyVestingSchedule() public {
         uint256 numberOfVestingsForAlice = tokenvesting.getVestingSchedulesCountByBeneficiary(address(alice));
         assertEq(numberOfVestingsForAlice, 1, "vesting not initialized");

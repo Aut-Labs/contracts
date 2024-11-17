@@ -153,6 +153,13 @@ contract TokenVesting is Ownable, ReentrancyGuard {
         require(_recipients.length == _allocations.length, "array lengths do not match");
         require(_recipients.length <= MAX_ARRAY_LENGTH, "array length is bigger than the maximum allowed");
 
+        uint256 totalAllocations = 0;
+        for (uint256 i = 0; i < _allocations.length; i++) {
+            totalAllocations += _allocations[i];
+        }
+
+        require(totalAllocations == PERCENTAGE_DENOMINATOR, "sum of allocations is not equal to 100%");
+
         for (uint256 i = 0; i < _recipients.length; i++) {
             uint256 amount = (_vestingAmount * _allocations[i]) / PERCENTAGE_DENOMINATOR;
             _createVestingSchedule(_recipients[i], _startTime, _cliff, amount);
