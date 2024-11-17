@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ICREPFI} from "../token/IcREPFI.sol";
 import {IReputationMining} from "./IReputationMining.sol";
@@ -15,7 +14,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 /// users can then utilize these tokens using the plugins defined in the UtilsRegistry contract. When the period has ended
 /// the admin will update the period after which users can claim the RepFi tokens they have earned in the previous period
 /// based on their usage and can receive new cRepFi tokens and put them to use in the next period.
-contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining {
+contract ReputationMining is OwnableUpgradeable, IReputationMining {
     // event emitted when the period has updated
     event MiningStarted(uint256 indexed periodId, uint256 timestamp);
     // event emitted when utility tokens are claimed
@@ -140,7 +139,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     }
 
     /// @notice distributes cRepFi tokens to an Āut user once per period based on their peer value and save the givenBalance for later
-    function claimUtilityToken() external nonReentrant {
+    function claimUtilityToken() external {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
@@ -198,7 +197,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     }
 
     /// @notice claims the reward tokens (RepFi) for the sender based on the utilisation of the cRepFi token in the previous period and transfers the remaining balance to the circular contract
-    function claim() external nonReentrant {
+    function claim() external {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
