@@ -110,8 +110,7 @@ contract Distributor {
     /// @param receiver the receiver of the tokens
     /// @param amount the amount of tokens to be transferred
     function sendTokens(address receiver, uint256 amount) internal {
+        repFi.transfer(receiver, amount);
         emit TokensDistributed(receiver, address(repFi), amount, block.timestamp);
-        bool success = repFi.transfer(receiver, amount);
-        require(success, "token transfer failed");
     }
 }

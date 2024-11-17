@@ -55,6 +55,10 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     uint256 private constant LOWER_BOUND_RANDOM_TOTAL_PEER_VALUE = 80000;
     // @notice upper bound of random number generator total PeerValue
     uint256 private constant UPPER_BOUND_RANDOM_TOTAL_PEER_VALUE = 160000;
+    // @notice first reputation mining threshold of 24 periods
+    uint256 private constant FIRST_MINING_REWARD_DURATION_THRESHOLD = 24;
+    // @notice second reputation mining threshold of 48 periods
+    uint256 private constant SECOND_MINING_REWARD_DURATION_THRESHOLD = 48;
     // @notice percentage denominator
     uint256 constant PERCENTAGE_DENOMINATOR = 100;
     // @notice minimum participation score
@@ -94,8 +98,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         address _randomNumberGenerator
     ) external initializer {
         require(
-            initialOwner != address(0) &&
-                _repFiToken != address(0) &&
+            _repFiToken != address(0) &&
                 _cRepFiToken != address(0) &&
                 _circular != address(0) &&
                 _randomNumberGenerator != address(0),
@@ -245,11 +248,11 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     /// @return the amount of tokens that will be distributed within a given period
     function getTokensForPeriod(uint256 _period) public pure returns (uint256) {
         // 500000 tokens for the first 2 years
-        if (_period > 0 && _period <= 24) {
+        if (_period > 0 && _period <= FIRST_MINING_REWARD_DURATION_THRESHOLD) {
             return 500000 ether;
         }
         // 1000000 tokens for years 3 and 4
-        if (_period > 24 && _period <= 48) {
+        if (_period > FIRST_MINING_REWARD_DURATION_THRESHOLD && _period <= SECOND_MINING_REWARD_DURATION_THRESHOLD) {
             return 1000000 ether;
         }
         return 0;
