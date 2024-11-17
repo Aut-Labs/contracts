@@ -46,7 +46,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     IRandomNumberGenerator randomNumberGenerator;
 
     // @notice maximum amount of cRepFi tokens a user can receive each period
-    uint256 public constant MAX_MINT_PER_PERIOD = 100 ether; // to be changed later
+    uint256 public constant MAX_MINT_PER_PERIOD = 100 ether;
     // @notice lower bound of random number generator PeerValue
     uint256 private constant LOWER_BOUND_RANDOM_PEER_VALUE = 80;
     // @notice upper bound of random number generator PeerValue
