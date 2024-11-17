@@ -7,6 +7,8 @@ import {IPeerValue} from "./IPeerValue.sol";
 contract PeerValue is IPeerValue {
     uint256 constant DEFAULT_LOWER_BOUND = 60;
     uint256 constant DEFAULT_UPPER_BOUND = 200;
+    uint256 constant DEFAULT_TOTAL_LOWER_BOUND = 60000;
+    uint256 constant DEFAULT_TOTAL_UPPER_BOUND = 200000;
     uint256 constant DENOMINATOR = 1000;
 
     IRandomNumberGenerator public randomNumberGenerator;
@@ -18,7 +20,7 @@ contract PeerValue is IPeerValue {
         randomNumberGenerator = _randomNumberGenerator;
     }
 
-    function getPeerValueParams(address account, uint256 period) external returns (PeerValueParams memory) {
+    function getPeerValueParams(address account, uint256 period) public returns (PeerValueParams memory) {
         require(period > 0, "period must be greater than zero");
         require(account != address(0), "account must be valid address");
 
@@ -67,7 +69,9 @@ contract PeerValue is IPeerValue {
     function getPeerValue(address account, uint256 period) external returns (uint256) {
         require(period > 0, "period must be greater than zero");
         require(account != address(0), "account must be valid address");
-        require(peerValueParams[account][period].participationScore != 0, "peerValueParams do not exist yet");
+        if (peerValueParams[account][period].participationScore == 0) {
+            getPeerValueParams(account, period);
+        }
 
         // if the peer value already exists, return it
         if (peerValues[account][period] > 0) {
@@ -81,6 +85,25 @@ contract PeerValue is IPeerValue {
         peerValues[account][period] = peerValue;
         periodsForAccount[account].push(period);
         return peerValue;
+    }
+
+    function getTotalPeerValue(uint256 period) external view returns (uint256) {
+        require(period > 0, "period must be greater than zero");
+
+        (uint256 participationScore, uint256 prestige, uint256 a_ring) = randomNumberGenerator
+            .getRandomPeerValueParametersForAccount(
+                address(this),
+                DEFAULT_TOTAL_LOWER_BOUND,
+                DEFAULT_TOTAL_UPPER_BOUND,
+                DEFAULT_TOTAL_LOWER_BOUND,
+                DEFAULT_TOTAL_UPPER_BOUND,
+                DEFAULT_TOTAL_LOWER_BOUND,
+                DEFAULT_TOTAL_UPPER_BOUND
+            );
+
+        uint256 totalPeerValue = ((participationScore + prestige + a_ring) * 100) / 3;
+
+        return totalPeerValue;
     }
 
     function getAge(address account) public view returns (uint256) {

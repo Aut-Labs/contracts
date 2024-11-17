@@ -197,13 +197,16 @@ contract DeployAll is Script {
 
         randomNumberGenerator = new RandomNumberGenerator();
 
+        // deploy PeerValue
+        peerValue = deployPeerValue(randomNumberGenerator);
+
         // deploy reputationMining
         reputationMining = deployReputationMining(
             owner,
             address(repFi),
             address(cRepFi),
             address(circular),
-            address(randomNumberGenerator)
+            address(peerValue)
         );
 
         // deploy distributor
@@ -217,9 +220,6 @@ contract DeployAll is Script {
             partners,
             ecosystem
         );
-
-        // deploy PeerValue
-        peerValue = deployPeerValue(randomNumberGenerator);
 
         // deploy PeerStaking
         peerStaking = deployPeerStaking(
@@ -411,20 +411,13 @@ function deployReputationMining(
     address _repFi,
     address _cRepFi,
     address _circular,
-    address _randomNumberGenerator
+    address _peerValue
 ) returns (ReputationMining) {
     ReputationMining reputationMiningImplementation = new ReputationMining();
     AutProxy reputationMiningProxy = new AutProxy(
         address(reputationMiningImplementation),
         _owner,
-        abi.encodeWithSelector(
-            ReputationMining.initialize.selector,
-            _owner,
-            _repFi,
-            _cRepFi,
-            _circular,
-            _randomNumberGenerator
-        )
+        abi.encodeWithSelector(ReputationMining.initialize.selector, _owner, _repFi, _cRepFi, _circular, _peerValue)
     );
     return ReputationMining(address(reputationMiningProxy));
 }

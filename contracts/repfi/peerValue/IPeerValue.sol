@@ -12,6 +12,8 @@ interface IPeerValue {
 
     function getPeerValue(address account, uint256 period) external returns (uint256);
 
+    function getTotalPeerValue(uint256 period) external view returns (uint256);
+
     function getAge(address account) external view returns (uint256);
 
     function getGrowthLikelyhood(

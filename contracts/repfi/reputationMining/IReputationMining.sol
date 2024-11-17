@@ -22,8 +22,5 @@ interface IReputationMining {
 
     function getTokensForPeriod(uint256 _period) external pure returns (uint256);
 
-    function getClaimableUtilityTokenForPeriod(
-        address _account,
-        uint256 _period
-    ) external view returns (uint256 amount);
+    function getClaimableUtilityTokenForPeriod(address _account, uint256 _period) external returns (uint256 amount);
 }

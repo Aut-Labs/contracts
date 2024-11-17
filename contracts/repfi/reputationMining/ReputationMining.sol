@@ -5,8 +5,8 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ICREPFI} from "../token/IcREPFI.sol";
 import {IReputationMining} from "./IReputationMining.sol";
-import {IRandomNumberGenerator} from "../../randomNumberGenerator/IRandomNumberGenerator.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IPeerValue} from "../peerValue/IPeerValue.sol";
 
 /// @title Reputation Mining
 /// @author Āut Labs
@@ -42,22 +42,12 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     address public circular;
     /// @notice random generator contract where we can get a random value for "peer value" as well was the "total value"
     /// @dev this contract will be replaced with the PeerValue contract in the near future, this is just for testing the functionality in the meantime
-    IRandomNumberGenerator randomNumberGenerator;
+    IPeerValue peerValue;
 
     // @notice maximum amount of cRepFi tokens a user can receive each period
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether;
-    // @notice lower bound of random number generator PeerValue
-    uint256 private constant LOWER_BOUND_RANDOM_PEER_VALUE = 80;
-    // @notice upper bound of random number generator PeerValue
-    uint256 private constant UPPER_BOUND_RANDOM_PEER_VALUE = 160;
-    // @notice lower bound of random number generator total PeerValue
-    uint256 private constant LOWER_BOUND_RANDOM_TOTAL_PEER_VALUE = 80000;
-    // @notice upper bound of random number generator total PeerValue
-    uint256 private constant UPPER_BOUND_RANDOM_TOTAL_PEER_VALUE = 160000;
     // @notice first reputation mining threshold of 24 periods
     uint256 private constant FIRST_MINING_REWARD_DURATION_THRESHOLD = 24;
-    // @notice second reputation mining threshold of 48 periods
-    uint256 private constant SECOND_MINING_REWARD_DURATION_THRESHOLD = 48;
     // @notice percentage denominator
     uint256 constant PERCENTAGE_DENOMINATOR = 100;
     // @notice minimum participation score
@@ -88,26 +78,26 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     /// @param _repFiToken the address of the RepFi token contract
     /// @param _cRepFiToken the address of the cRepFi token contract
     /// @param _circular the address of the circular contract
-    /// @param _randomNumberGenerator the address of the RandomNumberGenerator contract
+    /// @param _peerValue the address of the RandomNumberGenerator contract
     function initialize(
         address initialOwner,
         address _repFiToken,
         address _cRepFiToken,
         address _circular,
-        address _randomNumberGenerator
+        address _peerValue
     ) external initializer {
         require(
             _repFiToken != address(0) &&
                 _cRepFiToken != address(0) &&
                 _circular != address(0) &&
-                _randomNumberGenerator != address(0),
+                _peerValue != address(0),
             "zero address passed as parameter"
         );
         __Ownable_init(initialOwner);
         repFiToken = IERC20(_repFiToken);
         cRepFiToken = ICREPFI(_cRepFiToken);
         circular = _circular;
-        randomNumberGenerator = IRandomNumberGenerator(_randomNumberGenerator);
+        peerValue = IPeerValue(_peerValue);
     }
 
     /// @notice gap used as best practice for upgradeable contracts
@@ -174,21 +164,13 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     /// @param _period the period for which to calculate the claimable utility tokens
     /// @dev we are using a random number for peerValue and totalPeerValue at the moment until we can use the PeerValue contract that is yet to be developed
     /// @return amount the claimable utility token for a given user in a given period
-    function getClaimableUtilityTokenForPeriod(address _account, uint256 _period) public view returns (uint256 amount) {
+    function getClaimableUtilityTokenForPeriod(address _account, uint256 _period) public returns (uint256 amount) {
         // get peer value
-        uint256 peerValue = randomNumberGenerator.getRandomNumberForAccount(
-            _account,
-            LOWER_BOUND_RANDOM_PEER_VALUE,
-            UPPER_BOUND_RANDOM_PEER_VALUE
-        );
+        uint256 value = peerValue.getPeerValue(_account, _period);
         uint256 totalTokensForPeriod = getTokensForPeriod(_period);
-        uint256 totalPeerValue = randomNumberGenerator.getRandomNumberForAccount(
-            _account,
-            LOWER_BOUND_RANDOM_TOTAL_PEER_VALUE,
-            UPPER_BOUND_RANDOM_TOTAL_PEER_VALUE
-        ); // let's assume we have 1000 users with a random between 80 and 160 in peer value
+        uint256 totalPeerValue = peerValue.getTotalPeerValue(_period);
 
-        amount = peerValue * (totalTokensForPeriod / totalPeerValue);
+        amount = value * (totalTokensForPeriod / totalPeerValue);
 
         // in case the amount is bigger than the maximum allowed per period, set the maximum
         if (amount > MAX_MINT_PER_PERIOD) {
@@ -251,7 +233,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
             return 500000 ether;
         }
         // 1000000 tokens for years 3 and 4
-        if (_period > FIRST_MINING_REWARD_DURATION_THRESHOLD && _period <= SECOND_MINING_REWARD_DURATION_THRESHOLD) {
+        if (_period > FIRST_MINING_REWARD_DURATION_THRESHOLD && _period <= TOTAL_AMOUNT_OF_MINING_IN_MONTHS) {
             return 1000000 ether;
         }
         return 0;

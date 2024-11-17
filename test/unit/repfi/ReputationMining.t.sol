@@ -28,7 +28,7 @@ contract ReputationMiningTest is BaseTest {
                 address(repfiToken),
                 address(cRepFiToken),
                 circular,
-                address(randomNumberGenerator)
+                address(peerValue)
             )
         );
         reputationMiningContract = ReputationMining(address(reputationMiningProxy));
