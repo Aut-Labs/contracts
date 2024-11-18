@@ -87,18 +87,41 @@ contract DeployAll is Script {
             privateKey = vm.envUint("MAINNET_PRIVATE_KEY");
             deploying = true;
             projectMultisig = vm.envAddress("MAINNET_PROJECT_MULTISIG_ADDRESS");
+
+            // token allocation contracts
+            circular = vm.envAddress("MAINNET_CIRCULAR_CONTRACT");
+            sales = vm.envAddress("MAINNET_SALES_MULTISIG");
+            ecosystem = vm.envAddress("MAINNET_ECOSYSTEM_MULTISIG");
+            profitSharing = vm.envAddress("MAINNET_PROFITSHARING_MULTISIG");
+            airdrop = vm.envAddress("MAINNET_AIRDROP_MULTISIG");
+            partners = vm.envAddress("MAINNET_PARTNERS_MULTISIG");
         } else if (block.chainid == 80002) {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             initialContributionManager = vm.envAddress("TESTNET_INITIAL_CONTRIBUTION_MANAGER");
             privateKey = vm.envUint("TESTNET_PRIVATE_KEY");
             deploying = true;
             projectMultisig = vm.envAddress("TESTNET_PROJECT_MULTISIG_ADDRESS");
+
+            // token allocation contracts
+            circular = vm.envAddress("TESTNET_CIRCULAR_CONTRACT");
+            sales = vm.envAddress("TESTNET_SALES_MULTISIG");
+            ecosystem = vm.envAddress("TESTNET_ECOSYSTEM_MULTISIG");
+            profitSharing = vm.envAddress("TESTNET_PROFITSHARING_MULTISIG");
+            airdrop = vm.envAddress("TESTNET_AIRDROP_MULTISIG");
+            partners = vm.envAddress("TESTNET_PARTNERS_MULTISIG");
         } else {
             // testing
             privateKey = 567890;
             owner = vm.addr(privateKey);
             initialContributionManager = address(11111111);
-            owner = vm.addr(privateKey);
+
+            // token allocation contracts
+            circular = makeAddr("circular");
+            sales = makeAddr("sales");
+            ecosystem = makeAddr("ecosystem");
+            profitSharing = makeAddr("profitSharing");
+            airdrop = makeAddr("airdrop");
+            partners = makeAddr("partners");
         }
         console.log("setUp -- done");
 
@@ -182,19 +205,6 @@ contract DeployAll is Script {
         investors = deployInvestors(address(repFi), projectMultisig);
         team = deployTeam(address(repFi), projectMultisig);
 
-        // deploy circular contract
-        circular = makeAddr("circular"); // ToDo: update to Circular contract later
-        sales = makeAddr("sales"); // ToDo: update to multisig later
-        ecosystem = makeAddr("ecosystem"); // ToDo: update to multisig later
-
-        // deploy profitSharing
-        profitSharing = makeAddr("profitSharing"); // ToDo: update to ProfitSharing contract later
-
-        airdrop = makeAddr("airdrop"); // ToDo: update to Airdrop contract later
-        partners = makeAddr("partners"); // ToDo: update to partners multisig later
-
-        // ToDo: change this to the real contract when it's ready
-
         randomNumberGenerator = new RandomNumberGenerator();
 
         // deploy PeerValue
@@ -238,6 +248,10 @@ contract DeployAll is Script {
         // give burner role to reputationmining in cRepFi
         cRepFi.grantRole(cRepFi.BURNER_ROLE(), address(reputationMining));
 
+        // transfer admin role to multisig
+        cRepFi.grantRole(cRepFi.DEFAULT_ADMIN_ROLE(), projectMultisig);
+        cRepFi.revokeRole(cRepFi.DEFAULT_ADMIN_ROLE(), owner);
+
         utilsRegistry.registerPlugin(owner, "Deployer");
         utilsRegistry.registerPlugin(address(distributor), "Distributor");
         utilsRegistry.registerPlugin(address(reputationMining), "ReputationMining");
@@ -250,6 +264,11 @@ contract DeployAll is Script {
         // remove owner from plugins
         utilsRegistry.removePlugin(owner);
 
+        // transfer ownership to multisig for all contracts that have an owner
+        reputationMining.transferOwnership(projectMultisig);
+        utilsRegistry.transferOwnership(projectMultisig);
+        peerStaking.transferOwnership(projectMultisig);
+
         vm.stopPrank();
 
         vm.startBroadcast(privateKey);
@@ -257,12 +276,9 @@ contract DeployAll is Script {
         // send tokens to distribution contract
         repFi.transfer(address(distributor), 100000000 ether); // 100 million repfi tokens
 
-        // transfer ownership to multisig for all contracts that have an owner
-
         // distribute tokens
         distributor.distribute();
 
-        // todo: convert to helper function
         if (deploying) {
             string memory filename = "deployments.txt";
             TNamedAddress[24] memory na;
