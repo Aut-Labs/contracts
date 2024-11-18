@@ -93,7 +93,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         // get current period
         uint256 currentPeriod = reputationMining.currentPeriod();
         // limit the stake to be equal to or lower than the monthly reward of the staker
-        uint256 montlyRewardForStaker = reputationMining.getClaimableConditionalTokenForPeriod(msg.sender, currentPeriod);
+        uint256 montlyRewardForStaker = reputationMining.getClaimableCTokenForPeriod(msg.sender, currentPeriod);
         require(montlyRewardForStaker >= amount, "amount is higher than montly staker reward");
 
         // save the stake in storage

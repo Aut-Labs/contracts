@@ -96,7 +96,7 @@ contract ReputationMiningTest is BaseTest {
 
         vm.startPrank(bob);
         vm.expectRevert("not an Aut user");
-        reputationMiningContract.claimConditionalToken();
+        reputationMiningContract.claimCToken();
     }
 
     function test_claimCAutTokens() public {
@@ -107,7 +107,7 @@ contract ReputationMiningTest is BaseTest {
         assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
-        reputationMiningContract.claimConditionalToken();
+        reputationMiningContract.claimCToken();
         uint256 randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
         uint randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
         vm.stopPrank();
@@ -150,9 +150,9 @@ contract ReputationMiningTest is BaseTest {
             "circular contract didn't receive appropriate leftover amount"
         );
 
-        // alice claims conditional tokens again
+        // alice claims c-tokens again
         vm.prank(alice);
-        reputationMiningContract.claimConditionalToken();
+        reputationMiningContract.claimCToken();
     }
 
     function test_claimAutTokens() public {
@@ -163,7 +163,7 @@ contract ReputationMiningTest is BaseTest {
         assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
-        reputationMiningContract.claimConditionalToken();
+        reputationMiningContract.claimCToken();
         uint256 randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
         uint randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
         vm.stopPrank();
@@ -220,9 +220,9 @@ contract ReputationMiningTest is BaseTest {
         );
         uint256 totalBurned = autToken.balanceOf(address(circular));
 
-        // alice claims conditional tokens again
+        // alice claims c-tokens again
         vm.startPrank(alice);
-        reputationMiningContract.claimConditionalToken();
+        reputationMiningContract.claimCToken();
         randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
         randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
         vm.stopPrank();
@@ -258,9 +258,9 @@ contract ReputationMiningTest is BaseTest {
 
         totalBurned = autToken.balanceOf(address(circular));
 
-        // alice claims conditional tokens again
+        // alice claims c-tokens again
         vm.prank(alice);
-        reputationMiningContract.claimConditionalToken();
+        reputationMiningContract.claimCToken();
     }
 
     function test_claimCAutTokensWithPreviousBalance() public {
@@ -271,7 +271,7 @@ contract ReputationMiningTest is BaseTest {
         assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
-        reputationMiningContract.claimConditionalToken();
+        reputationMiningContract.claimCToken();
         uint256 randomPeerValue = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80, 160);
         uint randomGlobalReputation = randomNumberGenerator.getRandomNumberForAccount(address(alice), 80000, 160000);
         vm.stopPrank();
@@ -298,10 +298,10 @@ contract ReputationMiningTest is BaseTest {
         cAutBalanceBefore = cAutToken.balanceOf(address(alice));
         assertEq(cAutBalanceBefore, givenAmount, "balance did not persist across periods");
 
-        // alice claims conditional tokens again without claiming her rewards first
+        // alice claims c-tokens again without claiming her rewards first
         vm.startPrank(alice);
         vm.expectRevert("unclaimed rewards from previous period");
-        reputationMiningContract.claimConditionalToken();
+        reputationMiningContract.claimCToken();
         vm.stopPrank();
     }
 }

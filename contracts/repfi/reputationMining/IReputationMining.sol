@@ -15,7 +15,7 @@ interface IReputationMining {
 
     function cleanupPeriod(uint256 periodId) external;
 
-    function claimConditionalToken() external;
+    function claimCToken() external;
 
     function claim() external;
 
@@ -23,5 +23,5 @@ interface IReputationMining {
 
     function getTokensForPeriod(uint256 _period) external pure returns (uint256);
 
-    function getClaimableConditionalTokenForPeriod(address _account, uint256 _period) external returns (uint256 amount);
+    function getClaimableCTokenForPeriod(address _account, uint256 _period) external returns (uint256 amount);
 }

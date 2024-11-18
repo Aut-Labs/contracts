@@ -18,8 +18,8 @@ import {IAutID} from "../../autid/autid.sol";
 contract ReputationMining is OwnableUpgradeable, IReputationMining {
     // event emitted when the period has updated
     event MiningStarted(uint256 indexed periodId, uint256 timestamp);
-    // event emitted when conditional tokens are claimed
-    event ConditionalTokensClaimed(
+    // event emitted when c-tokens are claimed
+    event CTokensClaimed(
         uint256 indexed periodId,
         uint256 indexed autId,
         address indexed account,
@@ -145,7 +145,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     }
 
     /// @notice distributes c-aut tokens to an Āut user once per period based on their peer value and save the givenBalance for later
-    function claimConditionalToken() external onlyAutUser {
+    function claimCToken() external onlyAutUser {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
@@ -163,7 +163,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
             autToken.transfer(address(circular), cAutBalance);
         }
 
-        uint256 amount = getClaimableConditionalTokenForPeriod(msg.sender, period);
+        uint256 amount = getClaimableCTokenForPeriod(msg.sender, period);
         require(amount <= tokensLeft[period], "not enough tokens left to distribute for this period");
 
         // save the allocation amount for later use
@@ -172,15 +172,15 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         // send tokens
         cAutToken.safeTransfer(msg.sender, amount);
 
-        emit ConditionalTokensClaimed(period, autId.tokenIdForAccount(msg.sender), msg.sender, block.timestamp, amount);
+        emit CTokensClaimed(period, autId.tokenIdForAccount(msg.sender), msg.sender, block.timestamp, amount);
     }
 
-    /// @notice calculates the claimable conditional token for a given user in a given period
+    /// @notice calculates the claimable c-token for a given user in a given period
     /// @param _account the account for whom the tokens should be calculated
-    /// @param _period the period for which to calculate the claimable conditional tokens
+    /// @param _period the period for which to calculate the claimable c-tokens
     /// @dev we are using a random number for peerValue and totalPeerValue at the moment until we can use the PeerValue contract that is yet to be developed
-    /// @return amount the claimable conditional token for a given user in a given period
-    function getClaimableConditionalTokenForPeriod(address _account, uint256 _period) public returns (uint256 amount) {
+    /// @return amount the claimable c-token for a given user in a given period
+    function getClaimableCTokenForPeriod(address _account, uint256 _period) public returns (uint256 amount) {
         // get peer value
         uint256 value = peerValue.getPeerValue(_account, _period);
         uint256 totalTokensForPeriod = getTokensForPeriod(_period);
