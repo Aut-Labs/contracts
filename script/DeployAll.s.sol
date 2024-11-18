@@ -246,7 +246,7 @@ contract DeployAll is Script {
 
         vm.stopBroadcast();
         vm.startPrank(owner);
-        // give burner role to reputationmining in cAut
+        // give burner role to reputationmining in c-aut
         cAut.grantRole(cAut.BURNER_ROLE(), address(reputationMining));
 
         // transfer admin role to multisig
@@ -259,7 +259,7 @@ contract DeployAll is Script {
         utilsRegistry.registerPlugin(address(peerValue), "PeerValue");
         utilsRegistry.registerPlugin(address(peerStaking), "PeerStaking");
 
-        // send cAut to reputationMining
+        // send c-aut to reputationMining
         cAut.transfer(address(reputationMining), 36000000 ether);
 
         // remove owner from plugins
@@ -290,7 +290,7 @@ contract DeployAll is Script {
             na[4] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
             na[10] = TNamedAddress({name: "utilsRegistry", target: address(utilsRegistry)});
             na[11] = TNamedAddress({name: "aut", target: address(aut)});
-            na[12] = TNamedAddress({name: "cAut", target: address(cAut)});
+            na[12] = TNamedAddress({name: "c-aut", target: address(cAut)});
             na[13] = TNamedAddress({name: "sales", target: address(sales)});
             na[15] = TNamedAddress({name: "investors", target: address(investors)});
             na[16] = TNamedAddress({name: "team", target: address(team)});

@@ -15,7 +15,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     uint256 constant DENOMINATOR = 1000;
     /// @notice the Aut token contract
     IERC20 public autToken;
-    /// @notice the cAut token contract
+    /// @notice the c-aut token contract
     ICAUT public cAutToken;
     /// @notice address where unclaimed funds will be sent to so they can be used by the platform
     address public circular;
@@ -48,7 +48,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     /// @notice PeerStaking contract initializer
     /// @param initialOwner The initial owner of the contract
     /// @param _autToken the address of the Aut token contract
-    /// @param _cAutToken the address of the cAut token contract
+    /// @param _cAutToken the address of the c-aut token contract
     /// @param _circular the address of the circular contract
     /// @param _peerValue the address of the PeerValue contract
     /// @param _reputationMining the address of the reputation mining contract

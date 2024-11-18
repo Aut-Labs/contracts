@@ -5,7 +5,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /// @title Aut Registry
 /// @author Āut Labs
-/// @notice This contract keeps track of the plugins used in the Aut ecosystem and will be used by the cAut token mostly as the only transactions allowed for this token is from and to these plugins.
+/// @notice This contract keeps track of the plugins used in the Aut ecosystem and will be used by the c-aut token mostly as the only transactions allowed for this token is from and to these plugins.
 contract UtilsRegistry is OwnableUpgradeable {
     /// @notice mapping of plugin addresses and their information
     mapping(address plugin => PluginMeta pluginMeta) private plugins;

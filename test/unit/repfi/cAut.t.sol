@@ -23,7 +23,7 @@ contract CAutTest is BaseTest {
     }
 
     function test_tokenSymbol() public view {
-        assertEq("cAUT", cAutToken.symbol(), "Token symbol does not match");
+        assertEq("c-aut", cAutToken.symbol(), "Token symbol does not match");
     }
 
     function test_TokenMint() public view {

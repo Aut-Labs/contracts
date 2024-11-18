@@ -11,10 +11,10 @@ import {IAutID} from "../../autid/autid.sol";
 
 /// @title Reputation Mining
 /// @author Āut Labs
-/// @notice This contract distributes an allocation of cAut tokens to Āut users depending on their peer value every period
+/// @notice This contract distributes an allocation of c-aut tokens to Āut users depending on their peer value every period
 /// users can then utilize these tokens using the plugins defined in the UtilsRegistry contract. When the period has ended
 /// the admin will update the period after which users can claim the Aut tokens they have earned in the previous period
-/// based on their usage and can receive new cAut tokens and put them to use in the next period.
+/// based on their usage and can receive new c-aut tokens and put them to use in the next period.
 contract ReputationMining is OwnableUpgradeable, IReputationMining {
     // event emitted when the period has updated
     event MiningStarted(uint256 indexed periodId, uint256 timestamp);
@@ -39,7 +39,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
 
     /// @notice the Aut token contract
     IERC20 public autToken;
-    /// @notice the cAut token contract
+    /// @notice the c-aut token contract
     ICAUT public cAutToken;
     /// @notice address where unclaimed funds will be sent to so they can be used by the platform
     address public circular;
@@ -49,7 +49,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     /// @notice the autId contract
     IAutID public autId;
 
-    // @notice maximum amount of cAut tokens a user can receive each period
+    // @notice maximum amount of c-aut tokens a user can receive each period
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether;
     // @notice first reputation mining threshold of 24 periods
     uint256 private constant FIRST_MINING_REWARD_DURATION_THRESHOLD = 24;
@@ -86,7 +86,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     /// @notice ReputationMining contract initializer
     /// @param initialOwner The initial owner of the contract
     /// @param _autToken the address of the Aut token contract
-    /// @param _cAutToken the address of the cAut token contract
+    /// @param _cAutToken the address of the c-aut token contract
     /// @param _circular the address of the circular contract
     /// @param _peerValue the address of the RandomNumberGenerator contract
     function initialize(
@@ -144,7 +144,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         emit MiningStarted(currentPeriod(), firstPeriodStart);
     }
 
-    /// @notice distributes cAut tokens to an Āut user once per period based on their peer value and save the givenBalance for later
+    /// @notice distributes c-aut tokens to an Āut user once per period based on their peer value and save the givenBalance for later
     function claimUtilityToken() external onlyAutUser {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
@@ -152,11 +152,11 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         //check if there's anything to claim from the previous period
         require(givenBalance[msg.sender][period - 1] == 0, "unclaimed rewards from previous period");
 
-        require(givenBalance[msg.sender][period] == 0, "user already claimed cAUT");
+        require(givenBalance[msg.sender][period] == 0, "user already claimed c-aut");
 
         uint256 cAutBalance = cAutToken.balanceOf(msg.sender);
         if (cAutBalance > 0) {
-            // reset cAut token balance
+            // reset c-aut token balance
             cAutToken.burn(msg.sender, cAutBalance);
 
             // send Aut tokens for this user to circlular contract
@@ -194,22 +194,22 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         }
     }
 
-    /// @notice claims the reward tokens (Aut) for the sender based on the utilisation of the cAut token in the previous period and transfers the remaining balance to the circular contract
+    /// @notice claims the reward tokens (Aut) for the sender based on the utilisation of the c-aut token in the previous period and transfers the remaining balance to the circular contract
     function claim() external onlyAutUser {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
-        // calculate how much of the cAUT tokens the user has used in this period and distribute monthly allocation of AUT tokens
+        // calculate how much of the c-aut tokens the user has used in this period and distribute monthly allocation of AUT tokens
         uint256 givenAmount = givenBalance[msg.sender][period - 1];
         require(givenAmount > 0, "no claims available for this period");
         uint256 cAutBalance = cAutToken.balanceOf(msg.sender);
-        require(cAutBalance <= givenAmount, "cAut balance should be smaller or equal to the given balance");
+        require(cAutBalance <= givenAmount, "c-aut balance should be smaller or equal to the given balance");
 
         // set givenBalance for previous period to 0 so the user can't claim twice
         givenBalance[msg.sender][period - 1] = 0;
 
         // calculate rewards based on token utilisation
-        // check cAUT balance vs allocated tokens for last period unless there's a better way to check this
+        // check c-aut balance vs allocated tokens for last period unless there's a better way to check this
         uint256 tokensUsed = givenAmount - cAutBalance;
         uint256 participation = tokensUsed > 0 ? ((tokensUsed) * PERCENTAGE_DENOMINATOR) / givenAmount : 0;
         uint256 earnedTokens = 0;
@@ -222,7 +222,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
                 (givenAmount * REDUCED_PARTICIPATION_SCORE_REWARD_PERCENTAGE);
         }
 
-        // burn cAut tokens
+        // burn c-aut tokens
         cAutToken.burn(msg.sender, cAutBalance);
 
         // send aut tokens

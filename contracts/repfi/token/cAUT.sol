@@ -7,16 +7,16 @@ import {IUtilsRegistry} from "../utilsRegistry/IUtilsRegistry.sol";
 
 /// @title Conditional Aut token
 /// @author Āut Labs
-/// @notice Conditional Aut token with symbol cAUT
+/// @notice Conditional Aut token with symbol c-aut
 contract CAut is ERC20, AccessControl {
     IUtilsRegistry immutable utilsRegistry;
 
     bytes32 public constant BURNER_ROLE = keccak256("BURNER");
 
-    /// @notice creates the Conditional Aut token (cAUT), initializes the sender as the admin, configures the UtilsRegistry contract, mints 100 million tokens to the sender
+    /// @notice creates the Conditional Aut token (c-aut), initializes the sender as the admin, configures the UtilsRegistry contract, mints 100 million tokens to the sender
     /// @param _owner the owner of the contract
     /// @param _utilsRegistry the address of the plugin registry contract
-    constructor(address _owner, address _utilsRegistry) ERC20("Conditional AUT", "cAUT") {
+    constructor(address _owner, address _utilsRegistry) ERC20("Conditional AUT", "c-aut") {
         require(_owner != address(0) && _utilsRegistry != address(0), "zero address passed as parameter");
         _grantRole(DEFAULT_ADMIN_ROLE, _owner);
         utilsRegistry = IUtilsRegistry(_utilsRegistry);

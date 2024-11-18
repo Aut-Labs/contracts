@@ -121,7 +121,7 @@ contract ReputationMiningTest is BaseTest {
 
         uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice));
 
-        assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received cAut doesn't match");
+        assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received c-aut doesn't match");
         assertLe(
             cAutBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
@@ -139,7 +139,7 @@ contract ReputationMiningTest is BaseTest {
 
         uint256 autBalanceAfter = autToken.balanceOf(address(alice));
 
-        // since alice didn't do anything with her cAut tokens, she won't be rewarded any tokens
+        // since alice didn't do anything with her c-aut tokens, she won't be rewarded any tokens
         // uint256 calculatedRewards = (cAutBalanceAfter / 60) * 100;
         uint256 calculatedRewards = 0;
         assertEq(autBalanceAfter, 0, "reward amounts do not match");
@@ -177,14 +177,14 @@ contract ReputationMiningTest is BaseTest {
 
         uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice));
 
-        assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received cAut doesn't match");
+        assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received c-aut doesn't match");
         assertLe(
             cAutBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
             "distribution exceeded maximum amount"
         );
 
-        // alice stakes 60% cAut tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
+        // alice stakes 60% c-aut tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
         uint256 stakedAmount = (givenAmount * 50) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
@@ -233,7 +233,7 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        // alice stakes 90% cAut tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
+        // alice stakes 90% c-aut tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
         stakedAmount = (givenAmount * 90) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
@@ -286,7 +286,7 @@ contract ReputationMiningTest is BaseTest {
 
         uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice));
 
-        assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received cAut doesn't match");
+        assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received c-aut doesn't match");
         assertLe(
             cAutBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),

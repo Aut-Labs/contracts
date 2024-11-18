@@ -17,7 +17,7 @@ contract Distributor {
     address public immutable owner;
     /// @notice aut token contract
     IERC20 public immutable aut;
-    // IERC20 public immutable cAut;
+    // IERC20 public immutable c-aut;
 
     /// sales multisig
     address public immutable sales;

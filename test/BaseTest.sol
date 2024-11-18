@@ -149,7 +149,7 @@ abstract contract BaseTest is Test {
 
         vm.label(address(utilsRegistry), "utilsRegistry");
         vm.label(address(aut), "aut");
-        vm.label(address(cAut), "cAut");
+        vm.label(address(cAut), "c-aut");
         vm.label(address(sales), "sales");
         vm.label(address(investors), "investors");
         vm.label(address(team), "team");
