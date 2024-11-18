@@ -19,7 +19,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     // event emitted when the period has updated
     event MiningStarted(uint256 indexed periodId, uint256 timestamp);
     // event emitted when conditional tokens are claimed
-    event UtilityTokensClaimed(
+    event ConditionalTokensClaimed(
         uint256 indexed periodId,
         uint256 indexed autId,
         address indexed account,
@@ -163,7 +163,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
             autToken.transfer(address(circular), cAutBalance);
         }
 
-        uint256 amount = getClaimableUtilityTokenForPeriod(msg.sender, period);
+        uint256 amount = getClaimableConditionalTokenForPeriod(msg.sender, period);
         require(amount <= tokensLeft[period], "not enough tokens left to distribute for this period");
 
         // save the allocation amount for later use
@@ -172,7 +172,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         // send tokens
         cAutToken.safeTransfer(msg.sender, amount);
 
-        emit UtilityTokensClaimed(period, autId.tokenIdForAccount(msg.sender), msg.sender, block.timestamp, amount);
+        emit ConditionalTokensClaimed(period, autId.tokenIdForAccount(msg.sender), msg.sender, block.timestamp, amount);
     }
 
     /// @notice calculates the claimable conditional token for a given user in a given period
@@ -180,7 +180,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     /// @param _period the period for which to calculate the claimable conditional tokens
     /// @dev we are using a random number for peerValue and totalPeerValue at the moment until we can use the PeerValue contract that is yet to be developed
     /// @return amount the claimable conditional token for a given user in a given period
-    function getClaimableUtilityTokenForPeriod(address _account, uint256 _period) public returns (uint256 amount) {
+    function getClaimableConditionalTokenForPeriod(address _account, uint256 _period) public returns (uint256 amount) {
         // get peer value
         uint256 value = peerValue.getPeerValue(_account, _period);
         uint256 totalTokensForPeriod = getTokensForPeriod(_period);
