@@ -100,7 +100,9 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     /// @notice gap used as best practice for upgradeable contracts
     uint256[50] private __gap;
 
-    // anyone can cleanup the previous periods, no access control needed
+    /// @notice burns the leftover cAutToken and transfer the leftover AutToken to the circular contract
+    /// @param _periodId the id of the period to clean up
+    /// @dev anyone can cleanup the previous periods, no access control needed
     function cleanupPeriod(uint256 _periodId) external {
         require(_periodId < currentPeriod(), "period has not ended yet");
 
@@ -113,6 +115,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         }
     }
 
+    /// @notice sets the first period and activates the mining mechanism of the contract
     function activateMining() external onlyOwner {
         require(firstPeriodStart == 0, "already activated");
         firstPeriodStart = block.timestamp;
@@ -236,6 +239,8 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         return 0;
     }
 
+    /// @notice calculates the current (active) period
+    /// @return the current period ID or 0 if mining hasn't been activated
     function currentPeriod() public view returns (uint256) {
         if (firstPeriodStart == 0) {
             // mining has not been activated yet
