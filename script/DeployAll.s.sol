@@ -195,7 +195,7 @@ contract DeployAll is Script {
         tasks[10] = Task({uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH"});
         taskRegistry.registerTasks(tasks);
 
-        utilsRegistry = deployAutRegistry(owner);
+        utilsRegistry = deployUtilsRegistry(owner);
 
         // deploy token contracts
         aut = deployAutToken();
@@ -393,14 +393,14 @@ function deployHubRegistry(
     return HubRegistry(address(hubRegistryProxy));
 }
 
-function deployAutRegistry(address _owner) returns (UtilsRegistry) {
-    UtilsRegistry autRegistryImplementation = new UtilsRegistry();
-    AutProxy autRegistryProxy = new AutProxy(
-        address(autRegistryImplementation),
+function deployUtilsRegistry(address _owner) returns (UtilsRegistry) {
+    UtilsRegistry utilsRegistryImplementation = new UtilsRegistry();
+    AutProxy utilsRegistryProxy = new AutProxy(
+        address(utilsRegistryImplementation),
         _owner,
         abi.encodeWithSelector(UtilsRegistry.initialize.selector, _owner)
     );
-    return UtilsRegistry(address(autRegistryProxy));
+    return UtilsRegistry(address(utilsRegistryProxy));
 }
 
 function deployAutToken() returns (Aut) {
@@ -408,8 +408,8 @@ function deployAutToken() returns (Aut) {
     return aut;
 }
 
-function deployCAutToken(address _owner, address _autRegistry) returns (CAut) {
-    CAut cAut = new CAut(_owner, _autRegistry);
+function deployCAutToken(address _owner, address _utilsRegistry) returns (CAut) {
+    CAut cAut = new CAut(_owner, _utilsRegistry);
     return cAut;
 }
 

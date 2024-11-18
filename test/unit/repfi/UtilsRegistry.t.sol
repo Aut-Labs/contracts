@@ -3,7 +3,7 @@ pragma solidity 0.8.20;
 
 import "../../BaseTest.sol";
 
-contract AutRegistryTest is BaseTest {
+contract UtilsRegistryTest is BaseTest {
     address public plugin = makeAddr("plugin");
 
     function setUp() public override {
