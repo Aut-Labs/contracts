@@ -15,7 +15,7 @@ interface IReputationMining {
 
     function cleanupPeriod(uint256 periodId) external;
 
-    function claimUtilityToken() external;
+    function claimConditionalToken() external;
 
     function claim() external;
 

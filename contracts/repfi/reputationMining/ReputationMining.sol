@@ -18,7 +18,7 @@ import {IAutID} from "../../autid/autid.sol";
 contract ReputationMining is OwnableUpgradeable, IReputationMining {
     // event emitted when the period has updated
     event MiningStarted(uint256 indexed periodId, uint256 timestamp);
-    // event emitted when utility tokens are claimed
+    // event emitted when conditional tokens are claimed
     event UtilityTokensClaimed(
         uint256 indexed periodId,
         uint256 indexed autId,
@@ -145,7 +145,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     }
 
     /// @notice distributes c-aut tokens to an Āut user once per period based on their peer value and save the givenBalance for later
-    function claimUtilityToken() external onlyAutUser {
+    function claimConditionalToken() external onlyAutUser {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
@@ -175,11 +175,11 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         emit UtilityTokensClaimed(period, autId.tokenIdForAccount(msg.sender), msg.sender, block.timestamp, amount);
     }
 
-    /// @notice calculates the claimable utility token for a given user in a given period
+    /// @notice calculates the claimable conditional token for a given user in a given period
     /// @param _account the account for whom the tokens should be calculated
-    /// @param _period the period for which to calculate the claimable utility tokens
+    /// @param _period the period for which to calculate the claimable conditional tokens
     /// @dev we are using a random number for peerValue and totalPeerValue at the moment until we can use the PeerValue contract that is yet to be developed
-    /// @return amount the claimable utility token for a given user in a given period
+    /// @return amount the claimable conditional token for a given user in a given period
     function getClaimableUtilityTokenForPeriod(address _account, uint256 _period) public returns (uint256 amount) {
         // get peer value
         uint256 value = peerValue.getPeerValue(_account, _period);
