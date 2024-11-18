@@ -2,11 +2,11 @@
 pragma solidity 0.8.20;
 
 import "../../BaseTest.sol";
-import "../../../contracts/repfi/token/REPFI.sol";
+import "../../../contracts/repfi/token/AUT.sol";
 import "../../../contracts/repfi/vesting/TokenVesting.sol";
 
 contract TokenVestingTest is BaseTest {
-    RepFi repfiToken;
+    Aut autToken;
     TokenVesting tokenvesting;
     uint startTime;
 
@@ -19,9 +19,9 @@ contract TokenVestingTest is BaseTest {
 
     function setUp() public override {
         super.setUp();
-        repfiToken = new RepFi();
-        tokenvesting = new TokenVesting(address(repfiToken), address(this), duration, releaseInterval, revocable);
-        repfiToken.transfer(address(tokenvesting), totalAmount);
+        autToken = new Aut();
+        tokenvesting = new TokenVesting(address(autToken), address(this), duration, releaseInterval, revocable);
+        autToken.transfer(address(tokenvesting), totalAmount);
 
         startTime = block.timestamp;
 
@@ -46,7 +46,7 @@ contract TokenVestingTest is BaseTest {
 
     function test_deployment() public {
         TokenVesting tokenvestingTest = new TokenVesting(
-            address(repfiToken),
+            address(autToken),
             address(this),
             duration,
             releaseInterval,
@@ -56,8 +56,8 @@ contract TokenVestingTest is BaseTest {
     }
 
     function test_totalAllocation() public {
-        tokenvesting = new TokenVesting(address(repfiToken), address(this), duration, releaseInterval, revocable);
-        repfiToken.transfer(address(tokenvesting), totalAmount);
+        tokenvesting = new TokenVesting(address(autToken), address(this), duration, releaseInterval, revocable);
+        autToken.transfer(address(tokenvesting), totalAmount);
 
         startTime = block.timestamp;
 
@@ -200,14 +200,14 @@ contract TokenVestingTest is BaseTest {
     function test_revokeVestingScheduleRevertNonRevocableSchedule() public {
         uint amount = 100;
         TokenVesting tokenvestingWithoutRevoke = new TokenVesting(
-            address(repfiToken),
+            address(autToken),
             address(this),
             duration,
             releaseInterval,
             false
         ); // vesting is not revocable
 
-        repfiToken.transfer(address(tokenvestingWithoutRevoke), amount);
+        autToken.transfer(address(tokenvestingWithoutRevoke), amount);
 
         // create token vesting for bob and alice
         address[] memory recipients = new address[](1);
@@ -244,7 +244,7 @@ contract TokenVestingTest is BaseTest {
         tokenvesting.revoke(vestingAtIndexForBob);
 
         uint256 estimatedVesting = (amountBob * 3) / 6;
-        uint256 actualVested = repfiToken.balanceOf(address(bob));
+        uint256 actualVested = autToken.balanceOf(address(bob));
 
         assertEq(estimatedVesting, actualVested, "vested amounts do not match");
     }
@@ -261,7 +261,7 @@ contract TokenVestingTest is BaseTest {
         vm.prank(alice);
         tokenvesting.release(vestingScheduleId, amountAlice);
 
-        uint256 actualVested = repfiToken.balanceOf(address(alice));
+        uint256 actualVested = autToken.balanceOf(address(alice));
 
         assertEq(amountAlice, actualVested, "vested amounts do not match");
     }
@@ -289,15 +289,15 @@ contract TokenVestingTest is BaseTest {
     }
 
     function test_OwnerCanWithdrawRemainingBalance() public {
-        uint256 ownerbalanceBefore = repfiToken.balanceOf(address(this));
+        uint256 ownerbalanceBefore = autToken.balanceOf(address(this));
         uint256 withdrawableAmount = tokenvesting.getWithdrawableAmount();
         assertEq(withdrawableAmount, totalAmount - amountAlice - amountBob);
 
         tokenvesting.withdraw(withdrawableAmount);
 
-        uint256 ownerbalanceAfter = repfiToken.balanceOf(address(this));
+        uint256 ownerbalanceAfter = autToken.balanceOf(address(this));
         assertEq(ownerbalanceAfter - ownerbalanceBefore, withdrawableAmount);
-        assertEq(repfiToken.balanceOf(address(tokenvesting)), totalAmount - withdrawableAmount);
+        assertEq(autToken.balanceOf(address(tokenvesting)), totalAmount - withdrawableAmount);
     }
 
     function test_UserCannotWithdrawRemainingBalance() public {

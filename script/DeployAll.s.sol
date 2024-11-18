@@ -19,8 +19,8 @@ import {TaskFactory} from "../contracts/tasks/TaskFactory.sol";
 import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 
 import {UtilsRegistry} from "../contracts/repfi/utilsRegistry/UtilsRegistry.sol";
-import {RepFi} from "../contracts/repfi/token/REPFI.sol";
-import {CRepFi} from "../contracts/repfi/token/cREPFI.sol";
+import {Aut} from "../contracts/repfi/token/AUT.sol";
+import {CAut} from "../contracts/repfi/token/cAUT.sol";
 import {Investors} from "../contracts/repfi/vesting/Investors.sol";
 import {Team} from "../contracts/repfi/vesting/Team.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
@@ -50,8 +50,8 @@ contract DeployAll is Script {
     TaskRegistry public taskRegistry;
     GlobalParameters public globalParameters;
     UtilsRegistry public utilsRegistry;
-    RepFi public repFi;
-    CRepFi public cRepFi;
+    Aut public aut;
+    CAut public cAut;
     address public sales;
     Investors public investors;
     Team public team;
@@ -195,15 +195,15 @@ contract DeployAll is Script {
         tasks[10] = Task({uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH"});
         taskRegistry.registerTasks(tasks);
 
-        utilsRegistry = deployRepFiRegistry(owner);
+        utilsRegistry = deployAutRegistry(owner);
 
         // deploy token contracts
-        repFi = deployRepFiToken();
-        cRepFi = deployCRepFiToken(address(owner), address(utilsRegistry));
+        aut = deployAutToken();
+        cAut = deployCAutToken(address(owner), address(utilsRegistry));
 
         // deploy vesting contracts
-        investors = deployInvestors(address(repFi), projectMultisig);
-        team = deployTeam(address(repFi), projectMultisig);
+        investors = deployInvestors(address(aut), projectMultisig);
+        team = deployTeam(address(aut), projectMultisig);
 
         randomNumberGenerator = new RandomNumberGenerator();
 
@@ -213,15 +213,15 @@ contract DeployAll is Script {
         // deploy reputationMining
         reputationMining = deployReputationMining(
             owner,
-            address(repFi),
-            address(cRepFi),
+            address(aut),
+            address(cAut),
             address(circular),
             address(peerValue)
         );
 
         // deploy distributor
         distributor = deployDistributor(
-            repFi,
+            aut,
             sales,
             address(reputationMining),
             airdrop,
@@ -234,23 +234,23 @@ contract DeployAll is Script {
         // deploy PeerStaking
         peerStaking = deployPeerStaking(
             owner,
-            address(repFi),
-            address(cRepFi),
+            address(aut),
+            address(cAut),
             address(circular),
             address(peerValue),
             address(reputationMining)
         );
 
-        // register repfi plugins, more to add later
+        // register aut plugins, more to add later
 
         vm.stopBroadcast();
         vm.startPrank(owner);
-        // give burner role to reputationmining in cRepFi
-        cRepFi.grantRole(cRepFi.BURNER_ROLE(), address(reputationMining));
+        // give burner role to reputationmining in cAut
+        cAut.grantRole(cAut.BURNER_ROLE(), address(reputationMining));
 
         // transfer admin role to multisig
-        cRepFi.grantRole(cRepFi.DEFAULT_ADMIN_ROLE(), projectMultisig);
-        cRepFi.revokeRole(cRepFi.DEFAULT_ADMIN_ROLE(), owner);
+        cAut.grantRole(cAut.DEFAULT_ADMIN_ROLE(), projectMultisig);
+        cAut.revokeRole(cAut.DEFAULT_ADMIN_ROLE(), owner);
 
         utilsRegistry.registerPlugin(owner, "Deployer");
         utilsRegistry.registerPlugin(address(distributor), "Distributor");
@@ -258,8 +258,8 @@ contract DeployAll is Script {
         utilsRegistry.registerPlugin(address(peerValue), "PeerValue");
         utilsRegistry.registerPlugin(address(peerStaking), "PeerStaking");
 
-        // send cRepFi to reputationMining
-        cRepFi.transfer(address(reputationMining), 36000000 ether);
+        // send cAut to reputationMining
+        cAut.transfer(address(reputationMining), 36000000 ether);
 
         // remove owner from plugins
         utilsRegistry.removePlugin(owner);
@@ -274,7 +274,7 @@ contract DeployAll is Script {
         vm.startBroadcast(privateKey);
 
         // send tokens to distribution contract
-        repFi.transfer(address(distributor), 100000000 ether); // 100 million repfi tokens
+        aut.transfer(address(distributor), 100000000 ether); // 100 million aut tokens
 
         // distribute tokens
         distributor.distribute();
@@ -288,8 +288,8 @@ contract DeployAll is Script {
             na[3] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
             na[4] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
             na[10] = TNamedAddress({name: "utilsRegistry", target: address(utilsRegistry)});
-            na[11] = TNamedAddress({name: "repFi", target: address(repFi)});
-            na[12] = TNamedAddress({name: "cRepFi", target: address(cRepFi)});
+            na[11] = TNamedAddress({name: "aut", target: address(aut)});
+            na[12] = TNamedAddress({name: "cAut", target: address(cAut)});
             na[13] = TNamedAddress({name: "sales", target: address(sales)});
             na[15] = TNamedAddress({name: "investors", target: address(investors)});
             na[16] = TNamedAddress({name: "team", target: address(team)});
@@ -392,40 +392,40 @@ function deployHubRegistry(
     return HubRegistry(address(hubRegistryProxy));
 }
 
-function deployRepFiRegistry(address _owner) returns (UtilsRegistry) {
-    UtilsRegistry repFiRegistryImplementation = new UtilsRegistry();
-    AutProxy repFiRegistryProxy = new AutProxy(
-        address(repFiRegistryImplementation),
+function deployAutRegistry(address _owner) returns (UtilsRegistry) {
+    UtilsRegistry autRegistryImplementation = new UtilsRegistry();
+    AutProxy autRegistryProxy = new AutProxy(
+        address(autRegistryImplementation),
         _owner,
         abi.encodeWithSelector(UtilsRegistry.initialize.selector, _owner)
     );
-    return UtilsRegistry(address(repFiRegistryProxy));
+    return UtilsRegistry(address(autRegistryProxy));
 }
 
-function deployRepFiToken() returns (RepFi) {
-    RepFi repFi = new RepFi();
-    return repFi;
+function deployAutToken() returns (Aut) {
+    Aut aut = new Aut();
+    return aut;
 }
 
-function deployCRepFiToken(address _owner, address _repFiRegistry) returns (CRepFi) {
-    CRepFi cRepFi = new CRepFi(_owner, _repFiRegistry);
-    return cRepFi;
+function deployCAutToken(address _owner, address _autRegistry) returns (CAut) {
+    CAut cAut = new CAut(_owner, _autRegistry);
+    return cAut;
 }
 
-function deployInvestors(address _repFiToken, address _owner) returns (Investors) {
-    Investors vesting = new Investors(_repFiToken, _owner);
+function deployInvestors(address _autToken, address _owner) returns (Investors) {
+    Investors vesting = new Investors(_autToken, _owner);
     return vesting;
 }
 
-function deployTeam(address _repFiToken, address _owner) returns (Team) {
-    Team vesting = new Team(_repFiToken, _owner);
+function deployTeam(address _autToken, address _owner) returns (Team) {
+    Team vesting = new Team(_autToken, _owner);
     return vesting;
 }
 
 function deployReputationMining(
     address _owner,
-    address _repFi,
-    address _cRepFi,
+    address _aut,
+    address _cAut,
     address _circular,
     address _peerValue
 ) returns (ReputationMining) {
@@ -433,13 +433,13 @@ function deployReputationMining(
     AutProxy reputationMiningProxy = new AutProxy(
         address(reputationMiningImplementation),
         _owner,
-        abi.encodeWithSelector(ReputationMining.initialize.selector, _owner, _repFi, _cRepFi, _circular, _peerValue)
+        abi.encodeWithSelector(ReputationMining.initialize.selector, _owner, _aut, _cAut, _circular, _peerValue)
     );
     return ReputationMining(address(reputationMiningProxy));
 }
 
 function deployDistributor(
-    RepFi _repFi,
+    Aut _aut,
     address _sales,
     address _reputationMining,
     address _airdrop,
@@ -449,7 +449,7 @@ function deployDistributor(
     address _ecosystem
 ) returns (Distributor) {
     Distributor distributor = new Distributor(
-        _repFi,
+        _aut,
         _sales,
         _reputationMining,
         _airdrop,
@@ -468,8 +468,8 @@ function deployPeerValue(RandomNumberGenerator randomNumberGenerator) returns (P
 
 function deployPeerStaking(
     address _owner,
-    address _repFiToken,
-    address _cRepFiToken,
+    address _autToken,
+    address _cAutToken,
     address _circular,
     address _peerValue,
     address _reputationMining
@@ -481,8 +481,8 @@ function deployPeerStaking(
         abi.encodeWithSelector(
             PeerStaking.initialize.selector,
             _owner,
-            _repFiToken,
-            _cRepFiToken,
+            _autToken,
+            _cAutToken,
             _circular,
             _peerValue,
             _reputationMining

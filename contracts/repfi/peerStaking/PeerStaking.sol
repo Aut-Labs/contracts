@@ -4,7 +4,7 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {ICREPFI} from "../token/IcREPFI.sol";
+import {ICAUT} from "../token/IcAUT.sol";
 import {IReputationMining} from "../reputationMining/IReputationMining.sol";
 import {IRandomNumberGenerator} from "../../randomNumberGenerator/IRandomNumberGenerator.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -13,10 +13,10 @@ import {IPeerValue} from "../PeerValue/IPeerValue.sol";
 
 contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     uint256 constant DENOMINATOR = 1000;
-    /// @notice the RepFi token contract
-    IERC20 public repFiToken;
-    /// @notice the cRepFi token contract
-    ICREPFI public cRepFiToken;
+    /// @notice the Aut token contract
+    IERC20 public autToken;
+    /// @notice the cAut token contract
+    ICAUT public cAutToken;
     /// @notice address where unclaimed funds will be sent to so they can be used by the platform
     address public circular;
     /// @notice random generator contract where we can get a random value for "peer value" as well was the "total value"
@@ -40,29 +40,29 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
     );
 
     using SafeERC20 for IERC20;
-    using SafeERC20 for ICREPFI;
+    using SafeERC20 for ICAUT;
 
     /// @notice gap used as best practice for upgradeable contracts
     uint256[50] private __gap;
 
     /// @notice PeerStaking contract initializer
     /// @param initialOwner The initial owner of the contract
-    /// @param _repFiToken the address of the RepFi token contract
-    /// @param _cRepFiToken the address of the cRepFi token contract
+    /// @param _autToken the address of the Aut token contract
+    /// @param _cAutToken the address of the cAut token contract
     /// @param _circular the address of the circular contract
     /// @param _peerValue the address of the PeerValue contract
     /// @param _reputationMining the address of the reputation mining contract
     function initialize(
         address initialOwner,
-        address _repFiToken,
-        address _cRepFiToken,
+        address _autToken,
+        address _cAutToken,
         address _circular,
         address _peerValue,
         address _reputationMining
     ) external initializer {
         __Ownable_init(initialOwner);
-        repFiToken = IERC20(_repFiToken);
-        cRepFiToken = ICREPFI(_cRepFiToken);
+        autToken = IERC20(_autToken);
+        cAutToken = ICAUT(_cAutToken);
         circular = _circular;
         peerValue = IPeerValue(_peerValue);
         reputationMining = IReputationMining(_reputationMining);
@@ -105,7 +105,7 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         totalStakes++;
 
         emit StakeAdded(stakeId, msg.sender, stakee, newStake);
-        repFiToken.safeTransferFrom(msg.sender, address(this), amount);
+        autToken.safeTransferFrom(msg.sender, address(this), amount);
     }
 
     /// @notice Enables users to unstake the stake they have placed earlier. Funds are only claimable once the duration is past
@@ -159,6 +159,6 @@ contract PeerStaking is ReentrancyGuard, OwnableUpgradeable, IPeerStaking {
         // set active to false
         currentStake.active = false;
         emit StakeClaimed(stakeId, msg.sender, currentStake.stakee, currentStake, earnedAmount);
-        repFiToken.safeTransfer(msg.sender, earnedAmount);
+        autToken.safeTransfer(msg.sender, earnedAmount);
     }
 }

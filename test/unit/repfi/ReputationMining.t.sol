@@ -4,17 +4,17 @@ pragma solidity 0.8.20;
 import "../../BaseTest.sol";
 
 contract ReputationMiningTest is BaseTest {
-    RepFi repfiToken;
-    CRepFi cRepFiToken;
+    Aut autToken;
+    CAut cAutToken;
     address circular;
     ReputationMining reputationMiningContract;
-    uint256 initialCRepFiBalance = 36000000 ether; // 36 million tokens
+    uint256 initialCAutBalance = 36000000 ether; // 36 million tokens
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether;
 
     function setUp() public override {
         super.setUp();
-        repfiToken = new RepFi();
-        cRepFiToken = new CRepFi(address(this), address(utilsRegistry));
+        autToken = new Aut();
+        cAutToken = new CAut(address(this), address(utilsRegistry));
         reputationMiningContract = new ReputationMining();
         circular = makeAddr("circular");
 
@@ -25,24 +25,24 @@ contract ReputationMiningTest is BaseTest {
             abi.encodeWithSelector(
                 ReputationMining.initialize.selector,
                 address(this),
-                address(repfiToken),
-                address(cRepFiToken),
+                address(autToken),
+                address(cAutToken),
                 circular,
                 address(peerValue)
             )
         );
         reputationMiningContract = ReputationMining(address(reputationMiningProxy));
 
-        // set reputationMining as burner for cRepFiToken
-        cRepFiToken.grantRole(cRepFiToken.BURNER_ROLE(), address(reputationMiningContract));
+        // set reputationMining as burner for cAutToken
+        cAutToken.grantRole(cAutToken.BURNER_ROLE(), address(reputationMiningContract));
 
         // configure reputationMining as a plugin
         utilsRegistry.registerPlugin(address(reputationMiningContract), "ReputationMiningTest");
         utilsRegistry.registerPlugin(owner, "TestContract");
 
         // send tokens to reputationMining
-        repfiToken.transfer(address(reputationMiningContract), initialCRepFiBalance);
-        cRepFiToken.transfer(address(reputationMiningContract), initialCRepFiBalance);
+        autToken.transfer(address(reputationMiningContract), initialCAutBalance);
+        cAutToken.transfer(address(reputationMiningContract), initialCAutBalance);
 
         vm.label(address(this), "ReputationMiningTest");
     }
@@ -54,12 +54,12 @@ contract ReputationMiningTest is BaseTest {
     }
 
     function test_activateMining() public {
-        uint256 remainingCRepFiBalance = initialCRepFiBalance;
+        uint256 remainingCAutBalance = initialCAutBalance;
         reputationMiningContract.activateMining();
         // update through all the periods (should mine 0 tokens from period 49 onwards)
         for (uint256 i = 1; i < 50; i++) {
-            remainingCRepFiBalance -= reputationMiningContract.getTokensForPeriod(i - 1);
-            console.log("remaining balance for period", i, remainingCRepFiBalance);
+            remainingCAutBalance -= reputationMiningContract.getTokensForPeriod(i - 1);
+            console.log("remaining balance for period", i, remainingCAutBalance);
             assertEq(reputationMiningContract.currentPeriod(), i);
 
             uint256 tokensForPeriod = 0;
@@ -80,18 +80,18 @@ contract ReputationMiningTest is BaseTest {
 
             // check if tokens from previous period are burned
             assertEq(reputationMiningContract.tokensLeft(i - 1), 0, "tokensleft error");
-            assertEq(cRepFiToken.balanceOf(address(reputationMiningContract)), remainingCRepFiBalance, "balance error");
+            assertEq(cAutToken.balanceOf(address(reputationMiningContract)), remainingCAutBalance, "balance error");
 
             skip(28 days);
         }
     }
 
-    function test_claimCRepFiTokens() public {
+    function test_claimCAutTokens() public {
         // start first period
         reputationMiningContract.activateMining();
 
-        uint256 cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
-        assertEq(cRepFiBalanceBefore, 0, "initial balance is not zero");
+        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
         reputationMiningContract.claimUtilityToken();
@@ -106,34 +106,34 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        uint256 cRepFiBalanceAfter = cRepFiToken.balanceOf(address(alice));
+        uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice));
 
-        assertEq(cRepFiBalanceAfter - cRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
+        assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received cAut doesn't match");
         assertLe(
-            cRepFiBalanceAfter,
+            cAutBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
             "distribution exceeded maximum amount"
         );
 
         skip(28 days);
 
-        uint256 repfiBalanceBefore = repfiToken.balanceOf(address(alice));
-        uint256 circularRepfiBalanceBefore = repfiToken.balanceOf(address(circular));
-        assertEq(repfiBalanceBefore, 0, "initial balance is not zero");
+        uint256 autBalanceBefore = autToken.balanceOf(address(alice));
+        uint256 circularAutBalanceBefore = autToken.balanceOf(address(circular));
+        assertEq(autBalanceBefore, 0, "initial balance is not zero");
 
         vm.prank(alice);
         reputationMiningContract.claim();
 
-        uint256 repfiBalanceAfter = repfiToken.balanceOf(address(alice));
+        uint256 autBalanceAfter = autToken.balanceOf(address(alice));
 
-        // since alice didn't do anything with her cRepFi tokens, she won't be rewarded any tokens
-        // uint256 calculatedRewards = (cRepFiBalanceAfter / 60) * 100;
+        // since alice didn't do anything with her cAut tokens, she won't be rewarded any tokens
+        // uint256 calculatedRewards = (cAutBalanceAfter / 60) * 100;
         uint256 calculatedRewards = 0;
-        assertEq(repfiBalanceAfter, 0, "reward amounts do not match");
+        assertEq(autBalanceAfter, 0, "reward amounts do not match");
         // The other 40% should be transferred to the circular contract
         assertEq(
-            repfiToken.balanceOf(address(circular)),
-            cRepFiBalanceAfter - calculatedRewards + circularRepfiBalanceBefore,
+            autToken.balanceOf(address(circular)),
+            cAutBalanceAfter - calculatedRewards + circularAutBalanceBefore,
             "circular contract didn't receive appropriate leftover amount"
         );
 
@@ -142,12 +142,12 @@ contract ReputationMiningTest is BaseTest {
         reputationMiningContract.claimUtilityToken();
     }
 
-    function test_claimRepFiTokens() public {
+    function test_claimAutTokens() public {
         // start first period
         reputationMiningContract.activateMining();
 
-        uint256 cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
-        assertEq(cRepFiBalanceBefore, 0, "initial balance is not zero");
+        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
         reputationMiningContract.claimUtilityToken();
@@ -162,34 +162,34 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        uint256 cRepFiBalanceAfter = cRepFiToken.balanceOf(address(alice));
+        uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice));
 
-        assertEq(cRepFiBalanceAfter - cRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
+        assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received cAut doesn't match");
         assertLe(
-            cRepFiBalanceAfter,
+            cAutBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
             "distribution exceeded maximum amount"
         );
 
-        // alice stakes 60% cRepFi tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
+        // alice stakes 60% cAut tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
         uint256 stakedAmount = (givenAmount * 50) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
-        cRepFiToken.approve(address(this), stakedAmount);
+        cAutToken.approve(address(this), stakedAmount);
 
         // put the tokens in this contract for now
-        cRepFiToken.transferFrom(address(alice), address(this), stakedAmount);
+        cAutToken.transferFrom(address(alice), address(this), stakedAmount);
 
         skip(28 days);
 
-        uint256 repfiBalanceBefore = repfiToken.balanceOf(address(alice));
-        uint256 circularRepfiBalanceBefore = repfiToken.balanceOf(address(circular));
-        assertEq(repfiBalanceBefore, 0, "initial balance is not zero");
+        uint256 autBalanceBefore = autToken.balanceOf(address(alice));
+        uint256 circularAutBalanceBefore = autToken.balanceOf(address(circular));
+        assertEq(autBalanceBefore, 0, "initial balance is not zero");
 
         vm.prank(alice);
         reputationMiningContract.claim();
 
-        uint256 repfiBalanceAfter = repfiToken.balanceOf(address(alice));
+        uint256 autBalanceAfter = autToken.balanceOf(address(alice));
 
         uint256 participation = (stakedAmount * 100) / givenAmount;
         console.log("participation", participation);
@@ -198,14 +198,14 @@ contract ReputationMiningTest is BaseTest {
         uint256 totalEarned = earnedTokens;
         console.log("earnings", earnedTokens);
 
-        assertEq(repfiBalanceAfter, earnedTokens, "reward amounts do not match");
+        assertEq(autBalanceAfter, earnedTokens, "reward amounts do not match");
         // The other 40% should be transferred to the circular contract
         assertEq(
-            repfiToken.balanceOf(address(circular)),
-            cRepFiBalanceAfter - earnedTokens + circularRepfiBalanceBefore,
+            autToken.balanceOf(address(circular)),
+            cAutBalanceAfter - earnedTokens + circularAutBalanceBefore,
             "circular contract didn't receive appropriate leftover amount"
         );
-        uint256 totalBurned = repfiToken.balanceOf(address(circular));
+        uint256 totalBurned = autToken.balanceOf(address(circular));
 
         // alice claims utility tokens again
         vm.startPrank(alice);
@@ -220,42 +220,42 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        // alice stakes 90% cRepFi tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
+        // alice stakes 90% cAut tokens in one of the tools and gets a reward for it after the period ends, we will use this contract as a "tool" for now to simulate this
         stakedAmount = (givenAmount * 90) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
-        cRepFiToken.approve(address(this), stakedAmount);
+        cAutToken.approve(address(this), stakedAmount);
 
         // put the tokens in this contract for now
-        cRepFiToken.transferFrom(address(alice), address(this), stakedAmount);
+        cAutToken.transferFrom(address(alice), address(this), stakedAmount);
 
         skip(28 days);
 
         vm.prank(alice);
         reputationMiningContract.claim();
 
-        repfiBalanceAfter = repfiToken.balanceOf(address(alice)) - totalEarned;
+        autBalanceAfter = autToken.balanceOf(address(alice)) - totalEarned;
 
-        // remaining repfi will be distributed 1:1
+        // remaining aut will be distributed 1:1
         earnedTokens = givenAmount - stakedAmount;
         totalEarned += earnedTokens;
         console.log("earnings", earnedTokens);
 
-        assertEq(repfiBalanceAfter, earnedTokens, "reward amounts do not match");
+        assertEq(autBalanceAfter, earnedTokens, "reward amounts do not match");
 
-        totalBurned = repfiToken.balanceOf(address(circular));
+        totalBurned = autToken.balanceOf(address(circular));
 
         // alice claims utility tokens again
         vm.prank(alice);
         reputationMiningContract.claimUtilityToken();
     }
 
-    function test_claimCRepFiTokensWithPreviousBalance() public {
+    function test_claimCAutTokensWithPreviousBalance() public {
         // start first period
         reputationMiningContract.activateMining();
 
-        uint256 cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
-        assertEq(cRepFiBalanceBefore, 0, "initial balance is not zero");
+        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
         reputationMiningContract.claimUtilityToken();
@@ -271,19 +271,19 @@ contract ReputationMiningTest is BaseTest {
             givenAmount = MAX_MINT_PER_PERIOD;
         }
 
-        uint256 cRepFiBalanceAfter = cRepFiToken.balanceOf(address(alice));
+        uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice));
 
-        assertEq(cRepFiBalanceAfter - cRepFiBalanceBefore, givenAmount, "received cRepFi doesn't match");
+        assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received cAut doesn't match");
         assertLe(
-            cRepFiBalanceAfter,
+            cAutBalanceAfter,
             reputationMiningContract.MAX_MINT_PER_PERIOD(),
             "distribution exceeded maximum amount"
         );
 
         skip(28 days);
 
-        cRepFiBalanceBefore = cRepFiToken.balanceOf(address(alice));
-        assertEq(cRepFiBalanceBefore, givenAmount, "balance did not persist across periods");
+        cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        assertEq(cAutBalanceBefore, givenAmount, "balance did not persist across periods");
 
         // alice claims utility tokens again without claiming her rewards first
         vm.startPrank(alice);

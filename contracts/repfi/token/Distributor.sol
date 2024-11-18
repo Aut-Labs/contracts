@@ -5,7 +5,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title Initial Distribution
 /// @author Āut Labs
-/// @notice takes care of the initial distribution of the RepFi token
+/// @notice takes care of the initial distribution of the Aut token
 contract Distributor {
     // event triggered when tokens are distributed
     event TokensDistributed(address indexed receiver, address token, uint256 amount, uint256 timestamp);
@@ -15,9 +15,9 @@ contract Distributor {
 
     /// @notice owner of the contract
     address public immutable owner;
-    /// @notice repFi token contract
-    IERC20 public immutable repFi;
-    // IERC20 public immutable cRepFi;
+    /// @notice aut token contract
+    IERC20 public immutable aut;
+    // IERC20 public immutable cAut;
 
     /// sales multisig
     address public immutable sales;
@@ -35,7 +35,7 @@ contract Distributor {
     address public immutable ecosystem;
 
     /// @notice creates a new initial distribution contract
-    /// @param _repFi RepFi token address
+    /// @param _aut Aut token address
     /// @param _sales sales multisig
     /// @param _reputationMining reputation mining contract
     /// @param _airdrop merkle contract
@@ -44,7 +44,7 @@ contract Distributor {
     /// @param _partners multisig contract for partners
     /// @param _ecosystem multisig contract for ecosystem
     constructor(
-        IERC20 _repFi,
+        IERC20 _aut,
         address _sales,
         address _reputationMining,
         address _airdrop,
@@ -54,7 +54,7 @@ contract Distributor {
         address _ecosystem
     ) {
         require(
-            address(_repFi) != address(0) &&
+            address(_aut) != address(0) &&
                 _sales != address(0) &&
                 _reputationMining != address(0) &&
                 _airdrop != address(0) &&
@@ -65,7 +65,7 @@ contract Distributor {
             "zero address passed as parameter"
         );
         owner = msg.sender;
-        repFi = _repFi;
+        aut = _aut;
 
         sales = _sales;
         reputationMining = _reputationMining;
@@ -76,13 +76,10 @@ contract Distributor {
         ecosystem = _ecosystem;
     }
 
-    /// @notice distributes the RepFi tokens to the different contracts using predifined amounts
+    /// @notice distributes the Aut tokens to the different contracts using predifined amounts
     function distribute() external {
         require(msg.sender == owner, "only owner can distribute");
-        require(
-            repFi.balanceOf(address(this)) == 100 * MILLION_ETHER,
-            "not enough RepFI in the contract for distribution"
-        );
+        require(aut.balanceOf(address(this)) == 100 * MILLION_ETHER, "not enough Aut in the contract for distribution");
 
         // 15 million for token sales
         sendTokens(address(sales), 15 * MILLION_ETHER);
@@ -106,11 +103,11 @@ contract Distributor {
         sendTokens(address(ecosystem), 20 * MILLION_ETHER);
     }
 
-    /// @notice sends RepFi tokens to the receiver
+    /// @notice sends Aut tokens to the receiver
     /// @param receiver the receiver of the tokens
     /// @param amount the amount of tokens to be transferred
     function sendTokens(address receiver, uint256 amount) internal {
-        repFi.transfer(receiver, amount);
-        emit TokensDistributed(receiver, address(repFi), amount, block.timestamp);
+        aut.transfer(receiver, amount);
+        emit TokensDistributed(receiver, address(aut), amount, block.timestamp);
     }
 }

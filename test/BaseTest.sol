@@ -37,8 +37,8 @@ abstract contract BaseTest is Test {
     TaskManager public taskManager;
 
     UtilsRegistry public utilsRegistry;
-    RepFi public repFi;
-    CRepFi public cRepFi;
+    Aut public aut;
+    CAut public cAut;
     address public sales;
     Investors public investors;
     Team public team;
@@ -78,8 +78,8 @@ abstract contract BaseTest is Test {
 
         utilsRegistry = deploy.utilsRegistry();
 
-        repFi = deploy.repFi();
-        cRepFi = deploy.cRepFi();
+        aut = deploy.aut();
+        cAut = deploy.cAut();
 
         sales = deploy.sales();
         investors = deploy.investors();
@@ -148,8 +148,8 @@ abstract contract BaseTest is Test {
         TaskFactory(Hub(hubAddress).taskFactory()).createContribution(contribution);
 
         vm.label(address(utilsRegistry), "utilsRegistry");
-        vm.label(address(repFi), "repFi");
-        vm.label(address(cRepFi), "cRepFi");
+        vm.label(address(aut), "aut");
+        vm.label(address(cAut), "cAut");
         vm.label(address(sales), "sales");
         vm.label(address(investors), "investors");
         vm.label(address(team), "team");

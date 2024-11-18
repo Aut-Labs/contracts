@@ -7,16 +7,16 @@ import {IUtilsRegistry} from "../utilsRegistry/IUtilsRegistry.sol";
 
 /// @title Conditional Reputation Finance token
 /// @author Āut Labs
-/// @notice Conditional Reputation Finance token with symbol cREPFI
-contract CRepFi is ERC20, AccessControl {
+/// @notice Conditional Reputation Finance token with symbol cAUT
+contract CAut is ERC20, AccessControl {
     IUtilsRegistry immutable utilsRegistry;
 
     bytes32 public constant BURNER_ROLE = keccak256("BURNER");
 
-    /// @notice creates the Conditional Reputation Finance token (cREPFI), initializes the sender as the admin, configures the UtilsRegistry contract, mints 100 million tokens to the sender
+    /// @notice creates the Conditional Reputation Finance token (cAUT), initializes the sender as the admin, configures the UtilsRegistry contract, mints 100 million tokens to the sender
     /// @param _owner the owner of the contract
     /// @param _utilsRegistry the address of the plugin registry contract
-    constructor(address _owner, address _utilsRegistry) ERC20("Conditional REPFI", "cREPFI") {
+    constructor(address _owner, address _utilsRegistry) ERC20("Conditional AUT", "cAUT") {
         require(_owner != address(0) && _utilsRegistry != address(0), "zero address passed as parameter");
         _grantRole(DEFAULT_ADMIN_ROLE, _owner);
         utilsRegistry = IUtilsRegistry(_utilsRegistry);

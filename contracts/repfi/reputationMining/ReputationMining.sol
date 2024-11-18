@@ -3,17 +3,17 @@ pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {ICREPFI} from "../token/IcREPFI.sol";
+import {ICAUT} from "../token/IcAUT.sol";
 import {IReputationMining} from "./IReputationMining.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IPeerValue} from "../peerValue/IPeerValue.sol";
 
 /// @title Reputation Mining
 /// @author Āut Labs
-/// @notice This contract distributes an allocation of cRepFi tokens to Āut users depending on their peer value every period
+/// @notice This contract distributes an allocation of cAut tokens to Āut users depending on their peer value every period
 /// users can then utilize these tokens using the plugins defined in the UtilsRegistry contract. When the period has ended
-/// the admin will update the period after which users can claim the RepFi tokens they have earned in the previous period
-/// based on their usage and can receive new cRepFi tokens and put them to use in the next period.
+/// the admin will update the period after which users can claim the Aut tokens they have earned in the previous period
+/// based on their usage and can receive new cAut tokens and put them to use in the next period.
 contract ReputationMining is OwnableUpgradeable, IReputationMining {
     // event emitted when the period has updated
     event MiningStarted(uint256 indexed periodId, uint256 timestamp);
@@ -24,7 +24,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         uint256 timestamp,
         uint256 givenBalance
     );
-    // event emitted when repfi tokens are claimed
+    // event emitted when aut tokens are claimed
     event RewardTokensClaimed(
         uint256 indexed periodId,
         address indexed account,
@@ -34,17 +34,17 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         uint256 tokensRecycled
     );
 
-    /// @notice the RepFi token contract
-    IERC20 public repFiToken;
-    /// @notice the cRepFi token contract
-    ICREPFI public cRepFiToken;
+    /// @notice the Aut token contract
+    IERC20 public autToken;
+    /// @notice the cAut token contract
+    ICAUT public cAutToken;
     /// @notice address where unclaimed funds will be sent to so they can be used by the platform
     address public circular;
     /// @notice random generator contract where we can get a random value for "peer value" as well was the "total value"
     /// @dev this contract will be replaced with the PeerValue contract in the near future, this is just for testing the functionality in the meantime
     IPeerValue peerValue;
 
-    // @notice maximum amount of cRepFi tokens a user can receive each period
+    // @notice maximum amount of cAut tokens a user can receive each period
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether;
     // @notice first reputation mining threshold of 24 periods
     uint256 private constant FIRST_MINING_REWARD_DURATION_THRESHOLD = 24;
@@ -71,31 +71,28 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     mapping(uint256 period => bool initialized) public periodsInitialized;
 
     using SafeERC20 for IERC20;
-    using SafeERC20 for ICREPFI;
+    using SafeERC20 for ICAUT;
 
     /// @notice ReputationMining contract initializer
     /// @param initialOwner The initial owner of the contract
-    /// @param _repFiToken the address of the RepFi token contract
-    /// @param _cRepFiToken the address of the cRepFi token contract
+    /// @param _autToken the address of the Aut token contract
+    /// @param _cAutToken the address of the cAut token contract
     /// @param _circular the address of the circular contract
     /// @param _peerValue the address of the RandomNumberGenerator contract
     function initialize(
         address initialOwner,
-        address _repFiToken,
-        address _cRepFiToken,
+        address _autToken,
+        address _cAutToken,
         address _circular,
         address _peerValue
     ) external initializer {
         require(
-            _repFiToken != address(0) &&
-                _cRepFiToken != address(0) &&
-                _circular != address(0) &&
-                _peerValue != address(0),
+            _autToken != address(0) && _cAutToken != address(0) && _circular != address(0) && _peerValue != address(0),
             "zero address passed as parameter"
         );
         __Ownable_init(initialOwner);
-        repFiToken = IERC20(_repFiToken);
-        cRepFiToken = ICREPFI(_cRepFiToken);
+        autToken = IERC20(_autToken);
+        cAutToken = ICAUT(_cAutToken);
         circular = _circular;
         peerValue = IPeerValue(_peerValue);
     }
@@ -111,8 +108,8 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         tokensLeft[_periodId] = 0;
 
         if (leftoverTokens > 0) {
-            cRepFiToken.burn(address(this), leftoverTokens);
-            repFiToken.transfer(address(circular), leftoverTokens);
+            cAutToken.burn(address(this), leftoverTokens);
+            autToken.transfer(address(circular), leftoverTokens);
         }
     }
 
@@ -128,7 +125,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         emit MiningStarted(currentPeriod(), firstPeriodStart);
     }
 
-    /// @notice distributes cRepFi tokens to an Āut user once per period based on their peer value and save the givenBalance for later
+    /// @notice distributes cAut tokens to an Āut user once per period based on their peer value and save the givenBalance for later
     function claimUtilityToken() external {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
@@ -136,15 +133,15 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         //check if there's anything to claim from the previous period
         require(givenBalance[msg.sender][period - 1] == 0, "unclaimed rewards from previous period");
 
-        require(givenBalance[msg.sender][period] == 0, "user already claimed cREPFI");
+        require(givenBalance[msg.sender][period] == 0, "user already claimed cAUT");
 
-        uint256 cRepFiBalance = cRepFiToken.balanceOf(msg.sender);
-        if (cRepFiBalance > 0) {
-            // reset cRepFi token balance
-            cRepFiToken.burn(msg.sender, cRepFiBalance);
+        uint256 cAutBalance = cAutToken.balanceOf(msg.sender);
+        if (cAutBalance > 0) {
+            // reset cAut token balance
+            cAutToken.burn(msg.sender, cAutBalance);
 
-            // send RepFI tokens for this user to circlular contract
-            repFiToken.transfer(address(circular), cRepFiBalance);
+            // send Aut tokens for this user to circlular contract
+            autToken.transfer(address(circular), cAutBalance);
         }
 
         uint256 amount = getClaimableUtilityTokenForPeriod(msg.sender, period);
@@ -156,7 +153,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         givenBalance[msg.sender][period] = amount;
 
         // send tokens
-        cRepFiToken.safeTransfer(msg.sender, amount);
+        cAutToken.safeTransfer(msg.sender, amount);
     }
 
     /// @notice calculates the claimable utility token for a given user in a given period
@@ -178,31 +175,31 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         }
     }
 
-    /// @notice claims the reward tokens (RepFi) for the sender based on the utilisation of the cRepFi token in the previous period and transfers the remaining balance to the circular contract
+    /// @notice claims the reward tokens (Aut) for the sender based on the utilisation of the cAut token in the previous period and transfers the remaining balance to the circular contract
     function claim() external {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
-        // calculate how much of the cREPFI tokens the user has used in this period and distribute monthly allocation of REPFI tokens
+        // calculate how much of the cAUT tokens the user has used in this period and distribute monthly allocation of AUT tokens
         uint256 givenAmount = givenBalance[msg.sender][period - 1];
         require(givenAmount > 0, "no claims available for this period");
-        uint256 cRepFiBalance = cRepFiToken.balanceOf(msg.sender);
-        require(cRepFiBalance <= givenAmount, "cRepFi balance should be smaller or equal to the given balance");
+        uint256 cAutBalance = cAutToken.balanceOf(msg.sender);
+        require(cAutBalance <= givenAmount, "cAut balance should be smaller or equal to the given balance");
 
         // set givenBalance for previous period to 0 so the user can't claim twice
         givenBalance[msg.sender][period - 1] = 0;
 
         // calculate rewards based on token utilisation
-        // check cREPFI balance vs allocated tokens for last period unless there's a better way to check this
-        uint256 tokensUsed = givenAmount - cRepFiBalance;
+        // check cAUT balance vs allocated tokens for last period unless there's a better way to check this
+        uint256 tokensUsed = givenAmount - cAutBalance;
         uint256 participation = tokensUsed > 0 ? ((tokensUsed) * PERCENTAGE_DENOMINATOR) / givenAmount : 0;
         uint256 earnedTokens = 0;
 
         if (participation >= MIN_PARTICIPATION_SCORE) {
-            earnedTokens = cRepFiBalance;
+            earnedTokens = cAutBalance;
         } else {
             earnedTokens =
-                (cRepFiBalance * tokensUsed * PERCENTAGE_DENOMINATOR) /
+                (cAutBalance * tokensUsed * PERCENTAGE_DENOMINATOR) /
                 (givenAmount * REDUCED_PARTICIPATION_SCORE_REWARD_PERCENTAGE);
         }
 
@@ -211,17 +208,17 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
             msg.sender,
             block.timestamp,
             earnedTokens,
-            cRepFiBalance,
+            cAutBalance,
             givenAmount - earnedTokens
         );
 
-        // burn cRepFi tokens
-        cRepFiToken.burn(msg.sender, cRepFiBalance);
+        // burn cAut tokens
+        cAutToken.burn(msg.sender, cAutBalance);
 
-        // send repFi tokens
-        repFiToken.safeTransfer(msg.sender, earnedTokens);
-        // send remaining repFi tokens to circle contract
-        repFiToken.safeTransfer(circular, givenAmount - earnedTokens);
+        // send aut tokens
+        autToken.safeTransfer(msg.sender, earnedTokens);
+        // send remaining aut tokens to circle contract
+        autToken.safeTransfer(circular, givenAmount - earnedTokens);
     }
 
     /// @notice returns the amount of tokens that will be distributed within a given period

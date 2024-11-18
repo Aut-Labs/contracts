@@ -4,7 +4,7 @@ pragma solidity 0.8.20;
 import "../../BaseTest.sol";
 
 contract DistributorTest is BaseTest {
-    RepFi repfiToken;
+    Aut autToken;
 
     address airdrop;
     address partners;
@@ -25,9 +25,9 @@ contract DistributorTest is BaseTest {
         partners = makeAddr("partners");
 
         super.setUp();
-        repfiToken = new RepFi();
+        autToken = new Aut();
         initialDistributionContract = new Distributor(
-            repfiToken,
+            autToken,
             sales,
             address(reputationMining),
             airdrop,
@@ -40,7 +40,7 @@ contract DistributorTest is BaseTest {
 
     function test_deploy() public {
         initialDistributionContract = new Distributor(
-            repfiToken,
+            autToken,
             sales,
             address(reputationMining),
             airdrop,
@@ -61,28 +61,28 @@ contract DistributorTest is BaseTest {
     }
 
     function test_DistributeRevertNotOwner() public {
-        repfiToken.transfer(address(initialDistributionContract), 100000000 ether);
+        autToken.transfer(address(initialDistributionContract), 100000000 ether);
         vm.expectRevert("only owner can distribute");
         vm.prank(alice);
         initialDistributionContract.distribute();
     }
 
     function test_DistributeRevertNotEnoughTokens() public {
-        vm.expectRevert("not enough RepFI in the contract for distribution");
+        vm.expectRevert("not enough Aut in the contract for distribution");
         initialDistributionContract.distribute();
     }
 
     function test_Distribute() public {
-        repfiToken.transfer(address(initialDistributionContract), 100000000 ether);
+        autToken.transfer(address(initialDistributionContract), 100000000 ether);
         initialDistributionContract.distribute();
 
-        assertEq(repfiToken.balanceOf(address(initialDistributionContract)), 0);
-        assertEq(repfiToken.balanceOf(address(sales)), salesAmount);
-        assertEq(repfiToken.balanceOf(address(reputationMining)), reputationMiningAmount);
-        assertEq(repfiToken.balanceOf(address(airdrop)), airdropAmount);
-        assertEq(repfiToken.balanceOf(address(investors)), investorsAmount);
-        assertEq(repfiToken.balanceOf(address(team)), teamAmount);
-        assertEq(repfiToken.balanceOf(address(partners)), partnersAmount);
-        assertEq(repfiToken.balanceOf(address(ecosystem)), ecosystemAmount);
+        assertEq(autToken.balanceOf(address(initialDistributionContract)), 0);
+        assertEq(autToken.balanceOf(address(sales)), salesAmount);
+        assertEq(autToken.balanceOf(address(reputationMining)), reputationMiningAmount);
+        assertEq(autToken.balanceOf(address(airdrop)), airdropAmount);
+        assertEq(autToken.balanceOf(address(investors)), investorsAmount);
+        assertEq(autToken.balanceOf(address(team)), teamAmount);
+        assertEq(autToken.balanceOf(address(partners)), partnersAmount);
+        assertEq(autToken.balanceOf(address(ecosystem)), ecosystemAmount);
     }
 }

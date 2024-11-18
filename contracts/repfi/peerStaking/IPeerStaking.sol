@@ -14,8 +14,8 @@ interface IPeerStaking {
 
     function initialize(
         address initialOwner,
-        address _repFiToken,
-        address _cRepFiToken,
+        address _autToken,
+        address _cAutToken,
         address _circular,
         address _randomNumberGenerator,
         address _reputationMining
