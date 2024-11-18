@@ -7,7 +7,8 @@ interface IReputationMining {
         address _autToken,
         address _cAutToken,
         address _circular,
-        address _peerValueContract
+        address _peerValueContract,
+        address _autId
     ) external;
 
     function currentPeriod() external view returns (uint256);

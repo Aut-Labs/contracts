@@ -7,6 +7,7 @@ import {ICAUT} from "../token/IcAUT.sol";
 import {IReputationMining} from "./IReputationMining.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IPeerValue} from "../peerValue/IPeerValue.sol";
+import {IAutID} from "../../autid/autid.sol";
 
 /// @title Reputation Mining
 /// @author Āut Labs
@@ -20,6 +21,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     // event emitted when utility tokens are claimed
     event UtilityTokensClaimed(
         uint256 indexed periodId,
+        uint256 indexed autId,
         address indexed account,
         uint256 timestamp,
         uint256 givenBalance
@@ -27,6 +29,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     // event emitted when aut tokens are claimed
     event RewardTokensClaimed(
         uint256 indexed periodId,
+        uint256 indexed autId,
         address indexed account,
         uint256 timestamp,
         uint256 amount,
@@ -43,6 +46,8 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     /// @notice random generator contract where we can get a random value for "peer value" as well was the "total value"
     /// @dev this contract will be replaced with the PeerValue contract in the near future, this is just for testing the functionality in the meantime
     IPeerValue peerValue;
+    /// @notice the autId contract
+    IAutID public autId;
 
     // @notice maximum amount of cAut tokens a user can receive each period
     uint256 public constant MAX_MINT_PER_PERIOD = 100 ether;
@@ -73,6 +78,11 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     using SafeERC20 for IERC20;
     using SafeERC20 for ICAUT;
 
+    modifier onlyAutUser() {
+        require(autId.tokenIdForAccount(msg.sender) != 0, "not an Aut user");
+        _;
+    }
+
     /// @notice ReputationMining contract initializer
     /// @param initialOwner The initial owner of the contract
     /// @param _autToken the address of the Aut token contract
@@ -84,10 +94,15 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         address _autToken,
         address _cAutToken,
         address _circular,
-        address _peerValue
+        address _peerValue,
+        address _autId
     ) external initializer {
         require(
-            _autToken != address(0) && _cAutToken != address(0) && _circular != address(0) && _peerValue != address(0),
+            _autToken != address(0) &&
+                _cAutToken != address(0) &&
+                _circular != address(0) &&
+                _peerValue != address(0) &&
+                _autId != address(0),
             "zero address passed as parameter"
         );
         __Ownable_init(initialOwner);
@@ -95,6 +110,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         cAutToken = ICAUT(_cAutToken);
         circular = _circular;
         peerValue = IPeerValue(_peerValue);
+        autId = IAutID(_autId);
     }
 
     /// @notice gap used as best practice for upgradeable contracts
@@ -129,7 +145,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     }
 
     /// @notice distributes cAut tokens to an Āut user once per period based on their peer value and save the givenBalance for later
-    function claimUtilityToken() external {
+    function claimUtilityToken() external onlyAutUser {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
@@ -150,13 +166,13 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         uint256 amount = getClaimableUtilityTokenForPeriod(msg.sender, period);
         require(amount <= tokensLeft[period], "not enough tokens left to distribute for this period");
 
-        emit UtilityTokensClaimed(period, msg.sender, block.timestamp, amount);
-
         // save the allocation amount for later use
         givenBalance[msg.sender][period] = amount;
 
         // send tokens
         cAutToken.safeTransfer(msg.sender, amount);
+
+        emit UtilityTokensClaimed(period, autId.tokenIdForAccount(msg.sender), msg.sender, block.timestamp, amount);
     }
 
     /// @notice calculates the claimable utility token for a given user in a given period
@@ -179,7 +195,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
     }
 
     /// @notice claims the reward tokens (Aut) for the sender based on the utilisation of the cAut token in the previous period and transfers the remaining balance to the circular contract
-    function claim() external {
+    function claim() external onlyAutUser {
         uint256 period = currentPeriod();
         require(period > 0, "mining has not started yet");
 
@@ -206,15 +222,6 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
                 (givenAmount * REDUCED_PARTICIPATION_SCORE_REWARD_PERCENTAGE);
         }
 
-        emit RewardTokensClaimed(
-            period,
-            msg.sender,
-            block.timestamp,
-            earnedTokens,
-            cAutBalance,
-            givenAmount - earnedTokens
-        );
-
         // burn cAut tokens
         cAutToken.burn(msg.sender, cAutBalance);
 
@@ -222,6 +229,16 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         autToken.safeTransfer(msg.sender, earnedTokens);
         // send remaining aut tokens to circle contract
         autToken.safeTransfer(circular, givenAmount - earnedTokens);
+
+        emit RewardTokensClaimed(
+            period,
+            autId.tokenIdForAccount(msg.sender),
+            msg.sender,
+            block.timestamp,
+            earnedTokens,
+            cAutBalance,
+            givenAmount - earnedTokens
+        );
     }
 
     /// @notice returns the amount of tokens that will be distributed within a given period

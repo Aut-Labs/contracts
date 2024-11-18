@@ -216,7 +216,8 @@ contract DeployAll is Script {
             address(aut),
             address(cAut),
             address(circular),
-            address(peerValue)
+            address(peerValue),
+            address(autId)
         );
 
         // deploy distributor
@@ -427,13 +428,14 @@ function deployReputationMining(
     address _aut,
     address _cAut,
     address _circular,
-    address _peerValue
+    address _peerValue,
+    address _autId
 ) returns (ReputationMining) {
     ReputationMining reputationMiningImplementation = new ReputationMining();
     AutProxy reputationMiningProxy = new AutProxy(
         address(reputationMiningImplementation),
         _owner,
-        abi.encodeWithSelector(ReputationMining.initialize.selector, _owner, _aut, _cAut, _circular, _peerValue)
+        abi.encodeWithSelector(ReputationMining.initialize.selector, _owner, _aut, _cAut, _circular, _peerValue, _autId)
     );
     return ReputationMining(address(reputationMiningProxy));
 }

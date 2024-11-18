@@ -28,7 +28,8 @@ contract ReputationMiningTest is BaseTest {
                 address(autToken),
                 address(cAutToken),
                 circular,
-                address(peerValue)
+                address(peerValue),
+                address(autId)
             )
         );
         reputationMiningContract = ReputationMining(address(reputationMiningProxy));
@@ -84,6 +85,18 @@ contract ReputationMiningTest is BaseTest {
 
             skip(28 days);
         }
+    }
+
+    function test_claimCAutTokensWithoutAutID() public {
+        // start first period
+        reputationMiningContract.activateMining();
+
+        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
+
+        vm.startPrank(bob);
+        vm.expectRevert("not an Aut user");
+        reputationMiningContract.claimUtilityToken();
     }
 
     function test_claimCAutTokens() public {
