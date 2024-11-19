@@ -18,11 +18,11 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     uint128 public periodPointsRemoved;
 
     mapping(bytes32 => ContributionStatus) public contributionStatuses;
-    mapping(uint32 periodId => PointSummary) public pointSummaries;
-    mapping(address member => mapping(uint32 periodId => MemberActivity)) public memberActivities;
+    mapping(uint32 period => PointSummary) public pointSummaries;
+    mapping(address member => mapping(uint32 period => MemberActivity)) public memberActivities;
     mapping(address member => EnumerableSet.Bytes32Set) private memberContributionsGiven;
     mapping(address member => EnumerableSet.Bytes32Set) private memberContributionsCommitted;
-    mapping(uint32 periodId => bytes32[] contributionIds) public contributionsGivenInPeriod;
+    mapping(uint32 period => bytes32[] contributionIds) public contributionsGivenInPeriod;
 
     EnumerableSet.AddressSet private _contributionManagers;
 
@@ -34,9 +34,9 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         _disableInitializers();
     }
 
-    function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
+    function initialize(address _hub) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
-        _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
+        _init_PeriodUtils();
     }
 
     /// @dev set the initial contribution manager from the hub registry
@@ -235,10 +235,10 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         if (!memberContributionsCommitted[who].remove(contributionId)) revert ContributionNotCommitted();
 
         uint32 points = contributionStatus.points;
-        uint32 currentPeriodId_ = currentPeriodId();
+        uint32 currentPeriod = currentPeriodId();
 
         // update member activity
-        MemberActivity storage memberActivity = memberActivities[who][currentPeriodId_];
+        MemberActivity storage memberActivity = memberActivities[who][currentPeriod];
         memberActivity.pointsGiven += points;
         memberActivity.contributionIds.push(contributionId);
 
@@ -247,7 +247,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         periodPointsGiven += points;
 
         // update total contributions given in the period
-        contributionsGivenInPeriod[currentPeriodId_].push(contributionId);
+        contributionsGivenInPeriod[currentPeriod].push(contributionId);
 
         // Finally, update contribution status and mark as complete if needed
         contributionStatus.quantityRemaining -= 1;
@@ -258,7 +258,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             contributionId: contributionId,
             sender: msg.sender,
             hub: hub(),
-            periodId: currentPeriodId_,
+            period: currentPeriod,
             who: who,
             status: contributionStatus.status,
             points: contributionStatus.points,
@@ -271,15 +271,14 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         _writePointSummary(currentPeriodId());
     }
 
-    function _writePointSummary(uint32 _currentPeriodId) internal {
-        uint32 initPeriodId_ = initPeriodId(); // gas
-        uint32 lastPeriodId = _currentPeriodId - 1;
+    function _writePointSummary(uint32 _currentPeriod) internal {
+        uint32 lastPeriod = _currentPeriod - 1;
 
         // What happens if a period passes which doesn't write to storage?
         // It means in period n there was activity, period n + 1 => current period there is no activity
         uint32 i;
         bool writeToHistory;
-        for (i = lastPeriodId; i > initPeriodId_ - 1; i--) {
+        for (i = lastPeriod; i > 0; i--) {
             if (!pointSummaries[i].isSealed) {
                 writeToHistory = true;
             } else {
@@ -300,8 +299,8 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             // if there's a gap in data- we have inactive periods.
             // How do we know a gap means inactive periods?
             //      Because each interaction with the members write to the point summary, keeping it synced
-            if (i < lastPeriodId) {
-                for (uint32 j = i + 1; j < _currentPeriodId; j++) {
+            if (i < lastPeriod) {
+                for (uint32 j = i + 1; j < _currentPeriod; j++) {
                     pointSummaries[j] = PointSummary({
                         isSealed: true,
                         pointsActive: pointsActive,
@@ -324,8 +323,8 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskManager
-    function getMemberActivity(address who, uint32 periodId) external view returns (MemberActivity memory) {
-        return memberActivities[who][periodId];
+    function getMemberActivity(address who, uint32 period) external view returns (MemberActivity memory) {
+        return memberActivities[who][period];
     }
 
     /// @inheritdoc ITaskManager
@@ -334,8 +333,8 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskManager
-    function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128) {
-        return memberActivities[who][periodId].pointsGiven;
+    function getMemberPointsGiven(address who, uint32 period) external view returns (uint128) {
+        return memberActivities[who][period].pointsGiven;
     }
 
     /// @inheritdoc ITaskManager
@@ -349,22 +348,22 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskManager
-    function getMemberContributionIds(address who, uint32 periodId) external view returns (bytes32[] memory) {
-        return memberActivities[who][periodId].contributionIds;
+    function getMemberContributionIds(address who, uint32 period) external view returns (bytes32[] memory) {
+        return memberActivities[who][period].contributionIds;
     }
 
     /// @inheritdoc ITaskManager
-    function getPointsActive(uint32 periodId) external view returns (uint128) {
-        return pointSummaries[periodId].pointsActive;
+    function getPointsActive(uint32 period) external view returns (uint128) {
+        return pointSummaries[period].pointsActive;
     }
 
     /// @inheritdoc ITaskManager
-    function getPointsGiven(uint32 periodId) external view returns (uint128) {
-        return pointSummaries[periodId].pointsGiven;
+    function getPointsGiven(uint32 period) external view returns (uint128) {
+        return pointSummaries[period].pointsGiven;
     }
 
     /// @inheritdoc ITaskManager
-    function getGivenContributions(uint32 periodId) external view returns (bytes32[] memory) {
-        return contributionsGivenInPeriod[periodId];
+    function getGivenContributions(uint32 period) external view returns (bytes32[] memory) {
+        return contributionsGivenInPeriod[period];
     }
 }

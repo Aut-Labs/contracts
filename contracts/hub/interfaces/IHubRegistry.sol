@@ -32,12 +32,6 @@ interface IHubRegistry {
     /// @dev only callable by Hub owner
     function setInitialContributionManager(address _initialContributionManager) external;
 
-    /// @notice return the current period id (as stored globally)
-    function currentPeriodId() external view returns (uint32);
-
-    /// @notice return the timestamp of when period id 0 begins (as stored globally)
-    function period0Start() external view returns (uint32);
-
     /// @notice return the array of hubs created through the registry
     /// @dev supports subgraph queries
     function hubs() external view returns (address[] memory);

@@ -14,7 +14,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
 
     EnumerableSet.Bytes32Set private _contributionIds;
     mapping(bytes32 => Contribution) public _contributions;
-    mapping(uint32 periodId => bytes32[] contributionIds) public _contributionIdsInPeriod;
+    mapping(uint32 period => bytes32[] contributionIds) public _contributionIdsInPeriod;
 
     function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
         return (0, 1, 2);
@@ -24,9 +24,9 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         _disableInitializers();
     }
 
-    function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
+    function initialize(address _hub) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
-        _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
+        _init_PeriodUtils();
     }
 
     /// @inheritdoc ITaskFactory
@@ -149,8 +149,8 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskFactory
-    function contributionIdsInPeriod(uint32 periodId) external view returns (bytes32[] memory) {
-        return _contributionIdsInPeriod[periodId];
+    function contributionIdsInPeriod(uint32 period) external view returns (bytes32[] memory) {
+        return _contributionIdsInPeriod[period];
     }
 
     /// @inheritdoc ITaskFactory

@@ -13,6 +13,7 @@ interface IMembership {
     error TooLateCommitmentChange();
     error SameCommitment();
     error InvalidCommitment();
+    error InvalidPeriodId();
 
     event ChangeCommitment(address indexed who, uint8 oldCommitment, uint8 newCommitment);
 
@@ -33,25 +34,22 @@ interface IMembership {
     function membersCount() external view returns (uint256);
 
     /// @notice Get the period ID of when the member joined the hub
-    function getPeriodIdJoined(address who) external view returns (uint32 periodId);
+    function getPeriodJoined(address who) external view returns (uint32 period);
 
     /// @notice Get the period ID of when an array of members joined the hub
-    function getPeriodIdsJoined(address[] calldata whos) external view returns (uint32[] memory);
+    function getPeriodsJoined(address[] calldata whos) external view returns (uint32[] memory);
 
     /// @notice get the commitment level of a member at a particular period id
-    function getCommitment(address who, uint32 periodId) external view returns (uint8 commitment);
+    function getCommitment(address who, uint32 period) external view returns (uint8 commitment);
 
     /// @notice get the commitment level of an array of members at a particular period id
-    function getCommitments(
-        address[] calldata whos,
-        uint32[] calldata periodIds
-    ) external view returns (uint8[] memory);
+    function getCommitments(address[] calldata whos, uint32[] calldata periods) external view returns (uint8[] memory);
 
     /// @notice get the cumulative commitment by members at a given period id
-    function getCommitmentSum(uint32 periodId) external view returns (uint128 commitmentSum);
+    function getCommitmentSum(uint32 period) external view returns (uint128 commitmentSum);
 
     /// @notice get the cumulative commitment by members at an array of given period ids
-    function getCommitmentSums(uint32[] calldata periodIds) external view returns (uint128[] memory);
+    function getCommitmentSums(uint32[] calldata periods) external view returns (uint128[] memory);
 
     /// @notice Join the hub
     /// @dev Is called through the hub
