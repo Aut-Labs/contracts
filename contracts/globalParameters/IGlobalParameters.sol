@@ -34,8 +34,6 @@ interface IGlobalParameters {
     event PrestigeForPeriod0Unstaged();
     event PrestiveForPeriod0Committed();
 
-    function period0Start() external view returns (uint32);
-    function currentPeriodId() external view returns (uint32);
     function constraintFactor() external view returns (uint128);
     function penaltyFactor() external view returns (uint128);
 

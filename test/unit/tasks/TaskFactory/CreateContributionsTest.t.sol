@@ -42,8 +42,8 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
         bytes32[] memory contributionIds = taskFactory.contributionIds();
         assertEq(contributionIds.length, 0);
         
-        uint32 currentPeriodId = taskFactory.currentPeriodId();
-        bytes32[] memory contributionIdsInPeriod = taskFactory.contributionIdsInPeriod(currentPeriodId);
+        uint32 currentPeriod = taskFactory.currentPeriodId();
+        bytes32[] memory contributionIdsInPeriod = taskFactory.contributionIdsInPeriod(currentPeriod);
         assertEq(contributionIdsInPeriod.length, 0);
 
         // action
@@ -67,7 +67,7 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
         assertEq(contributionIds.length, 1);
         assertEq(contributionIds[0], contributionId);
 
-        contributionIdsInPeriod = taskFactory.contributionIdsInPeriod(currentPeriodId);
+        contributionIdsInPeriod = taskFactory.contributionIdsInPeriod(currentPeriod);
         assertEq(contributionIdsInPeriod.length, 1);
         assertEq(contributionIdsInPeriod[0], contributionId);
     }
