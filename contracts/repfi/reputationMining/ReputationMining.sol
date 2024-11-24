@@ -166,6 +166,9 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         uint256 amount = getClaimableCTokenForPeriod(msg.sender, period);
         require(amount <= tokensLeft[period], "not enough tokens left to distribute for this period");
 
+        // subtract the amount from tokensLeft for this period so we don't distribute too many for this period
+        tokensLeft[period]= tokensLeft[period] - amount;
+
         // save the allocation amount for later use
         givenBalance[msg.sender][period] = amount;
 
