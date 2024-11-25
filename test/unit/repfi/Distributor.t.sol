@@ -7,22 +7,24 @@ contract DistributorTest is BaseTest {
     Aut autToken;
 
     address airdrop;
-    address partners;
+    address listing;
+    address advisors;
 
     Distributor initialDistributionContract;
-    uint256 salesAmount = 15000000 ether;
-    uint256 communityAmount = 7000000 ether;
+    uint256 salesAmount = 7000000 ether;
     uint256 reputationMiningAmount = 36000000 ether;
     uint256 airdropAmount = 4000000 ether;
     uint256 investorsAmount = 10000000 ether;
     uint256 teamAmount = 5000000 ether;
-    uint256 partnersAmount = 10000000 ether;
-    uint256 ecosystemAmount = 20000000 ether;
+    uint256 listingAmount = 8000000 ether;
+    uint256 ecosystemAmount = 25000000 ether;
+    uint256 advisorAmount = 5000000 ether;
 
     function setUp() public override {
         // let's pretend these addresses are multisigs
         airdrop = makeAddr("airdrop");
-        partners = makeAddr("partners");
+        listing = makeAddr("listing");
+        advisors = makeAddr("advisors");
 
         super.setUp();
         autToken = new Aut();
@@ -33,8 +35,9 @@ contract DistributorTest is BaseTest {
             airdrop,
             address(investors),
             address(team),
-            partners,
-            ecosystem
+            listing,
+            ecosystem,
+            advisors
         );
     }
 
@@ -46,8 +49,9 @@ contract DistributorTest is BaseTest {
             airdrop,
             address(investors),
             address(team),
-            partners,
-            ecosystem
+            listing,
+            ecosystem,
+            advisors
         );
 
         assert(address(initialDistributionContract) != address(0));
@@ -56,8 +60,9 @@ contract DistributorTest is BaseTest {
         assertEq(address(initialDistributionContract.airdrop()), address(airdrop));
         assertEq(address(initialDistributionContract.investors()), address(investors));
         assertEq(address(initialDistributionContract.team()), address(team));
-        assertEq(address(initialDistributionContract.partners()), address(partners));
+        assertEq(address(initialDistributionContract.listing()), address(listing));
         assertEq(address(initialDistributionContract.ecosystem()), address(ecosystem));
+        assertEq(address(initialDistributionContract.advisors()), address(advisors));
     }
 
     function test_DistributeRevertNotOwner() public {
@@ -82,7 +87,8 @@ contract DistributorTest is BaseTest {
         assertEq(autToken.balanceOf(address(airdrop)), airdropAmount);
         assertEq(autToken.balanceOf(address(investors)), investorsAmount);
         assertEq(autToken.balanceOf(address(team)), teamAmount);
-        assertEq(autToken.balanceOf(address(partners)), partnersAmount);
+        assertEq(autToken.balanceOf(address(listing)), listingAmount);
         assertEq(autToken.balanceOf(address(ecosystem)), ecosystemAmount);
+        assertEq(autToken.balanceOf(address(advisors)), advisorAmount);
     }
 }

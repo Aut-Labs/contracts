@@ -56,7 +56,8 @@ contract DeployAll is Script {
     Investors public investors;
     Team public team;
     address public airdrop; // merkle
-    address public partners; // multisig
+    address public listing; // multisig
+    address public advisors; // multisig
     address public ecosystem;
     address public profitSharing;
     address public circular;
@@ -94,7 +95,8 @@ contract DeployAll is Script {
             ecosystem = vm.envAddress("MAINNET_ECOSYSTEM_MULTISIG");
             profitSharing = vm.envAddress("MAINNET_PROFITSHARING_MULTISIG");
             airdrop = vm.envAddress("MAINNET_AIRDROP_MULTISIG");
-            partners = vm.envAddress("MAINNET_PARTNERS_MULTISIG");
+            listing = vm.envAddress("MAINNET_LISTING_MULTISIG");
+            advisors = vm.envAddress("MAINNET_ADVISORS_MULTISIG");
         } else if (block.chainid == 80002) {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             initialContributionManager = vm.envAddress("TESTNET_INITIAL_CONTRIBUTION_MANAGER");
@@ -108,7 +110,8 @@ contract DeployAll is Script {
             ecosystem = vm.envAddress("TESTNET_ECOSYSTEM_MULTISIG");
             profitSharing = vm.envAddress("TESTNET_PROFITSHARING_MULTISIG");
             airdrop = vm.envAddress("TESTNET_AIRDROP_MULTISIG");
-            partners = vm.envAddress("TESTNET_PARTNERS_MULTISIG");
+            listing = vm.envAddress("TESTNET_LISTING_MULTISIG");
+            advisors = vm.envAddress("MAINNET_ADVISORS_MULTISIG");
         } else {
             // testing
             privateKey = 567890;
@@ -121,7 +124,8 @@ contract DeployAll is Script {
             ecosystem = makeAddr("ecosystem");
             profitSharing = makeAddr("profitSharing");
             airdrop = makeAddr("airdrop");
-            partners = makeAddr("partners");
+            listing = makeAddr("listing");
+            advisors = makeAddr("advisors");
         }
         console.log("setUp -- done");
 
@@ -228,8 +232,9 @@ contract DeployAll is Script {
             airdrop,
             address(investors),
             address(team),
-            partners,
-            ecosystem
+            listing,
+            ecosystem,
+            advisors
         );
 
         // deploy PeerStaking
@@ -295,7 +300,7 @@ contract DeployAll is Script {
             na[15] = TNamedAddress({name: "investors", target: address(investors)});
             na[16] = TNamedAddress({name: "team", target: address(team)});
             na[17] = TNamedAddress({name: "airdrop", target: address(airdrop)});
-            na[18] = TNamedAddress({name: "partners", target: address(partners)});
+            na[18] = TNamedAddress({name: "partners", target: address(listing)});
             na[19] = TNamedAddress({name: "ecosystem", target: address(ecosystem)});
             na[20] = TNamedAddress({name: "profitSharing", target: address(profitSharing)});
             na[21] = TNamedAddress({name: "circular", target: address(circular)});
@@ -447,8 +452,9 @@ function deployDistributor(
     address _airdrop,
     address _investors,
     address _team,
-    address _partners,
-    address _ecosystem
+    address _listing,
+    address _ecosystem,
+    address _advisors
 ) returns (Distributor) {
     Distributor distributor = new Distributor(
         _aut,
@@ -457,8 +463,9 @@ function deployDistributor(
         _airdrop,
         _investors,
         _team,
-        _partners,
-        _ecosystem
+        _listing,
+        _ecosystem,
+        _advisors
     );
     return distributor;
 }
