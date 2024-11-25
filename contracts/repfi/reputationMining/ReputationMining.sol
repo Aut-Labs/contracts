@@ -189,7 +189,7 @@ contract ReputationMining is OwnableUpgradeable, IReputationMining {
         uint256 totalTokensForPeriod = getTokensForPeriod(_period);
         uint256 totalPeerValue = peerValue.getTotalPeerValue(_period);
 
-        amount = value * (totalTokensForPeriod / totalPeerValue);
+        amount = (value * totalTokensForPeriod) / totalPeerValue;
 
         // in case the amount is bigger than the maximum allowed per period, set the maximum
         if (amount > MAX_MINT_PER_PERIOD) {
