@@ -69,10 +69,13 @@ contract TokenVesting is Ownable {
         _;
     }
 
-    /**
+     /**
      * @dev Creates a vesting contract.
      * @param token_ address of the ERC20 token contract
      * @param _owner the owner of the contract
+     * @param _duration of the token vesting in seconds
+     * @param _releaseInterval duration of a slice period for the vesting in seconds
+     * @param _revocable whether or not the vesting is revocable
      */
     constructor(
         address token_,

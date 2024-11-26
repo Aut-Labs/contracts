@@ -3,7 +3,7 @@ pragma solidity 0.8.20;
 
 import {TokenVesting} from "./TokenVesting.sol";
 
-contract Team is TokenVesting {
+contract KOLsAdvisors is TokenVesting {
     // settings for this vesting contract
 
     // duration of the vesting period in seconds

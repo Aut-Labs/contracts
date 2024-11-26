@@ -39,10 +39,11 @@ abstract contract BaseTest is Test {
     UtilsRegistry public utilsRegistry;
     Aut public aut;
     CAut public cAut;
-    address public sales;
-    Investors public investors;
-    Team public team;
-    address public ecosystem;
+    address public sale;
+    FounderInvestors public founderInvestors;
+    EarlyContributors public earlyContributors;
+    KOLsAdvisors public kolsAdvisors;
+    address public treasury;
     ReputationMining public reputationMining;
     Distributor public distributor;
     RandomNumberGenerator public randomNumberGenerator;
@@ -81,10 +82,11 @@ abstract contract BaseTest is Test {
         aut = deploy.aut();
         cAut = deploy.cAut();
 
-        sales = deploy.sales();
-        investors = deploy.investors();
-        team = deploy.team();
-        ecosystem = deploy.ecosystem();
+        sale = deploy.sale();
+        founderInvestors = deploy.founderInvestors();
+        earlyContributors = deploy.earlyContributors();
+        treasury = deploy.treasury();
+        kolsAdvisors = deploy.kolsAdvisors();
 
         randomNumberGenerator = deploy.randomNumberGenerator();
         reputationMining = deploy.reputationMining();
@@ -150,9 +152,9 @@ abstract contract BaseTest is Test {
         vm.label(address(utilsRegistry), "utilsRegistry");
         vm.label(address(aut), "aut");
         vm.label(address(cAut), "c-aut");
-        vm.label(address(sales), "sales");
-        vm.label(address(investors), "investors");
-        vm.label(address(team), "team");
+        vm.label(address(sale), "sale");
+        vm.label(address(founderInvestors), "founderInvestors");
+        vm.label(address(earlyContributors), "earlyContributors");
         vm.label(address(reputationMining), "reputationMining");
         vm.label(address(distributor), "distributor");
         vm.label(address(peerValue), "peerValueContract");

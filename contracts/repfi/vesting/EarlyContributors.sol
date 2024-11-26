@@ -3,11 +3,11 @@ pragma solidity 0.8.20;
 
 import {TokenVesting} from "./TokenVesting.sol";
 
-contract Investors is TokenVesting {
+contract EarlyContributors is TokenVesting {
     // settings for this vesting contract
 
     // duration of the vesting period in seconds
-    uint256 constant DURATION = 6 * 30 days; // 6 months
+    uint256 constant DURATION = 12 * 30 days; // 12 months
     // duration of a slice period for the vesting in seconds
     uint256 constant RELEASE_INTERVAL = 30 days;
     // whether or not the vesting is revocable

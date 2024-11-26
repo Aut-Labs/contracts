@@ -19,66 +19,66 @@ contract Distributor {
     IERC20 public immutable aut;
     // IERC20 public immutable c-aut;
 
-    /// sales multisig
-    address public immutable sales;
+    /// sale multisig
+    address public immutable sale;
     /// @notice Reputation Mining contract
     address public immutable reputationMining;
     /// @notice airdrop merkle contract
     address public immutable airdrop;
-    /// @notice investors token vesting contract
-    address public immutable investors;
-    /// @notice team token vesting contract
-    address public immutable team;
+    /// @notice founderInvestors token vesting contract
+    address public immutable founderInvestors;
+    /// @notice earlyContributors token vesting contract
+    address public immutable earlyContributors;
     /// @notice listing and market makers multisig contract
     address public immutable listing;
-    /// @notice  ecosystem multisig contract
-    address public immutable ecosystem;
-    /// @notice advisors multisig contract
-    address public advisors;
+    /// @notice  treasury multisig contract
+    address public immutable treasury;
+    /// @notice kolsAdvisors multisig contract
+    address public kolsAdvisors;
 
     /// @notice creates a new initial distribution contract
     /// @param _aut Aut token address
-    /// @param _sales sales multisig
+    /// @param _sale sale multisig
     /// @param _reputationMining reputation mining contract
     /// @param _airdrop merkle contract
-    /// @param _investors TokenVesting contract for investors
-    /// @param _team TokenVesting contract for team
+    /// @param _founderInvestors TokenVesting contract for founderInvestors
+    /// @param _earlyContributors TokenVesting contract for earlyContributors
     /// @param _listing multisig contract for partners
-    /// @param _ecosystem multisig contract for ecosystem
+    /// @param _treasury multisig contract for treasury
     constructor(
         IERC20 _aut,
-        address _sales,
+        address _sale,
         address _reputationMining,
         address _airdrop,
-        address _investors,
-        address _team,
+        address _founderInvestors,
+        address _earlyContributors,
         address _listing,
-        address _ecosystem,
-        address _advisors
+        address _treasury,
+        address _kolsAdvisors
     ) {
         require(
             address(_aut) != address(0) &&
-                _sales != address(0) &&
+                _sale != address(0) &&
                 _reputationMining != address(0) &&
                 _airdrop != address(0) &&
-                _investors != address(0) &&
-                _team != address(0) &&
+                _founderInvestors != address(0) &&
+                _earlyContributors != address(0) &&
                 _listing != address(0) &&
-                _ecosystem != address(0) &&
-                _advisors != address(0),
+                _treasury != address(0) &&
+                _kolsAdvisors != address(0),
             "zero address passed as parameter"
         );
         owner = msg.sender;
         aut = _aut;
 
-        sales = _sales;
+        sale = _sale;
         reputationMining = _reputationMining;
         airdrop = _airdrop;
-        investors = _investors;
-        team = _team;
+        founderInvestors = _founderInvestors;
+        earlyContributors = _earlyContributors;
         listing = _listing;
-        ecosystem = _ecosystem;
-        advisors = _advisors;
+        treasury = _treasury;
+        kolsAdvisors = _kolsAdvisors;
     }
 
     /// @notice distributes the Aut tokens to the different contracts using predifined amounts
@@ -86,8 +86,8 @@ contract Distributor {
         require(msg.sender == owner, "only owner can distribute");
         require(aut.balanceOf(address(this)) == 100 * MILLION_ETHER, "not enough Aut in the contract for distribution");
 
-        //7 million for token sales
-        sendTokens(address(sales), 7 * MILLION_ETHER);
+        //7 million for token sale
+        sendTokens(address(sale), 7 * MILLION_ETHER);
 
         // 36 million for reputation mining
         sendTokens(address(reputationMining), 36 * MILLION_ETHER);
@@ -95,20 +95,20 @@ contract Distributor {
         // 4 million for airdrop
         sendTokens(address(airdrop), 4 * MILLION_ETHER);
 
-        // 10 million for founder and investors
-        sendTokens(address(investors), 10 * MILLION_ETHER);
+        // 10 million for founder and founderInvestors
+        sendTokens(address(founderInvestors), 10 * MILLION_ETHER);
 
-        // 5 million for team and contributors
-        sendTokens(address(team), 5 * MILLION_ETHER);
+        // 5 million for earlyContributors and contributors
+        sendTokens(address(earlyContributors), 5 * MILLION_ETHER);
 
         // 8 million for partners and listing
         sendTokens(address(listing), 8 * MILLION_ETHER);
 
-        // 25 million for ecosystem fund
-        sendTokens(address(ecosystem), 25 * MILLION_ETHER);
+        // 25 million for treasury fund
+        sendTokens(address(treasury), 25 * MILLION_ETHER);
 
-        // 5 million for advisors fund
-        sendTokens(address(advisors), 5 * MILLION_ETHER);
+        // 5 million for kolsAdvisors fund
+        sendTokens(address(kolsAdvisors), 5 * MILLION_ETHER);
     }
 
     /// @notice sends Aut tokens to the receiver

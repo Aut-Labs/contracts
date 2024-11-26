@@ -21,8 +21,9 @@ import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 import {UtilsRegistry} from "../contracts/repfi/utilsRegistry/UtilsRegistry.sol";
 import {Aut} from "../contracts/repfi/token/AUT.sol";
 import {CAut} from "../contracts/repfi/token/cAUT.sol";
-import {Investors} from "../contracts/repfi/vesting/Investors.sol";
-import {Team} from "../contracts/repfi/vesting/Team.sol";
+import {FounderInvestors} from "../contracts/repfi/vesting/FounderInvestors.sol";
+import {EarlyContributors} from "../contracts/repfi/vesting/EarlyContributors.sol";
+import {KOLsAdvisors} from "../contracts/repfi/vesting/KOLsAdvisors.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
 import {Distributor} from "../contracts/repfi/token/Distributor.sol";
 import {RandomNumberGenerator} from "../contracts/randomNumberGenerator/RandomNumberGenerator.sol";
@@ -52,13 +53,13 @@ contract DeployAll is Script {
     UtilsRegistry public utilsRegistry;
     Aut public aut;
     CAut public cAut;
-    address public sales;
-    Investors public investors;
-    Team public team;
+    address public sale;
+    FounderInvestors public founderInvestors;
+    EarlyContributors public earlyContributors;
     address public airdrop; // merkle
     address public listing; // multisig
-    address public advisors; // multisig
-    address public ecosystem;
+    KOLsAdvisors public kolsAdvisors;
+    address public treasury;
     address public profitSharing;
     address public circular;
     ReputationMining public reputationMining;
@@ -91,12 +92,11 @@ contract DeployAll is Script {
 
             // token allocation contracts
             circular = vm.envAddress("MAINNET_CIRCULAR_CONTRACT");
-            sales = vm.envAddress("MAINNET_SALES_MULTISIG");
-            ecosystem = vm.envAddress("MAINNET_ECOSYSTEM_MULTISIG");
+            sale = vm.envAddress("MAINNET_SALE_MULTISIG");
+            treasury = vm.envAddress("MAINNET_TREASURY_MULTISIG");
             profitSharing = vm.envAddress("MAINNET_PROFITSHARING_MULTISIG");
             airdrop = vm.envAddress("MAINNET_AIRDROP_MULTISIG");
             listing = vm.envAddress("MAINNET_LISTING_MULTISIG");
-            advisors = vm.envAddress("MAINNET_ADVISORS_MULTISIG");
         } else if (block.chainid == 80002) {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             initialContributionManager = vm.envAddress("TESTNET_INITIAL_CONTRIBUTION_MANAGER");
@@ -106,12 +106,11 @@ contract DeployAll is Script {
 
             // token allocation contracts
             circular = vm.envAddress("TESTNET_CIRCULAR_CONTRACT");
-            sales = vm.envAddress("TESTNET_SALES_MULTISIG");
-            ecosystem = vm.envAddress("TESTNET_ECOSYSTEM_MULTISIG");
+            sale = vm.envAddress("TESTNET_SALE_MULTISIG");
+            treasury = vm.envAddress("TESTNET_TREASURY_MULTISIG");
             profitSharing = vm.envAddress("TESTNET_PROFITSHARING_MULTISIG");
             airdrop = vm.envAddress("TESTNET_AIRDROP_MULTISIG");
             listing = vm.envAddress("TESTNET_LISTING_MULTISIG");
-            advisors = vm.envAddress("MAINNET_ADVISORS_MULTISIG");
         } else {
             // testing
             privateKey = 567890;
@@ -120,12 +119,11 @@ contract DeployAll is Script {
 
             // token allocation contracts
             circular = makeAddr("circular");
-            sales = makeAddr("sales");
-            ecosystem = makeAddr("ecosystem");
+            sale = makeAddr("sale");
+            treasury = makeAddr("treasury");
             profitSharing = makeAddr("profitSharing");
             airdrop = makeAddr("airdrop");
             listing = makeAddr("listing");
-            advisors = makeAddr("advisors");
         }
         console.log("setUp -- done");
 
@@ -206,8 +204,9 @@ contract DeployAll is Script {
         cAut = deployCAutToken(address(owner), address(utilsRegistry));
 
         // deploy vesting contracts
-        investors = deployInvestors(address(aut), projectMultisig);
-        team = deployTeam(address(aut), projectMultisig);
+        founderInvestors = deployFounderInvestors(address(aut), projectMultisig);
+        earlyContributors = deployEarlyContributors(address(aut), projectMultisig);
+        kolsAdvisors = deployKOLsAdvisors(address(aut), projectMultisig);
 
         randomNumberGenerator = new RandomNumberGenerator();
 
@@ -227,14 +226,14 @@ contract DeployAll is Script {
         // deploy distributor
         distributor = deployDistributor(
             aut,
-            sales,
+            sale,
             address(reputationMining),
             airdrop,
-            address(investors),
-            address(team),
+            address(founderInvestors),
+            address(earlyContributors),
             listing,
-            ecosystem,
-            advisors
+            treasury,
+            address(kolsAdvisors)
         );
 
         // deploy PeerStaking
@@ -296,12 +295,12 @@ contract DeployAll is Script {
             na[10] = TNamedAddress({name: "utilsRegistry", target: address(utilsRegistry)});
             na[11] = TNamedAddress({name: "aut", target: address(aut)});
             na[12] = TNamedAddress({name: "c-aut", target: address(cAut)});
-            na[13] = TNamedAddress({name: "sales", target: address(sales)});
-            na[15] = TNamedAddress({name: "investors", target: address(investors)});
-            na[16] = TNamedAddress({name: "team", target: address(team)});
+            na[13] = TNamedAddress({name: "sale", target: address(sale)});
+            na[15] = TNamedAddress({name: "founderInvestors", target: address(founderInvestors)});
+            na[16] = TNamedAddress({name: "earlyContributors", target: address(earlyContributors)});
             na[17] = TNamedAddress({name: "airdrop", target: address(airdrop)});
             na[18] = TNamedAddress({name: "partners", target: address(listing)});
-            na[19] = TNamedAddress({name: "ecosystem", target: address(ecosystem)});
+            na[19] = TNamedAddress({name: "treasury", target: address(treasury)});
             na[20] = TNamedAddress({name: "profitSharing", target: address(profitSharing)});
             na[21] = TNamedAddress({name: "circular", target: address(circular)});
             na[22] = TNamedAddress({name: "reputationMining", target: address(reputationMining)});
@@ -418,13 +417,18 @@ function deployCAutToken(address _owner, address _utilsRegistry) returns (CAut) 
     return cAut;
 }
 
-function deployInvestors(address _autToken, address _owner) returns (Investors) {
-    Investors vesting = new Investors(_autToken, _owner);
+function deployFounderInvestors(address _autToken, address _owner) returns (FounderInvestors) {
+    FounderInvestors vesting = new FounderInvestors(_autToken, _owner);
     return vesting;
 }
 
-function deployTeam(address _autToken, address _owner) returns (Team) {
-    Team vesting = new Team(_autToken, _owner);
+function deployEarlyContributors(address _autToken, address _owner) returns (EarlyContributors) {
+    EarlyContributors vesting = new EarlyContributors(_autToken, _owner);
+    return vesting;
+}
+
+function deployKOLsAdvisors(address _autToken, address _owner) returns (KOLsAdvisors) {
+    KOLsAdvisors vesting = new KOLsAdvisors(_autToken, _owner);
     return vesting;
 }
 
@@ -447,25 +451,25 @@ function deployReputationMining(
 
 function deployDistributor(
     Aut _aut,
-    address _sales,
+    address _sale,
     address _reputationMining,
     address _airdrop,
-    address _investors,
-    address _team,
+    address _founderInvestors,
+    address _earlyContributors,
     address _listing,
-    address _ecosystem,
-    address _advisors
+    address _treasury,
+    address _kolsAdvisors
 ) returns (Distributor) {
     Distributor distributor = new Distributor(
         _aut,
-        _sales,
+        _sale,
         _reputationMining,
         _airdrop,
-        _investors,
-        _team,
+        _founderInvestors,
+        _earlyContributors,
         _listing,
-        _ecosystem,
-        _advisors
+        _treasury,
+        _kolsAdvisors
     );
     return distributor;
 }
