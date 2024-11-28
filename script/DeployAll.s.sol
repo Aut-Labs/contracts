@@ -21,9 +21,6 @@ import {TaskManager} from "../contracts/tasks/TaskManager.sol";
 import {UtilsRegistry} from "../contracts/repfi/utilsRegistry/UtilsRegistry.sol";
 import {Aut} from "../contracts/repfi/token/AUT.sol";
 import {CAut} from "../contracts/repfi/token/cAUT.sol";
-import {FounderInvestors} from "../contracts/repfi/vesting/FounderInvestors.sol";
-import {EarlyContributors} from "../contracts/repfi/vesting/EarlyContributors.sol";
-import {KOLsAdvisors} from "../contracts/repfi/vesting/KOLsAdvisors.sol";
 import {ReputationMining} from "../contracts/repfi/reputationMining/ReputationMining.sol";
 import {Distributor} from "../contracts/repfi/token/Distributor.sol";
 import {RandomNumberGenerator} from "../contracts/randomNumberGenerator/RandomNumberGenerator.sol";
@@ -54,11 +51,11 @@ contract DeployAll is Script {
     Aut public aut;
     CAut public cAut;
     address public sale;
-    FounderInvestors public founderInvestors;
-    EarlyContributors public earlyContributors;
+    address public founderInvestors;
+    address public earlyContributors;
     address public airdrop; // merkle
     address public listing; // multisig
-    KOLsAdvisors public kolsAdvisors;
+    address public kolsAdvisors;
     address public treasury;
     address public profitSharing;
     address public circular;
@@ -97,6 +94,9 @@ contract DeployAll is Script {
             profitSharing = vm.envAddress("MAINNET_PROFITSHARING_MULTISIG");
             airdrop = vm.envAddress("MAINNET_AIRDROP_MULTISIG");
             listing = vm.envAddress("MAINNET_LISTING_MULTISIG");
+            founderInvestors = vm.envAddress("MAINNET_FOUNDER_INVESTORS_MULTISIG");
+            earlyContributors = vm.envAddress("MAINNET_EARLY_CONTRIBUTORS_MULTISIG");
+            kolsAdvisors = vm.envAddress("MAINNET_KOLS_ADVISORS_MULTISIG");
         } else if (block.chainid == 80002) {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             initialContributionManager = vm.envAddress("TESTNET_INITIAL_CONTRIBUTION_MANAGER");
@@ -111,6 +111,9 @@ contract DeployAll is Script {
             profitSharing = vm.envAddress("TESTNET_PROFITSHARING_MULTISIG");
             airdrop = vm.envAddress("TESTNET_AIRDROP_MULTISIG");
             listing = vm.envAddress("TESTNET_LISTING_MULTISIG");
+            founderInvestors = vm.envAddress("TESTNET_FOUNDER_INVESTORS_MULTISIG");
+            earlyContributors = vm.envAddress("TESTNET_EARLY_CONTRIBUTORS_MULTISIG");
+            kolsAdvisors = vm.envAddress("TESTNET_KOLS_ADVISORS_MULTISIG");
         } else {
             // testing
             privateKey = 567890;
@@ -124,6 +127,9 @@ contract DeployAll is Script {
             profitSharing = makeAddr("profitSharing");
             airdrop = makeAddr("airdrop");
             listing = makeAddr("listing");
+            founderInvestors = makeAddr("foundersInvestors");
+            earlyContributors = makeAddr("earlyContributors");
+            kolsAdvisors = makeAddr("kolsAdvisors");
         }
         console.log("setUp -- done");
 
@@ -203,11 +209,6 @@ contract DeployAll is Script {
         aut = deployAutToken();
         cAut = deployCAutToken(address(owner), address(utilsRegistry));
 
-        // deploy vesting contracts
-        founderInvestors = deployFounderInvestors(address(aut), projectMultisig);
-        earlyContributors = deployEarlyContributors(address(aut), projectMultisig);
-        kolsAdvisors = deployKOLsAdvisors(address(aut), projectMultisig);
-
         randomNumberGenerator = new RandomNumberGenerator();
 
         // deploy PeerValue
@@ -229,11 +230,11 @@ contract DeployAll is Script {
             sale,
             address(reputationMining),
             airdrop,
-            address(founderInvestors),
-            address(earlyContributors),
+            founderInvestors,
+            earlyContributors,
             listing,
             treasury,
-            address(kolsAdvisors)
+            kolsAdvisors
         );
 
         // deploy PeerStaking
@@ -415,21 +416,6 @@ function deployAutToken() returns (Aut) {
 function deployCAutToken(address _owner, address _utilsRegistry) returns (CAut) {
     CAut cAut = new CAut(_owner, _utilsRegistry);
     return cAut;
-}
-
-function deployFounderInvestors(address _autToken, address _owner) returns (FounderInvestors) {
-    FounderInvestors vesting = new FounderInvestors(_autToken, _owner);
-    return vesting;
-}
-
-function deployEarlyContributors(address _autToken, address _owner) returns (EarlyContributors) {
-    EarlyContributors vesting = new EarlyContributors(_autToken, _owner);
-    return vesting;
-}
-
-function deployKOLsAdvisors(address _autToken, address _owner) returns (KOLsAdvisors) {
-    KOLsAdvisors vesting = new KOLsAdvisors(_autToken, _owner);
-    return vesting;
 }
 
 function deployReputationMining(

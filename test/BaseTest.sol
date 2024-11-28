@@ -40,9 +40,9 @@ abstract contract BaseTest is Test {
     Aut public aut;
     CAut public cAut;
     address public sale;
-    FounderInvestors public founderInvestors;
-    EarlyContributors public earlyContributors;
-    KOLsAdvisors public kolsAdvisors;
+    address public founderInvestors;
+    address public earlyContributors;
+    address public kolsAdvisors;
     address public treasury;
     ReputationMining public reputationMining;
     Distributor public distributor;
