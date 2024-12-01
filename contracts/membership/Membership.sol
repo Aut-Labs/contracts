@@ -19,9 +19,9 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         mapping(address => uint32) withdrawn; // TODO
         mapping(address => uint256) currentRole;
         mapping(address => uint8) currentCommitment;
-        mapping(uint32 periodId => uint128 commitmentSum) commitmentSums;
+        mapping(uint32 period => uint128 commitmentSum) commitmentSums;
         EnumerableSet.AddressSet members;
-        mapping(address who => mapping(uint32 periodId => MemberDetail)) memberDetails;
+        mapping(address who => mapping(uint32 period => MemberDetail)) memberDetails;
     }
 
     // keccak256(abi.encode(uint256(keccak256("aut.storage.Membership")) - 1))
@@ -42,9 +42,9 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         _disableInitializers();
     }
 
-    function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
+    function initialize(address _hub) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
-        _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
+        _init_PeriodUtils();
     }
 
     // -----------------------------------------------------------
@@ -76,9 +76,9 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         return $.currentCommitment[who];
     }
 
-    function commitmentSums(uint32 periodId) public view returns (uint128) {
+    function commitmentSums(uint32 period) public view returns (uint128) {
         MembershipStorage storage $ = _getMembershipStorage();
-        return $.commitmentSums[periodId];
+        return $.commitmentSums[period];
     }
 
     /// @inheritdoc IMembership
@@ -99,36 +99,36 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         return $.members.length();
     }
 
-    function memberDetails(address who, uint32 periodId) external view returns (MemberDetail memory) {
+    function memberDetails(address who, uint32 period) external view returns (MemberDetail memory) {
         MembershipStorage storage $ = _getMembershipStorage();
-        return $.memberDetails[who][periodId];
+        return $.memberDetails[who][period];
     }
 
     /// @inheritdoc IMembership
-    function getPeriodIdJoined(address who) public view returns (uint32) {
-        uint32 periodIdJoined = getPeriodId(joinedAt(who));
-        if (periodIdJoined == 0) revert MemberDoesNotExist();
-        return periodIdJoined;
+    function getPeriodJoined(address who) public view returns (uint32) {
+        uint32 periodJoined = periodId(joinedAt(who));
+        if (periodJoined == 0) revert MemberDoesNotExist();
+        return periodJoined;
     }
 
     /// @inheritdoc IMembership
-    function getPeriodIdsJoined(address[] calldata whos) external view returns (uint32[] memory) {
+    function getPeriodsJoined(address[] calldata whos) external view returns (uint32[] memory) {
         uint256 length = whos.length;
         uint32[] memory pis = new uint32[](length);
         for (uint256 i = 0; i < length; i++) {
-            pis[i] = getPeriodIdJoined({who: whos[i]});
+            pis[i] = getPeriodJoined({who: whos[i]});
         }
         return pis;
     }
 
     /// @inheritdoc IMembership
-    function getCommitment(address who, uint32 periodId) public view returns (uint8) {
-        if (periodId < getPeriodIdJoined(who)) revert MemberHasNotYetCommited();
+    function getCommitment(address who, uint32 period) public view returns (uint8) {
+        if (period < getPeriodJoined(who)) revert MemberHasNotYetCommited();
 
         MembershipStorage storage $ = _getMembershipStorage();
-        MemberDetail memory memberDetail = $.memberDetails[who][periodId];
+        MemberDetail memory memberDetail = $.memberDetails[who][period];
         if (memberDetail.commitment != 0) {
-            // user has changed their commitment in a period following `periodId`.  We know this becuase
+            // user has changed their commitment in a period following `period`.  We know this becuase
             // memberDetail.commitment state is non-zero as it is written following a commitment change.
             return memberDetail.commitment;
         } else {
@@ -138,36 +138,33 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc IMembership
-    function getCommitments(
-        address[] calldata whos,
-        uint32[] calldata periodIds
-    ) external view returns (uint8[] memory) {
+    function getCommitments(address[] calldata whos, uint32[] calldata period) external view returns (uint8[] memory) {
         uint256 length = whos.length;
-        require(length == periodIds.length);
+        require(length == period.length);
         uint8[] memory commitments = new uint8[](length);
         for (uint256 i = 0; i < length; i++) {
-            commitments[i] = getCommitment({who: whos[i], periodId: periodIds[i]});
+            commitments[i] = getCommitment({who: whos[i], period: period[i]});
         }
         return commitments;
     }
 
     /// @inheritdoc IMembership
-    function getCommitmentSum(uint32 periodId) public view returns (uint128) {
-        uint32 currentPeriodId_ = currentPeriodId();
-        if (periodId < initPeriodId() || periodId > currentPeriodId_) revert InvalidPeriodId();
-        if (periodId == currentPeriodId_) {
+    function getCommitmentSum(uint32 period) public view returns (uint128) {
+        uint32 currentPeriod = currentPeriodId();
+        if (period == 0 || period > currentPeriod) revert InvalidPeriodId();
+        if (period == currentPeriod) {
             return commitmentSum();
         } else {
-            return commitmentSums(periodId);
+            return commitmentSums(period);
         }
     }
 
     /// @inheritdoc IMembership
-    function getCommitmentSums(uint32[] calldata periodIds) external view returns (uint128[] memory) {
-        uint256 length = periodIds.length;
+    function getCommitmentSums(uint32[] calldata periods) external view returns (uint128[] memory) {
+        uint256 length = periods.length;
         uint128[] memory sums = new uint128[](length);
         for (uint256 i = 0; i < length; i++) {
-            sums[i] = getCommitmentSum({periodId: periodIds[i]});
+            sums[i] = getCommitmentSum({period: periods[i]});
         }
         return sums;
     }
@@ -206,17 +203,13 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         if (newCommitment > 10 || newCommitment < IHub(hub()).commitment()) revert InvalidCommitment();
 
         // only allow commitments for the first week
-        if (block.timestamp > TimeLibrary.periodStart(uint32(block.timestamp)) + TimeLibrary.WEEK)
-            revert TooLateCommitmentChange();
+        if (block.timestamp > currentPeriodStart() + TimeLibrary.WEEK) revert TooLateCommitmentChange();
 
-        uint32 periodIdJoined = getPeriodIdJoined(msg.sender);
-        uint32 currentPeriodId = TimeLibrary.periodId({
-            period0Start: period0Start(),
-            timestamp: uint32(block.timestamp)
-        });
+        uint32 periodJoined = getPeriodJoined(msg.sender);
+        uint32 currentPeriod = currentPeriodId(); // gas
 
         // write to storage for all 0 values- as the $.currentCommitment is now different
-        for (uint32 i = currentPeriodId; i > periodIdJoined - 1; i--) {
+        for (uint32 i = currentPeriod; i > periodJoined - 1; i--) {
             MemberDetail storage memberDetail = $.memberDetails[msg.sender][i];
             if (memberDetail.commitment == 0) {
                 memberDetail.commitment = oldCommitment;
@@ -232,12 +225,12 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         emit ChangeCommitment({who: msg.sender, oldCommitment: oldCommitment, newCommitment: newCommitment});
     }
 
-    // function canSeal(uint32 periodId) external view returns (bool) {
-    //     PeriodSummary memory periodSummary = periodSummaries[periodId];
+    // function canSeal(uint32 period) external view returns (bool) {
+    //     PeriodSummary memory periodSummary = periodSummaries[period];
     //     if (periodSummary.isSealed) return false;
     //     uint256 length = members.length;
     //     for (uint256 i = 0; i < length; i++) {
-    //         if (participations[members[i]][periodId].score == 0) {
+    //         if (participations[members[i]][period].score == 0) {
     //             return false;
     //         }
     //     }
@@ -245,9 +238,9 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
     // }
 
     // TODO: role other than admin?
-    // function seal(uint32 periodId) external {
+    // function seal(uint32 period) external {
     //     _revertForNotAdmin(msg.sender);
-    //     PeriodSummary storage periodSummary = periodSummaries[periodId];
+    //     PeriodSummary storage periodSummary = periodSummaries[period];
     //     if (periodSummary.isSealed) revert PeriodAlreadySealed();
     //     periodSummary.isSealed = true;
     // }

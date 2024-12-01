@@ -6,7 +6,6 @@ import "test/BaseTest.sol";
 contract TaskManagerGiveContributionTest is BaseTest {
     // Generic contribution values
     bytes32 taskId;
-    bytes32 descriptionId;
     uint256 role = 1;
     uint32 startDate;
     uint32 endDate;
@@ -28,12 +27,11 @@ contract TaskManagerGiveContributionTest is BaseTest {
 
         // init Contribution for testing
         taskId = taskRegistry.registerTask(Task({uri: "abcde"}));
-        descriptionId = taskFactory.registerDescription(Description({uri: "fghij"}));
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;
         contribution = Contribution({
             taskId: taskId,
-            descriptionId: descriptionId,
+            uri: uri,
             role: role,
             startDate: startDate,
             endDate: endDate,
@@ -56,10 +54,10 @@ contract TaskManagerGiveContributionTest is BaseTest {
     }
 
     function test_GiveContribution_succeeds() public {
-        uint32 currentPeriodId = taskManager.currentPeriodId();
+        uint32 currentPeriod = taskManager.currentPeriodId();
 
         // pre-action asserts
-        MemberActivity memory memberActivity = taskManager.getMemberActivity(bob, currentPeriodId);
+        MemberActivity memory memberActivity = taskManager.getMemberActivity(bob, currentPeriod);
         assertEq(memberActivity.pointsGiven, 0);
         assertEq(memberActivity.contributionIds.length, 0);
 
@@ -71,7 +69,7 @@ contract TaskManagerGiveContributionTest is BaseTest {
         });
 
         // post-action asserts (TODO)
-        // memberActivity = taskManager.getMemberActivity(bob, currentPeriodId);
+        // memberActivity = taskManager.getMemberActivity(bob, currentPeriod);
         // assertEq(memberActivity.pointsGiven, points);
         // assertEq(memberActivity.contributionIds.length, 1);
         // assertEq(memberActivity.contributionIds[0], contributionId);

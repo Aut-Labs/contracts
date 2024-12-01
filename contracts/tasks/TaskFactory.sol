@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {ITaskRegistry} from "./interfaces/ITaskRegistry.sol";
 import {ITaskManager} from "./interfaces/ITaskManager.sol";
-import {Contribution, Description, ITaskFactory} from "./interfaces/ITaskFactory.sol";
+import {Contribution, ITaskFactory} from "./interfaces/ITaskFactory.sol";
 import {AccessUtils} from "../utils/AccessUtils.sol";
 import {PeriodUtils} from "../utils/PeriodUtils.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
@@ -12,54 +12,21 @@ import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet
 contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
-    EnumerableSet.Bytes32Set private _descriptionIds;
-    mapping(bytes32 => Description) private _descriptions;
-
     EnumerableSet.Bytes32Set private _contributionIds;
     mapping(bytes32 => Contribution) public _contributions;
-    mapping(uint32 periodId => bytes32[] contributionIds) public _contributionIdsInPeriod;
+    mapping(uint32 period => bytes32[] contributionIds) public _contributionIdsInPeriod;
 
     function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
-        return (0, 1, 0);
+        return (0, 1, 2);
     }
 
     constructor() {
         _disableInitializers();
     }
 
-    function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
+    function initialize(address _hub) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
-        _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
-    }
-
-    /// @inheritdoc ITaskFactory
-    function registerDescriptions(Description[] calldata descriptions) external returns (bytes32[] memory) {
-        _revertIfNotAdmin();
-        uint256 length = descriptions.length;
-        bytes32[] memory newDescriptionIds = new bytes32[](length);
-        for (uint256 i = 0; i < length; i++) {
-            newDescriptionIds[i] = _registerDescription(descriptions[i]);
-        }
-
-        return newDescriptionIds;
-    }
-
-    /// @inheritdoc ITaskFactory
-    function registerDescription(Description calldata description) external returns (bytes32) {
-        _revertIfNotAdmin();
-        return _registerDescription(description);
-    }
-
-    function _registerDescription(Description memory description) internal returns (bytes32) {
-        bytes32 descriptionId = calcDescriptionId(description);
-
-        if (!_descriptionIds.add(descriptionId)) revert DescriptionAlreadyRegistered();
-
-        _descriptions[descriptionId] = description;
-
-        emit RegisterDescription(descriptionId);
-
-        return descriptionId;
+        _init_PeriodUtils();
     }
 
     /// @inheritdoc ITaskFactory
@@ -107,7 +74,7 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
             sender: msg.sender,
             hub: hub(),
             taskId: contribution.taskId,
-            descriptionId: contribution.descriptionId,
+            uri: contribution.uri,
             role: contribution.role,
             startDate: contribution.startDate,
             endDate: contribution.endDate,
@@ -161,19 +128,8 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskFactory
-    function getDescriptionById(bytes32 descriptionId) external view returns (Description memory) {
-        return _descriptions[descriptionId];
-    }
-
-    /// @inheritdoc ITaskFactory
     function getContributionById(bytes32 contributionId) external view returns (Contribution memory) {
         return _contributions[contributionId];
-    }
-
-    /// @inheritdoc ITaskFactory
-    function getDescriptionByIdEncoded(bytes32 descriptionId) external view returns (bytes memory) {
-        Description memory description = _descriptions[descriptionId];
-        return encodeDescription(description);
     }
 
     /// @inheritdoc ITaskFactory
@@ -183,18 +139,8 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskFactory
-    function isDescriptionId(bytes32 descriptionId) public view returns (bool) {
-        return _descriptionIds.contains(descriptionId);
-    }
-
-    /// @inheritdoc ITaskFactory
     function isContributionId(bytes32 contributionId) public view returns (bool) {
         return _contributionIds.contains(contributionId);
-    }
-
-    /// @inheritdoc ITaskFactory
-    function descriptionIds() external view returns (bytes32[] memory) {
-        return _descriptionIds.values();
     }
 
     /// @inheritdoc ITaskFactory
@@ -203,13 +149,8 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskFactory
-    function contributionIdsInPeriod(uint32 periodId) external view returns (bytes32[] memory) {
-        return _contributionIdsInPeriod[periodId];
-    }
-
-    /// @inheritdoc ITaskFactory
-    function encodeDescription(Description memory description) public pure returns (bytes memory) {
-        return abi.encodePacked(description.uri);
+    function contributionIdsInPeriod(uint32 period) external view returns (bytes32[] memory) {
+        return _contributionIdsInPeriod[period];
     }
 
     /// @inheritdoc ITaskFactory
@@ -217,18 +158,13 @@ contract TaskFactory is ITaskFactory, Initializable, PeriodUtils, AccessUtils {
         return
             abi.encodePacked(
                 contribution.taskId,
-                contribution.descriptionId,
+                contribution.uri,
                 contribution.role,
                 contribution.startDate,
                 contribution.endDate,
                 contribution.points,
                 contribution.quantity
             );
-    }
-
-    /// @inheritdoc ITaskFactory
-    function calcDescriptionId(Description memory description) public pure returns (bytes32) {
-        return keccak256(encodeDescription(description));
     }
 
     /// @inheritdoc ITaskFactory

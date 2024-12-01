@@ -3,7 +3,6 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./IGlobalParameters.sol";
-import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
 contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
     // slot 1
@@ -33,7 +32,6 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
     // Slot 3
     uint64 public credibleNeutrality6ExpExpiresAt;
 
-    uint32 public period0Start;
     uint128 public penaltyFactor;
     uint128 public constraintFactor;
 
@@ -56,9 +54,6 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
 
     /// @dev fill with default values
     function initialize() external initializer {
-        period0Start = TimeLibrary.periodStart({timestamp: uint32(block.timestamp)});
-        periodDuration = TimeLibrary.FOUR_WEEKS;
-
         constraintFactor = 4e17; // 40%
         penaltyFactor = 4e17; // 40%
 
@@ -67,10 +62,6 @@ contract GlobalParameters is IGlobalParameters, OwnableUpgradeable {
         penaltyFactor3Exp = 600; // TODO: scale properly
         constrainingFactor6Exp = 1_400_000;
         credibleNeutrality6Exp = 1_300_000;
-    }
-
-    function currentPeriodId() external view returns (uint32) {
-        return TimeLibrary.periodId({period0Start: period0Start, timestamp: uint32(block.timestamp)});
     }
 
     function stagePeriodDuration(uint32 nextPeriodDuration) external {

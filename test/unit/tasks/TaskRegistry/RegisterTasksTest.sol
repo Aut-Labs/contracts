@@ -8,7 +8,7 @@ contract TaskRegistryRegisterTasksUnitTest is BaseTest {
     function setUp() public override {
         super.setUp();
         bytes32[] memory taskIds = taskRegistry.taskIds();
-        assertEq(taskIds.length, 3); // registered in DeployAll
+        assertEq(taskIds.length, 11); // registered in DeployAll
     }
 
     function test_RegisterTasks_succeeds() public {
@@ -26,7 +26,7 @@ contract TaskRegistryRegisterTasksUnitTest is BaseTest {
         bytes32[] memory taskIds = taskRegistry.taskIds();
         assertEq({
             left: taskIds.length,
-            right: 6, // 3 registered in DeployAll, 3 registered here
+            right: 14, // 11 registered in DeployAll, 3 registered here
             err: "Incorrect amount of task ids"
         });
     }

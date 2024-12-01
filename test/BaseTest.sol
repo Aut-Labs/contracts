@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "script/DeployAll.s.sol";
 import { Hub } from "contracts/hub/Hub.sol";
 import { TaskRegistry, ITaskRegistry, Task } from "contracts/tasks/TaskRegistry.sol";
-import { TaskFactory, ITaskFactory, Contribution, Description } from "contracts/tasks/TaskFactory.sol";
+import { TaskFactory, ITaskFactory, Contribution } from "contracts/tasks/TaskFactory.sol";
 import { TaskManager, ITaskManager, MemberActivity } from "contracts/tasks/TaskManager.sol";
 
 import { console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, stdJson, stdMath, StdStorage, stdStorage, StdUtils, Vm, StdStyle, TestBase, Test } from "forge-std/Test.sol";
@@ -91,7 +91,7 @@ abstract contract BaseTest is Test {
         address who,
         address hubAddress,
         bytes32 taskId,
-        bytes32 descriptionId,
+        string memory uri,
         uint256 role,
         uint32 startDate,
         uint32 endDate,
@@ -101,7 +101,7 @@ abstract contract BaseTest is Test {
         vm.prank(who);
         Contribution memory contribution = Contribution({
             taskId: taskId,
-            descriptionId: descriptionId,
+            uri: uri,
             role: role,
             startDate: startDate,
             endDate: endDate,

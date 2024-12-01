@@ -9,11 +9,12 @@ import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IMembership} from "../membership/IMembership.sol";
 // import {OnboardingModule} from "../modules/onboarding/OnboardingModule.sol";
 import {HubUtils} from "./HubUtils.sol";
+import {PeriodUtils} from "../utils/PeriodUtils.sol";
 import {IHub} from "./interfaces/IHub.sol";
 import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
 import {Domain, IHubDomainsRegistry} from "./interfaces/IHubDomainsRegistry.sol";
 
-contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
+contract Hub is IHub, HubUtils, PeriodUtils, OwnableUpgradeable, HubUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
 
@@ -40,9 +41,6 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         uint256 archetype;
         uint256 market;
         string uri;
-        uint32 initTimestamp;
-        uint32 initPeriodId;
-        uint32 period0Start;
         EnumerableSet.AddressSet admins;
         EnumerableSet.UintSet roles;
         string[] urls;
@@ -94,9 +92,7 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         _setCommitment(_commitment);
         _setUri(_uri);
 
-        $.initTimestamp = uint32(block.timestamp);
-        $.period0Start = IGlobalParameters(_globalParameters).period0Start();
-        $.initPeriodId = TimeLibrary.periodId({period0Start: $.period0Start, timestamp: uint32(block.timestamp)});
+        _init_PeriodUtils();
     }
 
     /// @dev contracts specific to this hub
@@ -242,21 +238,6 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         return $.uri;
     }
 
-    function initTimestamp() external view returns (uint32) {
-        HubStorage storage $ = _getHubStorage();
-        return $.initTimestamp;
-    }
-
-    function initPeriodId() external view returns (uint32) {
-        HubStorage storage $ = _getHubStorage();
-        return $.initPeriodId;
-    }
-
-    function period0Start() external view returns (uint32) {
-        HubStorage storage $ = _getHubStorage();
-        return $.period0Start;
-    }
-
     /// @inheritdoc IHub
     function membersCount() external view returns (uint256) {
         return IMembership(membership()).membersCount();
@@ -283,11 +264,11 @@ contract Hub is IHub, HubUtils, OwnableUpgradeable, HubUpgradeable {
         return currentRole(who) == role;
     }
 
-    function hadRole(address who, uint256 role, uint32 periodId) external view returns (bool) {
+    function hadRole(address who, uint256 role, uint32 period) external view returns (bool) {
         // TODO
     }
 
-    function roleAtPeriod(address who, uint32 periodId) public view returns (uint256) {
+    function roleAtPeriod(address who, uint32 period) public view returns (uint256) {
         // TODO
     }
 

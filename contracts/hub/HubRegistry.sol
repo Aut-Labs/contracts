@@ -95,18 +95,6 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
     }
 
     /// @inheritdoc IHubRegistry
-    function currentPeriodId() public view returns (uint32) {
-        HubRegistryStorage storage $ = _getHubRegistryStorage();
-        return IGlobalParameters($.globalParameters).currentPeriodId();
-    }
-
-    /// @inheritdoc IHubRegistry
-    function period0Start() public view returns (uint32) {
-        HubRegistryStorage storage $ = _getHubRegistryStorage();
-        return IGlobalParameters($.globalParameters).period0Start();
-    }
-
-    /// @inheritdoc IHubRegistry
     function deployHub(
         uint256[] calldata roles,
         uint256 market,
@@ -134,7 +122,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         hub = address(new BeaconProxy(address($.upgradeableBeacon), data));
 
         // data for all hub-owned modules
-        data = abi.encodeCall(IHubModule.initialize, (hub, period0Start(), currentPeriodId()));
+        data = abi.encodeCall(IHubModule.initialize, (hub));
 
         // deploy taskFactory
         address taskFactory = address(new AutProxy($.taskFactoryImplementation, _msgSender(), data));
