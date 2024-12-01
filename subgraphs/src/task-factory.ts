@@ -11,6 +11,7 @@ export function handleCreateContribution(event: CreateContribution): void {
   contribution.points = event.params.points
   contribution.quantity = event.params.quantity
   contribution.descriptionId = event.params.descriptionId
+  contribution.hubAddress = event.params.hub
 
   contribution.creator = event.params.sender
   contribution.blockNumber = event.block.number

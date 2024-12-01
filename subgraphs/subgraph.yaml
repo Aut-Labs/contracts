@@ -133,3 +133,25 @@ dataSources:
         - event: RegisterTask(indexed bytes32,indexed address,string)
           handler: handleRegisterTask
       file: ./src/task-registry.ts
+  - kind: ethereum
+    name: TaskManager
+    network: polygon-amoy
+    source:
+      abi: TaskManager
+      address: "0x79cdF78a53CD97ee4001650d189802DbCcd0194A"
+      startBlock: 13733721
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - ContributionCommit
+      abis:
+        - name: TaskManager
+          file: ../out/TaskManager.sol/TaskManager.json
+      eventHandlers:
+        - event: CommitContribution(indexed bytes32,indexed address,indexed address,address,bytes)
+          handler: handleCommitContribution
+        - event: GiveContribution(indexed bytes32,indexed address,indexed address,uint32,address,uint8,uint32,uint128)
+          handler: handleGiveContribution
+      file: ./src/task-manager.ts
