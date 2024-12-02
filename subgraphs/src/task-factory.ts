@@ -10,7 +10,7 @@ export function handleCreateContribution(event: CreateContribution): void {
   contribution.endDate = event.params.endDate
   contribution.points = event.params.points
   contribution.quantity = event.params.quantity
-  contribution.descriptionId = event.params.descriptionId
+  contribution.uri = event.params.uri
   contribution.hubAddress = event.params.hub
 
   contribution.creator = event.params.sender

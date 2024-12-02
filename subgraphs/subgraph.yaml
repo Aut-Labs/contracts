@@ -8,8 +8,8 @@ dataSources:
     name: AutID
     network: polygon-amoy
     source:
-      address: "0x5a0edC1b9cBE80bd7121d19708B6CB972Ede8C5A"
-      startBlock: 13733721
+      address: "0x3738d0a8D3F28ec948eDDf370496E99d3D69504F"
+      startBlock: 15106808
       abi: AutID
     mapping:
       kind: ethereum/events
@@ -32,9 +32,9 @@ dataSources:
     name: HubRegistry
     network: polygon-amoy
     source:
-      address: "0x89A852a3DAA7D68194ce8F0440EA3E09f66246FC"
+      address: "0x9703A5D8Be7c3c1cA6b5B0E0cD32198463F17D8F"
       abi: HubRegistry
-      startBlock: 13733721
+      startBlock: 15106808
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -53,7 +53,7 @@ dataSources:
     network: polygon-amoy
     source:
       abi: Hub
-      startBlock: 13733721
+      startBlock: 15106808
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -78,8 +78,8 @@ dataSources:
     network: polygon-amoy
     source:
       abi: HubDomainsRegistry
-      address: "0x6692f0DA83E17170d1aA25509383763d60afF253"
-      startBlock: 13733721
+      address: "0x42282F55b3f6659aFAa0d42c10c65B1fC7B2BD72"
+      startBlock: 15106808
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -99,7 +99,7 @@ dataSources:
     network: polygon-amoy
     source:
       abi: TaskFactory
-      startBlock: 13733721
+      startBlock: 15106808
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -110,7 +110,7 @@ dataSources:
         - name: TaskFactory
           file: ../out/TaskFactory.sol/TaskFactory.json
       eventHandlers:
-        - event: CreateContribution(indexed bytes32,indexed address,indexed address,bytes32,bytes32,uint256,uint32,uint32,uint32,uint128)
+        - event: CreateContribution(indexed bytes32,indexed address,indexed address,bytes32,string,uint256,uint32,uint32,uint32,uint128)
           handler: handleCreateContribution
       file: ./src/task-factory.ts
   - kind: ethereum
@@ -118,8 +118,8 @@ dataSources:
     network: polygon-amoy
     source:
       abi: TaskRegistry
-      address: "0x16ba349260FfFA0f760ED0bA212A566BA15E06fc"
-      startBlock: 13733721
+      address: "0x22979DA0e9A3BD4e389d6fCEF64D107D58f4c9c9"
+      startBlock: 15106808
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -138,8 +138,8 @@ dataSources:
     network: polygon-amoy
     source:
       abi: TaskManager
-      address: "0x79cdF78a53CD97ee4001650d189802DbCcd0194A"
-      startBlock: 13733721
+      address: "0x74d119b92923F65D80074332d831e21ab8147C93"
+      startBlock: 15106808
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
