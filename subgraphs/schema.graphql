@@ -38,7 +38,6 @@ type Hub @entity(immutable: false) {
 type Domain @entity {
   id: ID!
   hubAddress: Bytes!
-  owner: Bytes!
   metadataUri: String!
   tokenId: BigInt!
 }
@@ -46,13 +45,28 @@ type Domain @entity {
 type Contribution @entity {
   id: ID!
   taskId: Bytes!
-  role: String!
+  role: BigInt!
   startDate: BigInt!
   endDate: BigInt!
-  points: Int!
-  quantity: Int!
-  description: String!
+  points: BigInt!
+  quantity: BigInt!
+  uri: String!
+  hubAddress: Bytes!
   creator: Bytes!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ContributionCommit @entity {
+  id: ID!
+  contribution: Contribution!
+  sender: Bytes!
+  hub: Bytes!
+  data: Bytes!
+  who: Bytes!
+  status: Int! # 1: pending, 2: inactive, 3: completed
+  points: BigInt!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

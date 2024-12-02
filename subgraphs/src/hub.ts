@@ -15,9 +15,9 @@ export function handleAdminGranted(event: AdminGranted): void {
   if (hubAdmin == null) {
     hubAdmin = new HubAdmin(id);
   }
-  hubAdmin.autID = id;
-  hubAdmin.hubAddress = event.params.hubAddress;
-  hubAdmin.save();
+  // hubAdmin.autID = id;
+  // hubAdmin.hubAddress = event.params.hubAddress;
+  // hubAdmin.save();
 }
 
 export function handleHubCreated(event: HubCreated): void {
