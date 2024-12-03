@@ -59,6 +59,7 @@ contract DeployAll is Script {
     address public treasury;
     address public profitSharing;
     address public circular;
+    address public reputationMiningSafe;
     ReputationMining public reputationMining;
     Distributor public distributor;
     RandomNumberGenerator public randomNumberGenerator;
@@ -97,6 +98,7 @@ contract DeployAll is Script {
             founderInvestors = vm.envAddress("MAINNET_FOUNDER_INVESTORS_MULTISIG");
             earlyContributors = vm.envAddress("MAINNET_EARLY_CONTRIBUTORS_MULTISIG");
             kolsAdvisors = vm.envAddress("MAINNET_KOLS_ADVISORS_MULTISIG");
+            reputationMiningSafe = vm.envAddress("MAINNET_REPUTATION_MINING_MULTISIG");
         } else if (block.chainid == 80002) {
             owner = vm.envAddress("TESTNET_OWNER_ADDRESS");
             initialContributionManager = vm.envAddress("TESTNET_INITIAL_CONTRIBUTION_MANAGER");
@@ -114,6 +116,7 @@ contract DeployAll is Script {
             founderInvestors = vm.envAddress("TESTNET_FOUNDER_INVESTORS_MULTISIG");
             earlyContributors = vm.envAddress("TESTNET_EARLY_CONTRIBUTORS_MULTISIG");
             kolsAdvisors = vm.envAddress("TESTNET_KOLS_ADVISORS_MULTISIG");
+            reputationMiningSafe = vm.envAddress("TESTNET_REPUTATION_MINING_MULTISIG");
         } else {
             // testing
             privateKey = 567890;
@@ -130,6 +133,7 @@ contract DeployAll is Script {
             founderInvestors = makeAddr("foundersInvestors");
             earlyContributors = makeAddr("earlyContributors");
             kolsAdvisors = makeAddr("kolsAdvisors");
+            reputationMiningSafe = makeAddr("reputationMiningSafe");
         }
         console.log("setUp -- done");
 
@@ -228,7 +232,7 @@ contract DeployAll is Script {
         distributor = deployDistributor(
             aut,
             sale,
-            address(reputationMining),
+            reputationMiningSafe,
             airdrop,
             founderInvestors,
             earlyContributors,
