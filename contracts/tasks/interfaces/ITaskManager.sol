@@ -170,9 +170,11 @@ interface ITaskManager {
     function getMemberContributionIds(address who, uint32 period) external view returns (bytes32[] memory);
 
     /// @notice return the amount of outstanding contribution points for a provided period
+    /// @dev Will return bad data if querying the last / current period and writePointSummary() has not been called
     function getPointsActive(uint32 period) external view returns (uint128);
 
     /// @notice return the amount of given contribution points for a provided period
+    /// @dev Will return bad data if querying the last / current period and writePointSummary() has not been called
     function getPointsGiven(uint32 period) external view returns (uint128);
 
     /// @notice return the contributionId's given for the whole hub for a provided period

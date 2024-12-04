@@ -354,12 +354,20 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
 
     /// @inheritdoc ITaskManager
     function getPointsActive(uint32 period) external view returns (uint128) {
-        return pointSummaries[period].pointsActive;
+        if (period == currentPeriodId()) {
+            return pointsActive;
+        } else {
+            return pointSummaries[period].pointsActive;
+        }
     }
 
     /// @inheritdoc ITaskManager
     function getPointsGiven(uint32 period) external view returns (uint128) {
-        return pointSummaries[period].pointsGiven;
+        if (period == currentPeriodId()) {
+            return pointsGiven;
+        } else {
+            return pointSummaries[period].pointsGiven;
+        }
     }
 
     /// @inheritdoc ITaskManager
