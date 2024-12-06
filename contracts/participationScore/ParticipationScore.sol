@@ -61,7 +61,12 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         uint32 period
     ) public view returns (uint128) {
         if (period == 0 || period > currentPeriodId()) revert InvalidPeriodId();
-        return _calcPerformanceInPeriod({commitmentLevel: commitmentLevel, sumPointsGiven: sumPointsGiven, period: period});
+        return
+            _calcPerformanceInPeriod({
+                commitmentLevel: commitmentLevel,
+                sumPointsGiven: sumPointsGiven,
+                period: period
+            });
     }
 
     /// @inheritdoc IParticipationScore
@@ -87,7 +92,10 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         uint128 sumPointsGiven,
         uint32 period
     ) internal view returns (uint128) {
-        uint128 expectedContributionPoints = _calcExpectedContributionPoints({commitmentLevel: commitmentLevel, period: period});
+        uint128 expectedContributionPoints = _calcExpectedContributionPoints({
+            commitmentLevel: commitmentLevel,
+            period: period
+        });
         uint128 performance = (1e18 * sumPointsGiven) / expectedContributionPoints;
         return performance;
     }

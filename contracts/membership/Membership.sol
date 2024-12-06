@@ -138,7 +138,10 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc IMembership
-    function getCommitmentLevels(address[] calldata whos, uint32[] calldata period) external view returns (uint8[] memory) {
+    function getCommitmentLevels(
+        address[] calldata whos,
+        uint32[] calldata period
+    ) external view returns (uint8[] memory) {
         uint256 length = whos.length;
         require(length == period.length);
         uint8[] memory commitments = new uint8[](length);
@@ -222,7 +225,11 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         $.currentCommitmentLevel[msg.sender] = newCommitmentLevel;
         $.sumCommitmentLevel = $.sumCommitmentLevel - uint128(oldCommitment) + uint128(newCommitmentLevel);
 
-        emit ChangeCommitmentLevel({who: msg.sender, oldCommitment: oldCommitment, newCommitmentLevel: newCommitmentLevel});
+        emit ChangeCommitmentLevel({
+            who: msg.sender,
+            oldCommitment: oldCommitment,
+            newCommitmentLevel: newCommitmentLevel
+        });
     }
 
     // function canSeal(uint32 period) external view returns (bool) {

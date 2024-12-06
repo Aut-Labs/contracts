@@ -188,7 +188,11 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         $.upgradeableBeacon.transferOwnership(newOwner);
     }
 
-    function _validateHubDeploymentParams(uint256 market, string memory metadata, uint256 commitmentLevel) internal pure {
+    function _validateHubDeploymentParams(
+        uint256 market,
+        string memory metadata,
+        uint256 commitmentLevel
+    ) internal pure {
         require(market > 0 && market < 6, "HubRegistry: invalid market value");
         require(bytes(metadata).length != 0, "HubRegistry: metadata empty");
         require(commitmentLevel > 0 && commitmentLevel < 11, "HubRegistry: invalid commitmentLevel value");

@@ -43,7 +43,10 @@ interface IMembership {
     function getCommitmentLevel(address who, uint32 period) external view returns (uint8 commitmentLevel);
 
     /// @notice get the commitmentLevel level of an array of members at a particular period id
-    function getCommitmentLevels(address[] calldata whos, uint32[] calldata periods) external view returns (uint8[] memory);
+    function getCommitmentLevels(
+        address[] calldata whos,
+        uint32[] calldata periods
+    ) external view returns (uint8[] memory);
 
     /// @notice get the cumulative commitmentLevel by members at a given period id
     function getSumCommitmentLevel(uint32 period) external view returns (uint128 sumCommitmentLevel);

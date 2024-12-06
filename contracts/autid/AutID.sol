@@ -154,7 +154,12 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         _revertForCanNotJoinHub(hub, account, role);
         _revertForMinCommitmentNotReached(hub, commitmentLevel);
 
-        IHubRegistry(hubRegistryAddress).join({hub: hub, member: account, role: role, commitmentLevel: commitmentLevel});
+        IHubRegistry(hubRegistryAddress).join({
+            hub: hub,
+            member: account,
+            role: role,
+            commitmentLevel: commitmentLevel
+        });
 
         emit HubJoined(account, role, commitmentLevel, hub);
     }
