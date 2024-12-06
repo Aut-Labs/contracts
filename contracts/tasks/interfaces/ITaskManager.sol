@@ -17,9 +17,9 @@ struct ContributionStatus {
 
 struct PointSummary {
     bool isSealed;
-    uint128 pointsActive;
-    uint128 pointsGiven;
-    uint128 pointsRemoved;
+    uint128 sumPointsActive;
+    uint128 sumPointsGiven;
+    uint128 sumPointsRemoved;
 }
 
 struct MemberActivity {
@@ -84,13 +84,13 @@ interface ITaskManager {
     function initialize2(address _initialContributionManager) external;
 
     /// @notice Get the amount of outstanding Contribution points for the current period
-    function pointsActive() external view returns (uint128);
+    function sumPointsActive() external view returns (uint128);
 
     /// @notice Get the amount of Contribution points given for the current period
-    function periodPointsGiven() external view returns (uint128);
+    function sumPointsGiven() external view returns (uint128);
 
     /// @notice Get the amount of Contribution points removed for the current period
-    function periodPointsRemoved() external view returns (uint128);
+    function sumPointsRemoved() external view returns (uint128);
 
     // ContributionManager-management
 
@@ -170,10 +170,10 @@ interface ITaskManager {
     function getMemberContributionIds(address who, uint32 period) external view returns (bytes32[] memory);
 
     /// @notice return the amount of outstanding contribution points for a provided period
-    function getPointsActive(uint32 period) external view returns (uint128);
+    function getSumPointsActive(uint32 period) external view returns (uint128);
 
     /// @notice return the amount of given contribution points for a provided period
-    function getPointsGiven(uint32 period) external view returns (uint128);
+    function getSumPointsGiven(uint32 period) external view returns (uint128);
 
     /// @notice return the contributionId's given for the whole hub for a provided period
     function getGivenContributions(uint32 period) external view returns (bytes32[] memory);

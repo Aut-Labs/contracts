@@ -9,7 +9,7 @@ struct HubContracts {
 }
 
 interface IHubRegistry {
-    event HubCreated(address deployer, address hubAddress, uint256 market, uint256 commitment, string metadata);
+    event HubCreated(address deployer, address hubAddress, uint256 market, uint256 commitmentLevel, string metadata);
 
     /// @notice return true if a given address is a hub
     function isHub(address) external view returns (bool);
@@ -49,10 +49,10 @@ interface IHubRegistry {
         uint256[] calldata roles,
         uint256 market,
         string memory metadata,
-        uint256 commitment
+        uint256 commitmentLevel
     ) external returns (address hub);
 
     /// @notice join a hub for a member
     /// @dev must be called through AutId.joinHub()
-    function join(address hub, address member, uint256 role, uint8 commitment) external;
+    function join(address hub, address member, uint256 role, uint8 commitmentLevel) external;
 }

@@ -15,7 +15,7 @@ contract AutIDCreateRecordandJoinHubUnitTest is BaseTest {
         vm.prank(bob);
         autId.createRecordAndJoinHub({
             role: 1,
-            commitment: 1,
+            commitmentLevel: 1,
             hub: address(hub),
             username: "bob",
             optionalURI: "https://facebook.com/bob"
