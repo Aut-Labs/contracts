@@ -99,9 +99,9 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         uint256[] calldata roles,
         uint256 market,
         string memory metadata,
-        uint256 commitment
+        uint256 commitmentLevel
     ) external returns (address hub) {
-        _validateHubDeploymentParams(market, metadata, commitment);
+        _validateHubDeploymentParams(market, metadata, commitmentLevel);
 
         HubRegistryStorage storage $ = _getHubRegistryStorage();
 
@@ -115,7 +115,7 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
                 $.globalParameters,
                 roles,
                 market,
-                commitment,
+                commitmentLevel,
                 metadata
             )
         );
@@ -157,16 +157,16 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
             participation: participation
         });
 
-        emit HubCreated(_msgSender(), hub, market, commitment, metadata);
+        emit HubCreated(_msgSender(), hub, market, commitmentLevel, metadata);
     }
 
     /// @inheritdoc IHubRegistry
-    function join(address hub, address who, uint256 role, uint8 commitment) external {
+    function join(address hub, address who, uint256 role, uint8 commitmentLevel) external {
         HubRegistryStorage storage $ = _getHubRegistryStorage();
         require(msg.sender == $.autId, "HubRegistry: sender not autId");
         require($.isHub[hub], "HubRegistry: hub does not exist");
 
-        IHub(hub).join({who: who, role: role, _commitment: commitment});
+        IHub(hub).join({who: who, role: role, _commitment: commitmentLevel});
 
         $.userHubs[who].push(hub);
     }
@@ -188,10 +188,10 @@ contract HubRegistry is IHubRegistry, ERC2771ContextUpgradeable, OwnableUpgradea
         $.upgradeableBeacon.transferOwnership(newOwner);
     }
 
-    function _validateHubDeploymentParams(uint256 market, string memory metadata, uint256 commitment) internal pure {
+    function _validateHubDeploymentParams(uint256 market, string memory metadata, uint256 commitmentLevel) internal pure {
         require(market > 0 && market < 6, "HubRegistry: invalid market value");
         require(bytes(metadata).length != 0, "HubRegistry: metadata empty");
-        require(commitment > 0 && commitment < 11, "HubRegistry: invalid commitment value");
+        require(commitmentLevel > 0 && commitmentLevel < 11, "HubRegistry: invalid commitmentLevel value");
     }
 
     function autId() external view returns (address) {

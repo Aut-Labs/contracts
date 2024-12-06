@@ -6,7 +6,7 @@ interface IAutID {
     error UntransferableToken();
 
     event RecordCreated(uint256 tokenId, address account, string username, string uri);
-    event HubJoined(address account, uint256 role, uint8 commitment, address hub);
+    event HubJoined(address account, uint256 role, uint8 commitmentLevel, address hub);
     event HubRegistrySet(address);
     event LocalReputationSet(address);
     event TokenMetadataUpdated(uint256 tokenId, address account, string uri);
@@ -38,13 +38,13 @@ interface IAutID {
 
     /// @notice Mint an AutID NFT and join a Hub community
     /// @param role Role to join the Hub
-    /// @param commitment Commitment to join the Hub
+    /// @param commitmentLevel commitmentLevel to join the Hub
     /// @param hub Address of the Hub to join
     /// @param username_ Username associated with the new AutID NFT
     /// @param optionalURI Metadata URI string associated with the new AutID NFT
     function mint(
         uint256 role,
-        uint8 commitment,
+        uint8 commitmentLevel,
         address hub,
         string memory username_,
         string memory optionalURI
@@ -52,13 +52,13 @@ interface IAutID {
 
     /// @notice Mint an AutID NFT and join a Hub community (alias to `mint`)
     /// @param role Role to join the Hub
-    /// @param commitment Commitment to join the Hub
+    /// @param commitmentLevel commitmentLevel to join the Hub
     /// @param hub Address of the Hub to join
     /// @param username_ Username associated with the new AutID NFT
     /// @param optionalURI Metadata URI string associated with the new AutID NFT
     function createRecordAndJoinHub(
         uint256 role,
-        uint8 commitment,
+        uint8 commitmentLevel,
         address hub,
         string memory username_,
         string memory optionalURI
@@ -66,7 +66,7 @@ interface IAutID {
 
     /// @notice Join a Hub community as an AutID NFT holder
     /// @param role Role to join the Hub
-    /// @param commitment Commitment to join the Hub
+    /// @param commitmentLevel commitmentLevel to join the Hub
     /// @param hub Address of the Hub to join
-    function joinHub(uint256 role, uint8 commitment, address hub) external;
+    function joinHub(uint256 role, uint8 commitmentLevel, address hub) external;
 }

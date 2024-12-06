@@ -3,7 +3,7 @@ pragma solidity >=0.8.0;
 
 struct MemberDetail {
     uint256 role;
-    uint8 commitment;
+    uint8 commitmentLevel;
 }
 
 interface IMembership {
@@ -15,9 +15,9 @@ interface IMembership {
     error InvalidCommitment();
     error InvalidPeriodId();
 
-    event ChangeCommitment(address indexed who, uint8 oldCommitment, uint8 newCommitment);
+    event ChangeCommitmentLevel(address indexed who, uint8 oldCommitment, uint8 newCommitmentLevel);
 
-    event Join(address who, uint256 role, uint8 commitment);
+    event Join(address who, uint256 role, uint8 commitmentLevel);
 
     /// @notice Get the current role value of a hub member
     function currentRole(address who) external view returns (uint256 role);
@@ -39,22 +39,22 @@ interface IMembership {
     /// @notice Get the period ID of when an array of members joined the hub
     function getPeriodsJoined(address[] calldata whos) external view returns (uint32[] memory);
 
-    /// @notice get the commitment level of a member at a particular period id
-    function getCommitment(address who, uint32 period) external view returns (uint8 commitment);
+    /// @notice get the commitmentLevel level of a member at a particular period id
+    function getCommitmentLevel(address who, uint32 period) external view returns (uint8 commitmentLevel);
 
-    /// @notice get the commitment level of an array of members at a particular period id
-    function getCommitments(address[] calldata whos, uint32[] calldata periods) external view returns (uint8[] memory);
+    /// @notice get the commitmentLevel level of an array of members at a particular period id
+    function getCommitmentLevels(address[] calldata whos, uint32[] calldata periods) external view returns (uint8[] memory);
 
-    /// @notice get the cumulative commitment by members at a given period id
-    function getCommitmentSum(uint32 period) external view returns (uint128 commitmentSum);
+    /// @notice get the cumulative commitmentLevel by members at a given period id
+    function getSumCommitmentLevel(uint32 period) external view returns (uint128 sumCommitmentLevel);
 
-    /// @notice get the cumulative commitment by members at an array of given period ids
-    function getCommitmentSums(uint32[] calldata periods) external view returns (uint128[] memory);
+    /// @notice get the cumulative commitmentLevel by members at an array of given period ids
+    function getSumCommitmentLevels(uint32[] calldata periods) external view returns (uint128[] memory);
 
     /// @notice Join the hub
     /// @dev Is called through the hub
-    function join(address who, uint256 role, uint8 commitment) external;
+    function join(address who, uint256 role, uint8 commitmentLevel) external;
 
-    /// @notice Change your commitment level
-    function changeCommitment(uint8 newCommitment) external;
+    /// @notice Change your commitmentLevel level
+    function changeCommitmentLevel(uint8 newCommitmentLevel) external;
 }

@@ -164,14 +164,14 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             revert UnauthorizedContributionManager();
         _revertIfNotMember(who);
 
-        // revert if the contribution is not in open status (NOTE: does not require commitment to be before Contribution.endDate)
+        // revert if the contribution is not in open status (NOTE: does not require commitmentLevel to be before Contribution.endDate)
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
 
         // revert if contribution was already given to member
         if (memberContributionsGiven[who].contains(contributionId)) revert ContributionAlreadyGiven();
 
-        // Add the commitment, revert if already committed
+        // Add the commitmentLevel, revert if already committed
         if (!memberContributionsCommitted[who].add(contributionId)) revert ContributionAlreadyCommitted();
 
         emit CommitContribution({contributionId: contributionId, sender: msg.sender, hub: hub(), who: who, data: data});
@@ -200,7 +200,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             revert UnauthorizedContributionManager();
         _revertIfNotMember(who);
 
-        // Remove the commitment, revert if not committed
+        // Remove the commitmentLevel, revert if not committed
         if (!memberContributionsCommitted[who].remove(contributionId)) revert ContributionNotCommitted();
 
         emit RevokeContribution({contributionId: contributionId, sender: msg.sender, hub: hub(), who: who, data: data});
@@ -282,7 +282,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             if (!pointSummaries[i].isSealed) {
                 writeToHistory = true;
             } else {
-                // historical commitment levels are up to date- do nothing
+                // historical commitmentLevel levels are up to date- do nothing
                 break;
             }
         }

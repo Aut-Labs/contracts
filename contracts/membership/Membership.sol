@@ -14,12 +14,12 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.UintSet;
 
     struct MembershipStorage {
-        uint128 commitmentSum;
+        uint128 sumCommitmentLevel;
         mapping(address => uint32) joinedAt;
         mapping(address => uint32) withdrawn; // TODO
         mapping(address => uint256) currentRole;
-        mapping(address => uint8) currentCommitment;
-        mapping(uint32 period => uint128 commitmentSum) commitmentSums;
+        mapping(address => uint8) currentCommitmentLevel;
+        mapping(uint32 period => uint128 sumCommitmentLevel) sumCommitmentLevels;
         EnumerableSet.AddressSet members;
         mapping(address who => mapping(uint32 period => MemberDetail)) memberDetails;
     }
@@ -51,9 +51,9 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
     //                          VIEWS
     // -----------------------------------------------------------
 
-    function commitmentSum() public view returns (uint128) {
+    function sumCommitmentLevel() public view returns (uint128) {
         MembershipStorage storage $ = _getMembershipStorage();
-        return $.commitmentSum;
+        return $.sumCommitmentLevel;
     }
 
     function joinedAt(address who) public view returns (uint32) {
@@ -71,14 +71,14 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         return $.currentRole[who];
     }
 
-    function currentCommitment(address who) public view returns (uint8) {
+    function currentCommitmentLevel(address who) public view returns (uint8) {
         MembershipStorage storage $ = _getMembershipStorage();
-        return $.currentCommitment[who];
+        return $.currentCommitmentLevel[who];
     }
 
-    function commitmentSums(uint32 period) public view returns (uint128) {
+    function sumCommitmentLevels(uint32 period) public view returns (uint128) {
         MembershipStorage storage $ = _getMembershipStorage();
-        return $.commitmentSums[period];
+        return $.sumCommitmentLevels[period];
     }
 
     /// @inheritdoc IMembership
@@ -122,49 +122,49 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc IMembership
-    function getCommitment(address who, uint32 period) public view returns (uint8) {
+    function getCommitmentLevel(address who, uint32 period) public view returns (uint8) {
         if (period < getPeriodJoined(who)) revert MemberHasNotYetCommited();
 
         MembershipStorage storage $ = _getMembershipStorage();
         MemberDetail memory memberDetail = $.memberDetails[who][period];
-        if (memberDetail.commitment != 0) {
-            // user has changed their commitment in a period following `period`.  We know this becuase
-            // memberDetail.commitment state is non-zero as it is written following a commitment change.
-            return memberDetail.commitment;
+        if (memberDetail.commitmentLevel != 0) {
+            // user has changed their commitmentLevel in a period following `period`.  We know this becuase
+            // memberDetail.commitmentLevel state is non-zero as it is written following a commitmentLevel change.
+            return memberDetail.commitmentLevel;
         } else {
-            // User has *not* changed their commitment level: meaning their commitLevel is sync to current
-            return $.currentCommitment[who];
+            // User has *not* changed their commitmentLevel level: meaning their commitLevel is sync to current
+            return $.currentCommitmentLevel[who];
         }
     }
 
     /// @inheritdoc IMembership
-    function getCommitments(address[] calldata whos, uint32[] calldata period) external view returns (uint8[] memory) {
+    function getCommitmentLevels(address[] calldata whos, uint32[] calldata period) external view returns (uint8[] memory) {
         uint256 length = whos.length;
         require(length == period.length);
         uint8[] memory commitments = new uint8[](length);
         for (uint256 i = 0; i < length; i++) {
-            commitments[i] = getCommitment({who: whos[i], period: period[i]});
+            commitments[i] = getCommitmentLevel({who: whos[i], period: period[i]});
         }
         return commitments;
     }
 
     /// @inheritdoc IMembership
-    function getCommitmentSum(uint32 period) public view returns (uint128) {
+    function getSumCommitmentLevel(uint32 period) public view returns (uint128) {
         uint32 currentPeriod = currentPeriodId();
         if (period == 0 || period > currentPeriod) revert InvalidPeriodId();
         if (period == currentPeriod) {
-            return commitmentSum();
+            return sumCommitmentLevel();
         } else {
-            return commitmentSums(period);
+            return sumCommitmentLevels(period);
         }
     }
 
     /// @inheritdoc IMembership
-    function getCommitmentSums(uint32[] calldata periods) external view returns (uint128[] memory) {
+    function getSumCommitmentLevels(uint32[] calldata periods) external view returns (uint128[] memory) {
         uint256 length = periods.length;
         uint128[] memory sums = new uint128[](length);
         for (uint256 i = 0; i < length; i++) {
-            sums[i] = getCommitmentSum({period: periods[i]});
+            sums[i] = getSumCommitmentLevel({period: periods[i]});
         }
         return sums;
     }
@@ -174,33 +174,33 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
     // -----------------------------------------------------------
 
     /// @inheritdoc IMembership
-    function join(address who, uint256 role, uint8 commitment) public virtual {
+    function join(address who, uint256 role, uint8 commitmentLevel) public virtual {
         _revertIfNotHub();
 
         MembershipStorage storage $ = _getMembershipStorage();
 
         $.currentRole[who] = role;
-        $.currentCommitment[who] = commitment;
+        $.currentCommitmentLevel[who] = commitmentLevel;
         $.joinedAt[who] = uint32(block.timestamp);
 
         $.members.add(who);
 
-        $.commitmentSum += commitment;
+        $.sumCommitmentLevel += commitmentLevel;
 
-        $.memberDetails[who][currentPeriodId()] = MemberDetail({role: role, commitment: commitment});
+        $.memberDetails[who][currentPeriodId()] = MemberDetail({role: role, commitmentLevel: commitmentLevel});
 
-        emit Join(who, role, commitment);
+        emit Join(who, role, commitmentLevel);
     }
 
     /// @inheritdoc IMembership
-    function changeCommitment(uint8 newCommitment) external {
+    function changeCommitmentLevel(uint8 newCommitmentLevel) external {
         MembershipStorage storage $ = _getMembershipStorage();
 
-        uint8 oldCommitment = $.currentCommitment[msg.sender];
-        if (newCommitment == oldCommitment) revert SameCommitment();
+        uint8 oldCommitment = $.currentCommitmentLevel[msg.sender];
+        if (newCommitmentLevel == oldCommitment) revert SameCommitment();
 
-        // require commitment to at least equal the hub required commitment level
-        if (newCommitment > 10 || newCommitment < IHub(hub()).commitment()) revert InvalidCommitment();
+        // require commitmentLevel to at least equal the hub required commitmentLevel level
+        if (newCommitmentLevel > 10 || newCommitmentLevel < IHub(hub()).commitmentLevel()) revert InvalidCommitment();
 
         // only allow commitments for the first week
         if (block.timestamp > currentPeriodStart() + TimeLibrary.WEEK) revert TooLateCommitmentChange();
@@ -208,21 +208,21 @@ contract Membership is IMembership, Initializable, PeriodUtils, AccessUtils {
         uint32 periodJoined = getPeriodJoined(msg.sender);
         uint32 currentPeriod = currentPeriodId(); // gas
 
-        // write to storage for all 0 values- as the $.currentCommitment is now different
+        // write to storage for all 0 values- as the $.currentCommitmentLevel is now different
         for (uint32 i = currentPeriod; i > periodJoined - 1; i--) {
             MemberDetail storage memberDetail = $.memberDetails[msg.sender][i];
-            if (memberDetail.commitment == 0) {
-                memberDetail.commitment = oldCommitment;
+            if (memberDetail.commitmentLevel == 0) {
+                memberDetail.commitmentLevel = oldCommitment;
             } else {
                 // we have reached the end of zero values
                 break;
             }
         }
 
-        $.currentCommitment[msg.sender] = newCommitment;
-        $.commitmentSum = $.commitmentSum - uint128(oldCommitment) + uint128(newCommitment);
+        $.currentCommitmentLevel[msg.sender] = newCommitmentLevel;
+        $.sumCommitmentLevel = $.sumCommitmentLevel - uint128(oldCommitment) + uint128(newCommitmentLevel);
 
-        emit ChangeCommitment({who: msg.sender, oldCommitment: oldCommitment, newCommitment: newCommitment});
+        emit ChangeCommitmentLevel({who: msg.sender, oldCommitment: oldCommitment, newCommitmentLevel: newCommitmentLevel});
     }
 
     // function canSeal(uint32 period) external view returns (bool) {

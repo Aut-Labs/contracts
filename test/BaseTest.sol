@@ -68,7 +68,7 @@ abstract contract BaseTest is Test {
             roles: roles,
             market: 1,
             metadata: "Mock Metadata",
-            commitment: 1
+            commitmentLevel: 1
         });
         return Hub(hubAddress);
     }
@@ -80,7 +80,7 @@ abstract contract BaseTest is Test {
         vm.prank(who);
         autId.createRecordAndJoinHub({
             role: 1,
-            commitment: 1,
+            commitmentLevel: 1,
             hub: hubAddress,
             username: username,
             optionalURI: "https://facebook.com/someUser"

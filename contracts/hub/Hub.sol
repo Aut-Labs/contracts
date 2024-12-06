@@ -37,7 +37,7 @@ contract Hub is IHub, HubUtils, PeriodUtils, OwnableUpgradeable, HubUpgradeable 
         uint128 localConstraintFactor;
         uint128 localPenaltyFactor;
         // TODO: these 4 variables to be defined
-        uint256 commitment;
+        uint256 commitmentLevel;
         uint256 archetype;
         uint256 market;
         string uri;
@@ -218,9 +218,9 @@ contract Hub is IHub, HubUtils, PeriodUtils, OwnableUpgradeable, HubUpgradeable 
         return $.localPenaltyFactor;
     }
 
-    function commitment() external view returns (uint256) {
+    function commitmentLevel() external view returns (uint256) {
         HubStorage storage $ = _getHubStorage();
-        return $.commitment;
+        return $.commitmentLevel;
     }
 
     function archetype() external view returns (uint256) {
@@ -395,7 +395,7 @@ contract Hub is IHub, HubUtils, PeriodUtils, OwnableUpgradeable, HubUpgradeable 
 
         HubStorage storage $ = _getHubStorage();
 
-        $.commitment = commitment_;
+        $.commitmentLevel = commitment_;
 
         emit CommitmentSet(commitment_);
     }

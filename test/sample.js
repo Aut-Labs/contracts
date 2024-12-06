@@ -97,14 +97,14 @@ async function main() {
   const roles = [1, 2, 3];
   const market = 1;
   const metadata = "Mock Metadata";
-  const commitment = 1;
+  const commitmentLevel = 1;
 
   console.log("Deploying hub...");
   const deployHubTx = await hubRegistryOwner.deployHub(
     roles,
     market,
     metadata,
-    commitment,
+    commitmentLevel,
     overrides,
   );
   const deployHubReceipt = await deployHubTx.wait();

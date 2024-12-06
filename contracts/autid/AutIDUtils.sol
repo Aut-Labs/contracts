@@ -22,8 +22,8 @@ abstract contract AutIDUtils {
         }
     }
 
-    function _revertForInvalidCommitment(uint256 commitment) internal pure {
-        if (!(commitment >= MIN_GLOBAL_COMMITMENT && commitment <= MAX_GLOBAL_COMMITMENT)) {
+    function _revertForInvalidCommitment(uint256 commitmentLevel) internal pure {
+        if (!(commitmentLevel >= MIN_GLOBAL_COMMITMENT && commitmentLevel <= MAX_GLOBAL_COMMITMENT)) {
             revert InvalidCommitment();
         }
     }
@@ -61,7 +61,7 @@ abstract contract AutIDUtils {
     }
 
     function _revertForMinCommitmentNotReached(address hub, uint256 declaredCommitment) internal view {
-        if (IHub(hub).commitment() > declaredCommitment) {
+        if (IHub(hub).commitmentLevel() > declaredCommitment) {
             revert MinCommitmentNotReached();
         }
     }
