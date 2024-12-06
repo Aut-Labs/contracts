@@ -73,18 +73,18 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     /// @inheritdoc IAutID
     function mint(
         uint256 role,
-        uint8 commitment,
+        uint8 commitmentLevel,
         address hub,
         string memory username,
         string memory optionalURI
     ) external {
-        createRecordAndJoinHub(role, commitment, hub, username, optionalURI);
+        createRecordAndJoinHub(role, commitmentLevel, hub, username, optionalURI);
     }
 
     /// @inheritdoc IAutID
     function createRecordAndJoinHub(
         uint256 role,
-        uint8 commitment,
+        uint8 commitmentLevel,
         address hub,
         string memory username,
         string memory optionalURI
@@ -96,7 +96,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
         $.mintedAt[account] = uint32(block.timestamp);
 
         _createRecord(account, username, optionalURI);
-        _joinHub(account, role, commitment, hub);
+        _joinHub(account, role, commitmentLevel, hub);
     }
 
     function getUserHubs(address user) external view returns (address[] memory) {
@@ -112,7 +112,7 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     // }
 
     // function userHubCommitmentLevel(address hub, address user) external view returns (uint256) {
-    //     return IHub(hub).currentCommitmentLevels(user);
+    //     return IHub(hub).currentCommitmentLevelLevels(user);
     // }
 
     // function userHubJoinedAt(address hub, address user) external view returns (uint256) {
@@ -136,27 +136,32 @@ contract AutID is AutIDUtils, ERC721URIStorageUpgradeable, OwnableUpgradeable, E
     }
 
     /// @inheritdoc IAutID
-    function joinHub(uint256 role, uint8 commitment, address hub) public {
+    function joinHub(uint256 role, uint8 commitmentLevel, address hub) public {
         address account = _msgSender();
         _revertForZeroAddress(account);
 
         _revertForInvalidTokenId(tokenIdForAccount(account));
 
-        _joinHub(account, role, commitment, hub);
+        _joinHub(account, role, commitmentLevel, hub);
     }
 
-    function _joinHub(address account, uint256 role, uint8 commitment, address hub) internal {
+    function _joinHub(address account, uint256 role, uint8 commitmentLevel, address hub) internal {
         address hubRegistryAddress = hubRegistry();
         _revertForZeroAddress(hubRegistryAddress);
         _revertForZeroAddress(hub);
-        _revertForInvalidCommitment(commitment);
+        _revertForInvalidCommitment(commitmentLevel);
         _revertIfHubDoesNotExist(hubRegistryAddress, hub);
         _revertForCanNotJoinHub(hub, account, role);
-        _revertForMinCommitmentNotReached(hub, commitment);
+        _revertForMinCommitmentNotReached(hub, commitmentLevel);
 
-        IHubRegistry(hubRegistryAddress).join({hub: hub, member: account, role: role, commitment: commitment});
+        IHubRegistry(hubRegistryAddress).join({
+            hub: hub,
+            member: account,
+            role: role,
+            commitmentLevel: commitmentLevel
+        });
 
-        emit HubJoined(account, role, commitment, hub);
+        emit HubJoined(account, role, commitmentLevel, hub);
     }
 
     function _createRecord(address account, string memory username, string memory optionalURI) internal {

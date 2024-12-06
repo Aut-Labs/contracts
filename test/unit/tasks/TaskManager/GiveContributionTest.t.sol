@@ -70,7 +70,7 @@ contract TaskManagerGiveContributionTest is BaseTest {
 
         // post-action asserts (TODO)
         // memberActivity = taskManager.getMemberActivity(bob, currentPeriod);
-        // assertEq(memberActivity.pointsGiven, points);
+        // assertEq(memberActivity.sumPointsGiven, points);
         // assertEq(memberActivity.contributionIds.length, 1);
         // assertEq(memberActivity.contributionIds[0], contributionId);
     }

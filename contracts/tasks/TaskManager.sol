@@ -13,9 +13,9 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     using EnumerableSet for EnumerableSet.Bytes32Set;
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    uint128 public pointsActive;
-    uint128 public periodPointsGiven;
-    uint128 public periodPointsRemoved;
+    uint128 public sumPointsActive;
+    uint128 public sumPointsGiven;
+    uint128 public sumPointsRemoved;
 
     mapping(bytes32 => ContributionStatus) public contributionStatuses;
     mapping(uint32 period => PointSummary) public pointSummaries;
@@ -92,7 +92,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             quantityRemaining: contribution.quantity
         });
         contributionStatuses[contributionId] = contributionStatus;
-        pointsActive += contribution.points * contribution.quantity;
+        sumPointsActive += contribution.points * contribution.quantity;
 
         emit AddContribution({
             contributionId: contributionId,
@@ -125,10 +125,10 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
 
         // NOTE: does not subtract from created contributions
-        uint128 sumPointsRemoved = contributionStatus.points * contributionStatus.quantityRemaining;
+        uint128 pointsRemoved = contributionStatus.points * contributionStatus.quantityRemaining;
 
-        pointsActive -= sumPointsRemoved;
-        periodPointsRemoved += sumPointsRemoved;
+        sumPointsActive -= pointsRemoved;
+        sumPointsRemoved += pointsRemoved;
         contributionStatus.status = Status.Inactive;
 
         emit RemoveContribution({
@@ -164,14 +164,14 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             revert UnauthorizedContributionManager();
         _revertIfNotMember(who);
 
-        // revert if the contribution is not in open status (NOTE: does not require commitment to be before Contribution.endDate)
+        // revert if the contribution is not in open status (NOTE: does not require commitmentLevel to be before Contribution.endDate)
         ContributionStatus storage contributionStatus = contributionStatuses[contributionId];
         if (uint8(contributionStatus.status) != uint8(Status.Open)) revert ContributionNotOpen();
 
         // revert if contribution was already given to member
         if (memberContributionsGiven[who].contains(contributionId)) revert ContributionAlreadyGiven();
 
-        // Add the commitment, revert if already committed
+        // Add the commitmentLevel, revert if already committed
         if (!memberContributionsCommitted[who].add(contributionId)) revert ContributionAlreadyCommitted();
 
         emit CommitContribution({contributionId: contributionId, sender: msg.sender, hub: hub(), who: who, data: data});
@@ -200,7 +200,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             revert UnauthorizedContributionManager();
         _revertIfNotMember(who);
 
-        // Remove the commitment, revert if not committed
+        // Remove the commitmentLevel, revert if not committed
         if (!memberContributionsCommitted[who].remove(contributionId)) revert ContributionNotCommitted();
 
         emit RevokeContribution({contributionId: contributionId, sender: msg.sender, hub: hub(), who: who, data: data});
@@ -243,8 +243,8 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
         memberActivity.contributionIds.push(contributionId);
 
         // update "hot" point summary
-        pointsActive -= points;
-        periodPointsGiven += points;
+        sumPointsActive -= points;
+        sumPointsGiven += points;
 
         // update total contributions given in the period
         contributionsGivenInPeriod[currentPeriod].push(contributionId);
@@ -282,7 +282,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             if (!pointSummaries[i].isSealed) {
                 writeToHistory = true;
             } else {
-                // historical commitment levels are up to date- do nothing
+                // historical commitmentLevel levels are up to date- do nothing
                 break;
             }
         }
@@ -291,9 +291,9 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
             // Write data to oldest possible period summary with no data
             pointSummaries[i] = PointSummary({
                 isSealed: true,
-                pointsActive: pointsActive,
-                pointsGiven: periodPointsGiven,
-                pointsRemoved: periodPointsRemoved
+                sumPointsActive: sumPointsActive,
+                sumPointsGiven: sumPointsGiven,
+                sumPointsRemoved: sumPointsRemoved
             });
 
             // if there's a gap in data- we have inactive periods.
@@ -303,17 +303,17 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
                 for (uint32 j = i + 1; j < _currentPeriod; j++) {
                     pointSummaries[j] = PointSummary({
                         isSealed: true,
-                        pointsActive: pointsActive,
-                        pointsGiven: 0,
-                        pointsRemoved: 0
+                        sumPointsActive: sumPointsActive,
+                        sumPointsGiven: 0,
+                        sumPointsRemoved: 0
                     });
                 }
             }
 
             // Still in writeToHistory conditional...
             // Clear out the storage only relevant to the period
-            delete periodPointsGiven;
-            delete periodPointsRemoved;
+            delete sumPointsGiven;
+            delete sumPointsRemoved;
         }
     }
 
@@ -353,20 +353,20 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskManager
-    function getPointsActive(uint32 period) external view returns (uint128) {
+    function getSumPointsActive(uint32 period) external view returns (uint128) {
         if (period == currentPeriodId()) {
-            return pointsActive;
+            return sumPointsActive;
         } else {
-            return pointSummaries[period].pointsActive;
+            return pointSummaries[period].sumPointsActive;
         }
     }
 
     /// @inheritdoc ITaskManager
-    function getPointsGiven(uint32 period) external view returns (uint128) {
+    function getSumPointsGiven(uint32 period) external view returns (uint128) {
         if (period == currentPeriodId()) {
-            return pointsGiven;
+            return sumPointsGiven;
         } else {
-            return pointSummaries[period].pointsGiven;
+            return pointSummaries[period].sumPointsGiven;
         }
     }
 
