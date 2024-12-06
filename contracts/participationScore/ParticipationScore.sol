@@ -57,17 +57,17 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
     /// @inheritdoc IParticipationScore
     function calcPerformanceInPeriod(
         uint32 commitmentLevel,
-        uint128 pointsGiven,
+        uint128 sumPointsGiven,
         uint32 period
     ) public view returns (uint128) {
         if (period == 0 || period > currentPeriodId()) revert InvalidPeriodId();
-        return _calcPerformanceInPeriod({commitmentLevel: commitmentLevel, pointsGiven: pointsGiven, period: period});
+        return _calcPerformanceInPeriod({commitmentLevel: commitmentLevel, sumPointsGiven: sumPointsGiven, period: period});
     }
 
     /// @inheritdoc IParticipationScore
     function calcPerformancesInPeriod(
         uint32[] calldata commitments,
-        uint128[] calldata pointsGiven,
+        uint128[] calldata sumPointsGiven,
         uint32 period
     ) external view returns (uint128[] memory) {
         uint256 length = commitments.length;
@@ -75,7 +75,7 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         for (uint256 i = 0; i < length; i++) {
             performances[i] = calcPerformanceInPeriod({
                 commitmentLevel: commitments[i],
-                pointsGiven: pointsGiven[i],
+                sumPointsGiven: sumPointsGiven[i],
                 period: period
             });
         }
@@ -84,11 +84,11 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
 
     function _calcPerformanceInPeriod(
         uint32 commitmentLevel,
-        uint128 pointsGiven,
+        uint128 sumPointsGiven,
         uint32 period
     ) internal view returns (uint128) {
-        uint128 expectedContributionPoints = _calcExpectedPoints({commitmentLevel: commitmentLevel, period: period});
-        uint128 performance = (1e18 * pointsGiven) / expectedContributionPoints;
+        uint128 expectedContributionPoints = _calcExpectedContributionPoints({commitmentLevel: commitmentLevel, period: period});
+        uint128 performance = (1e18 * sumPointsGiven) / expectedContributionPoints;
         return performance;
     }
 
@@ -124,20 +124,20 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         return
             _calcPerformanceInPeriod({
                 commitmentLevel: IMembership(membership()).getCommitmentLevel(who, period),
-                pointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, period),
+                sumPointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, period),
                 period: period
             });
     }
 
     /// @inheritdoc IParticipationScore
-    function calcExpectedPoints(uint32 commitmentLevel, uint32 period) public view returns (uint128) {
+    function calcExpectedContributionPoints(uint32 commitmentLevel, uint32 period) public view returns (uint128) {
         if (commitmentLevel < 1 || commitmentLevel > 10) revert InvalidCommitment();
         if (period == 0 || period > currentPeriodId()) revert InvalidPeriodId();
-        return _calcExpectedPoints(commitmentLevel, period);
+        return _calcExpectedContributionPoints(commitmentLevel, period);
     }
 
     /// @inheritdoc IParticipationScore
-    function calcsExpectedPoints(
+    function calcsExpectedContributionPoints(
         uint32[] calldata commitments,
         uint32[] calldata periods
     ) external view returns (uint128[] memory) {
@@ -145,15 +145,15 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         require(length == periods.length);
         uint128[] memory eps = new uint128[](length);
         for (uint256 i = 0; i < length; i++) {
-            eps[i] = calcExpectedPoints({commitmentLevel: commitments[i], period: periods[i]});
+            eps[i] = calcExpectedContributionPoints({commitmentLevel: commitments[i], period: periods[i]});
         }
         return eps;
     }
 
-    function _calcExpectedPoints(uint32 commitmentLevel, uint32 period) internal view returns (uint128) {
+    function _calcExpectedContributionPoints(uint32 commitmentLevel, uint32 period) internal view returns (uint128) {
         return
             (fractionalCommitment({commitmentLevel: commitmentLevel, period: period}) *
-                ITaskManager(taskManager()).getPointsActive(period)) / 1e18;
+                ITaskManager(taskManager()).getSumPointsActive(period)) / 1e18;
     }
 
     /// @inheritdoc IParticipationScore
@@ -246,7 +246,7 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
             MemberParticipation storage memberParticipation = $.memberParticipations[who][i];
             uint128 performance = _calcPerformanceInPeriod({
                 commitmentLevel: IMembership(membership()).getCommitmentLevel({who: who, period: i}),
-                pointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, i),
+                sumPointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, i),
                 period: i
             });
 

@@ -16,14 +16,14 @@ interface IParticipationScore {
     /// @notice helper to predict performance score for any member
     function calcPerformanceInPeriod(
         uint32 commitmentLevel,
-        uint128 pointsGiven,
+        uint128 sumPointsGiven,
         uint32 period
     ) external view returns (uint128);
 
     /// @notice helper to predict performance score for any members
     function calcPerformancesInPeriod(
         uint32[] calldata commitments,
-        uint128[] calldata pointsGiven,
+        uint128[] calldata sumPointsGiven,
         uint32 period
     ) external view returns (uint128[] memory);
 
@@ -38,10 +38,10 @@ interface IParticipationScore {
     function calcPerformancesInPeriod(address[] calldata whos, uint32 period) external view returns (uint128[] memory);
 
     /// @notice calculate the fractional commitmentLevel * total points active in a period
-    function calcExpectedPoints(uint32 commitmentLevel, uint32 period) external view returns (uint128);
+    function calcExpectedContributionPoints(uint32 commitmentLevel, uint32 period) external view returns (uint128);
 
     /// @notice Calculate an array of fractional commitments * total points active for an array of periods
-    function calcsExpectedPoints(
+    function calcsExpectedContributionPoints(
         uint32[] calldata commitments,
         uint32[] calldata periods
     ) external view returns (uint128[] memory);
