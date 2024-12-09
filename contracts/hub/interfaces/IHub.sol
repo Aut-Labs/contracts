@@ -34,7 +34,7 @@ interface IHub {
     event OnboardingSet(address);
     event MarketSet(uint256);
     event CommitmentSet(uint256);
-    event changeCommitmentLevelLevel(address indexed who, uint32 oldCommitmentLevel, uint32 newCommitmentLevelLevel);
+    event ChangeCommitmentLevel(address indexed who, uint32 oldCommitmentLevel, uint32 newCommitmentLevelLevel);
     error PenaltyFactorOutOfRange();
     event SetPenaltyFactor(uint128 oldPenaltyFactor, uint128 newPenaltyFactor);
 
