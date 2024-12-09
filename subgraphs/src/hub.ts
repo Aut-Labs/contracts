@@ -30,7 +30,7 @@ export function handleHubCreated(event: HubCreated): void {
   hub.address = event.params.hubAddress;
   hub.market = event.params.market;
   hub.metadataUri = event.params.metadata;
-  hub.minCommitment = event.params.commitment;
+  hub.minCommitment = event.params.commitmentLevel;
   hub.domain = '';
 
   // Create a new HubAdmin entity

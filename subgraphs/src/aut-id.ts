@@ -39,7 +39,7 @@ export function handleHubJoined(event: HubJoined): void {
   let hubJoinedInfo = new HubJoinedInfo(event.transaction.hash.toHex() + "-" + event.logIndex.toString());
   hubJoinedInfo.autID = autID.id;
   hubJoinedInfo.role = event.params.role;
-  hubJoinedInfo.commitment = BigInt.fromI32(event.params.commitment);
+  hubJoinedInfo.commitment = BigInt.fromI32(event.params.commitmentLevel);
   hubJoinedInfo.hubAddress = event.params.hub as Bytes;
   hubJoinedInfo.save();
   autID.save();
