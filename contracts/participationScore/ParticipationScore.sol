@@ -161,7 +161,7 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
     function _calcExpectedContributionPoints(uint32 commitmentLevel, uint32 period) internal view returns (uint128) {
         return
             (fractionalCommitment({commitmentLevel: commitmentLevel, period: period}) *
-                ITaskManager(taskManager()).getSumPointsActive(period)) / 1e18;
+                ITaskManager(taskManager()).getSumPeriodPoints(period)) / 1e18;
     }
 
     /// @inheritdoc IParticipationScore
