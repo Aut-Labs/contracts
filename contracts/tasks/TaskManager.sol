@@ -353,7 +353,7 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskManager
-    function getSumPointsActive(uint32 period) external view returns (uint128) {
+    function getSumPointsActive(uint32 period) public view returns (uint128) {
         if (period == currentPeriodId()) {
             return sumPointsActive;
         } else {
@@ -362,12 +362,17 @@ contract TaskManager is ITaskManager, Initializable, PeriodUtils, AccessUtils {
     }
 
     /// @inheritdoc ITaskManager
-    function getSumPointsGiven(uint32 period) external view returns (uint128) {
+    function getSumPointsGiven(uint32 period) public view returns (uint128) {
         if (period == currentPeriodId()) {
             return sumPointsGiven;
         } else {
             return pointSummaries[period].sumPointsGiven;
         }
+    }
+
+    /// @inheritdoc ITaskManager
+    function getSumPeriodPoints(uint32 period) external view returns (uint128) {
+        return getSumPointsActive(period) + getSumPointsGiven(period);
     }
 
     /// @inheritdoc ITaskManager

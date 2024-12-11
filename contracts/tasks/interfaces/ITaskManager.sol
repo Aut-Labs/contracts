@@ -83,7 +83,7 @@ interface ITaskManager {
     /// @notice Set the initial contribution manager from the hub registry
     function initialize2(address _initialContributionManager) external;
 
-    /// @notice Get the amount of outstanding Contribution points for the current period
+    /// @notice Get the amount of active Contribution points for the current period
     function sumPointsActive() external view returns (uint128);
 
     /// @notice Get the amount of Contribution points given for the current period
@@ -112,10 +112,10 @@ interface ITaskManager {
     /// @dev is called via TaskFactory
     function addContribution(bytes32 contributionId, Contribution calldata Contribution) external;
 
-    /// @notice Remove outstanding Contributions from being completed, deeming them Inactive
+    /// @notice Remove active Contributions from being completed, deeming them Inactive
     function removeContributions(bytes32[] memory contributionIds) external;
 
-    /// @notice Remove an outstanding Contribution from being completed, deeming it Inactive
+    /// @notice Remove an active Contribution from being completed, deeming it Inactive
     function removeContribution(bytes32 contributionId) external;
 
     /// @notice Commit to a set of open Contributions with associated data
@@ -169,13 +169,17 @@ interface ITaskManager {
     /// @notice return the contributionId's given to a member for a provided period
     function getMemberContributionIds(address who, uint32 period) external view returns (bytes32[] memory);
 
-    /// @notice return the amount of outstanding contribution points for a provided period
+    /// @notice return the amount of active contribution points for a provided period
     /// @dev Will return bad data if querying the last / current period and writePointSummary() has not been called
     function getSumPointsActive(uint32 period) external view returns (uint128);
 
     /// @notice return the amount of given contribution points for a provided period
     /// @dev Will return bad data if querying the last / current period and writePointSummary() has not been called
     function getSumPointsGiven(uint32 period) external view returns (uint128);
+
+    /// @notice return the cumulative amount of given and active contribution points for a provided period
+    /// @dev Will return bad data if querying the last / current period and writePointSummary() has not been called
+    function getSumPeriodPoints(uint32 period) external view returns (uint128);
 
     /// @notice return the contributionId's given for the whole hub for a provided period
     function getGivenContributions(uint32 period) external view returns (bytes32[] memory);
