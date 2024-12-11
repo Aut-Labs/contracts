@@ -17,7 +17,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 /// users can then utilize these tokens using the plugins defined in the UtilsRegistry contract. When the period has ended
 /// the admin will update the period after which users can claim the Aut tokens they have earned in the previous period
 /// based on their usage and can receive new c-aut tokens and put them to use in the next period.
-contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining, ERC1155Holder{
+contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMining, ERC1155Holder {
     // event emitted when the period has updated
     event MiningStarted(uint256 indexed periodId, uint256 timestamp);
     // event emitted when c-tokens are claimed
@@ -121,7 +121,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     /// @param _periodId the id of the period to clean up
     /// @dev anyone can cleanup the previous periods, no access control needed
     // @todo check if we really need nonReentrant here. It should offer additional security in case the function gets called by a malicious contract because of ERC1155 checks
-    function cleanupPeriod(uint256 _periodId) external nonReentrant{
+    function cleanupPeriod(uint256 _periodId) external nonReentrant {
         require(_periodId < currentPeriod(), "period has not ended yet");
 
         uint256 leftoverTokens = cAutToken.balanceOf(address(this), _periodId);
@@ -150,14 +150,17 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         uint256 cAutBalance = cAutToken.balanceOf(msg.sender, period - 1);
         if (cAutBalance > 0) {
             // reset c-aut token balance
-            cAutToken.burn(msg.sender, period -1, cAutBalance);
+            cAutToken.burn(msg.sender, period - 1, cAutBalance);
 
             // send Aut tokens for this user to circlular contract
             autToken.transfer(address(circular), cAutBalance);
         }
 
         uint256 amount = getClaimableCTokenForPeriod(msg.sender, period);
-        require(amount <= cAutToken.balanceOf(address(this), period), "not enough tokens left to distribute for this period");
+        require(
+            amount <= cAutToken.balanceOf(address(this), period),
+            "not enough tokens left to distribute for this period"
+        );
 
         // save the allocation amount for later use
         givenBalance[msg.sender][period] = amount;
@@ -173,7 +176,7 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
     /// @param _period the period for which to calculate the claimable c-tokens
     /// @dev we are using a random number for peerValue and totalPeerValue at the moment until we can use the PeerValue contract that is yet to be developed
     /// @return amount the claimable c-token for a given user in a given period
-    function getClaimableCTokenForPeriod(address _account, uint256 _period) public nonReentrant returns (uint256 amount) {
+    function getClaimableCTokenForPeriod(address _account, uint256 _period) public returns (uint256 amount) {
         // get peer value
         uint256 value = peerValue.getPeerValue(_account, _period);
         uint256 totalTokensForPeriod = cAutToken.getTokensForPeriod(_period);
@@ -187,13 +190,32 @@ contract ReputationMining is ReentrancyGuard, OwnableUpgradeable, IReputationMin
         }
     }
 
-    /// @notice claims the reward tokens (Aut) for the sender based on the utilisation of the c-aut token in the previous period and transfers the remaining balance to the circular contract
-    function claimPeriod(uint256 period) external nonReentrant onlyAutUser {
+    /// @notice claims the reward tokens (Aut) for the sender based on the utilisation of the c-aut token in a specific period and transfers the remaining balance to the circular contract
+    /// @param period the period ID of the period for which to claim
+    function claimPeriod(uint256 period) public nonReentrant onlyAutUser {
+        require(currentPeriod() > 0, "mining has not started yet");
+        require(period < currentPeriod(), "period has not ended yet");
+        require(periodsClaimedByUser[msg.sender][period] == false, "period already claimed by user");
+        _claimPeriod(period);
+    }
+
+    /// @notice claims the reward tokens (Aut) for the sender based on the utilisation of the c-aut token in all periods and transfers the remaining balance to the circular contract
+    // @todo check if this function doesn't run out of gas when claiming all periods at once
+    function claimAllPeriods() public nonReentrant onlyAutUser {
         uint256 activePeriod = currentPeriod();
         require(activePeriod > 0, "mining has not started yet");
-        require(period < activePeriod, "period has not ended yet");
-        require(periodsClaimedByUser[msg.sender][period] == false, "period already claimed by user");
 
+        // check if currentPeriod is higher than 48, if it is only loop to 48 and otherwise use the currentPeriod -1 as the last one
+        uint256 lastPeriodToCheck = activePeriod > 48 ? 48 : activePeriod - 1;
+
+        for (uint256 i; i <= lastPeriodToCheck; i++) {
+            if (periodsClaimedByUser[msg.sender][i] == false && givenBalance[msg.sender][i] > 0) {
+                _claimPeriod(i);
+            }
+        }
+    }
+
+    function _claimPeriod(uint256 period) internal {
         // calculate how much of the c-aut tokens the user has used in this period and distribute monthly allocation of AUT tokens
         uint256 givenAmount = givenBalance[msg.sender][period];
         require(givenAmount > 0, "no claims available for this period");
