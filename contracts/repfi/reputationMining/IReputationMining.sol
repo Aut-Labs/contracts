@@ -17,11 +17,9 @@ interface IReputationMining {
 
     function claimCToken() external;
 
-    function claim() external;
+    function claimPeriod(uint256 period) external;
 
     function activateMining() external;
-
-    function getTokensForPeriod(uint256 _period) external pure returns (uint256);
 
     function getClaimableCTokenForPeriod(address _account, uint256 _period) external returns (uint256 amount);
 }

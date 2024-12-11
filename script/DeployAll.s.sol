@@ -257,6 +257,8 @@ contract DeployAll is Script {
         vm.startPrank(owner);
         // give burner role to reputationmining in c-aut
         cAut.grantRole(cAut.BURNER_ROLE(), address(reputationMining));
+        // mint c-aut to reputationMining
+        cAut.mintInitialSupply(address(reputationMining));
 
         // transfer admin role to multisig
         cAut.grantRole(cAut.DEFAULT_ADMIN_ROLE(), projectMultisig);
@@ -267,9 +269,6 @@ contract DeployAll is Script {
         utilsRegistry.registerPlugin(address(reputationMining), "ReputationMining");
         utilsRegistry.registerPlugin(address(peerValue), "PeerValue");
         utilsRegistry.registerPlugin(address(peerStaking), "PeerStaking");
-
-        // send c-aut to reputationMining
-        cAut.transfer(address(reputationMining), 36000000 ether);
 
         // remove owner from plugins
         utilsRegistry.removePlugin(owner);

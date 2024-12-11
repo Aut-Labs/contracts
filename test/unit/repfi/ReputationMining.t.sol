@@ -43,7 +43,7 @@ contract ReputationMiningTest is BaseTest {
 
         // send tokens to reputationMining
         autToken.transfer(address(reputationMiningContract), initialCAutBalance);
-        cAutToken.transfer(address(reputationMiningContract), initialCAutBalance);
+        cAutToken.mintInitialSupply(address(reputationMiningContract));
 
         vm.label(address(this), "ReputationMiningTest");
     }
@@ -55,12 +55,9 @@ contract ReputationMiningTest is BaseTest {
     }
 
     function test_activateMining() public {
-        uint256 remainingCAutBalance = initialCAutBalance;
         reputationMiningContract.activateMining();
         // update through all the periods (should mine 0 tokens from period 49 onwards)
         for (uint256 i = 1; i < 50; i++) {
-            remainingCAutBalance -= reputationMiningContract.getTokensForPeriod(i - 1);
-            console.log("remaining balance for period", i, remainingCAutBalance);
             assertEq(reputationMiningContract.currentPeriod(), i);
 
             uint256 tokensForPeriod = 0;
@@ -72,16 +69,16 @@ contract ReputationMiningTest is BaseTest {
                 tokensForPeriod = 1000000 ether;
             }
 
-            assertEq(reputationMiningContract.getTokensForPeriod(i), tokensForPeriod, "tokensforperiod error");
-            assertEq(reputationMiningContract.tokensLeft(i), tokensForPeriod, "tokensleft currentperiod error");
+            assertEq(cAutToken.getTokensForPeriod(i), tokensForPeriod, "tokensforperiod error");
+            assertEq(cAutToken.balanceOf(address(reputationMiningContract), i), tokensForPeriod, "tokensleft currentperiod error");
 
             if (i > 1) {
                 reputationMiningContract.cleanupPeriod(i - 1);
             }
 
             // check if tokens from previous period are burned
-            assertEq(reputationMiningContract.tokensLeft(i - 1), 0, "tokensleft error");
-            assertEq(cAutToken.balanceOf(address(reputationMiningContract)), remainingCAutBalance, "balance error");
+            assertEq(cAutToken.balanceOf(address(reputationMiningContract), i - 1), 0, "tokensleft error");
+            assertEq(cAutToken.balanceOf(address(reputationMiningContract), i), tokensForPeriod, "balance error");
 
             skip(28 days);
         }
@@ -91,7 +88,7 @@ contract ReputationMiningTest is BaseTest {
         // start first period
         reputationMiningContract.activateMining();
 
-        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice), 1);
         assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(bob);
@@ -103,7 +100,7 @@ contract ReputationMiningTest is BaseTest {
         // start first period
         reputationMiningContract.activateMining();
 
-        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice), 1);
         assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
@@ -119,7 +116,7 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice));
+        uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice), 1);
 
         assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received c-aut doesn't match");
         assertLe(
@@ -135,7 +132,7 @@ contract ReputationMiningTest is BaseTest {
         assertEq(autBalanceBefore, 0, "initial balance is not zero");
 
         vm.prank(alice);
-        reputationMiningContract.claim();
+        reputationMiningContract.claimPeriod(1);
 
         uint256 autBalanceAfter = autToken.balanceOf(address(alice));
 
@@ -159,7 +156,7 @@ contract ReputationMiningTest is BaseTest {
         // start first period
         reputationMiningContract.activateMining();
 
-        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice), 1);
         assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
@@ -175,7 +172,7 @@ contract ReputationMiningTest is BaseTest {
         }
         console.log("given amount", givenAmount);
 
-        uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice));
+        uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice), 1);
 
         assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received c-aut doesn't match");
         assertLe(
@@ -188,10 +185,8 @@ contract ReputationMiningTest is BaseTest {
         uint256 stakedAmount = (givenAmount * 50) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
-        cAutToken.approve(address(this), stakedAmount);
-
         // put the tokens in this contract for now
-        cAutToken.transferFrom(address(alice), address(this), stakedAmount);
+        cAutToken.safeTransferFrom(address(alice), address(this), 1, stakedAmount, "");
 
         skip(28 days);
 
@@ -200,7 +195,7 @@ contract ReputationMiningTest is BaseTest {
         assertEq(autBalanceBefore, 0, "initial balance is not zero");
 
         vm.prank(alice);
-        reputationMiningContract.claim();
+        reputationMiningContract.claimPeriod(1);
 
         uint256 autBalanceAfter = autToken.balanceOf(address(alice));
 
@@ -237,15 +232,12 @@ contract ReputationMiningTest is BaseTest {
         stakedAmount = (givenAmount * 90) / 100;
         console.log("staked amount", stakedAmount);
         vm.prank(alice);
-        cAutToken.approve(address(this), stakedAmount);
-
-        // put the tokens in this contract for now
-        cAutToken.transferFrom(address(alice), address(this), stakedAmount);
+        cAutToken.safeTransferFrom(address(alice), address(this), 2, stakedAmount, "");
 
         skip(28 days);
 
         vm.prank(alice);
-        reputationMiningContract.claim();
+        reputationMiningContract.claimPeriod(2);
 
         autBalanceAfter = autToken.balanceOf(address(alice)) - totalEarned;
 
@@ -267,7 +259,7 @@ contract ReputationMiningTest is BaseTest {
         // start first period
         reputationMiningContract.activateMining();
 
-        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        uint256 cAutBalanceBefore = cAutToken.balanceOf(address(alice), 1);
         assertEq(cAutBalanceBefore, 0, "initial balance is not zero");
 
         vm.startPrank(alice);
@@ -284,7 +276,7 @@ contract ReputationMiningTest is BaseTest {
             givenAmount = MAX_MINT_PER_PERIOD;
         }
 
-        uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice));
+        uint256 cAutBalanceAfter = cAutToken.balanceOf(address(alice), 1);
 
         assertEq(cAutBalanceAfter - cAutBalanceBefore, givenAmount, "received c-aut doesn't match");
         assertLe(
@@ -295,7 +287,7 @@ contract ReputationMiningTest is BaseTest {
 
         skip(28 days);
 
-        cAutBalanceBefore = cAutToken.balanceOf(address(alice));
+        cAutBalanceBefore = cAutToken.balanceOf(address(alice), 2);
         assertEq(cAutBalanceBefore, givenAmount, "balance did not persist across periods");
 
         // alice claims c-tokens again without claiming her rewards first
