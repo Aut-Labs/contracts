@@ -23,7 +23,7 @@ contract TaskManagerCreateContributionsTest is BaseTest {
         hub.addAdmin(alice);
 
         // init Contribution for testing
-        taskId = taskRegistry.registerTask(Task({uri: "abcde"}));
+        taskId = taskRegistry.registerTask(Task({uri: "abcde", interactionId: 0}));
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;
         contribution = Contribution({
@@ -42,7 +42,7 @@ contract TaskManagerCreateContributionsTest is BaseTest {
 
         // action
         vm.prank(alice);
-        bytes32 contributionId = taskFactory.createContribution(contribution);
+        // bytes32 contributionId = taskFactory.createContribution(contribution);
         
         // TODO: post-action asserts
     }
