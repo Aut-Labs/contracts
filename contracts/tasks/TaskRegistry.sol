@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {Task, ITaskRegistry} from "./interfaces/ITaskRegistry.sol";
+import {IInteractionFactory} from "../interaction/IInteractionFactory.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
@@ -12,6 +13,7 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
         EnumerableSet.Bytes32Set taskIds;
         mapping(bytes32 => Task) tasks;
         address approved;
+        IInteractionFactory interactionFactory;
     }
 
     // keccak256(abi.encode(uint256(keccak256("aut.storage.TaskRegistry")) - 1))
@@ -25,14 +27,17 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
     }
 
     function version() external pure returns (uint256 major, uint256 minor, uint256 patch) {
-        return (0, 1, 0);
+        return (0, 1, 1);
     }
 
     constructor() {
         _disableInitializers();
     }
 
-    function initialize() external initializer {
+    function initialize(address _interactionFactory) external initializer {
+        TaskRegistryStorage storage $ = _getTaskRegistryStorage();
+        $.interactionFactory = IInteractionFactory(_interactionFactory);
+
         __Ownable_init(msg.sender);
     }
 
@@ -80,6 +85,9 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
     function _registerTask(Task memory task) internal returns (bytes32) {
         TaskRegistryStorage storage $ = _getTaskRegistryStorage();
 
+        if (task.interactionId != 0 && !$.interactionFactory.isInteractionId(task.interactionId))
+            revert InvalidInteractionId();
+
         bytes32 taskId = calcTaskId(task);
 
         if (!$.taskIds.add(taskId)) revert TaskAlreadyRegistered();
@@ -114,6 +122,12 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
     function isTaskId(bytes32 taskId) public view returns (bool) {
         TaskRegistryStorage storage $ = _getTaskRegistryStorage();
         return $.taskIds.contains(taskId);
+    }
+
+    function isInteraction(bytes32 taskId) public view returns (bool) {
+        TaskRegistryStorage storage $ = _getTaskRegistryStorage();
+        Task memory task = $.tasks[taskId];
+        return (task.interactionId != 0);
     }
 
     /// @inheritdoc ITaskRegistry

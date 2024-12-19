@@ -5,6 +5,7 @@ import {IHub} from "../contracts/hub/interfaces/IHub.sol";
 import {IAutID} from "../contracts/autid/IAutID.sol";
 import {IHubRegistry} from "../contracts/hub/interfaces/IHubRegistry.sol";
 import {IGlobalParameters} from "../contracts/globalParameters/IGlobalParameters.sol";
+import {IInteractionFactory} from "../contracts/interaction/IInteractionFactory.sol";
 import {Hub} from "../contracts/hub/Hub.sol";
 import {AutID} from "../contracts/autid/AutID.sol";
 import {HubRegistry} from "../contracts/hub/HubRegistry.sol";
@@ -38,6 +39,9 @@ contract DeployAll is Script {
     HubDomainsRegistry public hubDomainsRegistry;
     TaskRegistry public taskRegistry;
     GlobalParameters public globalParameters;
+    
+    // TODO: convert to contract with contracts above, deploy
+    IInteractionFactory public interactionFactory;
 
     struct TNamedAddress {
         address target;
@@ -110,7 +114,7 @@ contract DeployAll is Script {
         hubDomainsRegistry.initialize(address(hubRegistry), "Hub Domains Registry", "HDR");
 
         // other inits
-        taskRegistry.initialize();
+        taskRegistry.initialize(address(interactionFactory));
         if (deploying) {
             taskRegistry.setApproved(owner);
         }
@@ -119,47 +123,58 @@ contract DeployAll is Script {
         Task[] memory tasks = new Task[](11);
         // open tasks
         tasks[0] = Task({
-            uri: "ipfs://QmaDxYAaMhEbz3dH2N9Lz1RRdAXb3Sre5fqCvgsmKCtJvC"
+            uri: "ipfs://QmaDxYAaMhEbz3dH2N9Lz1RRdAXb3Sre5fqCvgsmKCtJvC",
+            interactionId: 0
         });
         // quiz tasks
         tasks[1] = Task({
-            uri: "ipfs://QmbnM1ZRjZ2X2Fc6zRm7jsZeTWvZSMjJDc6h3nct7gbAMm"
+            uri: "ipfs://QmbnM1ZRjZ2X2Fc6zRm7jsZeTWvZSMjJDc6h3nct7gbAMm",
+            interactionId: 0
         });
         // join discord tasks
         tasks[2] = Task({
-            uri: "ipfs://QmTe4qYncbW86vgYRvcTTP23sYY9yopYQMwLWh1GKYFmuR"
+            uri: "ipfs://QmTe4qYncbW86vgYRvcTTP23sYY9yopYQMwLWh1GKYFmuR",
+            interactionId: 0
         });
         // [discord] polls
         tasks[3] = Task({
-            uri: "ipfs://QmRdkW4jh55oVhPbNLMRcXZ7KHhcPDd82bfqrkDcGTC8Me"
+            uri: "ipfs://QmRdkW4jh55oVhPbNLMRcXZ7KHhcPDd82bfqrkDcGTC8Me",
+            interactionId: 0
         });
         // [discord] gathering
         tasks[4] = Task({
-            uri: "ipfs://Qme7jXteFKAiSaByMf31cZZgCV2yjGaQcybLS1PmoPCKc2"
+            uri: "ipfs://Qme7jXteFKAiSaByMf31cZZgCV2yjGaQcybLS1PmoPCKc2",
+            interactionId: 0
         });
         // [github] commit
         tasks[5] = Task({
-            uri: "ipfs://Qme9S8rCPEYmJraCNWUdBT2Nc2FSSHtjAeSmcX1RT6EmGg"
+            uri: "ipfs://Qme9S8rCPEYmJraCNWUdBT2Nc2FSSHtjAeSmcX1RT6EmGg",
+            interactionId: 0
         });
         // [github] open pr
         tasks[6] = Task({
-            uri: "ipfs://QmPksTgWNfY9bnfHxrVNmPzMBW19ZZRChouYQACEcBVtK5"
+            uri: "ipfs://QmPksTgWNfY9bnfHxrVNmPzMBW19ZZRChouYQACEcBVtK5",
+            interactionId: 0
         });
         // [twitter] comment
         tasks[7] = Task({
-            uri: "ipfs://Qmd28t4X22F54qihKapgaq9d4Sbx4u4rxhWhEozimxfDiQ"
+            uri: "ipfs://Qmd28t4X22F54qihKapgaq9d4Sbx4u4rxhWhEozimxfDiQ",
+            interactionId: 0
         });
         // [twitter] follow
         tasks[8] = Task({
-            uri: "ipfs://QmR3hzxeR5uKiMhQFL4PPB8eqNsoZxAjJ4KNirjiNBF5a7"
+            uri: "ipfs://QmR3hzxeR5uKiMhQFL4PPB8eqNsoZxAjJ4KNirjiNBF5a7",
+            interactionId: 0
         });
         // [twitter] like
         tasks[9] = Task({
-            uri: "ipfs://QmNepwgZnQ46AjWCDuBVJCb7ozPfXzWtVZx26PSgwVHzPA"
+            uri: "ipfs://QmNepwgZnQ46AjWCDuBVJCb7ozPfXzWtVZx26PSgwVHzPA",
+            interactionId: 0
         });
         // [twitter] retweet
         tasks[10] = Task({
-            uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH"
+            uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH",
+            interactionId: 0
         });
         taskRegistry.registerTasks(tasks);
 

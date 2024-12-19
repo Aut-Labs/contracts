@@ -26,7 +26,7 @@ contract TaskManagerGiveContributionTest is BaseTest {
         _joinHub(bob, address(hub), "bob");
 
         // init Contribution for testing
-        taskId = taskRegistry.registerTask(Task({uri: "abcde"}));
+        taskId = taskRegistry.registerTask(Task({uri: "abcde", interactionId: 0}));
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;
         contribution = Contribution({

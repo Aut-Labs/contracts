@@ -2,12 +2,14 @@ pragma solidity >=0.8.0;
 
 struct Task {
     string uri;
+    uint256 interactionId;
     // TODO: other identifiers / metadata?
 }
 
 interface ITaskRegistry {
     error TaskAlreadyRegistered();
     error TaskNotRegistered();
+    error InvalidInteractionId();
 
     event RegisterTask(bytes32 indexed taskId, address indexed who, string uri);
 
