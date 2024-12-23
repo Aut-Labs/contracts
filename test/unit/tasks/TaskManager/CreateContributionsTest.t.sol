@@ -23,7 +23,7 @@ contract TaskManagerCreateContributionsTest is BaseTest {
         hub.addAdmin(alice);
 
         // init Contribution for testing
-        taskId = taskRegistry.registerTask(Task({uri: "abcde", interactionId: 0}));
+        taskId = taskRegistry.registerTask(Task({uri: "abcde", interactionId: 0, networkId: 0, contractAddress: address(0), functionSignature: ""}));
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;
         contribution = Contribution({

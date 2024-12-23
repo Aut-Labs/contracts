@@ -124,57 +124,90 @@ contract DeployAll is Script {
         // open tasks
         tasks[0] = Task({
             uri: "ipfs://QmaDxYAaMhEbz3dH2N9Lz1RRdAXb3Sre5fqCvgsmKCtJvC",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // quiz tasks
         tasks[1] = Task({
             uri: "ipfs://QmbnM1ZRjZ2X2Fc6zRm7jsZeTWvZSMjJDc6h3nct7gbAMm",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // join discord tasks
         tasks[2] = Task({
             uri: "ipfs://QmTe4qYncbW86vgYRvcTTP23sYY9yopYQMwLWh1GKYFmuR",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // [discord] polls
         tasks[3] = Task({
             uri: "ipfs://QmRdkW4jh55oVhPbNLMRcXZ7KHhcPDd82bfqrkDcGTC8Me",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // [discord] gathering
         tasks[4] = Task({
             uri: "ipfs://Qme7jXteFKAiSaByMf31cZZgCV2yjGaQcybLS1PmoPCKc2",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // [github] commit
         tasks[5] = Task({
             uri: "ipfs://Qme9S8rCPEYmJraCNWUdBT2Nc2FSSHtjAeSmcX1RT6EmGg",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // [github] open pr
         tasks[6] = Task({
             uri: "ipfs://QmPksTgWNfY9bnfHxrVNmPzMBW19ZZRChouYQACEcBVtK5",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // [twitter] comment
         tasks[7] = Task({
             uri: "ipfs://Qmd28t4X22F54qihKapgaq9d4Sbx4u4rxhWhEozimxfDiQ",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // [twitter] follow
         tasks[8] = Task({
             uri: "ipfs://QmR3hzxeR5uKiMhQFL4PPB8eqNsoZxAjJ4KNirjiNBF5a7",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // [twitter] like
         tasks[9] = Task({
             uri: "ipfs://QmNepwgZnQ46AjWCDuBVJCb7ozPfXzWtVZx26PSgwVHzPA",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         // [twitter] retweet
         tasks[10] = Task({
             uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH",
-            interactionId: 0
+            interactionId: 0,
+            networkId: 0,
+            contractAddress: address(0),
+            functionSignature: ""
         });
         taskRegistry.registerTasks(tasks);
 

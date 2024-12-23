@@ -13,9 +13,9 @@ contract TaskRegistryRegisterTasksUnitTest is BaseTest {
 
     function test_RegisterTasks_succeeds() public {
         Task[] memory tasks = new Task[](3);
-        tasks[0] = Task({uri: "abcde", interactionId: 0});
-        tasks[1] = Task({uri: "fghij", interactionId: 0});
-        tasks[2] = Task({uri: "klmno", interactionId: 0});
+        tasks[0] = Task({uri: "abcde", interactionId: 0, networkId: 0, contractAddress: address(0), functionSignature: ""});
+        tasks[1] = Task({uri: "fghij", interactionId: 0, networkId: 0, contractAddress: address(0), functionSignature: ""});
+        tasks[2] = Task({uri: "klmno", interactionId: 0, networkId: 0, contractAddress: address(0), functionSignature: ""});
 
         taskRegistry.registerTasks(tasks);
 
@@ -32,7 +32,7 @@ contract TaskRegistryRegisterTasksUnitTest is BaseTest {
     }
 
     function test_RegisterTask_TaskAlreadyRegistered_reverts() public {
-        Task memory task = Task({uri: "abcde", interactionId: 0});
+        Task memory task = Task({uri: "abcde", interactionId: 0, networkId: 0,contractAddress: address(0), functionSignature: ""});
         taskRegistry.registerTask(task);
         vm.expectRevert(ITaskRegistry.TaskAlreadyRegistered.selector);
         taskRegistry.registerTask(task);
