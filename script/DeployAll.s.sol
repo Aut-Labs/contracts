@@ -290,7 +290,7 @@ contract DeployAll is Script {
 
         if (deploying) {
             string memory filename = "deployments.txt";
-            TNamedAddress[24] memory na;
+            TNamedAddress[25] memory na;
             na[0] = TNamedAddress({name: "globalParameters", target: address(globalParameters)});
             na[1] = TNamedAddress({name: "autID", target: address(autId)});
             na[2] = TNamedAddress({name: "hubRegistry", target: address(hubRegistry)});
@@ -303,12 +303,13 @@ contract DeployAll is Script {
             na[15] = TNamedAddress({name: "founderInvestors", target: address(founderInvestors)});
             na[16] = TNamedAddress({name: "earlyContributors", target: address(earlyContributors)});
             na[17] = TNamedAddress({name: "airdrop", target: address(airdrop)});
-            na[18] = TNamedAddress({name: "partners", target: address(listing)});
+            na[18] = TNamedAddress({name: "kolsAdvisors", target: address(kolsAdvisors)});
             na[19] = TNamedAddress({name: "treasury", target: address(treasury)});
             na[20] = TNamedAddress({name: "profitSharing", target: address(profitSharing)});
             na[21] = TNamedAddress({name: "circular", target: address(circular)});
-            na[22] = TNamedAddress({name: "reputationMining", target: address(reputationMining)});
-            na[23] = TNamedAddress({name: "distributor", target: address(distributor)});
+            na[22] = TNamedAddress({name: "reputationMining", target: address(reputationMiningSafe)});
+            na[23] = TNamedAddress({name: "listing", target: address(listing)});
+            na[24] = TNamedAddress({name: "distributor", target: address(distributor)});
 
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
             for (uint256 i = 0; i != na.length; ++i) {
