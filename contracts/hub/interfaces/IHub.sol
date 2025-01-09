@@ -34,7 +34,7 @@ interface IHub {
     event OnboardingSet(address);
     event MarketSet(uint256);
     event CommitmentSet(uint256);
-    event ChangeCommitmentLevel(address indexed who, uint32 oldCommitmentLevel, uint32 newCommitmentLevel);
+    event ChangeCommitmentLevel(address indexed who, uint32 oldCommitmentLevel, uint32 newCommitmentLevelLevel);
     error PenaltyFactorOutOfRange();
     event SetPenaltyFactor(uint128 oldPenaltyFactor, uint128 newPenaltyFactor);
 
@@ -66,7 +66,7 @@ interface IHub {
     function taskFactory() external view returns (address);
     function taskManager() external view returns (address);
     function archetype() external view returns (uint256);
-    function commitment() external view returns (uint256);
+    function commitmentLevel() external view returns (uint256);
     function market() external view returns (uint256);
     function uri() external view returns (string memory);
 

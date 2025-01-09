@@ -9,11 +9,11 @@ import {AccessUtils} from "../utils/AccessUtils.sol";
 import {IGlobalParameters} from "../globalParameters/IGlobalParameters.sol";
 import {IMembership} from "../membership/IMembership.sol";
 import {ITaskManager} from "../tasks/interfaces/ITaskManager.sol";
-import {IParticipationScore, MemberParticipation} from "./IParticipationScore.sol";
+import {IParticipationScore, MemberActivity} from "./IParticipationScore.sol";
 
 contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, AccessUtils {
     struct ParticipationScoreStorage {
-        mapping(address who => mapping(uint32 periodId => MemberParticipation)) memberParticipations;
+        mapping(address who => mapping(uint32 period => MemberActivity)) memberActivities;
     }
 
     // keccak256(abi.encode(uint256(keccak256("aut.storage.ParticipationScore")) - 1))
@@ -34,9 +34,9 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         _disableInitializers();
     }
 
-    function initialize(address _hub, uint32 _period0Start, uint32 _initPeriodId) external initializer {
+    function initialize(address _hub) external initializer {
         _init_AccessUtils({_hub: _hub, _autId: address(0)});
-        _init_PeriodUtils({_period0Start: _period0Start, _initPeriodId: _initPeriodId});
+        _init_PeriodUtils();
     }
 
     /// @inheritdoc IParticipationScore
@@ -46,144 +46,146 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         ParticipationScoreStorage storage $ = _getParticipationScoreStorage();
 
         // store initial participation
-        $.memberParticipations[who][currentPeriodId()] = MemberParticipation({score: 1e18, performance: 0});
+        $.memberActivities[who][currentPeriodId()] = MemberActivity({participationScore: 1e18, performance: 0});
     }
 
-    function memberParticipations(address who, uint32 periodId) external view returns (MemberParticipation memory) {
+    function memberActivities(address who, uint32 period) external view returns (MemberActivity memory) {
         ParticipationScoreStorage storage $ = _getParticipationScoreStorage();
-        return $.memberParticipations[who][periodId];
+        return $.memberActivities[who][period];
     }
 
     /// @inheritdoc IParticipationScore
     function calcPerformanceInPeriod(
-        uint32 commitment,
-        uint128 pointsGiven,
-        uint32 periodId
+        uint32 commitmentLevel,
+        uint128 sumPointsGiven,
+        uint32 period
     ) public view returns (uint128) {
-        if (periodId < initPeriodId() || periodId > currentPeriodId()) revert InvalidPeriodId();
-        return _calcPerformanceInPeriod({commitment: commitment, pointsGiven: pointsGiven, periodId: periodId});
+        if (period == 0 || period > currentPeriodId()) revert InvalidPeriodId();
+        return
+            _calcPerformanceInPeriod({
+                commitmentLevel: commitmentLevel,
+                sumPointsGiven: sumPointsGiven,
+                period: period
+            });
     }
 
     /// @inheritdoc IParticipationScore
     function calcPerformancesInPeriod(
         uint32[] calldata commitments,
-        uint128[] calldata pointsGiven,
-        uint32 periodId
+        uint128[] calldata sumPointsGiven,
+        uint32 period
     ) external view returns (uint128[] memory) {
         uint256 length = commitments.length;
         uint128[] memory performances = new uint128[](length);
         for (uint256 i = 0; i < length; i++) {
             performances[i] = calcPerformanceInPeriod({
-                commitment: commitments[i],
-                pointsGiven: pointsGiven[i],
-                periodId: periodId
+                commitmentLevel: commitments[i],
+                sumPointsGiven: sumPointsGiven[i],
+                period: period
             });
         }
         return performances;
     }
 
     function _calcPerformanceInPeriod(
-        uint32 commitment,
-        uint128 pointsGiven,
-        uint32 periodId
+        uint32 commitmentLevel,
+        uint128 sumPointsGiven,
+        uint32 period
     ) internal view returns (uint128) {
-        uint128 expectedContributionPoints = _calcExpectedPoints({commitment: commitment, periodId: periodId});
-        uint128 performance = (1e18 * pointsGiven) / expectedContributionPoints;
+        uint128 expectedContributionPoints = _calcExpectedContributionPoints({
+            commitmentLevel: commitmentLevel,
+            period: period
+        });
+        uint128 performance = (1e18 * sumPointsGiven) / expectedContributionPoints;
         return performance;
     }
 
     /// @inheritdoc IParticipationScore
-    function calcPerformanceInPeriod(address who, uint32 periodId) public view returns (uint128) {
+    function calcPerformanceInPeriod(address who, uint32 period) public view returns (uint128) {
         _revertIfNotMember(who);
-        if (periodId < IMembership(membership()).getPeriodIdJoined(who) || periodId > currentPeriodId())
+        if (period < IMembership(membership()).getPeriodJoined(who) || period > currentPeriodId())
             revert InvalidPeriodId();
-        return _calcPerformanceInPeriod(who, periodId);
+        return _calcPerformanceInPeriod(who, period);
     }
 
     /// @inheritdoc IParticipationScore
-    function calcPerformanceInPeriods(
-        address who,
-        uint32[] calldata periodIds
-    ) external view returns (uint128[] memory) {
-        uint256 length = periodIds.length;
+    function calcPerformanceInPeriods(address who, uint32[] calldata periods) external view returns (uint128[] memory) {
+        uint256 length = periods.length;
         uint128[] memory performances = new uint128[](length);
         for (uint256 i = 0; i < length; i++) {
-            performances[i] = calcPerformanceInPeriod({who: who, periodId: periodIds[i]});
+            performances[i] = calcPerformanceInPeriod({who: who, period: periods[i]});
         }
         return performances;
     }
 
     /// @inheritdoc IParticipationScore
-    function calcPerformancesInPeriod(
-        address[] calldata whos,
-        uint32 periodId
-    ) external view returns (uint128[] memory) {
+    function calcPerformancesInPeriod(address[] calldata whos, uint32 period) external view returns (uint128[] memory) {
         uint256 length = whos.length;
         uint128[] memory performances = new uint128[](length);
         for (uint256 i = 0; i < length; i++) {
-            performances[i] = calcPerformanceInPeriod({who: whos[i], periodId: periodId});
+            performances[i] = calcPerformanceInPeriod({who: whos[i], period: period});
         }
         return performances;
     }
 
-    function _calcPerformanceInPeriod(address who, uint32 periodId) internal view returns (uint128) {
+    function _calcPerformanceInPeriod(address who, uint32 period) internal view returns (uint128) {
         return
             _calcPerformanceInPeriod({
-                commitment: IMembership(membership()).getCommitment(who, periodId),
-                pointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, periodId),
-                periodId: periodId
+                commitmentLevel: IMembership(membership()).getCommitmentLevel(who, period),
+                sumPointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, period),
+                period: period
             });
     }
 
     /// @inheritdoc IParticipationScore
-    function calcExpectedPoints(uint32 commitment, uint32 periodId) public view returns (uint128) {
-        if (commitment < 1 || commitment > 10) revert InvalidCommitment();
-        if (periodId == 0 || periodId > currentPeriodId()) revert InvalidPeriodId();
-        return _calcExpectedPoints(commitment, periodId);
+    function calcExpectedContributionPoints(uint32 commitmentLevel, uint32 period) public view returns (uint128) {
+        if (commitmentLevel < 1 || commitmentLevel > 10) revert InvalidCommitment();
+        if (period == 0 || period > currentPeriodId()) revert InvalidPeriodId();
+        return _calcExpectedContributionPoints(commitmentLevel, period);
     }
 
     /// @inheritdoc IParticipationScore
-    function calcsExpectedPoints(
+    function calcsExpectedContributionPoints(
         uint32[] calldata commitments,
-        uint32[] calldata periodIds
+        uint32[] calldata periods
     ) external view returns (uint128[] memory) {
         uint256 length = commitments.length;
-        require(length == periodIds.length);
+        require(length == periods.length);
         uint128[] memory eps = new uint128[](length);
         for (uint256 i = 0; i < length; i++) {
-            eps[i] = calcExpectedPoints({commitment: commitments[i], periodId: periodIds[i]});
+            eps[i] = calcExpectedContributionPoints({commitmentLevel: commitments[i], period: periods[i]});
         }
         return eps;
     }
 
-    function _calcExpectedPoints(uint32 commitment, uint32 periodId) internal view returns (uint128) {
+    function _calcExpectedContributionPoints(uint32 commitmentLevel, uint32 period) internal view returns (uint128) {
         return
-            (fractionalCommitment({commitment: commitment, periodId: periodId}) *
-                ITaskManager(taskManager()).getPointsActive(periodId)) / 1e18;
+            (fractionalCommitment({commitmentLevel: commitmentLevel, period: period}) *
+                ITaskManager(taskManager()).getSumPointsActive(period)) / 1e18;
     }
 
     /// @inheritdoc IParticipationScore
-    function fractionalCommitment(uint32 commitment, uint32 periodId) public view returns (uint128) {
-        return (1e18 * uint128(commitment)) / IMembership(membership()).getCommitmentSum(periodId);
+    function fractionalCommitment(uint32 commitmentLevel, uint32 period) public view returns (uint128) {
+        return (1e18 * uint128(commitmentLevel)) / IMembership(membership()).getSumCommitmentLevel(period);
     }
 
     /// @inheritdoc IParticipationScore
     function fractionalsCommitments(
         uint32[] calldata commitments,
-        uint32[] calldata periodIds
+        uint32[] calldata periods
     ) external view returns (uint128[] memory) {
         uint256 length = commitments.length;
-        require(length == periodIds.length);
+        require(length == periods.length);
         uint128[] memory fcs = new uint128[](length);
         for (uint256 i = 0; i < length; i++) {
-            fcs[i] = fractionalCommitment({commitment: commitments[i], periodId: periodIds[i]});
+            fcs[i] = fractionalCommitment({commitmentLevel: commitments[i], period: periods[i]});
         }
         return fcs;
     }
 
     // TODO: seal member participation if all written?
     /// @inheritdoc IParticipationScore
-    function getMembersToWriteMemberParticipation(uint32 periodId) external view returns (address[] memory) {
+    function getMembersToWriteMemberActivity(uint32 period) external view returns (address[] memory) {
         ParticipationScoreStorage storage $ = _getParticipationScoreStorage();
         uint256 numMembersToWrite = 0;
         address[] memory members = IMembership(membership()).members();
@@ -192,7 +194,7 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
 
         for (uint256 i = 0; i < length; i++) {
             address member = members[i];
-            if ($.memberParticipations[member][periodId].score == 0) {
+            if ($.memberActivities[member][period].participationScore == 0) {
                 membersCopy[numMembersToWrite++] = member;
             }
         }
@@ -205,35 +207,35 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
     }
 
     /// @inheritdoc IParticipationScore
-    function writeMemberParticipation(address who) external {
+    function writeMemberActivity(address who) external {
         // update historical periods if necessary
         ITaskManager(taskManager()).writePointSummary();
 
-        _writeMemberParticipation(who, currentPeriodId());
+        _writeMemberActivity(who, currentPeriodId());
     }
 
     /// @inheritdoc IParticipationScore
-    function writeMemberParticipations(address[] calldata whos) external {
+    function writeMemberActivities(address[] calldata whos) external {
         // update historical periods if necessary
         ITaskManager(taskManager()).writePointSummary();
 
-        uint32 currentPeriodId_ = currentPeriodId();
+        uint32 currentPeriod = currentPeriodId();
         for (uint256 i = 0; i < whos.length; i++) {
-            _writeMemberParticipation(whos[i], currentPeriodId_);
+            _writeMemberActivity(whos[i], currentPeriod);
         }
     }
 
-    function _writeMemberParticipation(address who, uint32 _currentPeriodId) internal {
+    function _writeMemberActivity(address who, uint32 _currentPeriod) internal {
         ParticipationScoreStorage storage $ = _getParticipationScoreStorage();
 
-        // NOTE: in periodIdJoined, participation score is default 100.  Only write to following periods
-        uint32 periodIdJoined = IMembership(membership()).getPeriodIdJoined(who);
+        // NOTE: in periodJoined, participationScore is default 100.  Only write to following periods
+        uint32 periodJoined = IMembership(membership()).getPeriodJoined(who);
 
-        // We are only writing to the last period which has ended: ie, _currentPeriodId - 1
+        // We are only writing to the last period which has ended: ie, _currentPeriod - 1
         uint32 periodToStartWrite;
-        for (uint32 i = _currentPeriodId - 1; i > periodIdJoined; i--) {
+        for (uint32 i = _currentPeriod - 1; i > periodJoined; i--) {
             // loop through passed periods and find the oldest period where participation has not yet been written
-            if ($.memberParticipations[who][i].score == 0) {
+            if ($.memberActivities[who][i].participationScore == 0) {
                 periodToStartWrite = i;
             } else {
                 // we have reached the end of 0 values
@@ -244,42 +246,42 @@ contract ParticipationScore is IParticipationScore, Initializable, PeriodUtils, 
         // return if there is nothing to write
         if (periodToStartWrite == 0) return;
 
-        // Get previous period participation score to use as a starting weight
-        uint128 previousScore = $.memberParticipations[who][periodToStartWrite - 1].score;
+        // Get previous period participationScore to use as a starting weight
+        uint128 previousScore = $.memberActivities[who][periodToStartWrite - 1].participationScore;
 
-        // Start at the first empty period and write the participation score given the previous score and c
-        for (uint32 i = periodToStartWrite; i < _currentPeriodId; i++) {
-            MemberParticipation storage memberParticipation = $.memberParticipations[who][i];
+        // Start at the first empty period and write the participationScore given the previous participationScore
+        for (uint32 i = periodToStartWrite; i < _currentPeriod; i++) {
+            MemberActivity storage memberActivity = $.memberActivities[who][i];
             uint128 performance = _calcPerformanceInPeriod({
-                commitment: IMembership(membership()).getCommitment({who: who, periodId: i}),
-                pointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, i),
-                periodId: i
+                commitmentLevel: IMembership(membership()).getCommitmentLevel({who: who, period: i}),
+                sumPointsGiven: ITaskManager(taskManager()).getMemberPointsGiven(who, i),
+                period: i
             });
 
             uint128 delta;
             uint128 factor;
-            uint128 score;
+            uint128 participationScore;
 
             if (performance > 1e18) {
-                // exceeded expectations: raise memberParticipation score
+                // exceeded expectations: raise MemberActivity participationScore
                 delta = performance - 1e18;
                 factor = constraintFactor();
                 if (delta > factor) delta = factor;
-                score = (previousScore * (1e18 + delta)) / delta;
+                participationScore = (previousScore * (1e18 + delta)) / delta;
             } else {
-                // underperformed: lower memberParticipation score
+                // underperformed: lower MemberActivity participationScore
                 delta = 1e18 - performance;
                 factor = penaltyFactor();
                 if (delta > factor) delta = factor;
-                score = (previousScore * (1e18 - delta)) / delta;
+                participationScore = (previousScore * (1e18 - delta)) / delta;
             }
 
             // write to storage
-            memberParticipation.score = score;
-            memberParticipation.performance = performance;
+            memberActivity.participationScore = participationScore;
+            memberActivity.performance = performance;
 
             // overwrite previousScore to use for the next period if needed
-            previousScore = score;
+            previousScore = participationScore;
         }
     }
 

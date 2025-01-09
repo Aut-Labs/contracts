@@ -54,10 +54,10 @@ contract TaskManagerGiveContributionTest is BaseTest {
     }
 
     function test_GiveContribution_succeeds() public {
-        uint32 currentPeriodId = taskManager.currentPeriodId();
+        uint32 currentPeriod = taskManager.currentPeriodId();
 
         // pre-action asserts
-        MemberActivity memory memberActivity = taskManager.getMemberActivity(bob, currentPeriodId);
+        MemberActivity memory memberActivity = taskManager.getMemberActivity(bob, currentPeriod);
         assertEq(memberActivity.pointsGiven, 0);
         assertEq(memberActivity.contributionIds.length, 0);
 
@@ -69,8 +69,8 @@ contract TaskManagerGiveContributionTest is BaseTest {
         });
 
         // post-action asserts (TODO)
-        // memberActivity = taskManager.getMemberActivity(bob, currentPeriodId);
-        // assertEq(memberActivity.pointsGiven, points);
+        // memberActivity = taskManager.getMemberActivity(bob, currentPeriod);
+        // assertEq(memberActivity.sumPointsGiven, points);
         // assertEq(memberActivity.contributionIds.length, 1);
         // assertEq(memberActivity.contributionIds[0], contributionId);
     }

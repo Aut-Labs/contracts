@@ -17,9 +17,9 @@ struct ContributionStatus {
 
 struct PointSummary {
     bool isSealed;
-    uint128 pointsActive;
-    uint128 pointsGiven;
-    uint128 pointsRemoved;
+    uint128 sumPointsActive;
+    uint128 sumPointsGiven;
+    uint128 sumPointsRemoved;
 }
 
 struct MemberActivity {
@@ -73,7 +73,7 @@ interface ITaskManager {
         bytes32 indexed contributionId,
         address indexed sender,
         address indexed hub,
-        uint32 periodId,
+        uint32 period,
         address who,
         Status status,
         uint32 points,
@@ -84,13 +84,13 @@ interface ITaskManager {
     function initialize2(address _initialContributionManager) external;
 
     /// @notice Get the amount of outstanding Contribution points for the current period
-    function pointsActive() external view returns (uint128);
+    function sumPointsActive() external view returns (uint128);
 
     /// @notice Get the amount of Contribution points given for the current period
-    function periodPointsGiven() external view returns (uint128);
+    function sumPointsGiven() external view returns (uint128);
 
     /// @notice Get the amount of Contribution points removed for the current period
-    function periodPointsRemoved() external view returns (uint128);
+    function sumPointsRemoved() external view returns (uint128);
 
     // ContributionManager-management
 
@@ -150,14 +150,14 @@ interface ITaskManager {
     /// @notice return the ContributionStatus of a given contributionId
     function getContributionStatus(bytes32 contributionId) external view returns (ContributionStatus memory);
 
-    /// @notice Return the MemberActivity of a given address and periodId
-    function getMemberActivity(address who, uint32 periodId) external view returns (MemberActivity memory);
+    /// @notice Return the MemberActivity of a given address and period
+    function getMemberActivity(address who, uint32 period) external view returns (MemberActivity memory);
 
     /// @notice return the amount of points associated to a contributionId
     function getContributionPoints(bytes32 contributionId) external view returns (uint128);
 
-    /// @notice return the amount of points a member has been given for a provided periodId
-    function getMemberPointsGiven(address who, uint32 periodId) external view returns (uint128);
+    /// @notice return the amount of points a member has been given for a provided period
+    function getMemberPointsGiven(address who, uint32 period) external view returns (uint128);
 
     /// @notice return true if a member has been given a specific contributionId
     /// @dev each member can only receive a unique contributionId once
@@ -166,15 +166,17 @@ interface ITaskManager {
     /// @notice return the contributionId's given to a member across all periods
     function getMemberContributionIds(address who) external view returns (bytes32[] memory);
 
-    /// @notice return the contributionId's given to a member for a provided periodId
-    function getMemberContributionIds(address who, uint32 periodId) external view returns (bytes32[] memory);
+    /// @notice return the contributionId's given to a member for a provided period
+    function getMemberContributionIds(address who, uint32 period) external view returns (bytes32[] memory);
 
-    /// @notice return the amount of outstanding contribution points for a provided periodId
-    function getPointsActive(uint32 periodId) external view returns (uint128);
+    /// @notice return the amount of outstanding contribution points for a provided period
+    /// @dev Will return bad data if querying the last / current period and writePointSummary() has not been called
+    function getSumPointsActive(uint32 period) external view returns (uint128);
 
-    /// @notice return the amount of given contribution points for a provided periodId
-    function getPointsGiven(uint32 periodId) external view returns (uint128);
+    /// @notice return the amount of given contribution points for a provided period
+    /// @dev Will return bad data if querying the last / current period and writePointSummary() has not been called
+    function getSumPointsGiven(uint32 period) external view returns (uint128);
 
-    /// @notice return the contributionId's given for the whole hub for a provided periodId
-    function getGivenContributions(uint32 periodId) external view returns (bytes32[] memory);
+    /// @notice return the contributionId's given for the whole hub for a provided period
+    function getGivenContributions(uint32 period) external view returns (bytes32[] memory);
 }

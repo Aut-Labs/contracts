@@ -2,18 +2,16 @@
 pragma solidity ^0.8.20;
 
 import {TimeLibrary} from "../libraries/TimeLibrary.sol";
+import {IPeriodUtils} from "./interfaces/IPeriodUtils.sol";
 
-contract PeriodUtils {
+contract PeriodUtils is IPeriodUtils {
     struct PeriodUtilsStorage {
-        uint32 period0Start;
-        uint32 initPeriodId;
+        uint32 initTimestamp;
     }
 
     // keccak256(abi.encode(uint256(keccak256("aut.storage.PeriodUtils")) - 1))
     bytes32 private constant PeriodUtilsStorageLocation =
         0xbb30d154f2784c70f43e6e03f8bf8078407501460b7616d04bf445b7588c175a;
-
-    error InvalidPeriodId();
 
     function _getPeriodUtilsStorage() private pure returns (PeriodUtilsStorage storage $) {
         assembly {
@@ -21,27 +19,44 @@ contract PeriodUtils {
         }
     }
 
-    function _init_PeriodUtils(uint32 _period0Start, uint32 _initPeriodId) internal {
+    function _init_PeriodUtils() internal {
         PeriodUtilsStorage storage $ = _getPeriodUtilsStorage();
-        $.period0Start = _period0Start;
-        $.initPeriodId = _initPeriodId;
+        $.initTimestamp = uint32(block.timestamp);
     }
 
+    /// @inheritdoc IPeriodUtils
+    function currentPeriodStart() public view returns (uint32) {
+        return TimeLibrary.periodStart({currentTimestamp: uint32(block.timestamp), initTimestamp: initTimestamp()});
+    }
+
+    /// @inheritdoc IPeriodUtils
+    function currentPeriodEnd() public view returns (uint32) {
+        return TimeLibrary.periodEnd({currentTimestamp: uint32(block.timestamp), initTimestamp: initTimestamp()});
+    }
+
+    /// @inheritdoc IPeriodUtils
     function currentPeriodId() public view returns (uint32) {
-        return TimeLibrary.periodId({period0Start: period0Start(), timestamp: uint32(block.timestamp)});
+        return TimeLibrary.periodId({currentTimestamp: uint32(block.timestamp), initTimestamp: initTimestamp()});
     }
 
-    function getPeriodId(uint32 timestamp) public view returns (uint32) {
-        return TimeLibrary.periodId({period0Start: period0Start(), timestamp: timestamp});
+    /// @inheritdoc IPeriodUtils
+    function periodStart(uint32 timestamp) public view returns (uint32) {
+        return TimeLibrary.periodStart({currentTimestamp: timestamp, initTimestamp: initTimestamp()});
     }
 
-    function period0Start() public view returns (uint32) {
+    /// @inheritdoc IPeriodUtils
+    function periodEnd(uint32 timestamp) public view returns (uint32) {
+        return TimeLibrary.periodEnd({currentTimestamp: timestamp, initTimestamp: initTimestamp()});
+    }
+
+    /// @inheritdoc IPeriodUtils
+    function periodId(uint32 timestamp) public view returns (uint32) {
+        return TimeLibrary.periodId({currentTimestamp: timestamp, initTimestamp: initTimestamp()});
+    }
+
+    /// @inheritdoc IPeriodUtils
+    function initTimestamp() public view returns (uint32) {
         PeriodUtilsStorage storage $ = _getPeriodUtilsStorage();
-        return $.period0Start;
-    }
-
-    function initPeriodId() public view returns (uint32) {
-        PeriodUtilsStorage storage $ = _getPeriodUtilsStorage();
-        return $.initPeriodId;
+        return $.initTimestamp;
     }
 }

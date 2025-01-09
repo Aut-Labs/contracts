@@ -36,7 +36,7 @@ pragma solidity ^0.8.20;
 //             address(hubRegistry),
 //             pluginRegistry, // plugin registry address
 //             1, // Market
-//             1, // Commitment
+//             1, // commitmentLevel
 //             "metadata", // Metadata Uri
 //             hubDomainsRegistryAddress
 //         );
@@ -75,10 +75,10 @@ pragma solidity ^0.8.20;
 //         string memory username = "testuser";
 //         string memory optionalUri = "testuri";
 //         uint256 role = 1;
-//         uint256 commitment = 5;
+//         uint256 commitmentLevel = 5;
 //         autID.createRecordAndJoinHub(
 //             role,
-//             commitment,
+//             commitmentLevel,
 //             hubAddress,
 //             username,
 //             optionalUri

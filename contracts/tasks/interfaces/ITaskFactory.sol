@@ -58,7 +58,7 @@ interface ITaskFactory {
     function contributionIds() external view returns (bytes32[] memory);
 
     /// @notice return all Contribution ids created within a given period
-    function contributionIdsInPeriod(uint32 periodId) external view returns (bytes32[] memory);
+    function contributionIdsInPeriod(uint32 period) external view returns (bytes32[] memory);
 
     /// @notice convert a Contribution struct to its' encoded type to hash / events
     function encodeContribution(Contribution memory contribution) external pure returns (bytes memory);
