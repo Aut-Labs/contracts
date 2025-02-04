@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.20;
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -15,6 +15,11 @@ contract CustomOwnable is Ownable {
      * This function will revert with a custom error message when called.
      * This is done to ensure the contract always has an owner.
      */
+
+    constructor(address initialOwner) Ownable(initialOwner){
+        
+    }
+
     function renounceOwnership() public view override onlyOwner {
         revert ThisFeatureIsDisabled();
     }
