@@ -8,7 +8,6 @@ import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import { Address } from "./libs/Address.sol";
-import { IVestingClaimingContract } from "./interfaces/IVestingClaimingContract.sol";
 
 /**
  * @title Staking
@@ -26,7 +25,6 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
     using Address for address;
 
     IERC20 private _baseAsset;
-    IVestingClaimingContract private _vestingClaimImplementation;
 
     uint256 public constant ZERO = 0;
     uint256 public constant ONE = 1;
@@ -76,11 +74,9 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
     mapping(address => mapping(uint256 => mapping(uint256 => Agreements))) public userAgreements;
 
     // Events
-    event VestingClaimContractUpdated(address indexed _oldVestingClaim, address indexed _newVestingClaim);
     event ThresholdForDurationUpdated(uint256 indexed _threshold);
     event ThresholdForRatesUpdated(uint256 indexed _threshold);
     event MinimumStakeAmountUpdated(uint256 indexed _minAmountOfTokens);
-    event VestingTokensClaimed(uint256 indexed _oldAmount, uint256 indexed _newAmount);
     event StakingScheduleCreated(uint256 indexed _scheduleId);
     event StakingScheduleStarted(uint256 indexed _scheduleId);
     event Staked(
@@ -121,7 +117,6 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
     error InvalidDurationSettings();
     error InvalidRateSettings();
     error InvalidPenaltySettings();
-    error NoVestingTokensClaimed();
     error NotTheOwner();
     error DoesNotAcceptingEthers();
     error NotPermitted();
@@ -317,14 +312,6 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      */
     function getBaseAsset() external view returns(address){
         return address(_baseAsset);
-    }
-
-    /**
-     * @notice Returns the address of the vesting claim contract.
-     * @return The vesting claim contract address.
-     */
-    function getVestingClaimContract() external view returns(address){
-        return address(_vestingClaimImplementation);
     }
 
     /**
@@ -630,41 +617,6 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
     {
         minStakableAmount = _minAmountOfTokens;
         emit MinimumStakeAmountUpdated(_minAmountOfTokens);
-    }
-
-    /**
-     * @notice Updates the vesting claim contract.
-     * @param _newVestingClaimImplementation The address of the new vesting claim contract.
-     */
-    function updateVestingClaimContract(address _newVestingClaimImplementation) 
-    external 
-    validContract(_newVestingClaimImplementation)
-    onlyOwner() 
-    whenNotPaused()
-    {
-        address oldVestingClaimImplementation = address(_vestingClaimImplementation);
-        _vestingClaimImplementation = IVestingClaimingContract(_newVestingClaimImplementation);
-        emit VestingClaimContractUpdated(oldVestingClaimImplementation, _newVestingClaimImplementation);
-    }
-
-    /**
-     * @notice Claims vested tokens.
-     * @param templateName The name of the vesting template.
-     */
-    function claimVestedTokens(string calldata templateName) 
-    external 
-    nonReentrant() 
-    onlyOwner() 
-    whenNotPaused()
-    {
-        if(address(_vestingClaimImplementation)==address(0)) revert InvalidAddressInteraction();
-        uint256 oldBalance = IERC20(_baseAsset).balanceOf(address(this));
-        _vestingClaimImplementation.claimTokensForBeneficiary(templateName);
-        uint256 currentBalance = IERC20(_baseAsset).balanceOf(address(this));
-
-        if(oldBalance == currentBalance) revert NoVestingTokensClaimed();
-
-        emit VestingTokensClaimed(oldBalance, currentBalance);
     }
 
     /**
