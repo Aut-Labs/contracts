@@ -2,20 +2,20 @@
 pragma solidity 0.8.20;
 
 // imports
-import { CustomOwnable } from "./imports/CustomOwnable.sol";
-import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
-import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import { Address } from "./libs/Address.sol";
+import {CustomOwnable} from "./imports/CustomOwnable.sol";
+import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {Address} from "./libs/Address.sol";
 
 /**
  * @title Staking
  * @notice This contract manages staking, unstaking, and reward claiming functionalities.
- * @dev It uses Ownable, Pausable, and ReentrancyGuard modifiers and leverages SafeERC20 and Address libraries. 
- * The contract supports multiple staking schedules, each with its own parameters like duration, rate, penalty, 
- * and allocation. Users can stake tokens, earn rewards, and claim or unstake their tokens. 
- * The contract ensures secure token transfers and validates contract interactions. 
+ * @dev It uses Ownable, Pausable, and ReentrancyGuard modifiers and leverages SafeERC20 and Address libraries.
+ * The contract supports multiple staking schedules, each with its own parameters like duration, rate, penalty,
+ * and allocation. Users can stake tokens, earn rewards, and claim or unstake their tokens.
+ * The contract ensures secure token transfers and validates contract interactions.
  * It also allows the owner to update configurations, manage schedules, and rescue tokens.
  */
 
@@ -34,11 +34,15 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
     uint256 public maxThresholdRate = 400;
     uint256 public minThresholdDuration = 60 * 60;
     uint256 public minStakableAmount = 0;
-    uint256 private _scheduleCounter;
+    uint256 public scheduleCounter;
     uint256 private _totalStakersCount;
     uint256 private _totalStakedToken;
 
-    enum StakeStatus { PENDING, STARTED, COMPLETED }
+    enum StakeStatus {
+        PENDING,
+        STARTED,
+        COMPLETED
+    }
 
     struct StakeDistribution {
         uint256 totalStaked;
@@ -79,18 +83,17 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
     event MinimumStakeAmountUpdated(uint256 indexed _minAmountOfTokens);
     event StakingScheduleCreated(uint256 indexed _scheduleId);
     event StakingScheduleStarted(uint256 indexed _scheduleId);
-    event Staked(
-        address indexed _user, 
-        uint256 indexed _amount, 
-        uint256 indexed _expectedReward);
+    event StakingScheduleCompleted(uint256 indexed _scheduleId);
+    event Staked(address indexed _user, uint256 indexed _amount, uint256 indexed _expectedReward);
     event Unstaked(
         address indexed _user,
         uint256 indexed _refundAmount,
-        uint256 indexed _penaltyAmount, 
-        uint256 _agreementId);
+        uint256 indexed _penaltyAmount,
+        uint256 _agreementId
+    );
     event ClaimRewards(
         address indexed _user,
-        uint256 indexed _agreementId, 
+        uint256 indexed _agreementId,
         uint256 indexed reward,
         uint256 _stakeScheduleId
     );
@@ -101,6 +104,7 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
     error InvalidContractInteraction();
     error InsufficientTokenBalance(uint256 requested, uint256 available);
     error StakeDurationNotExceeded();
+    error StakeAlreadyCompleted();
     error InvalidScheduleID();
     error AgreementNotExist();
     error ScheduleDoesNotExist();
@@ -117,24 +121,21 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
     error InvalidDurationSettings();
     error InvalidRateSettings();
     error InvalidPenaltySettings();
-    error NotTheOwner();
-    error DoesNotAcceptingEthers();
-    error NotPermitted();
 
     modifier existingStakingSchedule(uint256 _stakeScheduleId) {
-        if (_stakeScheduleId == ZERO || _stakeScheduleId > _scheduleCounter) revert InvalidScheduleID();
+        if (_stakeScheduleId == ZERO || _stakeScheduleId > scheduleCounter) revert InvalidScheduleID();
         _;
     }
-    
+
     modifier validContract(address _address) {
-        if(!_address.isContract()) {
+        if (!_address.isContract()) {
             revert InvalidContractInteraction();
         }
         _;
     }
 
-    modifier validAddress(address _address){
-        if(_address == address(0)){
+    modifier validAddress(address _address) {
+        if (_address == address(0)) {
             revert InvalidAddressInteraction();
         }
         _;
@@ -146,17 +147,9 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @dev Initializes the contract with the given token address.
      * @param _token The address of the ERC20 token.
      */
-    constructor(address _token, address initialOwner) CustomOwnable(initialOwner){
+    constructor(address _token, address initialOwner) CustomOwnable(initialOwner) {
         if (!_token.isContract()) revert InvalidContractInteraction();
         _baseAsset = IERC20(_token);
-    }
-
-    receive() external payable {
-        revert DoesNotAcceptingEthers();
-    }
-
-    fallback() external payable {
-        revert NotPermitted();
     }
 
     /* mechanics---------------------------------------------------------------------------------------- */
@@ -166,47 +159,46 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _amount The amount to stake.
      * @param _stakeScheduleId The ID of the staking schedule.
      */
-    function stake(uint256 _amount, uint256 _stakeScheduleId) 
-    external 
-    nonReentrant() 
-    whenNotPaused()
-    existingStakingSchedule(_stakeScheduleId) {
-        StakingSchedule storage _schedule = stakingSchedules[_stakeScheduleId]; 
+    function stake(
+        uint256 _amount,
+        uint256 _stakeScheduleId
+    ) external nonReentrant whenNotPaused existingStakingSchedule(_stakeScheduleId) {
+        StakingSchedule storage _schedule = stakingSchedules[_stakeScheduleId];
         if (_schedule.duration == ZERO) revert ScheduleDoesNotExist();
         if (_schedule.status != StakeStatus.STARTED) revert ScheduleNotStakable();
-    
-        if(_amount == ZERO) revert TokenAmountIsZero();
-        if(_amount < minStakableAmount) revert InvalidMinimumStakeAmount();
-        
-        uint256 rewardEstimation = _amount * _schedule.rate / THOUSAND;
-        if(_schedule.allocation < _schedule.balance.totalStaked + _amount + rewardEstimation) {
+
+        if (_amount == ZERO) revert TokenAmountIsZero();
+        if (_amount < minStakableAmount) revert InvalidMinimumStakeAmount();
+
+        uint256 rewardEstimation = (_amount * _schedule.rate) / THOUSAND;
+        if (_schedule.allocation < _schedule.balance.totalStaked + _amount + rewardEstimation) {
             revert ExceedsAllocation();
         }
-    
+
         uint256 _agreementId = _userScheduleAgreementIds[_msgSender()][_stakeScheduleId].length() + ONE;
-    
+
         Agreements memory newAgreement = Agreements({
             amount: _amount,
             stakingScheduleId: _stakeScheduleId,
-            expectedReward:rewardEstimation + _amount,
+            expectedReward: rewardEstimation + _amount,
             totalClaimed: ZERO,
             lastClaim: block.timestamp,
             penalization: ZERO,
-            refundAmount:ZERO,
+            refundAmount: ZERO,
             unstaked: false,
-            claimed:false
+            claimed: false
         });
-    
+
         userAgreements[_msgSender()][_stakeScheduleId][_agreementId] = newAgreement;
         _userScheduleAgreementIds[_msgSender()][_stakeScheduleId].add(_agreementId);
-    
+
+        _schedule.balance.totalStaked += _amount;
+        _schedule.balance.totalStakers += ONE;
+
+        _totalStakedToken += _amount;
+        _totalStakersCount += ONE;
+
         _baseAsset.safeTransferFrom(_msgSender(), address(this), _amount);
-    
-        _schedule.balance.totalStaked   += _amount;
-        _schedule.balance.totalStakers  +=  ONE;
-        
-        _totalStakedToken   += _amount;
-        _totalStakersCount  += ONE;
 
         emit Staked(_msgSender(), _amount, rewardEstimation);
     }
@@ -216,73 +208,79 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _stakeScheduleId The ID of the staking schedule.
      * @param _agreementId The ID of the staking agreement.
      */
-     function unstake(uint256 _stakeScheduleId, uint256 _agreementId) 
-     external 
-     nonReentrant() 
-     whenNotPaused()
-     existingStakingSchedule(_stakeScheduleId) 
-    {
+
+    // @note unstake is to be called when the staking period has not ended yet, maybe a check needs to be added for this as there is no reward added here
+    function unstake(
+        uint256 _stakeScheduleId,
+        uint256 _agreementId
+    ) external nonReentrant whenNotPaused existingStakingSchedule(_stakeScheduleId) {
         StakingSchedule storage _schedule = stakingSchedules[_stakeScheduleId];
         if (_schedule.duration == ZERO) revert ScheduleDoesNotExist();
-    
+
         Agreements storage agreement = userAgreements[_msgSender()][_stakeScheduleId][_agreementId];
-        
+
+        bool stakeCompleted = block.timestamp >= agreement.lastClaim + _schedule.duration;
+
+        if (stakeCompleted) revert StakeAlreadyCompleted();
+
         _agreementClaimValidator(agreement, _stakeScheduleId, _agreementId);
-    
+
         uint256 refundAmount = agreement.amount;
         bool isEarlyUnstake = block.timestamp < agreement.lastClaim + _schedule.duration;
-        
+
         uint256 penaltyAmount = ZERO;
-    
+
         if (isEarlyUnstake && _schedule.penalty > ZERO) {
-            penaltyAmount = agreement.amount * _schedule.penalty / THOUSAND;
+            penaltyAmount = (agreement.amount * _schedule.penalty) / THOUSAND;
             refundAmount -= penaltyAmount;
         }
-    
+
         agreement.unstaked = true;
         agreement.claimed = true;
         agreement.expectedReward = ZERO;
         agreement.refundAmount = refundAmount;
         agreement.penalization = penaltyAmount;
-    
+
         _schedule.balance.totalStaked -= _schedule.balance.totalStaked == ZERO ? ZERO : agreement.amount;
         _schedule.balance.totalPenalization += penaltyAmount;
         _schedule.balance.totalStakers -= _schedule.balance.totalStakers == ZERO ? ZERO : ONE;
-    
+
         _userScheduleAgreementIds[_msgSender()][_stakeScheduleId].remove(_agreementId);
-        
+
         _totalStakedToken -= _totalStakedToken == ZERO ? ZERO : agreement.amount;
         _totalStakersCount -= _totalStakersCount == ZERO ? ZERO : ONE;
-    
+
         emit Unstaked(_msgSender(), refundAmount, penaltyAmount, _agreementId);
-    
+
         uint256 _balance = _baseAsset.balanceOf(address(this));
         if (_balance < refundAmount) revert InsufficientTokenBalance(refundAmount, _balance);
-    
+
         _baseAsset.safeTransfer(_msgSender(), refundAmount);
     }
-    
+
     /**
      * @notice Allows a user to claim their rewards from a given staking schedule.
      * @param _stakeScheduleId The ID of the staking schedule.
      * @param _agreementId The ID of the staking agreement.
      */
-    function claim(uint256 _stakeScheduleId, uint256 _agreementId) 
-    external nonReentrant()
-    whenNotPaused()
-    existingStakingSchedule(_stakeScheduleId) {
+
+    // @note when the staking has ended a user can claim the staked amount + reward
+    function completeStake(
+        uint256 _stakeScheduleId,
+        uint256 _agreementId
+    ) external nonReentrant whenNotPaused existingStakingSchedule(_stakeScheduleId) {
         StakingSchedule storage _schedule = stakingSchedules[_stakeScheduleId];
         if (_schedule.duration == ZERO) revert ScheduleDoesNotExist();
-    
+
         Agreements storage agreement = userAgreements[_msgSender()][_stakeScheduleId][_agreementId];
 
-        _agreementClaimValidator(agreement,_stakeScheduleId,_agreementId);
+        _agreementClaimValidator(agreement, _stakeScheduleId, _agreementId);
 
         bool claimable = block.timestamp >= agreement.lastClaim + _schedule.duration;
 
-        if(!claimable) revert StakeDurationNotExceeded();
+        if (!claimable) revert StakeDurationNotExceeded();
 
-        if(agreement.expectedReward == agreement.totalClaimed || agreement.claimed) {
+        if (agreement.expectedReward == agreement.totalClaimed || agreement.claimed) {
             revert AlreadyClaimed(_stakeScheduleId, _agreementId);
         }
 
@@ -297,11 +295,10 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
 
         uint256 _balance = _baseAsset.balanceOf(address(this));
         if (_balance < reward) revert InsufficientTokenBalance(reward, _balance);
- 
+
         emit ClaimRewards(_msgSender(), _agreementId, reward, _stakeScheduleId);
- 
+
         _baseAsset.safeTransfer(_msgSender(), reward);
- 
     }
 
     /* getters ----------------------------------------------------------------------------------------- */
@@ -310,7 +307,7 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @notice Returns the address of the base asset.
      * @return The base asset address.
      */
-    function getBaseAsset() external view returns(address){
+    function getBaseAsset() external view returns (address) {
         return address(_baseAsset);
     }
 
@@ -321,13 +318,13 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _agreementId The ID of the staking agreement.
      * @return The details of the staking agreement.
      */
-    function getAgreementDetails(address _user, uint256 _stakeScheduleId, uint256 _agreementId) 
-    external 
-    view 
-    existingStakingSchedule(_stakeScheduleId)
-    returns (Agreements memory) {
+    function getAgreementDetails(
+        address _user,
+        uint256 _stakeScheduleId,
+        uint256 _agreementId
+    ) external view existingStakingSchedule(_stakeScheduleId) returns (Agreements memory) {
         Agreements memory _agreement = userAgreements[_user][_stakeScheduleId][_agreementId];
-        if(_agreement.amount == ZERO) revert AgreementNotExist();
+        if (_agreement.amount == ZERO) revert AgreementNotExist();
         return _agreement;
     }
 
@@ -337,18 +334,17 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _stakeScheduleId The ID of the staking schedule.
      * @return The IDs of the user's agreements.
      */
-    function getUserAgreementIdsForSchedule(address _user, uint256 _stakeScheduleId) 
-    external
-    view
-    existingStakingSchedule(_stakeScheduleId)
-    returns (uint256[] memory) {
+    function getUserAgreementIdsForSchedule(
+        address _user,
+        uint256 _stakeScheduleId
+    ) external view existingStakingSchedule(_stakeScheduleId) returns (uint256[] memory) {
         EnumerableSet.UintSet storage agreementIds = _userScheduleAgreementIds[_user][_stakeScheduleId];
         uint256[] memory ids = new uint256[](agreementIds.length());
-    
+
         for (uint256 i = ZERO; i < agreementIds.length(); i++) {
             ids[i] = agreementIds.at(i);
         }
-    
+
         return ids;
     }
 
@@ -358,11 +354,10 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _stakeScheduleId The ID of the staking schedule.
      * @return The IDs of the user's active agreements.
      */
-    function getUserActiveAgreementIdsForSchedule(address _user, uint256 _stakeScheduleId) 
-    external
-    view
-    existingStakingSchedule(_stakeScheduleId)
-    returns (uint256[] memory) {
+    function getUserActiveAgreementIdsForSchedule(
+        address _user,
+        uint256 _stakeScheduleId
+    ) external view existingStakingSchedule(_stakeScheduleId) returns (uint256[] memory) {
         EnumerableSet.UintSet storage agreementIds = _userScheduleAgreementIds[_user][_stakeScheduleId];
         uint256[] memory tempIds = new uint256[](agreementIds.length());
         uint256 activeCount = 0;
@@ -375,12 +370,12 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
                 activeCount++;
             }
         }
-        
+
         uint256[] memory activeIds = new uint256[](activeCount);
         for (uint256 i = 0; i < activeCount; i++) {
             activeIds[i] = tempIds[i];
         }
-        
+
         return activeIds;
     }
 
@@ -390,23 +385,22 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _stakeScheduleId The ID of the staking schedule.
      * @return The total amount staked by the user.
      */
-    function getUserTotalStakedForSchedule(address _user, uint256 _stakeScheduleId) 
-    external
-    view
-    existingStakingSchedule(_stakeScheduleId)
-    returns (uint256) {
+    function getUserTotalStakedForSchedule(
+        address _user,
+        uint256 _stakeScheduleId
+    ) external view existingStakingSchedule(_stakeScheduleId) returns (uint256) {
         uint256 totalStaked = ZERO;
         EnumerableSet.UintSet storage agreementIds = _userScheduleAgreementIds[_user][_stakeScheduleId];
-    
+
         for (uint256 i = ZERO; i < agreementIds.length(); i++) {
             uint256 agreementId = agreementIds.at(i);
             Agreements memory agreement = userAgreements[_user][_stakeScheduleId][agreementId];
             totalStaked += agreement.amount;
         }
-    
+
         return totalStaked;
     }
-    
+
     /**
      * @notice Returns the total amount of tokens staked in the contract.
      * @return The total amount of tokens staked.
@@ -428,11 +422,9 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _stakeScheduleId The ID of the staking schedule.
      * @return The details of the staking schedule.
      */
-    function getStakingScheduleDetails(uint256 _stakeScheduleId) 
-    external 
-    view 
-    existingStakingSchedule(_stakeScheduleId)
-    returns (StakingSchedule memory) {
+    function getStakingScheduleDetails(
+        uint256 _stakeScheduleId
+    ) external view existingStakingSchedule(_stakeScheduleId) returns (StakingSchedule memory) {
         StakingSchedule memory _stakingScedule = stakingSchedules[_stakeScheduleId];
         return _stakingScedule;
     }
@@ -443,24 +435,24 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      */
     function getActiveScheduleIds() external view returns (uint256[] memory) {
         uint256 activeCount = ZERO;
-        uint256 totalSchedules = _scheduleCounter;
-        
+        uint256 totalSchedules = scheduleCounter;
+
         for (uint256 i = ONE; i <= totalSchedules; i++) {
             if (stakingSchedules[i].status == StakeStatus.STARTED) {
                 activeCount++;
             }
         }
-        
+
         uint256[] memory activeIds = new uint256[](activeCount);
         uint256 currentIndex = ZERO;
-    
+
         for (uint256 i = ONE; i <= totalSchedules; i++) {
             if (stakingSchedules[i].status == StakeStatus.STARTED) {
                 activeIds[currentIndex] = i;
                 currentIndex++;
             }
         }
-    
+
         return activeIds;
     }
 
@@ -473,8 +465,8 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _agreementId The ID of the staking agreement.
      */
     function _agreementClaimValidator(
-        Agreements memory _agreement, 
-        uint256 _stakeScheduleId, 
+        Agreements memory _agreement,
+        uint256 _stakeScheduleId,
         uint256 _agreementId
     ) internal pure {
         if (_agreement.amount == ZERO) revert InvalidAgreement();
@@ -488,14 +480,10 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _rate The rate of the staking schedule.
      * @param _penalty The penalty of the staking schedule.
      */
-    function _sanitizeParameters(
-        uint256 _duration,
-        uint256 _rate,
-        uint256 _penalty
-    ) internal view{
-        if(_duration == ZERO || _duration < minThresholdDuration) revert InvalidDurationSettings();
-        if(_rate == ZERO || _rate > maxThresholdRate) revert InvalidRateSettings();
-        if(_penalty > maxThresholdRate) revert InvalidPenaltySettings();
+    function _sanitizeParameters(uint256 _duration, uint256 _rate, uint256 _penalty) internal view {
+        if (_duration == ZERO || _duration < minThresholdDuration) revert InvalidDurationSettings();
+        if (_rate == ZERO || _rate > maxThresholdRate) revert InvalidRateSettings();
+        if (_penalty > maxThresholdRate) revert InvalidPenaltySettings();
     }
 
     /* administrator ----------------------------------------------------------------------------------- */
@@ -512,20 +500,16 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
         uint256 _rate,
         uint256 _penalty,
         uint256 _allocation
-    ) external onlyOwner() whenNotPaused() {
-
-        _sanitizeParameters(
-            _duration,
-            _rate,
-            _penalty
-        );
+    ) external onlyOwner whenNotPaused {
+        _sanitizeParameters(_duration, _rate, _penalty);
+        if (_allocation == 0) revert TokenAmountIsZero();
 
         StakeDistribution memory _distribution = StakeDistribution({
-            totalStaked:ZERO,
-            totalClaimed:ZERO,
-            totalPenalization:ZERO,
-            totalRewardsDistributed:ZERO,
-            totalStakers:ZERO
+            totalStaked: ZERO,
+            totalClaimed: ZERO,
+            totalPenalization: ZERO,
+            totalRewardsDistributed: ZERO,
+            totalStakers: ZERO
         });
 
         StakingSchedule memory _schedule = StakingSchedule({
@@ -537,21 +521,18 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
             status: StakeStatus.PENDING
         });
 
-        _scheduleCounter += ONE;
-        stakingSchedules[_scheduleCounter] = _schedule;
+        scheduleCounter += ONE;
+        stakingSchedules[scheduleCounter] = _schedule;
 
-        emit StakingScheduleCreated(_scheduleCounter);
+        emit StakingScheduleCreated(scheduleCounter);
     }
 
     /**
      * @notice Starts a staking schedule.
      * @param _stakeScheduleId The ID of the staking schedule.
      */
-    function startStakingSchedule(uint256 _stakeScheduleId) 
-    external 
-    onlyOwner() 
-    whenNotPaused() {
-        if (_stakeScheduleId == ZERO || _stakeScheduleId > _scheduleCounter) revert InvalidScheduleID();
+    function startStakingSchedule(uint256 _stakeScheduleId) external onlyOwner whenNotPaused {
+        if (_stakeScheduleId == ZERO || _stakeScheduleId > scheduleCounter) revert InvalidScheduleID();
         StakingSchedule storage _schedule = stakingSchedules[_stakeScheduleId];
         if (_schedule.duration == ZERO) revert ScheduleDoesNotExist();
         if (_schedule.status == StakeStatus.STARTED) revert ScheduleAlreadyStarted();
@@ -565,56 +546,42 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @notice Completes a staking schedule.
      * @param _stakeScheduleId The ID of the staking schedule.
      */
-    function completeStakingSchedule(uint256 _stakeScheduleId) 
-    external 
-    onlyOwner() 
-    whenNotPaused() {
-        if (_stakeScheduleId == ZERO || _stakeScheduleId > _scheduleCounter) revert InvalidScheduleID();
+    function completeStakingSchedule(uint256 _stakeScheduleId) external onlyOwner whenNotPaused {
+        if (_stakeScheduleId == ZERO || _stakeScheduleId > scheduleCounter) revert InvalidScheduleID();
         StakingSchedule storage _schedule = stakingSchedules[_stakeScheduleId];
         if (_schedule.duration == ZERO) revert ScheduleDoesNotExist();
         if (_schedule.status != StakeStatus.STARTED) revert ScheduleCanNotBeCompleted();
-    
+
         _schedule.status = StakeStatus.COMPLETED;
-        emit StakingScheduleStarted(_stakeScheduleId);
+        emit StakingScheduleCompleted(_stakeScheduleId);
     }
 
     /**
      * @notice Updates the minimum threshold for the duration of a staking schedule.
      * @param _threshold The new minimum threshold.
      */
-    function updateMinimumThresholdForDuration(uint256 _threshold) 
-    external 
-    onlyOwner()
-    whenNotPaused()
-    {
-        if(_threshold == ZERO) revert InvalidDurationSettings();
+    function updateMinimumThresholdForDuration(uint256 _threshold) external onlyOwner whenNotPaused {
+        if (_threshold == ZERO) revert InvalidDurationSettings();
         minThresholdDuration = _threshold;
         emit ThresholdForDurationUpdated(_threshold);
     }
-   
+
     /**
      * @notice Updates the maximum threshold for the rates of a staking schedule.
      * @param _threshold The new maximum threshold.
      */
-    function updateMaximumThresholdForRates(uint256 _threshold) 
-    external 
-    onlyOwner()
-    whenNotPaused()
-    {
-        if(_threshold == ZERO || _threshold > THOUSAND) revert InvalidRateSettings();
+    function updateMaximumThresholdForRates(uint256 _threshold) external onlyOwner whenNotPaused {
+        if (_threshold == ZERO || _threshold > THOUSAND) revert InvalidRateSettings();
         maxThresholdRate = _threshold;
         emit ThresholdForRatesUpdated(_threshold);
     }
-   
+
     /**
      * @notice Updates the minimum stake amount.
      * @param _minAmountOfTokens The new minimum stake amount.
      */
-    function updateMinimumStakeAmount(uint256 _minAmountOfTokens) 
-    external 
-    onlyOwner()
-    whenNotPaused()
-    {
+    function updateMinimumStakeAmount(uint256 _minAmountOfTokens) external onlyOwner whenNotPaused {
+        if (_minAmountOfTokens == ZERO) revert TokenAmountIsZero();
         minStakableAmount = _minAmountOfTokens;
         emit MinimumStakeAmountUpdated(_minAmountOfTokens);
     }
@@ -625,13 +592,12 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
      * @param _to The address to send the rescued tokens to.
      * @param _amount The amount of tokens to rescue.
      */
-    function rescueTokens(address _tokenAddress, address _to, uint256 _amount) 
-    external 
-    validContract(_tokenAddress)
-    validAddress(_to) 
-    onlyOwner() 
-    {
-        if(_amount == 0) revert TokenAmountIsZero();
+    function rescueTokens(
+        address _tokenAddress,
+        address _to,
+        uint256 _amount
+    ) external validContract(_tokenAddress) validAddress(_to) onlyOwner {
+        if (_amount == 0) revert TokenAmountIsZero();
         SafeERC20.safeTransfer(IERC20(_tokenAddress), _to, _amount);
         emit Withdrawal(_tokenAddress, _to, _amount);
     }
@@ -639,15 +605,14 @@ contract Staking is CustomOwnable, Pausable, ReentrancyGuard {
     /**
      * @notice Pauses the contract.
      */
-    function pause() external onlyOwner() {
+    function pause() external onlyOwner {
         _pause();
     }
 
     /**
      * @notice Unpauses the contract.
      */
-    function unpause() external onlyOwner(){
+    function unpause() external onlyOwner {
         _unpause();
     }
-
 }
