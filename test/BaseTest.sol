@@ -1,13 +1,29 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "script/DeployAll.s.sol";
-import { Hub } from "contracts/hub/Hub.sol";
-import { TaskRegistry, ITaskRegistry, Task } from "contracts/tasks/TaskRegistry.sol";
-import { TaskFactory, ITaskFactory, Contribution } from "contracts/tasks/TaskFactory.sol";
-import { TaskManager, ITaskManager, MemberActivity } from "contracts/tasks/TaskManager.sol";
+import {Hub} from "contracts/hub/Hub.sol";
+import {TaskRegistry, ITaskRegistry, Task} from "contracts/tasks/TaskRegistry.sol";
+import {TaskFactory, ITaskFactory, Contribution} from "contracts/tasks/TaskFactory.sol";
+import {TaskManager, ITaskManager, MemberActivity} from "contracts/tasks/TaskManager.sol";
 
-import { console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, stdJson, stdMath, StdStorage, stdStorage, StdUtils, Vm, StdStyle, TestBase, Test } from "forge-std/Test.sol";
+import {
+    console,
+    StdAssertions,
+    StdChains,
+    StdCheats,
+    stdError,
+    StdInvariant,
+    stdJson,
+    stdMath,
+    StdStorage,
+    stdStorage,
+    StdUtils,
+    Vm,
+    StdStyle,
+    TestBase,
+    Test
+} from "forge-std/Test.sol";
 
 abstract contract BaseTest is Test {
     AutID public autId;
@@ -19,6 +35,20 @@ abstract contract BaseTest is Test {
     Hub public hub;
     TaskFactory public taskFactory;
     TaskManager public taskManager;
+
+    UtilsRegistry public utilsRegistry;
+    Aut public aut;
+    CAut public cAut;
+    address public sale;
+    address public founderInvestors;
+    address public earlyContributors;
+    address public kolsAdvisors;
+    address public treasury;
+    ReputationMining public reputationMining;
+    Distributor public distributor;
+    RandomNumberGenerator public randomNumberGenerator;
+    PeerValue public peerValue;
+    PeerStaking public peerStaking;
 
     address public owner = address(this);
     address public alice = address(0x411Ce);
@@ -47,6 +77,23 @@ abstract contract BaseTest is Test {
         // initial setup: alice is first member
         _joinHub(alice, address(hub), "alice");
 
+        utilsRegistry = deploy.utilsRegistry();
+
+        aut = deploy.aut();
+        cAut = deploy.cAut();
+
+        sale = deploy.sale();
+        founderInvestors = deploy.founderInvestors();
+        earlyContributors = deploy.earlyContributors();
+        treasury = deploy.treasury();
+        kolsAdvisors = deploy.kolsAdvisors();
+
+        randomNumberGenerator = deploy.randomNumberGenerator();
+        reputationMining = deploy.reputationMining();
+        distributor = deploy.distributor();
+        peerValue = deploy.peerValue();
+        peerStaking = deploy.peerStaking();
+
         // labeling
         vm.label(owner, "Owner");
         vm.label(alice, "Alice");
@@ -73,10 +120,7 @@ abstract contract BaseTest is Test {
         return Hub(hubAddress);
     }
 
-    function _joinHub(
-        address who,
-        address hubAddress,
-        string memory username) internal {
+    function _joinHub(address who, address hubAddress, string memory username) internal {
         vm.prank(who);
         autId.createRecordAndJoinHub({
             role: 1,
@@ -110,5 +154,15 @@ abstract contract BaseTest is Test {
         });
         TaskFactory(Hub(hubAddress).taskFactory()).createContribution(contribution);
 
+        vm.label(address(utilsRegistry), "utilsRegistry");
+        vm.label(address(aut), "aut");
+        vm.label(address(cAut), "c-aut");
+        vm.label(address(sale), "sale");
+        vm.label(address(founderInvestors), "founderInvestors");
+        vm.label(address(earlyContributors), "earlyContributors");
+        vm.label(address(reputationMining), "reputationMining");
+        vm.label(address(distributor), "distributor");
+        vm.label(address(peerValue), "peerValueContract");
+        vm.label(address(peerStaking), "peerStakingContract");
     }
 }
