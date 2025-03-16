@@ -111,9 +111,6 @@ contract DeployAll is Script {
 
         // other inits
         taskRegistry.initialize();
-        if (deploying) {
-            taskRegistry.setApproved(owner);
-        }
 
         // Setup initial tasks
         Task[] memory tasks = new Task[](11);
@@ -162,6 +159,10 @@ contract DeployAll is Script {
             uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH"
         });
         taskRegistry.registerTasks(tasks);
+
+        if (deploying) {
+            taskRegistry.setApproved(owner);
+        }
 
         // todo: convert to helper function
         if (deploying) {
