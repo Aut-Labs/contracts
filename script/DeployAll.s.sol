@@ -17,7 +17,7 @@ import {ParticipationScore} from "../contracts/participationScore/ParticipationS
 import {Task, TaskRegistry} from "../contracts/tasks/TaskRegistry.sol";
 import {TaskFactory} from "../contracts/tasks/TaskFactory.sol";
 import {TaskManager} from "../contracts/tasks/TaskManager.sol";
-
+import {InteractionFactory} from "../contracts/interactions/InteractionFactory.sol";
 
 import "forge-std/Script.sol";
 
@@ -38,6 +38,7 @@ contract DeployAll is Script {
     HubDomainsRegistry public hubDomainsRegistry;
     TaskRegistry public taskRegistry;
     GlobalParameters public globalParameters;
+    InteractionFactory public interactionFactory;
 
     struct TNamedAddress {
         address target;
@@ -82,6 +83,7 @@ contract DeployAll is Script {
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
         taskRegistry = deployTaskRegistry(owner);
         globalParameters = deployGlobalParameters(owner);
+        interactionFactory = deployInteractionFactory(owner);
         (
             membershipImplementation,
             participationImplementation,
@@ -113,55 +115,64 @@ contract DeployAll is Script {
         taskRegistry.initialize();
 
         // Setup initial tasks
-        Task[] memory tasks = new Task[](11);
         // open tasks
-        tasks[0] = Task({
-            uri: "ipfs://QmaDxYAaMhEbz3dH2N9Lz1RRdAXb3Sre5fqCvgsmKCtJvC"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://QmaDxYAaMhEbz3dH2N9Lz1RRdAXb3Sre5fqCvgsmKCtJvC"
         });
+
         // quiz tasks
-        tasks[1] = Task({
-            uri: "ipfs://QmbnM1ZRjZ2X2Fc6zRm7jsZeTWvZSMjJDc6h3nct7gbAMm"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://QmbnM1ZRjZ2X2Fc6zRm7jsZeTWvZSMjJDc6h3nct7gbAMm"
         });
+
         // join discord tasks
-        tasks[2] = Task({
-            uri: "ipfs://QmTe4qYncbW86vgYRvcTTP23sYY9yopYQMwLWh1GKYFmuR"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://QmTe4qYncbW86vgYRvcTTP23sYY9yopYQMwLWh1GKYFmuR"
         });
+
         // [discord] polls
-        tasks[3] = Task({
-            uri: "ipfs://QmRdkW4jh55oVhPbNLMRcXZ7KHhcPDd82bfqrkDcGTC8Me"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://QmRdkW4jh55oVhPbNLMRcXZ7KHhcPDd82bfqrkDcGTC8Me"
         });
+
         // [discord] gathering
-        tasks[4] = Task({
-            uri: "ipfs://Qme7jXteFKAiSaByMf31cZZgCV2yjGaQcybLS1PmoPCKc2"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://Qme7jXteFKAiSaByMf31cZZgCV2yjGaQcybLS1PmoPCKc2"
         });
+
         // [github] commit
-        tasks[5] = Task({
-            uri: "ipfs://Qme9S8rCPEYmJraCNWUdBT2Nc2FSSHtjAeSmcX1RT6EmGg"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://Qme9S8rCPEYmJraCNWUdBT2Nc2FSSHtjAeSmcX1RT6EmGg"
         });
+
         // [github] open pr
-        tasks[6] = Task({
-            uri: "ipfs://QmPksTgWNfY9bnfHxrVNmPzMBW19ZZRChouYQACEcBVtK5"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://QmPksTgWNfY9bnfHxrVNmPzMBW19ZZRChouYQACEcBVtK5"
         });
+
         // [twitter] comment
-        tasks[7] = Task({
-            uri: "ipfs://Qmd28t4X22F54qihKapgaq9d4Sbx4u4rxhWhEozimxfDiQ"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://Qmd28t4X22F54qihKapgaq9d4Sbx4u4rxhWhEozimxfDiQ"
         });
+
         // [twitter] follow
-        tasks[8] = Task({
-            uri: "ipfs://QmR3hzxeR5uKiMhQFL4PPB8eqNsoZxAjJ4KNirjiNBF5a7"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://QmR3hzxeR5uKiMhQFL4PPB8eqNsoZxAjJ4KNirjiNBF5a7"
         });
+
         // [twitter] like
-        tasks[9] = Task({
-            uri: "ipfs://QmNepwgZnQ46AjWCDuBVJCb7ozPfXzWtVZx26PSgwVHzPA"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://QmNepwgZnQ46AjWCDuBVJCb7ozPfXzWtVZx26PSgwVHzPA"
         });
+
         // [twitter] retweet
-        tasks[10] = Task({
-            uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH"
+        taskRegistry.registerStandardTask({
+            _uri: "ipfs://QmaRRTN1z5SkNzJE1VRQJU3w4RovLHi4Q2yyNy42eMzYsH"
         });
-        taskRegistry.registerTasks(tasks);
 
         if (deploying) {
             taskRegistry.setApproved(owner);
+            taskRegistry.transferOwnership(owner);
         }
 
         // todo: convert to helper function
@@ -225,6 +236,13 @@ function deployGlobalParameters(address _owner) returns (GlobalParameters) {
         ""
     );
     return GlobalParameters(address(globalParametersProxy));
+}
+
+function deployInteractionFactory(
+    address _owner
+) returns (InteractionFactory) {
+    InteractionFactory interactionFactory = new InteractionFactory(_owner);
+    return interactionFactory;
 }
 
 function deployHubDependencyImplementations() returns (
