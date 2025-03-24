@@ -6,7 +6,7 @@ import "test/BaseTest.sol";
 contract TaskFactoryCreateContributionsTest is BaseTest {
 
     // Generic contribution values
-    bytes32 taskId;
+    uint256 taskId;
     uint256 role = 1;
     uint32 startDate;
     uint32 endDate;
@@ -22,7 +22,7 @@ contract TaskFactoryCreateContributionsTest is BaseTest {
         hub.addAdmin(alice);
 
         // init Contribution for testing
-        taskId = taskRegistry.registerTask(Task({uri: "abcde"}));
+        taskId = taskRegistry.registerStandardTask("abcde");
 
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;

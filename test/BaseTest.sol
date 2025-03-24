@@ -15,6 +15,7 @@ abstract contract BaseTest is Test {
     TaskRegistry public taskRegistry;
     GlobalParameters public globalParameters;
     HubDomainsRegistry public hubDomainsRegistry;
+    InteractionFactory public interactionFactory;
 
     Hub public hub;
     TaskFactory public taskFactory;
@@ -39,6 +40,7 @@ abstract contract BaseTest is Test {
         globalParameters = deploy.globalParameters();
         hubDomainsRegistry = deploy.hubDomainsRegistry();
         taskRegistry = deploy.taskRegistry();
+        interactionFactory = deploy.interactionFactory();
 
         hub = _deployHub();
         taskFactory = TaskFactory(hub.taskFactory());
@@ -90,7 +92,7 @@ abstract contract BaseTest is Test {
     function _createContribution(
         address who,
         address hubAddress,
-        bytes32 taskId,
+        uint256 taskId,
         string memory uri,
         uint256 role,
         uint32 startDate,

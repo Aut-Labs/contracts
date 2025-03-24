@@ -1,7 +1,7 @@
 pragma solidity >=0.8.0;
 
 struct Contribution {
-    bytes32 taskId;
+    uint256 taskId;
     string uri;
     uint256 role;
     uint32 startDate;
@@ -22,7 +22,7 @@ interface ITaskFactory {
         bytes32 indexed contributionId,
         address indexed sender,
         address indexed hub,
-        bytes32 taskId,
+        uint256 taskId,
         string uri,
         uint256 role,
         uint32 startDate,
