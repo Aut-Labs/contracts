@@ -178,12 +178,14 @@ contract DeployAll is Script {
         // todo: convert to helper function
         if (deploying) {
             string memory filename = "deployments.txt";
-            TNamedAddress[5] memory na;
+            TNamedAddress[6] memory na;
             na[0] = TNamedAddress({name: "globalParameters", target: address(globalParameters)});
             na[1] = TNamedAddress({name: "autID", target: address(autId)});
             na[2] = TNamedAddress({name: "hubRegistry", target: address(hubRegistry)});
             na[3] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
             na[4] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
+            na[5] = TNamedAddress({name: "interactionFactory", target: address(interactionFactory)});
+
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
             for (uint256 i = 0; i != na.length; ++i) {
                 vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));
