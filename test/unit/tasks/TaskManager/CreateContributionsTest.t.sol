@@ -6,7 +6,7 @@ import "test/BaseTest.sol";
 contract TaskManagerCreateContributionsTest is BaseTest {
 
     // Generic contribution values
-    uint256 taskId;
+    bytes32 taskId;
     uint256 role = 1;
     uint32 startDate;
     uint32 endDate;
@@ -23,7 +23,7 @@ contract TaskManagerCreateContributionsTest is BaseTest {
         hub.addAdmin(alice);
 
         // init Contribution for testing
-        taskId = taskRegistry.registerStandardTask("abcde");
+        taskId = taskRegistry.registerTask(Task({uri: "abcde"}));
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;
         contribution = Contribution({
@@ -42,7 +42,7 @@ contract TaskManagerCreateContributionsTest is BaseTest {
 
         // action
         vm.prank(alice);
-        // bytes32 contributionId = taskFactory.createContribution(contribution);
+        bytes32 contributionId = taskFactory.createContribution(contribution);
         
         // TODO: post-action asserts
     }

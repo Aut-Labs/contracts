@@ -2,14 +2,15 @@
 pragma solidity ^0.8.20;
 
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import {Task, TaskType, RoyaltiesModel, ITaskRegistry} from "./interfaces/ITaskRegistry.sol";
-import {RoyaltiesModel} from "contracts/interactions/IInteractionFactory.sol";
+import {Task, ITaskRegistry} from "./interfaces/ITaskRegistry.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
+    using EnumerableSet for EnumerableSet.Bytes32Set;
+
     struct TaskRegistryStorage {
-        uint256 nextTaskId;
-        mapping(uint256 => Task) tasks;
+        EnumerableSet.Bytes32Set taskIds;
+        mapping(bytes32 => Task) tasks;
         address approved;
     }
 
@@ -61,99 +62,67 @@ contract TaskRegistry is ITaskRegistry, OwnableUpgradeable {
     }
 
     /// @inheritdoc ITaskRegistry
-    function registerStandardTask(string calldata _uri) external onlyApproved returns (uint256 taskId) {
-        TaskRegistryStorage storage $ = _getTaskRegistryStorage();
+    function registerTasks(Task[] calldata tasks) external onlyApproved returns (bytes32[] memory) {
+        uint256 length = tasks.length;
+        bytes32[] memory newTaskIds = new bytes32[](length);
+        for (uint256 i = 0; i < length; i++) {
+            newTaskIds[i] = _registerTask(tasks[i]);
+        }
 
-        taskId = ++$.nextTaskId;
-        $.tasks[taskId] = Task({
-            taskId: taskId,
-            taskType: TaskType.Standard,
-            uri: _uri,
-            // For standard tasks, the following fields are set to default.
-            sourceInteractionContract: address(0),
-            sourceInteractionId: 0,
-            networkId: 0,
-            price: 0,
-            royaltiesModel: RoyaltiesModel.PublicGood
-        });
-        emit StandardTaskRegistered(taskId, _uri);
+        return newTaskIds;
     }
 
     /// @inheritdoc ITaskRegistry
-    function registerInteractionTask(
-        address _sourceInteractionContract,
-        uint256 _sourceInteractionId,
-        uint256 _networkId,
-        uint256 _price,
-        RoyaltiesModel _royaltiesModel
-    ) external onlyApproved returns (uint256 taskId) {
+    function registerTask(Task memory task) external onlyApproved returns (bytes32) {
+        return _registerTask(task);
+    }
+
+    function _registerTask(Task memory task) internal returns (bytes32) {
         TaskRegistryStorage storage $ = _getTaskRegistryStorage();
 
-        taskId = ++$.nextTaskId;
-        $.tasks[taskId] = Task({
-            taskId: taskId,
-            taskType: TaskType.Interaction,
-            uri: "", // Not applicable for Interaction Tasks.
-            sourceInteractionContract: _sourceInteractionContract,
-            sourceInteractionId: _sourceInteractionId,
-            networkId: _networkId,
-            price: _price,
-            royaltiesModel: _royaltiesModel
-        });
-        emit InteractionTaskRegistered(
-            taskId,
-            _sourceInteractionContract,
-            _sourceInteractionId,
-            _networkId,
-            _price,
-            _royaltiesModel
-        );
+        bytes32 taskId = calcTaskId(task);
+
+        if (!$.taskIds.add(taskId)) revert TaskAlreadyRegistered();
+
+        $.tasks[taskId] = task;
+
+        emit RegisterTask(taskId, msg.sender, task.uri);
+
+        return taskId;
     }
 
     /// @inheritdoc ITaskRegistry
-    function nextTaskId() external view returns (uint256) {
+    function getTaskById(bytes32 taskId) external view returns (Task memory) {
         TaskRegistryStorage storage $ = _getTaskRegistryStorage();
-        return $.nextTaskId;
-    }
-
-    /// @inheritdoc ITaskRegistry
-    function isTaskId(uint256 taskId) external view returns (bool) {
-        TaskRegistryStorage storage $ = _getTaskRegistryStorage();
-        return taskId > 0 && taskId <= $.nextTaskId;
-    }
-
-    /// @inheritdoc ITaskRegistry
-    function getTask(uint256 taskId) external view returns (Task memory) {
-        TaskRegistryStorage storage $ = _getTaskRegistryStorage();
-        require(taskId > 0 && taskId <= $.nextTaskId, "Task does not exist");
         return $.tasks[taskId];
     }
 
     /// @inheritdoc ITaskRegistry
-    function getAllTasks() external view returns (Task[] memory) {
+    function getTaskByIdEncoded(bytes32 taskId) external view returns (bytes memory) {
         TaskRegistryStorage storage $ = _getTaskRegistryStorage();
-        uint256 nextTaskId_ = $.nextTaskId;
-
-        Task[] memory allTasks = new Task[](nextTaskId_);
-        for (uint256 i = 1; i <= nextTaskId_; i++) {
-            allTasks[i - 1] = $.tasks[i];
-        }
-        return allTasks;
+        Task memory task = $.tasks[taskId];
+        return encodeTask(task);
     }
 
     /// @inheritdoc ITaskRegistry
-    function getSomeTasks(uint256 startTaskId, uint256 numTasks) external view returns (Task[] memory) {
+    function taskIds() external view returns (bytes32[] memory) {
         TaskRegistryStorage storage $ = _getTaskRegistryStorage();
-        uint256 nextTaskId_ = $.nextTaskId;
+        return $.taskIds.values();
+    }
 
-        require(startTaskId > 0 && startTaskId + numTasks <= nextTaskId_ + 1, "Too many tasks queried");
+    /// @inheritdoc ITaskRegistry
+    function isTaskId(bytes32 taskId) public view returns (bool) {
+        TaskRegistryStorage storage $ = _getTaskRegistryStorage();
+        return $.taskIds.contains(taskId);
+    }
 
-        Task[] memory someTasks = new Task[](numTasks);
-        uint256 x;
-        for (uint256 i = startTaskId; i < startTaskId + numTasks; i++) {
-            someTasks[x] = $.tasks[i];
-            x++;
-        }
-        return someTasks;
+    /// @inheritdoc ITaskRegistry
+    function encodeTask(Task memory task) public pure returns (bytes memory) {
+        return abi.encodePacked(task.uri);
+    }
+
+    /// @inheritdoc ITaskRegistry
+    function calcTaskId(Task memory task) public pure returns (bytes32) {
+        return keccak256(encodeTask(task));
     }
 }

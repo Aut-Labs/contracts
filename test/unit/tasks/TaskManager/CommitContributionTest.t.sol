@@ -5,7 +5,7 @@ import "test/BaseTest.sol";
 
 contract TaskManagerCommitContributionTest is BaseTest {
     // Generic contribution values
-    uint256 taskId;
+    bytes32 taskId;
     uint256 role = 1;
     uint32 startDate;
     uint32 endDate;
@@ -26,7 +26,7 @@ contract TaskManagerCommitContributionTest is BaseTest {
         _joinHub(bob, address(hub), "bob");
 
         // init Contribution for testing
-        taskId = taskRegistry.registerStandardTask("abcde");
+        taskId = taskRegistry.registerTask(Task({uri: "abcde"}));
         startDate = uint32(block.timestamp);
         endDate = startDate + 7 days;
         contribution = Contribution({
