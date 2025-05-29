@@ -17,7 +17,7 @@ import {ParticipationScore} from "../contracts/participationScore/ParticipationS
 import {Task, TaskRegistry} from "../contracts/tasks/TaskRegistry.sol";
 import {TaskFactory} from "../contracts/tasks/TaskFactory.sol";
 import {TaskManager} from "../contracts/tasks/TaskManager.sol";
-
+import {InteractionFactory} from "../contracts/interactionFactory/InteractionFactory.sol";
 
 import "forge-std/Script.sol";
 
@@ -38,6 +38,7 @@ contract DeployAll is Script {
     HubDomainsRegistry public hubDomainsRegistry;
     TaskRegistry public taskRegistry;
     GlobalParameters public globalParameters;
+    InteractionFactory public interactionFactory;
 
     struct TNamedAddress {
         address target;
@@ -82,6 +83,7 @@ contract DeployAll is Script {
         hubDomainsRegistry = deployHubDomainsRegistry(owner);
         taskRegistry = deployTaskRegistry(owner);
         globalParameters = deployGlobalParameters(owner);
+        interactionFactory = deployInteractionFactory(owner);
         (
             membershipImplementation,
             participationImplementation,
@@ -111,9 +113,6 @@ contract DeployAll is Script {
 
         // other inits
         taskRegistry.initialize();
-        if (deploying) {
-            taskRegistry.setApproved(owner);
-        }
 
         // Setup initial tasks
         Task[] memory tasks = new Task[](11);
@@ -163,15 +162,21 @@ contract DeployAll is Script {
         });
         taskRegistry.registerTasks(tasks);
 
+        if (deploying) {
+            taskRegistry.setApproved(owner);
+            taskRegistry.transferOwnership(owner);
+        }
+
         // todo: convert to helper function
         if (deploying) {
             string memory filename = "deployments.txt";
-            TNamedAddress[5] memory na;
+            TNamedAddress[6] memory na;
             na[0] = TNamedAddress({name: "globalParameters", target: address(globalParameters)});
             na[1] = TNamedAddress({name: "autID", target: address(autId)});
             na[2] = TNamedAddress({name: "hubRegistry", target: address(hubRegistry)});
             na[3] = TNamedAddress({name: "hubDomainsRegistry", target: address(hubDomainsRegistry)});
             na[4] = TNamedAddress({name: "taskRegistry", target: address(taskRegistry)});
+            na[5] = TNamedAddress({name: "interactionFactory", target: address(interactionFactory)});
             vm.writeLine(filename, string.concat(vm.toString(block.chainid), " ", vm.toString(block.timestamp)));
             for (uint256 i = 0; i != na.length; ++i) {
                 vm.writeLine(filename, string.concat(vm.toString(i), ". ", na[i].name, ": ", vm.toString(na[i].target)));
@@ -224,6 +229,13 @@ function deployGlobalParameters(address _owner) returns (GlobalParameters) {
         ""
     );
     return GlobalParameters(address(globalParametersProxy));
+}
+
+function deployInteractionFactory(
+    address _owner
+) returns (InteractionFactory) {
+    InteractionFactory interactionFactory = new InteractionFactory(_owner);
+    return interactionFactory;
 }
 
 function deployHubDependencyImplementations() returns (

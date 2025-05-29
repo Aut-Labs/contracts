@@ -76,7 +76,7 @@ contract InteractionFactory is ERC721, Ownable, IInteractionFactory {
      */
     function hasAutID(address account) public view override returns (bool) {
         if (address(_autID) == address(0)) return false;
-        return _autID.balanceOf(account) > 0;
+        return IERC721(address(_autID)).balanceOf(account) > 0;
     }
     
     /**
@@ -274,40 +274,76 @@ contract InteractionFactory is ERC721, Ownable, IInteractionFactory {
      */
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         require(_exists(tokenId), "InteractionFactory: nonexistent token");
-        
         InteractionTemplate memory template = _templates[tokenId];
-        
-        string memory json = string(abi.encodePacked(
-            '{',
-            '"name":"', template.name, '",',
-            '"description":"', template.description, '",',
-            '"protocol":"', template.protocol, '",',
-            '"image":"', template.logo, '",',
-            '"external_url":"', template.actionUrl, '",',
-            '"attributes":[',
-                '{',
-                    '"trait_type":"Target Contract",',
-                    '"value":"', _addressToString(template.targetContract), '"',
-                '},',
-                '{',
-                    '"trait_type":"Network ID",',
-                    '"value":"', Strings.toString(template.networkId), '"',
-                '},',
-                '{',
-                    '"trait_type":"Royalty Model",',
-                    '"value":"', template.royaltiesModel == RoyaltiesModel.PublicGood ? "Public Good" : "Integration Fee", '"',
-                '},',
-                '{',
-                    '"trait_type":"Creator",',
-                    '"value":"', _addressToString(template.creator), '"',
-                '},',
-                '{',
-                    '"trait_type":"Created At",',
-                    '"value":"', Strings.toString(template.createdAt), '"',
-                '}'
-            ']}'
-        ));
-        
+
+        string memory json = string(
+            abi.encodePacked(
+                "{",
+                '"name":"',
+                template.name,
+                '",',
+                '"description":"',
+                template.description,
+                '",',
+                '"protocol":"',
+                template.protocol,
+                '",'
+            )
+        );
+        json = string(
+            abi.encodePacked(
+                json,
+                '"image":"',
+                template.logo,
+                '",',
+                '"external_url":"',
+                template.actionUrl,
+                '",',
+                '"attributes":['
+            )
+        );
+        json = string(
+            abi.encodePacked(
+                json,
+                "{",
+                '"trait_type":"Target Contract",',
+                '"value":"',
+                _addressToString(template.targetContract),
+                '"',
+                "},",
+                "{",
+                '"trait_type":"Network ID",',
+                '"value":"',
+                Strings.toString(template.networkId),
+                '"',
+                "},",
+                "{",
+                '"trait_type":"Royalty Model",',
+                '"value":"',
+                template.royaltiesModel == RoyaltiesModel.PublicGood ? "Public Good" : "Integration Fee",
+                '"',
+                "}"
+            )
+        );
+        json = string(
+            abi.encodePacked(
+                json,
+                "{",
+                '"trait_type":"Creator",',
+                '"value":"',
+                _addressToString(template.creator),
+                '"',
+                "},",
+                "{",
+                '"trait_type":"Created At",',
+                '"value":"',
+                Strings.toString(template.createdAt),
+                '"',
+                "}",
+                "]}"
+            )
+        );
+
         return string(abi.encodePacked("data:application/json;base64,", _toBase64(bytes(json))));
     }
     
@@ -417,70 +453,5 @@ contract InteractionFactory is ERC721, Ownable, IInteractionFactory {
         }
         
         return string(result);
-    }
-    
-    /**
-     * @notice Emitted when the AutID registry is set
-     * @param registryAddress The address of the AutID registry
-     */
-    event AutIDRegistrySet(address indexed registryAddress);
-
-    /**
-     * @notice Helper function to get individual fields from an interaction template
-     * @param tokenId The token ID to query
-     * @return name The template name
-     * @return description The template description
-     * @return protocol The protocol name
-     * @return logo The logo URL
-     * @return actionUrl The action URL
-     * @return targetContract The target contract address
-     * @return functionABI The function ABI
-     * @return networkId The network ID
-     * @return uniqueHash The unique hash
-     * @return royaltyRecipient The royalty recipient address
-     * @return royaltiesModel The royalties model
-     * @return price The price
-     * @return creator The creator address
-     * @return createdAt The creation timestamp
-     */
-    function getInteractionTemplateFields(uint256 tokenId) 
-        external 
-        view 
-        returns (
-            string memory name,
-            string memory description,
-            string memory protocol,
-            string memory logo,
-            string memory actionUrl,
-            address targetContract,
-            string memory functionABI,
-            uint256 networkId,
-            bytes32 uniqueHash,
-            address royaltyRecipient,
-            RoyaltiesModel royaltiesModel,
-            uint256 price,
-            address creator,
-            uint256 createdAt
-        ) 
-    {
-        require(_exists(tokenId), "InteractionFactory: nonexistent token");
-        InteractionTemplate memory template = _templates[tokenId];
-        
-        return (
-            template.name,
-            template.description,
-            template.protocol,
-            template.logo,
-            template.actionUrl,
-            template.targetContract,
-            template.functionABI,
-            template.networkId,
-            template.uniqueHash,
-            template.royaltyRecipient,
-            template.royaltiesModel,
-            template.price,
-            template.creator,
-            template.createdAt
-        );
     }
 } 

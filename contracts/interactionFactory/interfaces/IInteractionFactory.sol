@@ -54,24 +54,4 @@ interface IInteractionFactory {
     function getTokenIdByHash(bytes32 hash) external view returns (uint256);
     function computeTemplateHash(address targetContract, string calldata functionABI, uint256 networkId) external pure returns (bytes32);
     function getInteractionsByCreator(address creator) external view returns (uint256[] memory);
-    function tokenURI(uint256 tokenId) external view returns (string memory);
-    function getInteractionTemplateFields(uint256 tokenId) 
-        external 
-        view 
-        returns (
-            string memory name,
-            string memory description,
-            string memory protocol,
-            string memory logo,
-            string memory actionUrl,
-            address targetContract,
-            string memory functionABI,
-            uint256 networkId,
-            bytes32 uniqueHash,
-            address royaltyRecipient,
-            RoyaltiesModel royaltiesModel,
-            uint256 price,
-            address creator,
-            uint256 createdAt
-        );
 } 
